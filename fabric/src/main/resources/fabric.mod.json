@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "breakthemodrewrite",
+  "version": "${version}",
+  "name": "breakthemodRewrite",
+  "description": "",
+  "authors": [
+    "charisk"
+  ],
+  "contact": {
+    "homepage": ""
+  },
+  "license": "GPL-3.0",
+  "icon": "assets/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.charisk.breakthemodrewrite.fabric.BreakthemodrewriteFabric"
+    ],
+    "client": [
+      "net.charisk.breakthemodrewrite.fabric.client.BreakthemodrewriteFabricClient"
+    ]
+  },
+  "mixins": [
+    "breakthemodrewrite.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.10",
+    "minecraft": "~1.21.4",
+    "java": ">=21",
+    "architectury": ">=15.0.3",
+    "fabric-api": "*"
+  }
+}
