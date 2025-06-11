@@ -19,7 +19,7 @@ package net.charisk.breakthemodrewrite.fabric.client.commands;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
-import net.charisk.breakthemodrewrite.commands.nationPopulationService;
+import net.charisk.breakthemodrewrite.Services.nationPopulationService;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -58,7 +58,7 @@ public class nationpop extends FabricCommand{
     @Override
     public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(
-                LiteralArgumentBuilder.<FabricClientCommandSource>literal("nationpop")
+                LiteralArgumentBuilder.<FabricClientCommandSource>literal(getName())
                         .then(RequiredArgumentBuilder.<FabricClientCommandSource, String>argument("name", StringArgumentType.string()).executes(context -> {
                             if (!getEnabledOnOtherServers()) return 0;
                             return run(context);

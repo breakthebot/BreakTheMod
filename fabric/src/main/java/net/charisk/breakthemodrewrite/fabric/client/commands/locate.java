@@ -23,9 +23,8 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import net.charisk.breakthemodrewrite.Fetch.fetch;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.charisk.breakthemodrewrite.commands.locateService;
+import net.charisk.breakthemodrewrite.Services.locateService;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Style;
@@ -79,7 +78,7 @@ public class locate extends FabricCommand{
     @Override
     public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(
-                LiteralArgumentBuilder.<FabricClientCommandSource>literal("onlinestaff")
+                LiteralArgumentBuilder.<FabricClientCommandSource>literal(getName())
                         .then(RequiredArgumentBuilder.<FabricClientCommandSource, String>argument("name", StringArgumentType.string())
                                 .then(RequiredArgumentBuilder.<FabricClientCommandSource, String>argument("type", StringArgumentType.string())
                                         .executes(context -> {

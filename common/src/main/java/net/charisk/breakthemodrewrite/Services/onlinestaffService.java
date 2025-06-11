@@ -15,14 +15,13 @@
  * along with breakthemodrewrite. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.charisk.breakthemodrewrite.commands;
+package net.charisk.breakthemodrewrite.Services;
 
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.charisk.breakthemodrewrite.api.Fetch;
 import net.charisk.breakthemodrewrite.Fetch.fetch;
 
 import java.util.ArrayList;

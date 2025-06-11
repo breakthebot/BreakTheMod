@@ -21,7 +21,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import net.charisk.breakthemodrewrite.commands.GoToService;
+import net.charisk.breakthemodrewrite.Services.GoToService;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Style;
@@ -49,7 +49,7 @@ public class GoTo extends FabricCommand{
     @Override
     public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(
-                LiteralArgumentBuilder.<FabricClientCommandSource>literal("goto")
+                LiteralArgumentBuilder.<FabricClientCommandSource>literal(getName())
                         .then(RequiredArgumentBuilder.<FabricClientCommandSource, String>argument("destination", StringArgumentType.string())
                                 .executes(context -> {
                                     if (!getEnabledOnOtherServers()) return 0;

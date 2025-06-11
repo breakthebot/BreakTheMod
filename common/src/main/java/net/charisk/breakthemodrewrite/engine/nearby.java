@@ -17,6 +17,7 @@
 
 package net.charisk.breakthemodrewrite.engine;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -62,6 +63,7 @@ public class nearby {
         playerInfoList.clear();
 
         for (Player other : world.getPlayers()) {
+            if (Objects.equals(other.getName(), self.getName())) continue;
             if (other == self) continue;
             if (shouldSkipPlayer(other)) continue;
 

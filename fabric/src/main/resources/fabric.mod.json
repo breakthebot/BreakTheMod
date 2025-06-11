@@ -19,6 +19,9 @@
     ],
     "client": [
       "net.charisk.breakthemodrewrite.fabric.client.BreakthemodrewriteFabricClient"
+    ],
+    "modmenu": [
+      "net.charisk.breakthemodrewrite.fabric.client.utils.modmenu"
     ]
   },
   "mixins": [
@@ -30,5 +33,16 @@
     "java": ">=21",
     "architectury": ">=15.0.3",
     "fabric-api": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/RVkwSrPyuq",
+        "modmenu.modrinth": "https://modrinth.com/mod/BreakTheMod",
+        "modmenu.github_releases": "https://github.com/chariskar/BreakTheMod/releases"
+      },
+      "update-checker": true,
+      "modmenu.icon": "assets/icon.png"
+    }
   }
 }

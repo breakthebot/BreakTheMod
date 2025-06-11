@@ -19,11 +19,9 @@ package net.charisk.breakthemodrewrite.fabric.client.commands;
 
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import net.charisk.breakthemodrewrite.commands.onlinestaffService;
+import net.charisk.breakthemodrewrite.Services.onlinestaffService;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Style;
@@ -50,18 +48,6 @@ public class onlinestaff extends FabricCommand{
     @Override
     public String getUsageSuffix() {
         return "";
-    }
-
-    @Override
-    public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        dispatcher.register(
-                LiteralArgumentBuilder.<FabricClientCommandSource>literal("onlinestaff")
-                        .executes(context -> {
-                            if (!getEnabledOnOtherServers()) return 0;
-                            return run(context);
-                        })
-
-        );
     }
 
     @Override

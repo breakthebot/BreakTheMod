@@ -18,7 +18,7 @@ import net.minecraft.network.chat.Component;
 public abstract class NeoForgeCommand extends Command<CommandSourceStack> {
 
 
-    public String getConnectedServerAddress() {
+    public static String getConnectedServerAddress() {
         Minecraft client = Minecraft.getInstance();
         if (client == null) return null;
 
@@ -26,7 +26,7 @@ public abstract class NeoForgeCommand extends Command<CommandSourceStack> {
         return serverData != null ? serverData.ip : null;
     }
 
-    public boolean getEnabledOnOtherServers() {
+    public static boolean getEnabledOnOtherServers() {
         String serverAddress = getConnectedServerAddress();
         if (serverAddress == null) return true;
         if (serverAddress.toLowerCase().endsWith("earthmc.net")) return true;

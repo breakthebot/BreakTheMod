@@ -19,6 +19,8 @@ package net.charisk.breakthemodrewrite.fabric.client.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import net.charisk.breakthemodrewrite.fabric.client.utils.wrappers.player;
+import net.charisk.breakthemodrewrite.fabric.client.utils.wrappers.world;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.charisk.breakthemodrewrite.engine.nearby;
 import net.minecraft.client.MinecraftClient;
@@ -50,8 +52,9 @@ public class nearbyCommand extends FabricCommand{
     @Override
     protected int execute(CommandContext<FabricClientCommandSource> ctx) throws Exception {
         MinecraftClient client = MinecraftClient.getInstance();
-
-        Set<String> nearbyPlayers = Engine.updateNearbyPlayers((nearby.Player) client.player, (nearby.World) client.world);
+        player Playerwrapper = new player(client.player);
+        world Worldwrapper = new world(client.world);
+        Set<String> nearbyPlayers = Engine.updateNearbyPlayers(Playerwrapper, Worldwrapper);
         if (nearbyPlayers.isEmpty()) {
             client.execute(() -> sendMessage(client, Text.literal("There are no players nearby").setStyle(Style.EMPTY.withColor(Formatting.RED))));
             return 0;
@@ -69,15 +72,4 @@ public class nearbyCommand extends FabricCommand{
 
     }
 
-    @Override
-    public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        dispatcher.register(
-                LiteralArgumentBuilder.<FabricClientCommandSource>literal("nearby")
-                        .executes(context -> {
-                            if (!getEnabledOnOtherServers()) return 0;
-                            return run(context);
-                        })
-
-        );
-    }
 }

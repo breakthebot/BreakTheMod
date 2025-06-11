@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with breakthemodrewrite. If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package net.charisk.breakthemodrewrite.api;
 import com.google.gson.*;
 import net.charisk.breakthemodrewrite.Fetch.fetch;
@@ -35,7 +35,7 @@ public class Fetch {
     private static final Logger LOGGER = LoggerFactory.getLogger("breakthemod");
     private final Gson gson = new Gson();
     public Fetch() {this.Fetch = new fetch();}
-    
+
     public Town getTown(String name) {
         JsonObject payload = new JsonObject();
         JsonArray query = new JsonArray();
@@ -111,7 +111,6 @@ public class Fetch {
 
         } catch (JsonSyntaxException e) {
             LOGGER.error("Invalid JSON response for nation '{}': {}", name, e.getMessage());
-            LOGGER.debug("Raw response might be malformed JSON", e);
         } catch (Exception e) {
             LOGGER.error("Unexpected error fetching nation '{}': {}", name, e.getMessage(), e);
         }
@@ -163,7 +162,7 @@ public class Fetch {
         payload.add("query", query);
         try {
             String response = this.Fetch.PostRequest(
-                    "https://api.earthmc.net/v3/aurora/residents",
+                    "https://api.earthmc.net/v3/aurora/players",
                     payload.toString()
             );
             JsonObject playerJson = JsonParser
@@ -186,11 +185,12 @@ public class Fetch {
         JsonObject payload = new JsonObject();
         JsonArray query = new JsonArray();
         names.forEach(query::add);
+
         payload.add("query", query);
 
         try {
             String response = this.Fetch.PostRequest(
-                    "https://api.earthmc.net/v3/aurora/residents",
+                    "https://api.earthmc.net/v3/aurora/players",
                     payload.toString()
             );
             JsonArray residentsJson = JsonParser.parseString(response).getAsJsonArray();

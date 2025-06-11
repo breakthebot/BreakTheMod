@@ -21,7 +21,7 @@ package net.charisk.breakthemodrewrite.fabric.client.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import net.charisk.breakthemodrewrite.commands.friendsService;
+import net.charisk.breakthemodrewrite.Services.friendsService;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Style;
@@ -46,18 +46,6 @@ public class friends extends FabricCommand {
     @Override
     public String getUsageSuffix() {
         return "";
-    }
-
-    @Override
-    public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        dispatcher.register(
-                LiteralArgumentBuilder.<FabricClientCommandSource>literal("onlinefriends")
-                        .executes(context -> {
-                            if (!getEnabledOnOtherServers()) return 0;
-                            return run(context);
-                        })
-
-        );
     }
 
     @Override

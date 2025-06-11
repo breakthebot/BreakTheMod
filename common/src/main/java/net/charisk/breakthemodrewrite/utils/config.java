@@ -29,12 +29,12 @@ public class config {
     private WidgetPosition widgetPosition = WidgetPosition.TOP_LEFT;
     private int customX = 0;
     private int customY = 0;
-    private boolean radarEnabled = true;
+    public boolean radarEnabled = true;
     private boolean enabledOnOtherServers = false;
     private static final File configFile = new File(Platform.getConfigFolder().toFile(), "breakthemod_config.json");
 
     private static final Gson gson = new Gson();
-    private static Boolean dev = false;
+    public static Boolean dev = false;
     private config() {
         loadConfig();
     }

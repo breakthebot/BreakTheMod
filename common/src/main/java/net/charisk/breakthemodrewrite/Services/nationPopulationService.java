@@ -15,7 +15,7 @@
  * along with breakthemodrewrite. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.charisk.breakthemodrewrite.commands;
+package net.charisk.breakthemodrewrite.Services;
 
 import net.charisk.breakthemodrewrite.api.Fetch;
 import net.charisk.breakthemodrewrite.Fetch.types.Nation;

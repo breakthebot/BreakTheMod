@@ -40,8 +40,11 @@ public abstract class Command<S> {
     public abstract void register(CommandDispatcher<S> dispatcher);
 
 
-    public abstract String getConnectedServerAddress();
+    public static String getConnectedServerAddress() {
+        return null;
+    }
 
-    public abstract boolean getEnabledOnOtherServers();
-
+    public static boolean getEnabledOnOtherServers() {
+        return false;
+    }
 }

@@ -17,11 +17,11 @@
 
 package net.charisk.breakthemodrewrite.fabric.client.commands;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.charisk.breakthemodrewrite.api.Command;
 import net.charisk.breakthemodrewrite.utils.config;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ServerInfo;
@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 public abstract class FabricCommand extends Command<FabricClientCommandSource> {
     public static final Logger LOGGER = LoggerFactory.getLogger("breakthemod");
 
-    public String getConnectedServerAddress() {
+    public static String getConnectedServerAddress() {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client == null) return null;
 
@@ -43,7 +43,7 @@ public abstract class FabricCommand extends Command<FabricClientCommandSource> {
         return serverInfo.address.split(",")[0];
     }
 
-    public boolean getEnabledOnOtherServers() {
+    public static boolean getEnabledOnOtherServers() {
         String serverAddress = getConnectedServerAddress();
 
         if (serverAddress == null) {return true;}
@@ -84,5 +84,15 @@ public abstract class FabricCommand extends Command<FabricClientCommandSource> {
     }
 
 
-    public abstract void register(CommandDispatcher<FabricClientCommandSource> dispatcher);
+    @Override
+    public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+        dispatcher.register(
+                LiteralArgumentBuilder.<FabricClientCommandSource>literal(getName())
+                        .executes(context -> {
+                            if (!getEnabledOnOtherServers()) return 0;
+                            return run(context);
+                        })
+
+        );
+    }
 }
