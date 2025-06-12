@@ -60,6 +60,7 @@ public class friends extends FabricCommand {
                 .getUsername();
 
         List<String> knownFriends = service.get(userID);
+
         List<String> onlinePlayerNames = MinecraftClient.getInstance()
                 .getNetworkHandler()
                 .getPlayerList()

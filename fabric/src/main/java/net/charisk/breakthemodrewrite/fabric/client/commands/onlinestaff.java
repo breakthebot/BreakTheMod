@@ -52,6 +52,7 @@ public class onlinestaff extends FabricCommand{
 
     @Override
     protected int execute(CommandContext<FabricClientCommandSource> ctx) throws Exception {
+        // TODO: move from client.execute to CompletableFuture.supplyAsync
         MinecraftClient client = MinecraftClient.getInstance();
         client.execute(() -> {
             try {

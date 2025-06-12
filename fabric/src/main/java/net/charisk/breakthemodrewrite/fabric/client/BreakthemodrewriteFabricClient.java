@@ -17,7 +17,8 @@ public final class BreakthemodrewriteFabricClient implements ClientModInitialize
                 new nationpop(),
                 new locate(),
                 new nearbyCommand(),
-                new townless()
+                new townless(),
+                new whereIs()
         );
 
         render Render = new render();

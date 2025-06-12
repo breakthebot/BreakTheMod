@@ -36,7 +36,7 @@ import java.util.concurrent.Executors;
 import net.charisk.breakthemodrewrite.api.Fetch;
 
 public class GoToService {
-    private static final Logger LOGGER = LoggerFactory.getLogger("breakthemod");
+    private static final Logger LOGGER = LoggerFactory.getLogger("breakthemodrewrite");
     private static final ExecutorService IO_EXECUTOR = Executors.newFixedThreadPool(4);
     /**
      * Finds the nearest valid town spawns for the given name.
