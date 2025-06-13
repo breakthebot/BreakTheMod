@@ -16,32 +16,30 @@
  */
 
 package net.charisk.breakthemodrewrite.fabric.client.commands;
+
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.charisk.breakthemodrewrite.Services.whereIsService;
-import net.minecraft.client.MinecraftClient;
+import net.charisk.breakthemodrewrite.Services.discordLinkedService;
+import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.concurrent.CompletableFuture;
-
-public class whereIs extends FabricCommand{
-    whereIsService Service = new whereIsService();
+public class discordLinked extends FabricCommand{
+    private discordLinkedService Service = new discordLinkedService();
 
     @Override
     public String getName() {
-        return "findplayer";
+        return "discordlinked";
     }
 
     @Override
     public String getDescription() {
-        return "Tells you where a player is based on the map api.";
+        return "It tells you the discord username of a linked player";
     }
 
     @Override
@@ -52,24 +50,35 @@ public class whereIs extends FabricCommand{
     @Override
     protected int execute(CommandContext<FabricClientCommandSource> ctx) throws Exception {
         String name = ctx.getArgument("name", String.class);
-        MinecraftClient client = MinecraftClient.getInstance();
-        CompletableFuture.supplyAsync(()->Service.get(name)).thenAccept(
-                (resp)->{
-                    if (resp.get().found) sendMessage(client,Text.literal(resp.get().toString()));
-                    else sendMessage(client, Text.literal(resp.get().toString()).setStyle(Style.EMPTY.withColor(Formatting.AQUA)));
-                }
-        );
+
+        client.execute(()->{
+            String resp = Service.get(name);
+            if (resp.equalsIgnoreCase("null")){
+                sendMessage(client, Text.literal("No Discord ID linked with the provided Minecraft username."));
+            }
+            Text result = Text.literal("Click Here")
+                    .setStyle(Style.EMPTY
+                            .withColor(Formatting.BLUE)
+                            .withClickEvent(
+                                    new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.com/users/" + resp)
+                            )
+
+                    );
+            sendMessage(client, result);
+        });
         return 0;
     }
 
     @Override
-    public void register(@NotNull CommandDispatcher<FabricClientCommandSource> dispatcher) {
+    public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(
                 LiteralArgumentBuilder.<FabricClientCommandSource>literal(getName())
-                        .then(RequiredArgumentBuilder.<FabricClientCommandSource, String>argument("name", StringArgumentType.string()).executes(context -> {
-                            if (!getEnabledOnOtherServers()) return 0;
-                            return run(context);
-                        }))
+                        .then(RequiredArgumentBuilder.<FabricClientCommandSource, String>argument("name", StringArgumentType.string())
+                                .executes(context -> {
+                                    if (!getEnabledOnOtherServers()) return 0;
+                                    return run(context);
+                                })
+                        )
         );
     }
 }

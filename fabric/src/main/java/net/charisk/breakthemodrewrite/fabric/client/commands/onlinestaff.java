@@ -30,6 +30,7 @@ import net.minecraft.util.Formatting;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class onlinestaff extends FabricCommand{
@@ -52,38 +53,33 @@ public class onlinestaff extends FabricCommand{
 
     @Override
     protected int execute(CommandContext<FabricClientCommandSource> ctx) throws Exception {
-        // TODO: move from client.execute to CompletableFuture.supplyAsync
         MinecraftClient client = MinecraftClient.getInstance();
-        client.execute(() -> {
+        CompletableFuture.supplyAsync(()-> {
             try {
-                List<UUID> onlineUuids = client.getNetworkHandler().getPlayerList().stream()
+                return Service.get(client.getNetworkHandler().getPlayerList().stream()
                         .map(e -> e.getProfile().getId())
-                        .collect(Collectors.toList());
-
-                List<UUID> onlineStaffUuids = Service.get(onlineUuids);
-
-                List<String> onlineStaffNames = client.getNetworkHandler().getPlayerList().stream()
-                        .filter(e -> onlineStaffUuids.contains(e.getProfile().getId()))
-                        .map(e -> e.getProfile().getName())
-                        .collect(Collectors.toList());
-
-                if (!onlineStaffNames.isEmpty()) {
-                    Text styledPart = Text.literal("Online Staff: ").setStyle(Style.EMPTY.withColor(Formatting.AQUA));
-                    Text onlineStaffText = Text.literal(String.join(", ", onlineStaffNames))
-                            .setStyle(Style.EMPTY.withColor(Formatting.GREEN));
-                    Text message = Text.literal("")
-                            .append(styledPart)
-                            .append(onlineStaffText)
-                            .append(Text.literal(" [" + onlineStaffNames.size() + "]").setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
-
-                    sendMessage(client, message);
-                } else {
-                    sendMessage(client, Text.literal("No staff online").setStyle(Style.EMPTY.withColor(Formatting.DARK_RED)));
-                }
-
+                        .collect(Collectors.toList()));
             } catch (Exception e) {
-                e.printStackTrace();
-                sendMessage(client, Text.literal("Error while checking staff online").setStyle(Style.EMPTY.withColor(Formatting.RED)));
+                throw new RuntimeException(e);
+            }
+        }).thenAccept((resp)->{
+            List<String> onlineStaffNames = client.getNetworkHandler().getPlayerList().stream()
+                    .filter(e -> resp.contains(e.getProfile().getId()))
+                    .map(e -> e.getProfile().getName())
+                    .collect(Collectors.toList());
+
+            if (!onlineStaffNames.isEmpty()) {
+                Text styledPart = Text.literal("Online Staff: ").setStyle(Style.EMPTY.withColor(Formatting.AQUA));
+                Text onlineStaffText = Text.literal(String.join(", ", onlineStaffNames))
+                        .setStyle(Style.EMPTY.withColor(Formatting.GREEN));
+                Text message = Text.literal("")
+                        .append(styledPart)
+                        .append(onlineStaffText)
+                        .append(Text.literal(" [" + onlineStaffNames.size() + "]").setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
+
+                sendMessage(client, message);
+            } else {
+                sendMessage(client, Text.literal("No staff online").setStyle(Style.EMPTY.withColor(Formatting.DARK_RED)));
             }
         });
         return 0;

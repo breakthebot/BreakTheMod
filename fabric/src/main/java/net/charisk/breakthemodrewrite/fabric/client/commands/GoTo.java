@@ -33,7 +33,7 @@ public class GoTo extends FabricCommand{
 
     @Override
     public String getName() {
-        return "GoTo";
+        return "goto";
     }
 
     @Override

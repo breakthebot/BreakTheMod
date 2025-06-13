@@ -16,59 +16,60 @@
  */
 
 package net.charisk.breakthemodrewrite.fabric.client.commands;
+
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import net.charisk.breakthemodrewrite.fabric.client.utils.wrappers.player;
-import net.charisk.breakthemodrewrite.fabric.client.utils.wrappers.world;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.charisk.breakthemodrewrite.engine.nearby;
+import net.charisk.breakthemodrewrite.Services.lastSeenService;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
-import java.util.Set;
 
-public class nearbyCommand extends FabricCommand{
-    nearby Engine = new nearby();
+public class lastSeen extends FabricCommand {
+
+    lastSeenService Service = new lastSeenService();
 
     @Override
     public String getName() {
-        return "nearby";
+        return "lastseen";
     }
 
     @Override
     public String getDescription() {
-        return "Shows all nearby players as they would be shown on the map";
+        return "Tells you when a person was last online";
     }
 
     @Override
     public String getUsageSuffix() {
-        return "";
+        return "<name>";
     }
 
     @Override
     protected int execute(CommandContext<FabricClientCommandSource> ctx) throws Exception {
-        player Playerwrapper = new player(client.player);
-        world Worldwrapper = new world(client.world);
-        Set<String> nearbyPlayers = Engine.updateNearbyPlayers(Playerwrapper, Worldwrapper);
-        if (nearbyPlayers.isEmpty()) {
-            client.execute(() -> sendMessage(client, Text.literal("There are no players nearby").setStyle(Style.EMPTY.withColor(Formatting.RED))));
-            return 0;
-        }
+        String name = ctx.getArgument("name", String.class);
 
-        MutableText header = Text.literal("Players nearby:\n").setStyle(Style.EMPTY.withColor(Formatting.YELLOW));
-        MutableText playersText = Text.literal("");
-
-        for (String playerInfo : nearbyPlayers) {
-            playersText.append(Text.literal(playerInfo + "\n").setStyle(Style.EMPTY.withColor(Formatting.AQUA)));
-        }
-
-        client.execute(() -> sendMessage(client, header.append(playersText)));
+        // NOTE: client.exec is used here as this isnt a resource heavy task.
+        client.execute(()->{
+            String resp = Service.get(name);
+            sendMessage(client, Text.literal(resp));
+        });
         return 0;
-
     }
 
+
+    @Override
+    public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+        dispatcher.register(
+                LiteralArgumentBuilder.<FabricClientCommandSource>literal(getName())
+                        .then(RequiredArgumentBuilder.<FabricClientCommandSource, String>argument("name", StringArgumentType.string())
+                                .executes(context -> {
+                                    if (!getEnabledOnOtherServers()) return 0;
+                                    return run(context);
+                                })
+                        )
+        );
+    }
 }

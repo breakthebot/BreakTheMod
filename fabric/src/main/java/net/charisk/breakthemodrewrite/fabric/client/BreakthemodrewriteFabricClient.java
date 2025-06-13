@@ -5,12 +5,16 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine;
+
+import java.util.List;
 
 public final class BreakthemodrewriteFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        help HelpCommand = new help();
 
-        loadCommands(
+        List<FabricCommand> commands = List.of(
                 new GoTo(),
                 new onlinestaff(),
                 new friends(),
@@ -18,8 +22,12 @@ public final class BreakthemodrewriteFabricClient implements ClientModInitialize
                 new locate(),
                 new nearbyCommand(),
                 new townless(),
-                new whereIs()
+                new whereIs(),
+                new lastSeen(),
+                HelpCommand
         );
+        HelpCommand.setCommands(commands);
+        loadCommands(commands);
 
         render Render = new render();
         HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
@@ -28,7 +36,7 @@ public final class BreakthemodrewriteFabricClient implements ClientModInitialize
     }
 
 
-    private void loadCommands(FabricCommand... commands){
+    private void loadCommands(List<FabricCommand>  commands){
         ClientCommandRegistrationCallback.EVENT.register((dispatcher,phase)->{
             for (FabricCommand command : commands){
                 command.register(dispatcher);

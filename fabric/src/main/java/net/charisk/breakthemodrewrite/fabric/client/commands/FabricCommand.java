@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class FabricCommand extends Command<FabricClientCommandSource> {
     public static final Logger LOGGER = LoggerFactory.getLogger("breakthemod");
-
+    public static final MinecraftClient client = MinecraftClient.getInstance();
     public static String getConnectedServerAddress() {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client == null) return null;

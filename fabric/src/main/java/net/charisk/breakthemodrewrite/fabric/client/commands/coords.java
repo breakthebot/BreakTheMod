@@ -16,60 +16,60 @@
  */
 
 package net.charisk.breakthemodrewrite.fabric.client.commands;
+
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.charisk.breakthemodrewrite.Services.whereIsService;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Style;
+import net.charisk.breakthemodrewrite.Services.coordsService;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.concurrent.CompletableFuture;
-
-public class whereIs extends FabricCommand{
-    whereIsService Service = new whereIsService();
+public class coords extends FabricCommand{
+    coordsService Service = new coordsService();
 
     @Override
     public String getName() {
-        return "findplayer";
+        return "coords";
     }
 
     @Override
     public String getDescription() {
-        return "Tells you where a player is based on the map api.";
+        return "Tells you information about the coords.";
     }
 
     @Override
     public String getUsageSuffix() {
-        return "<name>";
+        return "<x> <z>";
     }
 
     @Override
     protected int execute(CommandContext<FabricClientCommandSource> ctx) throws Exception {
-        String name = ctx.getArgument("name", String.class);
-        MinecraftClient client = MinecraftClient.getInstance();
-        CompletableFuture.supplyAsync(()->Service.get(name)).thenAccept(
-                (resp)->{
-                    if (resp.get().found) sendMessage(client,Text.literal(resp.get().toString()));
-                    else sendMessage(client, Text.literal(resp.get().toString()).setStyle(Style.EMPTY.withColor(Formatting.AQUA)));
-                }
-        );
+        double x = ctx.getArgument("x", double.class);
+        double z = ctx.getArgument("z", double.class);
+        client.execute(()->{
+            try {
+                coordsService.LocationResult resp = Service.get(x,z);
+                sendMessage(client, Text.literal(resp.toString()));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
         return 0;
     }
 
     @Override
-    public void register(@NotNull CommandDispatcher<FabricClientCommandSource> dispatcher) {
+    public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(
                 LiteralArgumentBuilder.<FabricClientCommandSource>literal(getName())
-                        .then(RequiredArgumentBuilder.<FabricClientCommandSource, String>argument("name", StringArgumentType.string()).executes(context -> {
-                            if (!getEnabledOnOtherServers()) return 0;
-                            return run(context);
-                        }))
+                        .then(RequiredArgumentBuilder.<FabricClientCommandSource, String>argument("x", StringArgumentType.string())
+                                .then(RequiredArgumentBuilder.<FabricClientCommandSource, String>argument("z", StringArgumentType.string())
+                                    .executes(context -> {
+                                        if (!getEnabledOnOtherServers()) return 0;
+                                        return run(context);
+                                    })
+                        ))
         );
     }
 }

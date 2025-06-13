@@ -25,7 +25,6 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.charisk.breakthemodrewrite.Services.locateService;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -55,7 +54,6 @@ public class locate extends FabricCommand{
     protected int execute(CommandContext<FabricClientCommandSource> ctx)  {
         String name = ctx.getArgument("name", String.class);
         String type = ctx.getArgument("type", String.class).toLowerCase();
-        MinecraftClient client = MinecraftClient.getInstance();
         CompletableFuture.supplyAsync(() -> Service.getLocation(name, locateService.LocationType.fromString(type)))
                 .thenAccept(result -> {
                     if (result == null) {

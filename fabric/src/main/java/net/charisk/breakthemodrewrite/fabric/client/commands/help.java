@@ -16,32 +16,32 @@
  */
 
 package net.charisk.breakthemodrewrite.fabric.client.commands;
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+
+
 import com.mojang.brigadier.context.CommandContext;
-import net.charisk.breakthemodrewrite.fabric.client.utils.wrappers.player;
-import net.charisk.breakthemodrewrite.fabric.client.utils.wrappers.world;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.charisk.breakthemodrewrite.engine.nearby;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.spongepowered.asm.mixin.Mutable;
 
-import java.util.Set;
+import java.util.List;
 
-public class nearbyCommand extends FabricCommand{
-    nearby Engine = new nearby();
+public class help extends FabricCommand{
+    public List<FabricCommand> commands = null;
+
+    public void setCommands(List<FabricCommand> Commands) {commands = Commands;}
 
     @Override
     public String getName() {
-        return "nearby";
+        return "help";
     }
 
     @Override
     public String getDescription() {
-        return "Shows all nearby players as they would be shown on the map";
+        return "The help command";
     }
 
     @Override
@@ -49,26 +49,34 @@ public class nearbyCommand extends FabricCommand{
         return "";
     }
 
+
     @Override
     protected int execute(CommandContext<FabricClientCommandSource> ctx) throws Exception {
-        player Playerwrapper = new player(client.player);
-        world Worldwrapper = new world(client.world);
-        Set<String> nearbyPlayers = Engine.updateNearbyPlayers(Playerwrapper, Worldwrapper);
-        if (nearbyPlayers.isEmpty()) {
-            client.execute(() -> sendMessage(client, Text.literal("There are no players nearby").setStyle(Style.EMPTY.withColor(Formatting.RED))));
-            return 0;
+        MinecraftClient client = ctx.getSource().getClient();
+
+        if (commands == null || commands.isEmpty()) {
+            sendMessage(client, Text.literal("No commands available.").setStyle(Style.EMPTY.withColor(Formatting.RED)));
+            return 1;
         }
 
-        MutableText header = Text.literal("Players nearby:\n").setStyle(Style.EMPTY.withColor(Formatting.YELLOW));
-        MutableText playersText = Text.literal("");
+        sendMessage(client, Text.literal("=== Available Commands ===").setStyle(Style.EMPTY.withColor(Formatting.GOLD)));
 
-        for (String playerInfo : nearbyPlayers) {
-            playersText.append(Text.literal(playerInfo + "\n").setStyle(Style.EMPTY.withColor(Formatting.AQUA)));
+        for (FabricCommand cmd : commands) {
+            MutableText cmdNameText = Text.literal("/" + cmd.getName())
+                    .formatted(Formatting.GRAY);
+
+            if (!cmd.getUsageSuffix().isEmpty()) {
+                cmdNameText = cmdNameText.append(
+                        Text.literal(" " + cmd.getUsageSuffix())
+                );
+            }
+
+            Text descText = Text.literal(" - " + cmd.getDescription())
+                    .formatted(Formatting.WHITE);
+
+            sendMessage(client, cmdNameText.append(descText));
         }
 
-        client.execute(() -> sendMessage(client, header.append(playersText)));
-        return 0;
-
+        return 1;
     }
-
 }
