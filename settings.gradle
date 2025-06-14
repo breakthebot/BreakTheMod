@@ -7,7 +7,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'breakthemodrewrite'
+rootProject.name = 'breakthemod'
 
 include 'common'
 include 'fabric'

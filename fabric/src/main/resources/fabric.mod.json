@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "breakthemodrewrite",
+  "id": "breakthemod",
   "version": "${version}",
-  "name": "breakthemodRewrite",
+  "name": "breakthemod",
   "description": "",
   "authors": [
     "charisk"
@@ -14,18 +14,15 @@
   "icon": "assets/icon.png",
   "environment": "*",
   "entrypoints": {
-    "main": [
-      "net.charisk.breakthemodrewrite.fabric.BreakthemodrewriteFabric"
-    ],
     "client": [
-      "net.charisk.breakthemodrewrite.fabric.client.BreakthemodrewriteFabricClient"
+      "net.charisk.breakthemod.fabric.client.breakthemodFabricClient"
     ],
     "modmenu": [
-      "net.charisk.breakthemodrewrite.fabric.client.utils.modmenu"
+      "net.charisk.breakthemod.fabric.client.utils.modmenu"
     ]
   },
   "mixins": [
-    "breakthemodrewrite.mixins.json"
+    "breakthemod.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.16.10",

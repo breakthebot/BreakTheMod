@@ -4,30 +4,30 @@ loaderVersion = "[2,)"
 license = "GNU GPL 3.0"
 
 [[mods]]
-modId = "breakthemodrewrite"
+modId = "breakthemod"
 version = "${version}"
-displayName = "breakthemodRewrite"
+displayName = "breakthemod"
 authors = "charisk"
 description = '''
 
 '''
 #logoFile = ""
 
-[[dependencies.breakthemodrewrite]]
+[[dependencies.breakthemod]]
 modId = "neoforge"
 type = "required"
 versionRange = "[21,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.breakthemodrewrite]]
+[[dependencies.breakthemod]]
 modId = "minecraft"
 type = "required"
 versionRange = "[1.21.4,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.breakthemodrewrite]]
+[[dependencies.breakthemod]]
 modId = "architectury"
 type = "required"
 versionRange = "[15.0.3,)"
@@ -35,4 +35,4 @@ ordering = "AFTER"
 side = "BOTH"
 
 [[mixins]]
-config = "breakthemodrewrite.mixins.json"
+config = "breakthemod.mixins.json"
