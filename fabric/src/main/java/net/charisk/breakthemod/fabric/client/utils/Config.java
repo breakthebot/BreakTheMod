@@ -100,15 +100,22 @@ public class Config  {
                 .build()
         );
 
+        general.addEntry(entryBuilder.startStrField(
+                                Text.literal("API URL"),
+                                config.getInstance().API_URL
+                        )
+                        .setSaveConsumer(text -> {
+                            config.getInstance().API_URL = text;
+                            config.getInstance().saveConfig();
+                        })
+                        .setDefaultValue(config.getInstance().API_URL)
+                        .build()
+        );
+
+
 
         return builder.build();
     }
 
-    public enum WidgetPosition {
-        TOP_LEFT,
-        TOP_RIGHT,
-        BOTTOM_RIGHT,
-        BOTTOM_LEFT,
-        CUSTOM
-    }
+
 }

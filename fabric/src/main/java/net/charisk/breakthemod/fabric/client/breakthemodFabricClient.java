@@ -23,6 +23,8 @@ public final class breakthemodFabricClient implements ClientModInitializer {
                 new townless(),
                 new whereIs(),
                 new lastSeen(),
+                new discordLinked(),
+                new coords(),
                 HelpCommand
         );
         HelpCommand.setCommands(commands);

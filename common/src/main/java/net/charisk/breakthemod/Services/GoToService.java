@@ -23,6 +23,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.charisk.breakthemod.Fetch.fetch;
+import net.charisk.breakthemod.utils.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +39,7 @@ import net.charisk.breakthemod.api.Fetch;
 public class GoToService {
     private static final Logger LOGGER = LoggerFactory.getLogger("breakthemod");
     private static final ExecutorService IO_EXECUTOR = Executors.newFixedThreadPool(4);
+
     /**
      * Finds the nearest valid town spawns for the given name.
      * @return future completing with either a list of town names or throws on fatal error.
@@ -63,7 +65,7 @@ public class GoToService {
                     payload.add("query", queryArr);
 
                     String nearbyResp = fetcher.PostRequest(
-                            "https://api.earthmc.net/v3/aurora/nearby",
+                            config.getInstance().API_URL + "/nearby",
                             payload.toString()
                     );
                     JsonArray nearbyArray = JsonParser.parseString(nearbyResp)
@@ -86,7 +88,7 @@ public class GoToService {
                     detailsPayload.add("query", townQuery);
 
                     String detailsResp = fetcher.PostRequest(
-                            "https://api.earthmc.net/v3/aurora/towns/",
+                            config.getInstance().API_URL + "/towns",
                             detailsPayload.toString()
                     );
                     JsonArray detailsArr = JsonParser.parseString(detailsResp).getAsJsonArray();
@@ -108,7 +110,7 @@ public class GoToService {
                             natPayload.add("query", natQuery);
 
                             String natResp = fetcher.PostRequest(
-                                    "https://api.earthmc.net/v3/aurora/nations/",
+                                    config.getInstance().API_URL + "/nations",
                                     natPayload.toString()
                             );
                             JsonObject nat = JsonParser.parseString(natResp)
@@ -127,7 +129,6 @@ public class GoToService {
                     radius += 500;
                 }
 
-                // no valid found
                 return Collections.emptyList();
 
             } catch (Exception e) {
