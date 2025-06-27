@@ -50,7 +50,7 @@ public class GoTo extends NeoForgeCommand{
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
-                LiteralArgumentBuilder.<CommandSourceStack>literal("goto")
+                LiteralArgumentBuilder.<CommandSourceStack>literal(getName())
                         .then(RequiredArgumentBuilder.<CommandSourceStack, String>argument("destination", StringArgumentType.string())
                                 .executes(context -> {
                                     if (!getEnabledOnOtherServers()) return 0;

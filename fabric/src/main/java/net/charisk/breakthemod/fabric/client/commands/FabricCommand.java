@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 public abstract class FabricCommand extends Command<FabricClientCommandSource> {
     public static final Logger LOGGER = LoggerFactory.getLogger("breakthemod");
     public static final MinecraftClient client = MinecraftClient.getInstance();
+
     public static String getConnectedServerAddress() {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client == null) return null;
@@ -63,9 +64,7 @@ public abstract class FabricCommand extends Command<FabricClientCommandSource> {
         });
     }
 
-
     protected abstract int execute(CommandContext<FabricClientCommandSource> ctx) throws Exception;
-
 
     protected int run(CommandContext<FabricClientCommandSource> ctx) throws CommandSyntaxException {
         try {
@@ -78,11 +77,10 @@ public abstract class FabricCommand extends Command<FabricClientCommandSource> {
                     sendMessage(MinecraftClient.getInstance(),Text.empty().append("Unexpected error: " + e.getMessage()));
                 }
             });
-            e.printStackTrace();
+            LOGGER.error("Unexpected error {} has occurred while running {}", e, getName());
             return 0;
         }
     }
-
 
     @Override
     public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {

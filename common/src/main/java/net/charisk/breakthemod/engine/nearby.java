@@ -16,23 +16,30 @@
  */
 
 package net.charisk.breakthemod.engine;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class nearby {
     private static final long UPDATE_INTERVAL_MS = 1000;
-    private final AtomicLong lastUpdateTime = new AtomicLong(0);
+    private static final double DISTANCE_THRESHOLD = 200.0;
+    private static final String[] DIRECTIONS = {"S", "SW", "W", "NW", "N", "NE", "E", "SE"};
+    private static final double DIRECTION_STEP = 45.0;
 
-    private final Set<String> playerInfoList = new HashSet<>();
+    private final AtomicLong lastUpdateTime = new AtomicLong(0);
+    private final List<String> playerInfoList = new ArrayList<>();
+    private final StringBuilder stringBuilder = new StringBuilder(128);
 
     public record Vec3(double x, double y, double z) {
-        public double distanceTo(Vec3 other) {
+        public double distanceToSquared(Vec3 other) {
             double dx = x - other.x;
             double dy = y - other.y;
             double dz = z - other.z;
-            return Math.sqrt(dx * dx + dy * dy + dz * dz);
+            return dx * dx + dy * dy + dz * dz;
+        }
+
+        public double distanceTo(Vec3 other) {
+            return Math.sqrt(distanceToSquared(other));
         }
     }
 
@@ -53,34 +60,49 @@ public class nearby {
         int getTopY(int x, int z);
     }
 
-
     public synchronized Set<String> updateNearbyPlayers(Player self, World world) {
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastUpdateTime.get() < UPDATE_INTERVAL_MS) {
-            return Set.copyOf(playerInfoList);
+            return new HashSet<>(playerInfoList);
         }
 
         lastUpdateTime.set(currentTime);
         playerInfoList.clear();
 
+        Vec3 selfPos = self.getPosition();
+        String selfName = self.getName();
+
         for (Player other : world.getPlayers()) {
-            if (Objects.equals(other.getName(), self.getName())) continue;
-            if (other == self) continue;
+            if (other == self || Objects.equals(other.getName(), selfName)) continue;
             if (shouldSkipPlayer(other)) continue;
 
-            Vec3 pos = other.getPosition();
-            int x = (int) Math.floor(pos.x());
-            int y = (int) Math.floor(pos.y());
-            int z = (int) Math.floor(pos.z());
+            Vec3 otherPos = other.getPosition();
+
+            double distanceSquared = selfPos.distanceToSquared(otherPos);
+            if (distanceSquared > DISTANCE_THRESHOLD * DISTANCE_THRESHOLD) continue;
+
+            int x = (int) Math.floor(otherPos.x());
+            int y = (int) Math.floor(otherPos.y());
+            int z = (int) Math.floor(otherPos.z());
 
             if (!isPlayerUnderBlock(world, x, y, z)) {
-                double distance = self.getPosition().distanceTo(pos);
+                double distance = Math.sqrt(distanceSquared);
                 String direction = getDirectionFromYaw(other.getYaw());
 
-                playerInfoList.add(String.format(
-                        "- %s (%d, %d) direction: %s, distance: %.1f blocks",
-                        other.getName(), x, z, direction, distance
-                ));
+                stringBuilder.setLength(0);
+                stringBuilder.append("- ")
+                        .append(other.getName())
+                        .append(" (")
+                        .append(x)
+                        .append(", ")
+                        .append(z)
+                        .append(") direction: ")
+                        .append(direction)
+                        .append(", distance: ")
+                        .append(String.format("%.1f", distance))
+                        .append(" blocks");
+
+                playerInfoList.add(stringBuilder.toString());
             }
         }
 
@@ -88,16 +110,22 @@ public class nearby {
             playerInfoList.add("No players nearby");
         }
 
-        return Set.copyOf(playerInfoList);
+        return new HashSet<>(playerInfoList);
     }
 
     private boolean shouldSkipPlayer(Player player) {
-        return player.isInvisible() || player.isInRiptideAnimation() || player.isInNether()
-                || player.isInVehicle() || player.isSneaking();
+        return player.isInvisible()
+                || player.isSneaking()
+                || player.isInVehicle()
+                || player.isInNether()
+                || player.isInRiptideAnimation();
     }
 
     private boolean isPlayerUnderBlock(World world, int x, int y, int z) {
         int topY = world.getTopY(x, z);
+
+        if (y >= topY) return false;
+
         for (int currentY = y + 1; currentY <= topY; currentY++) {
             if (!world.isBlockAirAt(x, currentY, z)) {
                 return true;
@@ -107,17 +135,9 @@ public class nearby {
     }
 
     private String getDirectionFromYaw(float yaw) {
-        yaw = (yaw + 180) % 360;
-        if (yaw < 0) yaw += 360;
+        yaw = ((yaw + 180) % 360 + 360) % 360;
 
-        if (yaw >= 337.5 || yaw < 22.5) return "S";
-        if (yaw >= 22.5 && yaw < 67.5) return "SW";
-        if (yaw >= 67.5 && yaw < 112.5) return "W";
-        if (yaw >= 112.5 && yaw < 157.5) return "NW";
-        if (yaw >= 157.5 && yaw < 202.5) return "N";
-        if (yaw >= 202.5 && yaw < 247.5) return "NE";
-        if (yaw >= 247.5 && yaw < 292.5) return "E";
-        if (yaw >= 292.5 && yaw < 337.5) return "SE";
-        return "Unknown";
+        int directionIndex = (int) Math.round(yaw / DIRECTION_STEP) % 8;
+        return DIRECTIONS[directionIndex];
     }
 }

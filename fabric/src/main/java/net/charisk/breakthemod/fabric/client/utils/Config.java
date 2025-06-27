@@ -108,7 +108,6 @@ public class Config  {
                             config.getInstance().API_URL = text;
                             config.getInstance().saveConfig();
                         })
-                        .setDefaultValue(config.getInstance().API_URL)
                         .build()
         );
 

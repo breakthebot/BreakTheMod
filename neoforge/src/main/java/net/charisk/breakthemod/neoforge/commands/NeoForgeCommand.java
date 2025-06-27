@@ -1,6 +1,7 @@
 package net.charisk.breakthemod.neoforge.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.charisk.breakthemod.api.Command;
@@ -58,8 +59,18 @@ public abstract class NeoForgeCommand extends Command<CommandSourceStack> {
         }
     }
 
-    // Subclasses implement these
-    protected abstract int execute(CommandContext<CommandSourceStack> ctx) throws Exception;
+    @Override
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+        dispatcher.register(
+                LiteralArgumentBuilder.<CommandSourceStack>literal(getName())
+                        .executes(context -> {
+                            if (!getEnabledOnOtherServers()) return 0;
+                            return run(context);
+                        })
 
-    public abstract void register(CommandDispatcher<CommandSourceStack> dispatcher);
+        );
+    }
+
+    @Override
+    protected abstract int execute(CommandContext<CommandSourceStack> ctx) throws Exception;
 }

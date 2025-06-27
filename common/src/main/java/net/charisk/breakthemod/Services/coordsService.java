@@ -27,6 +27,7 @@ public class coordsService {
     private static final String API_URL = config.getInstance().API_URL + "/location";
     private final Gson gson = new Gson();
     private final fetch fetch = new fetch();
+    
     public static class LocationResult {
         private final boolean wilderness;
         private final Optional<String> townName;
