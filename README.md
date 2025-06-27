@@ -4,7 +4,7 @@
 # **BreakTheMod**
 
 [![Build Status](https://github.com/chariskar/breakthemod/actions/workflows/build.yml/badge.svg)](https://github.com/breakthebot/BreakTheMod/actions/workflows/build.yml)
-![BreakTheMod Logo](/src/main/resources/assets/icon.png)
+![BreakTheMod Logo](/fabric/src/main/resources/assets/icon.png)
 
 ## **Description**
 
