@@ -84,7 +84,7 @@ public class whereIsService {
                     queryArray.add(coords);
                     payload.add("query", queryArray);
 
-                    String locationJson = Fetch.PostRequest(config.getInstance().API_URL + "/location", payload.toString());
+                    String locationJson = Fetch.PostRequest(config.getInstance().config.getInstance().API_URL + "/location", payload.toString());
                     JsonArray locationData = JsonParser.parseString(locationJson).getAsJsonArray();
 
                     if (!locationData.isEmpty() && locationData.get(0).isJsonObject()) {

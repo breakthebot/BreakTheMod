@@ -28,13 +28,12 @@ import java.util.List;
 
 /**
  *
- * @note This is the high level fetch class, if you want the fetch types, which should not be used directly in the mod, you need to go to Fetch.types
+ * This is the high level fetch class, if you want the fetch types, which should not be used directly in the mod, you need to go to Fetch.types
 */
 public class Fetch {
     private final fetch Fetch;
     private static final Logger LOGGER = LoggerFactory.getLogger("breakthemod");
     private final Gson gson = new Gson();
-    private final String API_URL = config.getInstance().API_URL;
     public Fetch() {this.Fetch = new fetch();}
 
     public Town getTown(String name) {
@@ -43,7 +42,7 @@ public class Fetch {
         query.add(name);
         payload.add("query", query);
         try {
-            String response = this.Fetch.PostRequest(API_URL + "/towns", payload.toString());
+            String response = this.Fetch.PostRequest(config.getInstance().getApiURL() + "/towns", payload.toString());
             JsonObject townJson = JsonParser
                     .parseString(response)
                     .getAsJsonArray()
@@ -67,7 +66,7 @@ public class Fetch {
         payload.add("query", query);
 
         try {
-            String response = this.Fetch.PostRequest(API_URL + "/towns", payload.toString());
+            String response = this.Fetch.PostRequest(config.getInstance().getApiURL() + "/towns", payload.toString());
             JsonArray townsJson = JsonParser.parseString(response).getAsJsonArray();
 
             List<Town> towns = new ArrayList<>();
@@ -97,12 +96,12 @@ public class Fetch {
         payload.add("query", query);
         try {
             String response = this.Fetch.PostRequest(
-                    API_URL + "/nations",
+                    config.getInstance().getApiURL() + "/nations",
                     payload.toString()
             );
 
             JsonArray responseArray = JsonParser.parseString(response).getAsJsonArray();
-            if (responseArray.size() == 0) {
+            if (responseArray.isEmpty()) {
                 return null;
             }
 
@@ -129,7 +128,7 @@ public class Fetch {
 
         try {
             String response = this.Fetch.PostRequest(
-                    API_URL + "/nations",
+                    config.getInstance().getApiURL() + "/nations",
                     payload.toString()
             );
             JsonArray nationsJson = JsonParser.parseString(response).getAsJsonArray();
@@ -162,7 +161,7 @@ public class Fetch {
         payload.add("query", query);
         try {
             String response = this.Fetch.PostRequest(
-                    API_URL + "/players",
+                    config.getInstance().getApiURL() + "/players",
                     payload.toString()
             );
             JsonObject playerJson = JsonParser
@@ -190,7 +189,7 @@ public class Fetch {
 
         try {
             String response = this.Fetch.PostRequest(
-                    API_URL + "/players",
+                    config.getInstance().getApiURL() + "/players",
                     payload.toString()
             );
             JsonArray residentsJson = JsonParser.parseString(response).getAsJsonArray();

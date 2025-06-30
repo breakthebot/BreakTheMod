@@ -50,8 +50,8 @@ public class locateService {
     }
 
     public enum LocationType {
-        TOWN(config.getInstance().API_URL + "/towns"),
-        NATION(config.getInstance().API_URL + "/nations");
+        TOWN(config.getInstance().config.getInstance().API_URL + "/towns"),
+        NATION(config.getInstance().config.getInstance().API_URL + "/nations");
 
         private final String apiUrl;
 

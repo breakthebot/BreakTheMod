@@ -24,7 +24,7 @@ import net.charisk.breakthemod.utils.config;
 import java.util.Optional;
 
 public class coordsService {
-    private static final String API_URL = config.getInstance().API_URL + "/location";
+    private static final String config.getInstance().config.getInstance().API_URL = config.getInstance().config.getInstance().config.getInstance().API_URL + "/location";
     private final Gson gson = new Gson();
     private final fetch fetch = new fetch();
     
@@ -69,7 +69,7 @@ public class coordsService {
         JsonObject payload = new JsonObject();
         payload.add("query", queryArray);
 
-        String resp = fetch.GetRequest(API_URL);
+        String resp = fetch.GetRequest(config.getInstance().config.getInstance().API_URL);
         JsonArray data = JsonParser.parseString(resp).getAsJsonArray();
         if (data.size() != 1 || !data.get(0).isJsonObject()) {
             throw new JsonParseException("Unexpected API response format: " + resp);

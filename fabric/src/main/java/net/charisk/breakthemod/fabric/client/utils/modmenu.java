@@ -23,6 +23,6 @@ public class modmenu implements ModMenuApi {
 
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return parent -> Config.createConfigScreen(parent);
+        return Config::createConfigScreen;
     }
 }

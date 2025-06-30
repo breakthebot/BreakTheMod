@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import dev.architectury.platform.Platform;
 import java.io.*;
+import java.util.logging.Logger;
 
 public class config {
     private static config instance = null;
@@ -32,7 +33,7 @@ public class config {
     public boolean radarEnabled = true;
     private boolean enabledOnOtherServers = false;
     private static final File configFile = new File(Platform.getConfigFolder().toFile(), "breakthemod_config.json");
-
+    private final Logger LOGGER = Logger.getLogger("breakthemod");
     private static final Gson gson = new Gson();
     public static Boolean dev = false;
     public static String API_URL = "https://api.earthmc.net/";
@@ -74,6 +75,9 @@ public class config {
     public boolean isDev() { return dev;}
     public void setDev(boolean bl) { dev = bl; }
 
+    public String getApiURL() { return API_URL.startsWith("https://") ? API_URL : "https://" + API_URL; }
+    public void setApiURL(String url) { API_URL = url.startsWith("https://") ? url : "https://" + url; }
+
     public void saveConfig() {
         JsonObject configJson = new JsonObject();
         configJson.addProperty("widgetPosition", widgetPosition.name());
@@ -82,11 +86,11 @@ public class config {
         configJson.addProperty("radarEnabled", radarEnabled);
         configJson.addProperty("enabledOnOtherServers", enabledOnOtherServers);
         configJson.addProperty("dev", dev);
-        configJson.addProperty("API_URL", API_URL);
+        configJson.addProperty("API_URL", config.getInstance().getApiURL());
         try (FileWriter writer = new FileWriter(configFile)) {
             gson.toJson(configJson, writer);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.severe("Unexpected I/O exception: " + e.getMessage());
         }
     }
 
@@ -102,10 +106,10 @@ public class config {
                 radarEnabled = !configJson.has("radarEnabled") || configJson.get("radarEnabled").getAsBoolean();
                 enabledOnOtherServers = configJson.has("enabledOnOtherServers") && configJson.get("enabledOnOtherServers").getAsBoolean();
                 dev = configJson.has("dev") ? configJson.get("dev").getAsBoolean() : dev;
-                API_URL = configJson.has("API_URL") ? configJson.get("API_URL").getAsString() : API_URL;
+                API_URL = configJson.has("API_URL") ? configJson.get("API_URL").getAsString() : config.getInstance().getApiURL();
 
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.severe("Unexpected I/O exception: " + e.getMessage());
             }
         }
     }

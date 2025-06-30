@@ -30,6 +30,12 @@ public class nearby {
     private final List<String> playerInfoList = new ArrayList<>();
     private final StringBuilder stringBuilder = new StringBuilder(128);
 
+    /**
+     * Abstraction for the 3d vec type
+     * @param x X coordinate.
+     * @param y Y coordinate.
+     * @param z Z coordinate.
+     */
     public record Vec3(double x, double y, double z) {
         public double distanceToSquared(Vec3 other) {
             double dx = x - other.x;
@@ -43,6 +49,9 @@ public class nearby {
         }
     }
 
+    /**
+     * Abstraction for the player type.
+     */
     public interface Player {
         String getName();
         Vec3 getPosition();
@@ -54,12 +63,19 @@ public class nearby {
         boolean isSneaking();
     }
 
+    /**
+     * Abstraction for the world type.
+     */
     public interface World {
         Iterable<Player> getPlayers();
         boolean isBlockAirAt(int x, int y, int z);
         int getTopY(int x, int z);
     }
 
+    /**
+     * @param self The player.
+     * @param world The world.
+     */
     public synchronized Set<String> updateNearbyPlayers(Player self, World world) {
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastUpdateTime.get() < UPDATE_INTERVAL_MS) {

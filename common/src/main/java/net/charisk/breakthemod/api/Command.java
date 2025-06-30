@@ -22,7 +22,9 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 /**
- * @param <S> the abstract source type
+ * Abstract command class.
+ * @param <S> The command source stack.
+ *
  */
 public abstract class Command<S> {
     public abstract String getName();

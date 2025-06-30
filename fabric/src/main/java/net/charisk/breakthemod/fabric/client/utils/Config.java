@@ -102,10 +102,10 @@ public class Config  {
 
         general.addEntry(entryBuilder.startStrField(
                                 Text.literal("API URL"),
-                                config.getInstance().API_URL
+                                config.getInstance().config.getInstance().API_URL
                         )
                         .setSaveConsumer(text -> {
-                            config.getInstance().API_URL = text;
+                            config.getInstance().config.getInstance().API_URL = text;
                             config.getInstance().saveConfig();
                         })
                         .build()
