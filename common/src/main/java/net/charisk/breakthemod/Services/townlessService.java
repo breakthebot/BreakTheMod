@@ -34,12 +34,12 @@ public class townlessService {
 
     public List<String> get(List<?> onlinePlayers) {
         List<String> ids = onlinePlayers.stream()
-                .map(id -> id.toString())
+                .map(Object::toString)
                 .collect(Collectors.toList());
         try {
             if (ids.size() == 1) {
-                Resident resident = fetcher.getResident(ids.get(0));
-                if (resident != null && resident.getTown() != null) {
+                Resident resident = fetcher.getResident(ids.getFirst());
+                if (resident != null && resident.getTown().isPresent()) {
                     return Collections.singletonList(resident.getTown().get().getName().get());
                 }
                 return null;
@@ -52,9 +52,9 @@ public class townlessService {
                 List<Resident> residents = fetcher.getResidents(batch);
 
                 townless.addAll(residents.stream()
-                        .filter(res -> res.getStatus() != null && !res.getStatus().get().getHasTown().get())
+                        .filter(res -> res.getStatus().isPresent() && !res.getStatus().get().getHasTown().get())
                         .map(Resident::getName)
-                        .collect(Collectors.toList())
+                        .toList()
                 );
             }
             return townless;

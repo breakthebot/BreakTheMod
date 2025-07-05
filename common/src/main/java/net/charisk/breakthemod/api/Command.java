@@ -31,9 +31,7 @@ public abstract class Command<S> {
     public abstract String getDescription();
     public abstract String getUsageSuffix();
 
-    public final String getUsage() {
-        return "/" + getName() + (getUsageSuffix().isEmpty() ? "" : " " + getUsageSuffix());
-    }
+    public final String getUsage() { return "/" + getName() + (getUsageSuffix().isEmpty() ? "" : " " + getUsageSuffix()); }
 
     protected abstract int execute(CommandContext<S> ctx) throws Exception;
 
@@ -49,4 +47,4 @@ public abstract class Command<S> {
     public static boolean getEnabledOnOtherServers() {
         return false;
     }
-}
+    }

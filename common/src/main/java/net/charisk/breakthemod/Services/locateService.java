@@ -23,10 +23,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.charisk.breakthemod.Fetch.fetch;
 import net.charisk.breakthemod.utils.config;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class locateService {
     private fetch fetchInstance;
-
+    private static final Logger LOGGER = LoggerFactory.getLogger("breakthemod");
     public static class LocationResult {
         private final String name;
         private final int x;
@@ -38,8 +40,8 @@ public class locateService {
             this.x = x;
             this.z = z;
             this.mapUrl = String.format(
-                    "https://map.earthmc.net/?world=minecraft_overworld&zoom=3&x=%d&z=%d",
-                    x, z
+                    "%s?world=minecraft_overworld&zoom=3&x=%d&z=%d",
+                    config.getInstance().getMapURL(), x, z
             );
         }
 
@@ -50,8 +52,8 @@ public class locateService {
     }
 
     public enum LocationType {
-        TOWN(config.getInstance().config.getInstance().API_URL + "/towns"),
-        NATION(config.getInstance().config.getInstance().API_URL + "/nations");
+        TOWN(config.getInstance().getApiURL() + "/towns"),
+        NATION(config.getInstance().getApiURL() + "/nations");
 
         private final String apiUrl;
 
@@ -80,7 +82,7 @@ public class locateService {
             String response = fetchInstance.PostRequest(type.getApiUrl(), payload.toString());
             JsonArray responseArray = JsonParser.parseString(response).getAsJsonArray();
 
-            if (responseArray.size() == 0) {
+            if (responseArray.isEmpty()) {
                 return null;
             }
 
@@ -94,7 +96,11 @@ public class locateService {
             return new LocationResult(name, x, z);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            if (config.getInstance().isDev()) {
+                e.printStackTrace();
+            } else {
+                LOGGER.error("Unexpected Error Occurred");
+            }
             return null;
         }
     }

@@ -65,7 +65,7 @@ public class GoToService {
                     payload.add("query", queryArr);
 
                     String nearbyResp = fetcher.PostRequest(
-                            config.getInstance().config.getInstance().API_URL + "/nearby",
+                            config.getInstance().getApiURL() + "/nearby",
                             payload.toString()
                     );
                     JsonArray nearbyArray = JsonParser.parseString(nearbyResp)
@@ -88,7 +88,7 @@ public class GoToService {
                     detailsPayload.add("query", townQuery);
 
                     String detailsResp = fetcher.PostRequest(
-                            config.getInstance().config.getInstance().API_URL + "/towns",
+                            config.getInstance().getApiURL() + "/towns",
                             detailsPayload.toString()
                     );
                     JsonArray detailsArr = JsonParser.parseString(detailsResp).getAsJsonArray();
@@ -110,7 +110,7 @@ public class GoToService {
                             natPayload.add("query", natQuery);
 
                             String natResp = fetcher.PostRequest(
-                                    config.getInstance().config.getInstance().API_URL + "/nations",
+                                    config.getInstance().getApiURL()+ "/nations",
                                     natPayload.toString()
                             );
                             JsonObject nat = JsonParser.parseString(natResp)

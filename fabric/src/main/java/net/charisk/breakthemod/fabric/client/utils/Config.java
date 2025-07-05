@@ -92,9 +92,9 @@ public class Config  {
 
         general.addEntry(entryBuilder.startBooleanToggle(
                         Text.literal("dev"),
-                        config.getInstance().dev)
+                        config.getInstance().isDev())
                 .setSaveConsumer(enabled -> {
-                    config.getInstance().dev = enabled;
+                    config.getInstance().setDev(enabled);
                     config.getInstance().saveConfig();
                 })
                 .build()
@@ -102,10 +102,10 @@ public class Config  {
 
         general.addEntry(entryBuilder.startStrField(
                                 Text.literal("API URL"),
-                                config.getInstance().config.getInstance().API_URL
+                                config.getInstance().getApiURL()
                         )
                         .setSaveConsumer(text -> {
-                            config.getInstance().config.getInstance().API_URL = text;
+                            config.getInstance().setApiURL(text);
                             config.getInstance().saveConfig();
                         })
                         .build()

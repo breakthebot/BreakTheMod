@@ -67,6 +67,7 @@ public class friends extends FabricCommand {
                 .stream()
                 .map(entry -> entry.getProfile().getName())
                 .toList();
+
         List<String> onlineFriends = onlinePlayerNames.stream()
                 .filter(knownFriends::contains)
                 .toList();

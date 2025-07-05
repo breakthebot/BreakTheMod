@@ -36,7 +36,9 @@ public class config {
     private final Logger LOGGER = Logger.getLogger("breakthemod");
     private static final Gson gson = new Gson();
     public static Boolean dev = false;
-    public static String API_URL = "https://api.earthmc.net/";
+    private static String API_URL = "https://api.earthmc.net/";
+    private static String MAP_URL = "https://map.earthmc.com/";
+
     private config() {
         loadConfig();
     }
@@ -78,6 +80,9 @@ public class config {
     public String getApiURL() { return API_URL.startsWith("https://") ? API_URL : "https://" + API_URL; }
     public void setApiURL(String url) { API_URL = url.startsWith("https://") ? url : "https://" + url; }
 
+    public String getMapURL() { return MAP_URL.startsWith("https://") ? MAP_URL : "https://" +  "https://" + API_URL; }
+    public void setMapUrl(String url) { MAP_URL = url.startsWith("https://") ? url : "https://" + url; }
+
     public void saveConfig() {
         JsonObject configJson = new JsonObject();
         configJson.addProperty("widgetPosition", widgetPosition.name());
@@ -86,7 +91,8 @@ public class config {
         configJson.addProperty("radarEnabled", radarEnabled);
         configJson.addProperty("enabledOnOtherServers", enabledOnOtherServers);
         configJson.addProperty("dev", dev);
-        configJson.addProperty("API_URL", config.getInstance().getApiURL());
+        configJson.addProperty("API_URL", API_URL);
+        configJson.addProperty("MAP_URL", MAP_URL);
         try (FileWriter writer = new FileWriter(configFile)) {
             gson.toJson(configJson, writer);
         } catch (IOException e) {
@@ -106,7 +112,8 @@ public class config {
                 radarEnabled = !configJson.has("radarEnabled") || configJson.get("radarEnabled").getAsBoolean();
                 enabledOnOtherServers = configJson.has("enabledOnOtherServers") && configJson.get("enabledOnOtherServers").getAsBoolean();
                 dev = configJson.has("dev") ? configJson.get("dev").getAsBoolean() : dev;
-                API_URL = configJson.has("API_URL") ? configJson.get("API_URL").getAsString() : config.getInstance().getApiURL();
+                API_URL = configJson.has("API_URL") ? configJson.get("API_URL").getAsString() : API_URL;
+                MAP_URL = configJson.has("MAP_URL") ? configJson.get("MAP_URL").getAsString() : MAP_URL;
 
             } catch (IOException e) {
                 LOGGER.severe("Unexpected I/O exception: " + e.getMessage());
