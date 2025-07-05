@@ -65,7 +65,6 @@ Contributions are very welcome! Please:
 2. Create a feature branch for your changes
 3. Submit a pull request
 
-For details, see [CONTRIBUTING.md](/CONTRIBUTING.md).
 
 ---
 
