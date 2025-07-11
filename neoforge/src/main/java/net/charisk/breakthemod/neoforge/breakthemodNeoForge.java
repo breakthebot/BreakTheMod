@@ -1,6 +1,8 @@
 package net.charisk.breakthemod.neoforge;
 
 import com.mojang.brigadier.CommandDispatcher;
+import dev.architectury.platform.Platform;
+import net.charisk.breaktheapi.breaktheapi;
 import net.charisk.breakthemod.breakthemod;
 import net.charisk.breakthemod.neoforge.commands.GoTo;
 import net.charisk.breakthemod.neoforge.commands.NeoForgeCommand;
@@ -11,12 +13,14 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
+import java.io.File;
 import java.util.List;
 
 
 @Mod(breakthemod.MOD_ID)
 public final class breakthemodNeoForge {
     public breakthemodNeoForge() {
+
         breakthemod.init();
         NeoForge.EVENT_BUS.register(this);
     }

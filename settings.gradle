@@ -11,4 +11,3 @@ rootProject.name = 'breakthemod'
 
 include 'common'
 include 'fabric'
-include 'neoforge'

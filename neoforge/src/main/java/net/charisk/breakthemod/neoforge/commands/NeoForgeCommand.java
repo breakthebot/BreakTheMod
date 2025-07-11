@@ -5,7 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.charisk.breakthemod.api.Command;
-import net.charisk.breakthemod.utils.config;
+import net.charisk.breaktheapi.utils.config;
 import net.charisk.breakthemod.neoforge.Prefix;
 import net.minecraft.commands.CommandSourceStack;
 import net.neoforged.fml.common.Mod;

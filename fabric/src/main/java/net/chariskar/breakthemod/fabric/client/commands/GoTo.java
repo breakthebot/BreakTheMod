@@ -15,26 +15,25 @@
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.charisk.breakthemod.neoforge.commands;
-
+package net.chariskar.breakthemod.fabric.client.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import net.charisk.breaktheapi.Services.GoToService;
-import net.minecraft.ChatFormatting;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.Style;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
+import net.chariskar.breaktheapi.Services.GoToService;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
-public class GoTo extends NeoForgeCommand{
+public class GoTo extends FabricCommand{
     private final GoToService Service = new GoToService();
 
     @Override
     public String getName() {
-        return "GoTo";
+        return "goto";
     }
 
     @Override
@@ -48,10 +47,10 @@ public class GoTo extends NeoForgeCommand{
     }
 
     @Override
-    public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+    public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(
-                LiteralArgumentBuilder.<CommandSourceStack>literal(getName())
-                        .then(RequiredArgumentBuilder.<CommandSourceStack, String>argument("destination", StringArgumentType.string())
+                LiteralArgumentBuilder.<FabricClientCommandSource>literal(getName())
+                        .then(RequiredArgumentBuilder.<FabricClientCommandSource, String>argument("destination", StringArgumentType.string())
                                 .executes(context -> {
                                     if (!getEnabledOnOtherServers()) return 0;
                                     return run(context);
@@ -61,27 +60,34 @@ public class GoTo extends NeoForgeCommand{
     }
 
     @Override
-    protected int execute(CommandContext<CommandSourceStack> ctx) throws Exception {
-        if (!getEnabledOnOtherServers()) return 0;
+    protected int execute(CommandContext<FabricClientCommandSource> ctx) throws Exception {
         String destination = ctx.getArgument("destination", String.class);
-        Minecraft client = Minecraft.getInstance();
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (!getEnabledOnOtherServers()) return 0;
 
         Service.findValidTowns(destination)
                 .thenAcceptAsync(output -> {
                     client.execute(() -> {
                         if (output.isEmpty()) {
                             sendMessage(client,
-                                    Component.literal("No suitable spawns found")
-                                            .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))
+                                    Text.literal("No suitable spawns found")
+                                            .setStyle(Style.EMPTY.withColor(Formatting.RED))
                             );
                         } else {
                             sendMessage(client,
-                                    Component.literal("Found suitable spawn in: " + String.join(", ", output))
-                                            .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))
+                                    Text.literal("Found suitable spawn in: " + String.join(", ", output))
+                                            .setStyle(Style.EMPTY.withColor(Formatting.GREEN))
                             );
                         }
                     });
-                }, client);
+                }, client)
+                .exceptionally(ex -> {
+                    client.execute(() -> sendMessage(client,
+                            Text.literal("Error finding towns: " + ex.getMessage())
+                                    .setStyle(Style.EMPTY.withColor(Formatting.RED))
+                    ));
+                    return null;
+                });
 
         return 1;
     }
