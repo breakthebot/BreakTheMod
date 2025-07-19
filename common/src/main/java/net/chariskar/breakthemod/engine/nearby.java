@@ -28,7 +28,7 @@ public class nearby {
 
     private final AtomicLong lastUpdateTime = new AtomicLong(0);
     private final List<String> playerInfoList = new ArrayList<>();
-    private final StringBuilder stringBuilder = new StringBuilder(128);
+    private final StringBuilder stringBuilder = new StringBuilder(256);
 
     /**
      * High level nearby engine

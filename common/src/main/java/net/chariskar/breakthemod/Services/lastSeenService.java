@@ -18,18 +18,13 @@
 package net.chariskar.breakthemod.Services;
 
 
-import net.chariskar.breakthemod.api.Fetch;
 import net.chariskar.breakthemod.types.Resident;
 import net.chariskar.breakthemod.utils.timestamps;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class lastSeenService {
-    private static final Logger LOGGER = LoggerFactory.getLogger("breakthemod");
+public class lastSeenService extends Service {
     private final timestamps timestampParser = new timestamps();
-    Fetch fetch = Fetch.getInstance();
 
     public String get(String username) {
         try {
@@ -41,7 +36,7 @@ public class lastSeenService {
             long lastOnline = resident.getTimestamps().get().getLastOnline().get();
             boolean isOnline = resident.getStatus().get().getIsOnline().get();
 
-            List<Long> offlineParts = timestampParser.parseTimestamp(lastOnline);
+            List<Long> offlineParts = timestamps.parseTimestamp(lastOnline);
             long days = offlineParts.get(0);
             long hours = offlineParts.get(1);
             long minutes = offlineParts.get(2);

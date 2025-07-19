@@ -18,15 +18,13 @@
 package net.chariskar.breakthemod.Services;
 
 import com.google.gson.*;
-import net.chariskar.breakthemod.api.Fetch;
 import net.chariskar.breakthemod.utils.config;
 
 import java.util.Optional;
 
-public class coordsService {
+public class coordsService extends Service {
     private static final String API_URL = config.getInstance().getApiURL() + "/location";
     private final Gson gson = new Gson();
-    private final Fetch fetch = Fetch.getInstance();
 
     public LocationResult get(double x, double z) throws Exception {
         JsonArray coords = new JsonArray();
@@ -62,35 +60,14 @@ public class coordsService {
         return new LocationResult(isWilderness, townName, nationName);
     }
 
-    public static class LocationResult {
-        private final boolean wilderness;
-        private final Optional<String> townName;
-        private final Optional<String> nationName;
-
-        public LocationResult(boolean wilderness, Optional<String> townName, Optional<String> nationName) {
-            this.wilderness = wilderness;
-            this.townName = townName;
-            this.nationName = nationName;
-        }
-
-        public boolean isWilderness() {
-            return wilderness;
-        }
-
-        public Optional<String> getTownName() {
-            return townName;
-        }
-
-        public Optional<String> getNationName() {
-            return nationName;
-        }
+    public record LocationResult(boolean wilderness, Optional<String> townName, Optional<String> nationName) {
 
         public String toString() {
-            return "LocationResult{" +
-                    "wilderness=" + wilderness +
-                    ", townName=" + townName +
-                    ", nationName=" + nationName +
-                    '}';
+                return "LocationResult{" +
+                        "wilderness=" + wilderness +
+                        ", townName=" + townName +
+                        ", nationName=" + nationName +
+                        '}';
+            }
         }
-    }
 }

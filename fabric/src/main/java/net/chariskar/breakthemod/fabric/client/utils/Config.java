@@ -43,6 +43,7 @@ public class Config  {
                     config.getInstance().setEnabledOnOtherServers(enabled);
                     config.getInstance().saveConfig();
                 })
+                .setDefaultValue(() -> false)
                 .build()
         );
 
@@ -53,7 +54,7 @@ public class Config  {
         ).setSaveConsumer(position -> {
             config.getInstance().setWidgetPosition(position);
             config.getInstance().saveConfig();
-        }).build());
+        }).setDefaultValue(() -> config.WidgetPosition.TOP_LEFT).build());
 
         general.addEntry(entryBuilder.startIntField(
                         Text.literal("Custom X Position"),
@@ -65,6 +66,7 @@ public class Config  {
                 })
                 .setMin(0)
                 .setMax(MinecraftClient.getInstance().currentScreen.width)
+                .setDefaultValue(() -> 0)
                 .build());
 
         general.addEntry(entryBuilder.startIntField(
@@ -77,6 +79,7 @@ public class Config  {
                         })
                         .setMin(0)
                         .setMax(MinecraftClient.getInstance().currentScreen.height)
+                .setDefaultValue(() -> 0)
                         .build()
         );
 
@@ -86,7 +89,7 @@ public class Config  {
                 .setSaveConsumer(enabled -> {
                     config.getInstance().radarEnabled = enabled;
                     config.getInstance().saveConfig();
-                })
+                }).setDefaultValue(() -> true)
                 .build()
         );
 
@@ -97,7 +100,7 @@ public class Config  {
                 .setSaveConsumer(enabled -> {
                     config.getInstance().setDev(enabled);
                     config.getInstance().saveConfig();
-                })
+                }).setDefaultValue(() -> false)
                 .build()
         );
 
@@ -108,7 +111,7 @@ public class Config  {
                         .setSaveConsumer(text -> {
                             config.getInstance().setApiURL(text);
                             config.getInstance().saveConfig();
-                        })
+                        }).setDefaultValue(() -> "https://api.earthmc.net/v3/aurora")
                         .build()
         );
 
@@ -120,7 +123,7 @@ public class Config  {
                         .setSaveConsumer(text -> {
                             config.getInstance().setMapUrl(text);
                             config.getInstance().saveConfig();
-                        })
+                        }).setDefaultValue(() -> "https://map.earthmc.net/")
                         .build()
         );
 
@@ -132,7 +135,7 @@ public class Config  {
                         .setSaveConsumer(text -> {
                             config.getInstance().setStaffRepoURL(text);
                             config.getInstance().saveConfig();
-                        })
+                        }).setDefaultValue(() -> "https://raw.githubusercontent.com/jwkerr/staff/master/staff.json")
                         .build()
         );
 

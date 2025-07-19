@@ -22,16 +22,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.chariskar.breakthemod.api.Fetch;
 import net.chariskar.breakthemod.utils.config;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-public class findPlayerService {
-    private static final Logger LOGGER = LoggerFactory.getLogger("breakthemod");
-    private final Fetch fetch = Fetch.getInstance();
+public class findPlayerService extends Service {
 
     public Optional<PlayerLocationInfo> get(String username) {
         try {

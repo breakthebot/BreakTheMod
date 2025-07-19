@@ -17,7 +17,6 @@
 
 package net.chariskar.breakthemod.Services;
 
-import net.chariskar.breakthemod.api.Fetch;
 import net.chariskar.breakthemod.types.Resident;
 
 import java.util.ArrayList;
@@ -26,18 +25,18 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class friendsService {
+public class friendsService extends Service {
     private static final ExecutorService IO_EXECUTOR = Executors.newFixedThreadPool(4);
-    private Fetch fetch = Fetch.getInstance();
 
     public List<String> get(String name) {
-        Resident resident = fetch.getResident(name);
         List<String> friends = new ArrayList<>();
 
 
         CompletableFuture<List<String>> namesFuture =
                 CompletableFuture.supplyAsync(() -> {
                     List<String> names = new ArrayList<>();
+                    Resident resident = fetch.getResident(name);
+
                     resident.getFriends()
                             .ifPresent(list ->
                                     list.forEach(ref ->

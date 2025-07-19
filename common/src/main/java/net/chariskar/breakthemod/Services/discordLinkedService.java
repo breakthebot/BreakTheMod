@@ -20,15 +20,9 @@ package net.chariskar.breakthemod.Services;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.chariskar.breakthemod.api.Fetch;
 import net.chariskar.breakthemod.utils.config;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class discordLinkedService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger("breakthemod");
-    private final Fetch fetch = Fetch.getInstance();
+public class discordLinkedService extends Service {
 
     public String get(String username) {
         try {

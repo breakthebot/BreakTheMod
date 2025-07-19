@@ -20,21 +20,37 @@ package net.chariskar.breakthemod.api;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.chariskar.breakthemod.utils.config;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract command class.
  * @param <S> The command source stack.
- *
  */
 public abstract class Command<S> {
+    public static final Logger LOGGER = LoggerFactory.getLogger("breakthemod");
+
     public abstract String getName();
     public abstract String getDescription();
     public abstract String getUsageSuffix();
 
     public final String getUsage() { return "/" + getName() + (getUsageSuffix().isEmpty() ? "" : " " + getUsageSuffix()); }
 
+    /**
+     *
+     * @param ctx The Command context derives off the command source provided by the loader implementation of the class.
+     * @return 0 if success, 1 if error
+     * @throws Exception if anything goes wrong.
+     */
     protected abstract int execute(CommandContext<S> ctx) throws Exception;
 
+    /**
+     *
+     * @param ctx The Command context derives off the command source provided by the loader implementation of the class.
+     * @return 0 if success, 1 if error
+     * @throws CommandSyntaxException If invalid syntax
+     */
     protected abstract int run(CommandContext<S> ctx) throws CommandSyntaxException;
 
     public abstract void register(CommandDispatcher<S> dispatcher);
@@ -46,5 +62,12 @@ public abstract class Command<S> {
 
     public static boolean getEnabledOnOtherServers() {
         return false;
+    }
+
+    protected void logError(String message, Exception e) {
+        LOGGER.error("{}{}", message, e.getMessage());
+        if (config.getInstance().isDev()) {
+            e.printStackTrace();
+        }
     }
 }

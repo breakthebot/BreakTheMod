@@ -18,10 +18,10 @@
 package net.chariskar.breakthemod.fabric.client.utils;
 
 import net.chariskar.breakthemod.engine.nearby;
-import net.chariskar.breakthemod.utils.config;
 import net.chariskar.breakthemod.fabric.client.commands.FabricCommand;
 import net.chariskar.breakthemod.fabric.client.utils.wrappers.player;
 import net.chariskar.breakthemod.fabric.client.utils.wrappers.world;
+import net.chariskar.breakthemod.utils.config;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -44,6 +44,11 @@ public class render {
     private static config.WidgetPosition widgetPosition = config.getInstance().getWidgetPosition();
     private static final nearby engine = new nearby();
 
+    /**
+     * @param drawContext The draw context {@link net.minecraft.client.gui.DrawContext}
+     * @param tickCounter The tickCounter {@link net.minecraft.client.render.RenderTickCounter}
+     *                    Renders the overlay.
+     */
     public static void renderOverlay(DrawContext drawContext, RenderTickCounter tickCounter) {
         MinecraftClient client = MinecraftClient.getInstance();
 
@@ -79,6 +84,7 @@ public class render {
         int height = Math.max(20 + playerList.size() * entryHeight, 40);
 
         int x = 0, y = 0;
+
         switch (widgetPosition) {
             case TOP_RIGHT -> {
                 x = client.getWindow().getScaledWidth() - width - MARGIN;
@@ -112,6 +118,11 @@ public class render {
         }
     }
 
+    /**
+     * Returns true if there are players in the loaded chunks, false if not.
+     * @param client The minecraft client {@link net.minecraft.client.MinecraftClient}
+     * @return If there are any players in the rendered chunks.
+     */
     private static boolean hasPlayersInRenderedChunks(MinecraftClient client) {
         if (client.world == null || client.player == null) {
             return false;

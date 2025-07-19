@@ -17,22 +17,21 @@
 
 package net.chariskar.breakthemod.Services;
 
-import net.chariskar.breakthemod.types.Nation;
 
-public class nationPopulationService extends Service {
-    public static int getNationBonus(int residentAmt) {
-        if (residentAmt >= 200) return 100;
-        else if (residentAmt >= 120) return 80;
-        else if (residentAmt >= 80) return 60;
-        else if (residentAmt >= 60) return 50;
-        else if (residentAmt >= 40) return 30;
-        else if (residentAmt >= 20) return 10;
-        else return 0;
+import net.chariskar.breakthemod.api.Fetch;
+import net.chariskar.breakthemod.utils.config;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+abstract public class Service {
+    protected static final Logger LOGGER = LoggerFactory.getLogger("breakthemod");
+    protected final Fetch fetch = Fetch.getInstance();
+
+    protected void logError(String message, Exception e) {
+        LOGGER.error("{}{}", message, e.getMessage());
+        if (config.getInstance().isDev()) {
+            e.printStackTrace();
+        }
     }
 
-    public String get(String name) {
-        Nation resp = fetch.getNation(name);
-        int numResidents = resp.getResidents().get().size();
-        return name + " nation has " + numResidents + " residents and a nation bonus of " + getNationBonus(numResidents);
-    }
 }

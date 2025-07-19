@@ -84,7 +84,9 @@ public class onlinestaff extends FabricCommand{
 
                 Text message = Text.literal("")
                         .append(onlineStaffText)
-                        .append(Text.literal(" [" + onlineStaffNames.size() + "]").setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY)));
+                        .append(Text.literal(" [").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
+                        .append(Text.literal(String.valueOf(onlineStaffNames.size())).setStyle(Style.EMPTY.withColor(Formatting.WHITE)))
+                        .append(Text.literal("]").setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
 
                 sendMessage(client, message);
 

@@ -74,7 +74,7 @@ public class friends extends FabricCommand {
         } else {
             Text styledPart = Text.literal("Online Friends: ").setStyle(Style.EMPTY.withColor(Formatting.AQUA));
             Text onlineFriendsText = Text.literal(String.join(", ", onlineFriends))
-                    .setStyle(Style.EMPTY.withColor(Formatting.GREEN));
+                    .setStyle(Style.EMPTY.withColor(Formatting.AQUA));
             Text message = Text.literal("")
                     .append(styledPart)
                     .append(onlineFriendsText)

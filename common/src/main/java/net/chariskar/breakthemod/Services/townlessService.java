@@ -18,7 +18,6 @@
 package net.chariskar.breakthemod.Services;
 
 
-import net.chariskar.breakthemod.api.Fetch;
 import net.chariskar.breakthemod.types.Resident;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,10 +27,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class townlessService {
+public class townlessService extends Service {
     private static final int BATCH_SIZE = 100;
     private static final Logger LOGGER = LoggerFactory.getLogger("breakthemod");
-    private final Fetch fetcher = Fetch.getInstance();
 
     public List<String> get(List<?> onlinePlayers) {
         List<String> ids = onlinePlayers.stream()
@@ -39,7 +37,7 @@ public class townlessService {
                 .collect(Collectors.toList());
         try {
             if (ids.size() == 1) {
-                Resident resident = fetcher.getResident(ids.getFirst());
+                Resident resident = fetch.getResident(ids.getFirst());
                 if (resident != null && resident.getTown().isPresent()) {
                     return Collections.singletonList(resident.getTown().get().getName().get());
                 }
@@ -50,7 +48,7 @@ public class townlessService {
             for (int i = 0; i < ids.size(); i += BATCH_SIZE) {
                 int end = Math.min(i + BATCH_SIZE, ids.size());
                 List<String> batch = ids.subList(i, end);
-                List<Resident> residents = fetcher.getResidents(batch);
+                List<Resident> residents = fetch.getResidents(batch);
 
                 townless.addAll(residents.stream()
                         .filter(res -> res.getStatus().isPresent() && !res.getStatus().get().getHasTown().get())

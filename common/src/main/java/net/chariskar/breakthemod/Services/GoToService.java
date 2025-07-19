@@ -22,25 +22,19 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.chariskar.breakthemod.api.Fetch;
 import net.chariskar.breakthemod.types.Nation;
 import net.chariskar.breakthemod.types.Town;
 import net.chariskar.breakthemod.utils.config;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class GoToService {
-    private static final Logger LOGGER = LoggerFactory.getLogger("breakthemod");
+public class GoToService extends Service {
     private static final ExecutorService IO_EXECUTOR = Executors.newFixedThreadPool(4);
-    private static final Fetch fetch = Fetch.getInstance();
 
     /**
      * Finds the nearest valid town spawns for the given name.
@@ -125,7 +119,7 @@ public class GoToService {
                 return Collections.emptyList();
 
             } catch (Exception e) {
-                LOGGER.error("Error in GoToService", e);
+                logError("Unexpected error occurred while fetching location", e);
                 throw new RuntimeException(e);
             }
         }, IO_EXECUTOR);

@@ -26,9 +26,9 @@ import net.chariskar.breakthemod.utils.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class locateService {
+public class locateService extends Service {
     private static final Logger LOGGER = LoggerFactory.getLogger("breakthemod");
-    private Fetch fetchInstance;
+    private final Fetch fetchInstance;
 
     public locateService() {
         this.fetchInstance = Fetch.getInstance();
@@ -54,11 +54,7 @@ public class locateService {
             return new LocationResult(name, x, z);
 
         } catch (Exception e) {
-            if (config.getInstance().isDev()) {
-                e.printStackTrace();
-            } else {
-                LOGGER.error("Unexpected Error Occurred");
-            }
+            logError("Unexpected error occurred while fetching location", e);
             return null;
         }
     }

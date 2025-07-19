@@ -176,7 +176,6 @@ public class Fetch {
             }
 
             JsonArray responseArray = JsonParser.parseString(response).getAsJsonArray();
-            LOGGER.debug("Response array recieved {}", responseArray);
 
             if (responseArray.isEmpty()) {
                 return null;

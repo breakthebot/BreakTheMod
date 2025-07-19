@@ -77,7 +77,7 @@ public class GoTo extends NeoForgeCommand{
                         } else {
                             sendMessage(client,
                                     Component.literal("Found suitable spawn in: " + String.join(", ", output))
-                                            .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))
+                                            .setStyle(Style.EMPTY.withColor(ChatFormatting.AQUA))
                             );
                         }
                     });

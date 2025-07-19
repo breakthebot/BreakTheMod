@@ -69,7 +69,7 @@ public class townless extends FabricCommand{
 
                         Text userText = Text.literal(user)
                                 .setStyle(Style.EMPTY
-                                        .withColor(Formatting.GREEN)
+                                        .withColor(Formatting.AQUA)
                                         .withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, inviteMessage))
                                         .withHoverEvent(new net.minecraft.text.HoverEvent(
                                                 net.minecraft.text.HoverEvent.Action.SHOW_TEXT,

@@ -21,24 +21,20 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.chariskar.breakthemod.utils.config;
 import net.chariskar.breakthemod.api.Command;
 import net.chariskar.breakthemod.fabric.client.Prefix;
+import net.chariskar.breakthemod.utils.config;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.text.Text;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class FabricCommand extends Command<FabricClientCommandSource> {
-    public static final Logger LOGGER = LoggerFactory.getLogger("breakthemod");
     public static final MinecraftClient client = MinecraftClient.getInstance();
 
     public static String getConnectedServerAddress() {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client == null) return null;
-
         ServerInfo serverInfo = client.getCurrentServerEntry();
         if (serverInfo == null) return null;
 
@@ -78,7 +74,7 @@ public abstract class FabricCommand extends Command<FabricClientCommandSource> {
                     sendMessage(MinecraftClient.getInstance(),Text.empty().append("Unexpected error: " + e.getMessage()));
                 }
             });
-            LOGGER.error("Unexpected error {} has occurred while running {}", e, getName());
+            logError("Unexpected error has occurred while running " + getName(), e);
             return 0;
         }
     }
