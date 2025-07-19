@@ -5,16 +5,7 @@ plugins {
 }
 
 architectury {
-    common(rootProject.enabled_platforms.split(','))
-}
-repositories {
-    maven {
-        url "https://maven.pkg.github.com/chariskar/breaktheapi"
-        credentials {
-            username = System.getenv("GH_USERNAME") ?: ""
-            password = System.getenv("GH_TOKEN") ?: ""
-        }
-    }
+    common("fabric")
 }
 
 dependencies {
@@ -26,7 +17,6 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.13.1'
     modImplementation "dev.architectury:architectury:${rootProject.architectury_api_version}"
-    modImplementation("net.chariskar:breaktheapi:1.0.0")
 }
 
 java {

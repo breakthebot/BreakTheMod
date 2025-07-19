@@ -15,14 +15,26 @@
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.chariskar.breakthemod.fabric.client.utils;
-import com.terraformersmc.modmenu.api.ConfigScreenFactory;
-import com.terraformersmc.modmenu.api.ModMenuApi;
+package net.chariskar.breakthemod.types;
 
-public class modmenu implements ModMenuApi {
 
-    @Override
-    public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return net.chariskar.breakthemod.fabric.client.utils.Config::createConfigScreen;
+import java.util.Optional;
+import java.util.UUID;
+
+public class reference {
+    public String name;
+    public UUID uuid;
+
+    public reference(String name, UUID uuid) {
+        this.name = name;
+        this.uuid = uuid;
+    }
+
+    public Optional<String> getName() {
+        return Optional.ofNullable(name);
+    }
+
+    public Optional<UUID> getUuid() {
+        return Optional.ofNullable(uuid);
     }
 }

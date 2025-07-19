@@ -19,7 +19,7 @@ package net.chariskar.breakthemod.fabric.client.commands;
 
 
 import com.mojang.brigadier.context.CommandContext;
-import net.chariskar.breaktheapi.Services.friendsService;
+import net.chariskar.breakthemod.Services.friendsService;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Style;

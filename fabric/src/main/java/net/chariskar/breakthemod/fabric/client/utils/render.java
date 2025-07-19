@@ -17,14 +17,15 @@
 
 package net.chariskar.breakthemod.fabric.client.utils;
 
-import net.chariskar.breaktheapi.engine.nearby;
-import net.chariskar.breaktheapi.utils.config;
+import net.chariskar.breakthemod.engine.nearby;
+import net.chariskar.breakthemod.utils.config;
 import net.chariskar.breakthemod.fabric.client.commands.FabricCommand;
 import net.chariskar.breakthemod.fabric.client.utils.wrappers.player;
 import net.chariskar.breakthemod.fabric.client.utils.wrappers.world;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderTickCounter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,16 +42,12 @@ public class render {
     private static final int customX = config.getInstance().getCustomX();
     private static final int customY = config.getInstance().getCustomY();
     private static config.WidgetPosition widgetPosition = config.getInstance().getWidgetPosition();
-    private final nearby engine = new nearby();
+    private static final nearby engine = new nearby();
 
-    public void renderOverlay(DrawContext drawContext, MinecraftClient client) {
-        if (client.options.hudHidden) {
-            return;
-        }
+    public static void renderOverlay(DrawContext drawContext, RenderTickCounter tickCounter) {
+        MinecraftClient client = MinecraftClient.getInstance();
 
-        if (client.world == null || client.player == null) {
-            return;
-        }
+        if (client.options.hudHidden || client.world == null || client.player == null) return;
 
         config Config = config.getInstance();
 
@@ -58,7 +55,6 @@ public class render {
         if (!FabricCommand.getEnabledOnOtherServers()) return;
 
         widgetPosition = Config.getWidgetPosition();
-
         TextRenderer textRenderer = client.textRenderer;
 
         Set<String> nearbyPlayersSet = engine.updateNearbyPlayers(
@@ -70,11 +66,7 @@ public class render {
         boolean hasPlayersInChunks = hasPlayersInRenderedChunks(client);
         boolean hasNearbyPlayers = !playerList.isEmpty() && !playerList.contains("No players nearby");
 
-        if (!hasPlayersInChunks) {
-            playerList.clear();
-            playerList.add("No players nearby");
-        }
-        else if (!hasNearbyPlayers) {
+        if (!hasPlayersInChunks || !hasNearbyPlayers) {
             playerList.clear();
             playerList.add("No players nearby");
         }
@@ -84,7 +76,6 @@ public class render {
                 .mapToInt(textRenderer::getWidth)
                 .max()
                 .orElse(100) + 2 * MARGIN;
-
         int height = Math.max(20 + playerList.size() * entryHeight, 40);
 
         int x = 0, y = 0;
@@ -114,14 +105,14 @@ public class render {
         int textY = y + 5;
         synchronized (playerList) {
             for (String line : playerList) {
-                int color = line.equals("No players nearby") ? 0xFF6B6B : 0xFFFFFF; // Red for no players, white for player info
+                int color = line.equals("No players nearby") ? 0xFF6B6B : 0xFFFFFF;
                 drawContext.drawText(textRenderer, line, x + MARGIN, textY, color, false);
                 textY += entryHeight;
             }
         }
     }
 
-    private boolean hasPlayersInRenderedChunks(MinecraftClient client) {
+    private static boolean hasPlayersInRenderedChunks(MinecraftClient client) {
         if (client.world == null || client.player == null) {
             return false;
         }

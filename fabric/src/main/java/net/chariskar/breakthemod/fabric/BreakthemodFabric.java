@@ -1,6 +1,7 @@
 package net.chariskar.breakthemod.fabric;
 
 import net.chariskar.breakthemod.breakthemod;
+import net.chariskar.breakthemod.utils.config;
 import net.fabricmc.api.ModInitializer;
 
 public final class BreakthemodFabric implements ModInitializer {

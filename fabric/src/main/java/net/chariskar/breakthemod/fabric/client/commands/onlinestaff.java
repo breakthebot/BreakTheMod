@@ -19,9 +19,10 @@ package net.chariskar.breakthemod.fabric.client.commands;
 
 
 import com.mojang.brigadier.context.CommandContext;
-import net.chariskar.breaktheapi.Services.onlinestaffService;
+import net.chariskar.breakthemod.Services.onlinestaffService;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -57,6 +58,7 @@ public class onlinestaff extends FabricCommand{
                         .map(e -> e.getProfile().getId())
                         .collect(Collectors.toList()));
             } catch (Exception e) {
+                LOGGER.error("Failed to fetch online players, error {}", e.getMessage());
                 throw new RuntimeException(e);
             }
         }).thenAccept((resp)->{
@@ -66,15 +68,26 @@ public class onlinestaff extends FabricCommand{
                     .collect(Collectors.toList());
 
             if (!onlineStaffNames.isEmpty()) {
-                Text styledPart = Text.literal("Online Staff: ").setStyle(Style.EMPTY.withColor(Formatting.AQUA));
-                Text onlineStaffText = Text.literal(String.join(", ", onlineStaffNames))
-                        .setStyle(Style.EMPTY.withColor(Formatting.GREEN));
+                MutableText onlineStaffText = Text.literal("");
+
+                for (int i = 0; i < onlineStaffNames.size(); i++) {
+                    onlineStaffText = onlineStaffText.append(
+                            Text.literal(onlineStaffNames.get(i)).setStyle(Style.EMPTY.withColor(Formatting.AQUA))
+                    );
+
+                    if (i < onlineStaffNames.size() - 1) {
+                        onlineStaffText = onlineStaffText.append(
+                                Text.literal(", ").setStyle(Style.EMPTY.withColor(Formatting.WHITE))
+                        );
+                    }
+                }
+
                 Text message = Text.literal("")
-                        .append(styledPart)
                         .append(onlineStaffText)
-                        .append(Text.literal(" [" + onlineStaffNames.size() + "]").setStyle(Style.EMPTY.withColor(Formatting.GRAY)));
+                        .append(Text.literal(" [" + onlineStaffNames.size() + "]").setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY)));
 
                 sendMessage(client, message);
+
             } else {
                 sendMessage(client, Text.literal("No staff online").setStyle(Style.EMPTY.withColor(Formatting.DARK_RED)));
             }

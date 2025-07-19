@@ -47,4 +47,4 @@ public abstract class Command<S> {
     public static boolean getEnabledOnOtherServers() {
         return false;
     }
-    }
+}

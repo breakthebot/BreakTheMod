@@ -15,12 +15,12 @@
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.chariskarar.breakthemod.fabric.client.utils;
+package net.chariskar.breakthemod.fabric.client.utils;
 
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import net.chariskar.breaktheapi.utils.config;
+import net.chariskar.breakthemod.utils.config;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;

@@ -21,7 +21,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import net.chariskar.breaktheapi.Services.GoToService;
+import net.chariskar.breakthemod.Services.GoToService;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Style;
@@ -75,7 +75,7 @@ public class GoTo extends FabricCommand{
                             );
                         } else {
                             sendMessage(client,
-                                    Text.literal("Found suitable spawn in: " + String.join(", ", output))
+                                    Text.literal("Found suitable spawn for " + destination + " in: " + String.join(", ", output))
                                             .setStyle(Style.EMPTY.withColor(Formatting.GREEN))
                             );
                         }

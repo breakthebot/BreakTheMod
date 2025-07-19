@@ -15,7 +15,7 @@
  * along with BreakTheMod. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.chariskarar.breakthemod.fabric.client;
+package net.chariskar.breakthemod.fabric.client;
 
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;

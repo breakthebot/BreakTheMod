@@ -1,26 +1,26 @@
 package net.chariskar.breakthemod.fabric.client;
 
-import net.chariskar.breaktheapi.breaktheapi;
-import net.chariskar.breaktheapi.utils.config;
+
 import net.chariskar.breakthemod.fabric.client.commands.*;
 import net.chariskar.breakthemod.fabric.client.utils.render;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.LayeredDrawer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.util.Identifier;
 
 import java.util.List;
 import java.util.logging.Logger;
 
 public final class breakthemodFabricClient implements ClientModInitializer {
+    private static final Identifier NEARBY_LAYER = Identifier.of("breakthemod", "nearby_layer");
     @Override
     public void onInitializeClient() {
-        try {
-            Class.forName("net.chariskar.breakthemod.breaktheapi");
-        } catch (ClassNotFoundException e) {
-            Logger.getLogger("breakthemod").severe("fuck.");
-        }
-        config.setConfigFile("breakthemod_config.json");
 
         help HelpCommand = new help();
         List<FabricCommand> commands = List.of(
@@ -41,9 +41,9 @@ public final class breakthemodFabricClient implements ClientModInitializer {
         loadCommands(commands);
 
         render Render = new render();
-        HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
-            Render.renderOverlay(drawContext, MinecraftClient.getInstance());
-        });
+        LayeredDrawer drawer = new LayeredDrawer();
+
+        HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> layeredDrawer.attachLayerBefore(IdentifiedLayer.CHAT, NEARBY_LAYER, render::renderOverlay));
     }
 
 

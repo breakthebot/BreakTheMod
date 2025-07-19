@@ -18,7 +18,7 @@
 package net.chariskar.breakthemod.fabric.client.utils.wrappers;
 
 
-import net.chariskar.breaktheapi.engine.nearby;
+import net.chariskar.breakthemod.engine.nearby;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;

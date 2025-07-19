@@ -15,14 +15,27 @@
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.chariskar.breakthemod.fabric.client.utils;
-import com.terraformersmc.modmenu.api.ConfigScreenFactory;
-import com.terraformersmc.modmenu.api.ModMenuApi;
+package net.chariskar.breakthemod.utils;
 
-public class modmenu implements ModMenuApi {
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
-    @Override
-    public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return net.chariskar.breakthemod.fabric.client.utils.Config::createConfigScreen;
+public class timestamps {
+
+    public static List<Long> parseTimestamp(long timestamp) {
+        long current = Instant.now().toEpochMilli();
+        long diff = current - timestamp;
+        Duration duration = Duration.ofMillis(diff);
+        long days = duration.toDays();
+        long hours = duration.toHours() % 24;
+        long minutes = duration.toMinutes() % 60;
+        List<Long> list = new ArrayList<>();
+        list.add(days);
+        list.add(hours);
+        list.add(minutes);
+        return list;
     }
+
 }

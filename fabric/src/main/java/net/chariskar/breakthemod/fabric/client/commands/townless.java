@@ -18,9 +18,9 @@
 package net.chariskar.breakthemod.fabric.client.commands;
 
 import com.mojang.brigadier.context.CommandContext;
-import net.chariskar.breaktheapi.Services.townlessService;
-import net.chariskar.breaktheapi.api.Fetch;
-import net.chariskar.breaktheapi.types.Resident;
+import net.chariskar.breakthemod.Services.townlessService;
+import net.chariskar.breakthemod.api.Fetch;
+import net.chariskar.breakthemod.types.Resident;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.ClickEvent;
