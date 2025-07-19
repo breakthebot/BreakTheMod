@@ -2,20 +2,20 @@ name: Build Check
 
 on:
   push:
-    branches:
-      - master
+    branches: [ master ]
   pull_request:
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: windows-latest
-    
-    env:
-      GH_USERNAME:  ${{ secrets.GH_USERNAME }}
-      GH_TOKEN:  ${{ secrets.GH_TOKEN }}
-  
+
     steps:
+      - name: Set GH_TOKEN env
+        run: |
+          $env:GH_TOKEN = "${{ secrets.GH_TOKEN }}"
+        shell: pwsh
+
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -34,11 +34,10 @@ jobs:
             gradle-
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew.bat build
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: jars
-          path: |
-            fabric/build/libs/.jar
+          path: fabric/build/libs/*.jar
