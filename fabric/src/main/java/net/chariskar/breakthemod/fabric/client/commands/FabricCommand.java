@@ -46,7 +46,7 @@ public abstract class FabricCommand extends Command<FabricClientCommandSource> {
 
         if (serverAddress == null) {return true;}
 
-        if (serverAddress.toLowerCase().endsWith("earthmc.net")) return true;
+        if (serverAddress.toLowerCase().contains("earthmc.net")) return true;
 
         return config.getInstance().isEnabledOnOtherServers();
     }
