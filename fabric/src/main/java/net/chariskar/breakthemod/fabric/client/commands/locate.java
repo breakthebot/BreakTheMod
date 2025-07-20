@@ -63,9 +63,8 @@ public class locate extends FabricCommand{
                         Text message = Text.literal(String.format("%s is located at X: %d, Z: %d. ",
                                         result.getName(), result.getX(), result.getZ()))
                                 .append(Text.literal("Click Here")
-                                        .formatted(Formatting.AQUA)
-                                        .setStyle(Style.EMPTY.withClickEvent(
-                                                new ClickEvent(ClickEvent.Action.OPEN_URL, result.getMapUrl()))));
+                                        .styled(style -> style.withColor(Formatting.AQUA)
+                                                .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, result.getMapUrl()))));
 
                         client.execute(() -> sendMessage(client, message));
                     }

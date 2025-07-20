@@ -2,6 +2,8 @@ package net.chariskar.breakthemod.fabric.client;
 
 
 import net.chariskar.breakthemod.fabric.client.commands.*;
+import net.chariskar.breakthemod.fabric.client.commands.econ.calculateGold;
+import net.chariskar.breakthemod.fabric.client.commands.econ.calculateStacks;
 import net.chariskar.breakthemod.fabric.client.utils.render;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -35,6 +37,8 @@ public final class breakthemodFabricClient implements ClientModInitializer {
                 new lastSeen(),
                 new discordLinked(),
                 new coords(),
+                new calculateGold(),
+                new calculateStacks(),
                 HelpCommand
         );
         HelpCommand.setCommands(commands);
