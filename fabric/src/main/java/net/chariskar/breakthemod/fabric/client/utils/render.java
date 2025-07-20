@@ -66,6 +66,7 @@ public class render {
                 new player(client.player),
                 new world(client.world)
         );
+
         playerList = new ArrayList<>(nearbyPlayersSet);
 
         boolean hasPlayersInChunks = hasPlayersInRenderedChunks(client);
