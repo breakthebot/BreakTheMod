@@ -77,7 +77,7 @@ Review [CONTRIBUTING.md](/CONTRIBUTING.md) for more details.
 
 ## **License**
 
-> This mod is licensed under the [GPLV3](src/main/resources/LICENSE).  
+> This mod is licensed under the [GPLV3](./LICENSE).  
 > Feel free to use, modify, and distribute it under the terms of this license.
 
 ---

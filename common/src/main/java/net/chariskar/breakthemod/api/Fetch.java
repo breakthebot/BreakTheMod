@@ -214,7 +214,7 @@ public class Fetch {
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
-                .uri(URI.create(url))
+                .uri(URI.create(formatUrl(url)))
                 .header("Content-Type", "application/json");
         requestBuilder.POST(HttpRequest.BodyPublishers.ofString(payload));
         HttpRequest request = requestBuilder.build();
@@ -230,11 +230,30 @@ public class Fetch {
     public HttpResponse<String> GetRequest(String url) throws Exception {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
-                .uri(URI.create(url))
+                .uri(URI.create(formatUrl(url)))
                 .header("Content-Type", "application/json");
         requestBuilder.GET();
         HttpRequest request = requestBuilder.build();
         return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
+
+    private String formatUrl(String url) {
+        if (url == null || url.isEmpty()) return url;
+
+        int protocolEnd = url.indexOf("://");
+        if (protocolEnd == -1) return url;
+
+        String protocol = url.substring(0, protocolEnd + 3);
+        String rest = url.substring(protocolEnd + 3);
+
+        rest = rest.replaceAll("/{2,}", "/");
+
+        if (rest.endsWith("/") && rest.length() > 1) {
+            rest = rest.substring(0, rest.length() - 1);
+        }
+
+        return protocol + rest;
+    }
+
 
 }
