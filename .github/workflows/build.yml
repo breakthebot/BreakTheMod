@@ -35,4 +35,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: jars
-          path: fabric/build/libs/breakthemod-fabric-1.2.1-SNAPSHOT.jar
+          path: fabric/build/libs/*.jar
