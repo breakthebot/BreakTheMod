@@ -23,7 +23,6 @@ import net.chariskar.breakthemod.utils.config;
 import java.util.Optional;
 
 public class coordsService extends Service {
-    private static final String API_URL = config.getInstance().getApiURL() + "/location";
     private final Gson gson = new Gson();
 
     public LocationResult get(double x, double z) throws Exception {
@@ -35,7 +34,8 @@ public class coordsService extends Service {
         JsonObject payload = new JsonObject();
         payload.add("query", queryArray);
 
-        String resp = fetch.GetRequest(config.getInstance().getApiURL()).body();
+        String resp = fetch.PostRequest(config.getInstance().getApiURL() + "location", payload.toString()).body();
+
         JsonArray data = JsonParser.parseString(resp).getAsJsonArray();
         if (data.size() != 1 || !data.get(0).isJsonObject()) {
             throw new JsonParseException("Unexpected API response format: " + resp);
@@ -68,6 +68,26 @@ public class coordsService extends Service {
                         ", townName=" + townName +
                         ", nationName=" + nationName +
                         '}';
-            }
+
         }
+
+        public String format() {
+            StringBuilder sb = new StringBuilder();
+
+            if (wilderness) {
+                sb.append("Coordinates are in the wilderness.");
+            } else {
+                sb.append("Coordinates are in ").append(townName.isPresent() ? townName : "not in a town");
+
+                if (nationName.isPresent()) {
+                    sb.append(", part of the nation of ").append(nationName);
+                }
+
+                sb.append(".");
+            }
+
+            return sb.toString();
+        }
+    }
+
 }

@@ -18,7 +18,7 @@
 package net.chariskar.breakthemod.fabric.client.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -51,7 +51,7 @@ public class coords extends FabricCommand{
         client.execute(()->{
             try {
                 coordsService.LocationResult resp = Service.get(x,z);
-                sendMessage(client, Text.literal(resp.toString()));
+                sendMessage(client, Text.literal(resp.format()));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -63,8 +63,8 @@ public class coords extends FabricCommand{
     public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(
                 LiteralArgumentBuilder.<FabricClientCommandSource>literal(getName())
-                        .then(RequiredArgumentBuilder.<FabricClientCommandSource, String>argument("x", StringArgumentType.string())
-                                .then(RequiredArgumentBuilder.<FabricClientCommandSource, String>argument("z", StringArgumentType.string())
+                        .then(RequiredArgumentBuilder.<FabricClientCommandSource, Double>argument("x", DoubleArgumentType.doubleArg())
+                                .then(RequiredArgumentBuilder.<FabricClientCommandSource, Double>argument("z", DoubleArgumentType.doubleArg())
                                     .executes(context -> {
                                         if (!getEnabledOnOtherServers()) return 0;
                                         return run(context);
