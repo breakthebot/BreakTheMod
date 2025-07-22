@@ -7,17 +7,11 @@ import net.chariskar.breakthemod.fabric.client.commands.econ.calculateStacks;
 import net.chariskar.breakthemod.fabric.client.utils.render;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.LayeredDrawer;
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 public final class breakthemodFabricClient implements ClientModInitializer {
     private static final Identifier NEARBY_LAYER = Identifier.of("breakthemod", "nearby_layer");
@@ -44,12 +38,8 @@ public final class breakthemodFabricClient implements ClientModInitializer {
         HelpCommand.setCommands(commands);
         loadCommands(commands);
 
-        render Render = new render();
-        LayeredDrawer drawer = new LayeredDrawer();
-
         HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> layeredDrawer.attachLayerBefore(IdentifiedLayer.CHAT, NEARBY_LAYER, render::renderOverlay));
     }
-
 
     private void loadCommands(List<FabricCommand>  commands){
         ClientCommandRegistrationCallback.EVENT.register((dispatcher,phase)->{

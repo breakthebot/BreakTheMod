@@ -20,6 +20,9 @@ package net.chariskar.breakthemod.fabric.client.utils.wrappers;
 import net.chariskar.breakthemod.engine.nearby;
 import net.minecraft.entity.player.PlayerEntity;
 
+/**
+ * Player class wrapper for the nearby engine {@link net.chariskar.breakthemod.engine.nearby.Player}
+ */
 public class player implements nearby.Player {
     private final PlayerEntity player;
 

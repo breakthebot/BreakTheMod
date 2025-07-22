@@ -27,6 +27,9 @@ import net.minecraft.world.Heightmap;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * World class wrapper for the nearby engine {@link net.chariskar.breakthemod.engine.nearby.World}
+ */
 public class world implements nearby.World {
     private final ClientWorld world;
 

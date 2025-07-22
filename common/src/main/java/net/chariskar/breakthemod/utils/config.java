@@ -62,7 +62,6 @@ public class config {
         return configFile;
     }
 
-
     public WidgetPosition getWidgetPosition() {
         return widgetPosition;
     }
