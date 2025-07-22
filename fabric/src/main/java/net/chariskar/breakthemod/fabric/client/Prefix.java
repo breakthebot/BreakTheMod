@@ -36,20 +36,25 @@ public class Prefix{
         }
     }
 
-    public static Text getPrefix(){
-        MutableText prefix = Text.empty()
-                .append(Text.literal("B").setStyle(Style.EMPTY.withColor(getColorFromHex("#EAEAEA"))))
-                .append(Text.literal("r").setStyle(Style.EMPTY.withColor(getColorFromHex("#EAEAEA"))))
-                .append(Text.literal("e").setStyle(Style.EMPTY.withColor(getColorFromHex("#EAEAEA"))))
-                .append(Text.literal("a").setStyle(Style.EMPTY.withColor(getColorFromHex("#EAEAEA"))))
-                .append(Text.literal("k").setStyle(Style.EMPTY.withColor(getColorFromHex("#EAEAEA"))))
-                .append(Text.literal("T").setStyle(Style.EMPTY.withColor(getColorFromHex("#4B56FF"))))
-                .append(Text.literal("h").setStyle(Style.EMPTY.withColor(getColorFromHex("#4B56FF"))))
-                .append(Text.literal("e").setStyle(Style.EMPTY.withColor(getColorFromHex("#4B56FF"))))
-                .append(Text.literal("M").setStyle(Style.EMPTY.withColor(getColorFromHex("#FF8C1A"))))
-                .append(Text.literal("o").setStyle(Style.EMPTY.withColor(getColorFromHex("#FF8C1A"))))
-                .append(Text.literal("d").setStyle(Style.EMPTY.withColor(getColorFromHex("#FF8C1A"))))
-                .append(Text.literal(">> ").setStyle(Style.EMPTY.withColor(getColorFromHex("#FFFFFF")))); // Separator
+    public static Text getPrefix() {
+        String[][] segments = {
+                {"Break", "#EAEAEA"},
+                {"The", "#4B56FF"},
+                {"Mod", "#FF8C1A"},
+                {">> ", "#FFFFFF"}
+        };
+
+        MutableText prefix = Text.empty();
+        for (String[] segment : segments) {
+            String text = segment[0];
+            int color = getColorFromHex(segment[1]).getRgb();
+
+            for (char c : text.toCharArray()) {
+                prefix.append(Text.literal(String.valueOf(c)).setStyle(Style.EMPTY.withColor(color)));
+            }
+        }
+
         return prefix;
     }
+
 }

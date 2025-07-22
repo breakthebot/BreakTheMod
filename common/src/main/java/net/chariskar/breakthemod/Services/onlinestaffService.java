@@ -31,7 +31,7 @@ import java.util.UUID;
 public class onlinestaffService extends Service {
 
     public List<UUID> get(List<UUID> onlineUsers) throws Exception {
-        String jsonResponse = fetch.GetRequest(config.getInstance().getStaffRepoURL().substring(0, config.getInstance().getStaffRepoURL().length() - 1)).body();
+        String jsonResponse = fetch.GetRequest(config.getInstance().getStaffRepoURL()).body();
 
         JsonObject staffJson = JsonParser.parseString(jsonResponse).getAsJsonObject();
 

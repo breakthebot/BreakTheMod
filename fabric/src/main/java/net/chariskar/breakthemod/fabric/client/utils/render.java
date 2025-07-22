@@ -47,7 +47,7 @@ public class render {
     /**
      * @param drawContext The draw context {@link net.minecraft.client.gui.DrawContext}
      * @param tickCounter The tickCounter {@link net.minecraft.client.render.RenderTickCounter}
-     *                    Renders the overlay.
+     * Renders the overlay.
      */
     public static void renderOverlay(DrawContext drawContext, RenderTickCounter tickCounter) {
         MinecraftClient client = MinecraftClient.getInstance();

@@ -140,7 +140,7 @@ public class Fetch {
      * POST API interaction function.
      *
      * @param endpoint Which api endpoint is the data located in.
-     * @param names    The names of the items.
+     * @param names        The names of the items.
      * @param <T>      The class in which to parse the data in.
      */
     public <T> List<T> getObjects(
@@ -164,7 +164,8 @@ public class Fetch {
             );
 
             if (rawResponse.statusCode() != 200) {
-                LOGGER.error("Unexpected error occurred while sending request. status code");
+                if (rawResponse.statusCode() == 500) return new ArrayList<>();
+                LOGGER.error("Unexpected error occurred while sending request. status code {}", rawResponse.statusCode());
 
                 return null;
             }
@@ -199,9 +200,7 @@ public class Fetch {
 
     private void logError(String message, Exception e) {
         LOGGER.error("{}{}", message, e.getMessage());
-        if (config.getInstance().isDev()) {
-            e.printStackTrace();
-        }
+        if (config.getInstance().isDev()) e.printStackTrace();
     }
 
     /**
