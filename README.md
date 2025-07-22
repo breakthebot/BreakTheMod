@@ -1,6 +1,3 @@
-# **Notice**
-
-Repo has been moved to https://github.com/breakthebot/BreakTheMod
 
 # **BreakTheMod**
 
