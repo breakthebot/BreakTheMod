@@ -24,7 +24,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.chariskar.breakthemod.fabric.client.commands.FabricCommand;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
@@ -59,7 +58,7 @@ public class calculateGold extends FabricCommand {
                         .<FabricClientCommandSource, Integer>argument("ingots", IntegerArgumentType.integer())
                         .executes(context -> {
                             MinecraftClient client = MinecraftClient.getInstance();
-                            if (!getEnabledOnOtherServers()) return 0;
+                            if (!getEnabled()) return 0;
                             int ingots = IntegerArgumentType.getInteger(context, "ingots");
 
                             int fullBlocks = ingots / 9;

@@ -53,7 +53,7 @@ public class GoTo extends NeoForgeCommand{
                 LiteralArgumentBuilder.<CommandSourceStack>literal(getName())
                         .then(RequiredArgumentBuilder.<CommandSourceStack, String>argument("destination", StringArgumentType.string())
                                 .executes(context -> {
-                                    if (!getEnabledOnOtherServers()) return 0;
+                                    if (!getEnabled()) return 0;
                                     return run(context);
                                 })
                         )
@@ -62,7 +62,7 @@ public class GoTo extends NeoForgeCommand{
 
     @Override
     protected int execute(CommandContext<CommandSourceStack> ctx) throws Exception {
-        if (!getEnabledOnOtherServers()) return 0;
+        if (!getEnabled()) return 0;
         String destination = ctx.getArgument("destination", String.class);
         Minecraft client = Minecraft.getInstance();
 

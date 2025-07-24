@@ -55,7 +55,7 @@ public class GoTo extends FabricCommand{
                 LiteralArgumentBuilder.<FabricClientCommandSource>literal(getName())
                         .then(RequiredArgumentBuilder.<FabricClientCommandSource, String>argument("destination", StringArgumentType.string())
                                 .executes(context -> {
-                                    if (!getEnabledOnOtherServers()) return 0;
+                                    if (!getEnabled()) return 0;
                                     return run(context);
                                 })
                         )
@@ -76,7 +76,7 @@ public class GoTo extends FabricCommand{
     protected int execute(CommandContext<FabricClientCommandSource> ctx) throws Exception {
         String destination = ctx.getArgument("destination", String.class);
         MinecraftClient client = MinecraftClient.getInstance();
-        if (!getEnabledOnOtherServers()) return 0;
+        if (!getEnabled()) return 0;
 
         Service.findValidTowns(destination)
                 .thenAcceptAsync(output -> {

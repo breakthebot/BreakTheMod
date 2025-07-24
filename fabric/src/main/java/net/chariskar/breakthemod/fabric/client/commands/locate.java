@@ -79,7 +79,7 @@ public class locate extends FabricCommand{
                         .then(RequiredArgumentBuilder.<FabricClientCommandSource, String>argument("name", StringArgumentType.string())
                                 .then(RequiredArgumentBuilder.<FabricClientCommandSource, String>argument("type", StringArgumentType.string())
                                         .executes(context -> {
-                                            if (!getEnabledOnOtherServers()) return 0;
+                                            if (!getEnabled()) return 0;
                                             return run(context);
                                         })
                                 )

@@ -68,7 +68,7 @@ public class whereIs extends FabricCommand{
         dispatcher.register(
                 LiteralArgumentBuilder.<FabricClientCommandSource>literal(getName())
                         .then(RequiredArgumentBuilder.<FabricClientCommandSource, String>argument("name", StringArgumentType.string()).executes(context -> {
-                            if (!getEnabledOnOtherServers()) return 0;
+                            if (!getEnabled()) return 0;
                             return run(context);
                         }))
         );

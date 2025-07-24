@@ -49,7 +49,7 @@ public class friends extends FabricCommand {
     @Override
     protected int execute(CommandContext<FabricClientCommandSource> ctx) throws Exception {
         MinecraftClient client = MinecraftClient.getInstance();
-        if (!getEnabledOnOtherServers()) return 0;
+        if (!getEnabled()) return 0;
         assert client.player != null;
 
 

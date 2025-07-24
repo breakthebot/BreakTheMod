@@ -19,13 +19,11 @@ package net.chariskar.breakthemod.fabric.client.commands.econ;
 
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.context.CommandContext;
-import net.chariskar.breakthemod.fabric.client.commands.FabricCommand;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import com.mojang.brigadier.context.CommandContext;
+import net.chariskar.breakthemod.fabric.client.commands.FabricCommand;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
@@ -62,7 +60,7 @@ public class calculateStacks extends FabricCommand {
                             .<FabricClientCommandSource, Integer>argument("blocks", IntegerArgumentType.integer())
                             .executes(context -> {
                                 MinecraftClient client = MinecraftClient.getInstance();
-                                if (!getEnabledOnOtherServers()) return 0;
+                                if (!getEnabled()) return 0;
                                 int blocks = IntegerArgumentType.getInteger(context, "blocks");
                                 int fullStacks = blocks / 64;
                                 int remainder = blocks % 64;

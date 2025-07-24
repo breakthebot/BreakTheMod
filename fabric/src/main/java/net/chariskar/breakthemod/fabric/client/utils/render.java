@@ -57,7 +57,7 @@ public class render {
         config Config = config.getInstance();
 
         if (!Config.getRadarEnabled()) return;
-        if (!FabricCommand.getEnabledOnOtherServers()) return;
+        if (!FabricCommand.getEnabled()) return;
 
         widgetPosition = Config.getWidgetPosition();
         TextRenderer textRenderer = client.textRenderer;

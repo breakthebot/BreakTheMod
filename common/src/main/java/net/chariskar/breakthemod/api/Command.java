@@ -55,12 +55,14 @@ public abstract class Command<S> {
 
     public abstract void register(CommandDispatcher<S> dispatcher);
 
-
+    /**
+     * @return The address of the connected server.
+     */
     public static String getConnectedServerAddress() {
         return null;
     }
 
-    public static boolean getEnabledOnOtherServers() {
+    public static boolean getEnabled() {
         return false;
     }
 

@@ -41,7 +41,7 @@ public abstract class FabricCommand extends Command<FabricClientCommandSource> {
         return serverInfo.address.split(",")[0];
     }
 
-    public static boolean getEnabledOnOtherServers() {
+    public static boolean getEnabled() {
         String serverAddress = getConnectedServerAddress();
 
         if (serverAddress == null) {return true;}
@@ -51,6 +51,12 @@ public abstract class FabricCommand extends Command<FabricClientCommandSource> {
         return config.getInstance().isEnabledOnOtherServers();
     }
 
+    /**
+     * Helper utility for sending messages.
+     *
+     * @param client  The minecraft client instance
+     * @param message The message to be sent
+     */
     public void sendMessage(MinecraftClient client, Text message) {
         client.execute(() -> {
             if (client.player != null) {
@@ -84,7 +90,7 @@ public abstract class FabricCommand extends Command<FabricClientCommandSource> {
         dispatcher.register(
                 LiteralArgumentBuilder.<FabricClientCommandSource>literal(getName())
                         .executes(context -> {
-                            if (!getEnabledOnOtherServers()) return 0;
+                            if (!getEnabled()) return 0;
                             return run(context);
                         })
 

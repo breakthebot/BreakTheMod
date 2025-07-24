@@ -66,7 +66,7 @@ public class coords extends FabricCommand{
                         .then(RequiredArgumentBuilder.<FabricClientCommandSource, Double>argument("x", DoubleArgumentType.doubleArg())
                                 .then(RequiredArgumentBuilder.<FabricClientCommandSource, Double>argument("z", DoubleArgumentType.doubleArg())
                                     .executes(context -> {
-                                        if (!getEnabledOnOtherServers()) return 0;
+                                        if (!getEnabled()) return 0;
                                         return run(context);
                                     })
                         ))

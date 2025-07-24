@@ -27,7 +27,7 @@ public abstract class NeoForgeCommand extends Command<CommandSourceStack> {
         return serverData != null ? serverData.ip : null;
     }
 
-    public static boolean getEnabledOnOtherServers() {
+    public static boolean getEnabled() {
         String serverAddress = getConnectedServerAddress();
         if (serverAddress == null) return true;
         if (serverAddress.toLowerCase().endsWith("earthmc.net")) return true;
@@ -64,7 +64,7 @@ public abstract class NeoForgeCommand extends Command<CommandSourceStack> {
         dispatcher.register(
                 LiteralArgumentBuilder.<CommandSourceStack>literal(getName())
                         .executes(context -> {
-                            if (!getEnabledOnOtherServers()) return 0;
+                            if (!getEnabled()) return 0;
                             return run(context);
                         })
 

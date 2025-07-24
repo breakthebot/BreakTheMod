@@ -34,10 +34,11 @@ public class Config  {
 
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent)
-                .setTitle(Text.translatable("BreakTheMod"));
+                .setTitle(Text.of("BreakTheMod"));
 
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
         ConfigCategory general = builder.getOrCreateCategory(Text.literal("BreakTheMod config"));
+        assert MinecraftClient.getInstance().currentScreen != null;
 
         general.addEntry(entryBuilder.startBooleanToggle(
                         Text.literal("Enable BreakTheMod on other servers"),
