@@ -23,6 +23,10 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.chariskar.breakthemod.Services.locateService;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.text.ClickEvent;
@@ -30,11 +34,12 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class locate extends FabricCommand{
     locateService Service = new locateService();
-
+    private static final List<String> ALL_SUGGESTIONS = List.of("town", "nation");
     @Override
     public String getName() {
         return "locate";
@@ -78,6 +83,7 @@ public class locate extends FabricCommand{
                 LiteralArgumentBuilder.<FabricClientCommandSource>literal(getName())
                         .then(RequiredArgumentBuilder.<FabricClientCommandSource, String>argument("name", StringArgumentType.string())
                                 .then(RequiredArgumentBuilder.<FabricClientCommandSource, String>argument("type", StringArgumentType.string())
+                                        .suggests(new LocateSuggestion())
                                         .executes(context -> {
                                             if (!getEnabled()) return 0;
                                             return run(context);
@@ -85,5 +91,18 @@ public class locate extends FabricCommand{
                                 )
                         )
         );
+    }
+
+    public class LocateSuggestion implements SuggestionProvider<FabricClientCommandSource> {
+        @Override
+        public CompletableFuture<Suggestions> getSuggestions(CommandContext<FabricClientCommandSource> context, SuggestionsBuilder builder) throws CommandSyntaxException {
+            String input = builder.getRemaining().toLowerCase();
+
+            ALL_SUGGESTIONS.stream()
+                    .filter(s -> s.startsWith(input))
+                    .forEach(builder::suggest);
+
+            return builder.buildFuture();
+        }
     }
 }

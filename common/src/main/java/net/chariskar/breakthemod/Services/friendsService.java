@@ -22,15 +22,11 @@ import net.chariskar.breakthemod.types.Resident;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+
 
 public class friendsService extends Service {
-    private static final ExecutorService IO_EXECUTOR = Executors.newFixedThreadPool(4);
-
     public List<String> get(String name) {
         List<String> friends = new ArrayList<>();
-
 
         CompletableFuture<List<String>> namesFuture =
                 CompletableFuture.supplyAsync(() -> {
@@ -44,7 +40,7 @@ public class friendsService extends Service {
                                     )
                             );
                     return names;
-                }, IO_EXECUTOR);
+                });
 
         namesFuture.thenAccept(friends::addAll);
 
