@@ -27,6 +27,65 @@ nearby.
 
 ---
 
+## **Screenshots**
+
+### **WhereIs**
+
+![WhereIs Command](screenshots/findPlayer.png)
+*Shows the location of a specific player.*
+
+### **Nearby**
+
+![Nearby Command](screenshots/nearby_command.png)
+*Displays players nearby in rendered chunks.*
+![Nearby Hud](screenshots/nearby_hud.png)
+*Displays players nearby in rendered chunks in the hud*
+
+### **Locate**
+
+![Locate Command](screenshots/locate.png)
+*Finds a town or nation’s location.*
+
+### **GoTo**
+
+![GoTo Command](screenshots/goto.png)
+*Suggests the best spawn point to get closest to a town.*
+
+### **onlineStaff**
+
+![Online Staff Command](screenshots/onlinestaff.png)
+*Lists all online staff.*
+
+### **townless**
+
+![Townless Command](screenshots/townless.png)
+*Displays all online townless players.*
+
+### **coords**
+
+![Coords Command](screenshots/coords.png)
+*Provides information about specific coordinates.*
+
+### **discordLinked**
+
+![DiscordLinked Command](screenshots/discordLinked.png)
+*Tells if a user’s Discord account is linked, with a link if available.*
+
+### **nationpop**
+
+![NationPop Command](screenshots/nationpop.png)
+*Shows nation population and bonus information.*
+
+### **calculateGold**
+
+![CalculateGold command](screenshots/calculateGold.png)
+*Returns how many blocks the ingots are*
+
+### **calculateStacks**
+
+![CalculateGold command](screenshots/calculateStacks.png)
+*Tells you the amount of stacks.*
+
 ## **Installation**
 
 [BreakTheMod](/breakthemod.jar)
