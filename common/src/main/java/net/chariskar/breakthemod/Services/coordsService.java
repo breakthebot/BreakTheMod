@@ -77,11 +77,9 @@ public class coordsService extends Service {
             if (wilderness) {
                 sb.append("Coordinates are in the wilderness.");
             } else {
-                sb.append("Coordinates are in ").append(townName.isPresent() ? townName : "not in a town");
+                sb.append("Coordinates are in ").append(townName.orElse("not in a town"));
 
-                if (nationName.isPresent()) {
-                    sb.append(", part of the nation of ").append(nationName);
-                }
+                nationName.ifPresent(s -> sb.append(", part of the nation of ").append(s));
 
                 sb.append(".");
             }

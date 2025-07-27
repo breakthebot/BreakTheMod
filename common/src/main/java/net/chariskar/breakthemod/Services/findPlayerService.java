@@ -24,17 +24,18 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.chariskar.breakthemod.utils.config;
 
+import java.net.http.HttpResponse;
 import java.util.Optional;
 
 public class findPlayerService extends Service {
 
     public Optional<PlayerLocationInfo> get(String username) {
         try {
-            String playersJson = fetch.GetRequest(config.getInstance().getMapURL() + "tiles/players.json").body();
-            JsonObject playersObject = JsonParser.parseString(playersJson).getAsJsonObject();
+            HttpResponse<String> resp = fetch.GetRequest("https://map.earthmc.net/tiles/players.json");
+            JsonArray playersJson = JsonParser.parseString(resp.body()).getAsJsonObject().get("players").getAsJsonArray();
 
-            JsonArray playersArray = playersObject.getAsJsonArray("players");
-            for (JsonElement playerElement : playersArray) {
+
+            for (JsonElement playerElement : playersJson) {
                 JsonObject user = playerElement.getAsJsonObject();
                 String name = user.get("name").getAsString();
 
@@ -71,7 +72,7 @@ public class findPlayerService extends Service {
             return Optional.of(new PlayerLocationInfo(username, 0, 0, true, "N/A", false));
 
         } catch (Exception e) {
-            System.err.println("Error fetching location for " + username + ": " + e.getMessage());
+            logError("Unexpected error fetching player location", e);
             return Optional.empty();
         }
     }

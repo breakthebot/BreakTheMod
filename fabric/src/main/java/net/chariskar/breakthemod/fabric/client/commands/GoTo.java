@@ -16,20 +16,18 @@
  */
 
 package net.chariskar.breakthemod.fabric.client.commands;
+
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.chariskar.breakthemod.Services.GoToService;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-
-import java.util.List;
 
 public class GoTo extends FabricCommand{
     private final GoToService Service = new GoToService();
@@ -61,16 +59,6 @@ public class GoTo extends FabricCommand{
                         )
         );
     }
-
-    private static final SuggestionProvider<FabricClientCommandSource> NAME_SUGGESTIONS = (context, builder) -> {
-        List<String> names = List.of("Town", "Nation");
-        for (String name : names) {
-            if (name.toLowerCase().startsWith(builder.getRemainingLowerCase())) {
-                builder.suggest(name);
-            }
-        }
-        return builder.buildFuture();
-    };
 
     @Override
     protected int execute(CommandContext<FabricClientCommandSource> ctx) throws Exception {
