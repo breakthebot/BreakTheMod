@@ -30,7 +30,7 @@ public class findPlayerService extends Service {
 
     public Optional<PlayerLocationInfo> get(String username) {
         try {
-            String playersJson = fetch.GetRequest(config.getInstance().getApiURL() + "tiles/players.json").body();
+            String playersJson = fetch.GetRequest(config.getInstance().getMapURL() + "tiles/players.json").body();
             JsonObject playersObject = JsonParser.parseString(playersJson).getAsJsonObject();
 
             JsonArray playersArray = playersObject.getAsJsonArray("players");
