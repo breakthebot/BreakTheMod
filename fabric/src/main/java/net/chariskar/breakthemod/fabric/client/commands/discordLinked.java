@@ -28,6 +28,7 @@ import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.NotNull;
 
 public class discordLinked extends FabricCommand{
     private final discordLinkedService Service = new discordLinkedService();
@@ -70,7 +71,7 @@ public class discordLinked extends FabricCommand{
     }
 
     @Override
-    public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+    public void register(@NotNull CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(
                 LiteralArgumentBuilder.<FabricClientCommandSource>literal(getName())
                         .then(RequiredArgumentBuilder.<FabricClientCommandSource, String>argument("name", StringArgumentType.string())

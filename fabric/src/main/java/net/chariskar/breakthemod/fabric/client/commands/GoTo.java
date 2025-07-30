@@ -28,6 +28,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.NotNull;
 
 public class GoTo extends FabricCommand{
     private final GoToService Service = new GoToService();
@@ -48,7 +49,7 @@ public class GoTo extends FabricCommand{
     }
 
     @Override
-    public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+    public void register(@NotNull CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(
                 LiteralArgumentBuilder.<FabricClientCommandSource>literal(getName())
                         .then(RequiredArgumentBuilder.<FabricClientCommandSource, String>argument("destination", StringArgumentType.string())

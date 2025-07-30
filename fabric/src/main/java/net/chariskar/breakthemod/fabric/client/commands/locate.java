@@ -33,6 +33,7 @@ import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -78,7 +79,7 @@ public class locate extends FabricCommand{
     }
 
     @Override
-    public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+    public void register(@NotNull CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(
                 LiteralArgumentBuilder.<FabricClientCommandSource>literal(getName())
                         .then(RequiredArgumentBuilder.<FabricClientCommandSource, String>argument("name", StringArgumentType.string())

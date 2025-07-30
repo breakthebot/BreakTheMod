@@ -30,7 +30,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class whereIs extends FabricCommand{
     findPlayerService Service = new findPlayerService();
@@ -54,10 +54,12 @@ public class whereIs extends FabricCommand{
     protected int execute(CommandContext<FabricClientCommandSource> ctx) throws Exception {
         String name = ctx.getArgument("name", String.class);
         MinecraftClient client = MinecraftClient.getInstance();
-        Optional<findPlayerService.PlayerLocationInfo> resp = Service.get(name);
+        CompletableFuture.supplyAsync((() -> Service.get(name))).thenAccept((resp) -> {
+            if (resp.get().found) sendMessage(client, Text.literal(resp.get().toString()));
+            else
+                sendMessage(client, Text.literal(resp.get().toString()).setStyle(Style.EMPTY.withColor(Formatting.AQUA)));
+        });
 
-        if (resp.get().found) sendMessage(client, Text.literal(resp.get().toString()));
-        else sendMessage(client, Text.literal(resp.get().toString()).setStyle(Style.EMPTY.withColor(Formatting.AQUA)));
 
         return 0;
     }

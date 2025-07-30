@@ -26,6 +26,7 @@ import net.chariskar.breakthemod.Services.nationPopulationService;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -57,7 +58,7 @@ public class nationpop extends FabricCommand{
     }
 
     @Override
-    public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+    public void register(@NotNull CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(
                 LiteralArgumentBuilder.<FabricClientCommandSource>literal(getName())
                         .then(RequiredArgumentBuilder.<FabricClientCommandSource, String>argument("name", StringArgumentType.string()).executes(context -> {

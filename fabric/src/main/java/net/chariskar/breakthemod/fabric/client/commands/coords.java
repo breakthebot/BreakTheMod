@@ -25,6 +25,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.chariskar.breakthemod.Services.coordsService;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.NotNull;
 
 public class coords extends FabricCommand{
     coordsService Service = new coordsService();
@@ -60,7 +61,7 @@ public class coords extends FabricCommand{
     }
 
     @Override
-    public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+    public void register(@NotNull CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(
                 LiteralArgumentBuilder.<FabricClientCommandSource>literal(getName())
                         .then(RequiredArgumentBuilder.<FabricClientCommandSource, Double>argument("x", DoubleArgumentType.doubleArg())

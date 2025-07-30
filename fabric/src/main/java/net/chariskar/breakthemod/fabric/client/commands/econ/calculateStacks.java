@@ -27,6 +27,7 @@ import net.chariskar.breakthemod.fabric.client.commands.FabricCommand;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.NotNull;
 
 public class calculateStacks extends FabricCommand {
 
@@ -52,7 +53,7 @@ public class calculateStacks extends FabricCommand {
     }
 
     @Override
-    public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+    public void register(@NotNull CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(
            LiteralArgumentBuilder
                     .<FabricClientCommandSource>literal("calculateStacks")

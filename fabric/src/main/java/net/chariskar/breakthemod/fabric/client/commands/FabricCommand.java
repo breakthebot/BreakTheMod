@@ -28,6 +28,7 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class FabricCommand extends Command<FabricClientCommandSource> {
     public static final MinecraftClient client = MinecraftClient.getInstance();
@@ -86,7 +87,7 @@ public abstract class FabricCommand extends Command<FabricClientCommandSource> {
     }
 
     @Override
-    public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+    public void register(@NotNull CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(
                 LiteralArgumentBuilder.<FabricClientCommandSource>literal(getName())
                         .executes(context -> {
