@@ -36,7 +36,7 @@ public class config {
     private static config instance = null;
     private static final File configFile = new File(Platform.getConfigFolder().toFile(), "breakthemod_config.json");
     private static String API_URL = "https://api.earthmc.net/v3/aurora";
-    private static String MAP_URL = "https://map.earthmc.com/";
+    private static String MAP_URL = "https://map.earthmc.net/";
     private static String Staff_Repo_Url = "https://raw.githubusercontent.com/jwkerr/staff/master/staff.json";
     public boolean radarEnabled = true;
 

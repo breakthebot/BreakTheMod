@@ -59,7 +59,7 @@ public class townlessService extends Service {
             return townless;
 
         } catch (Exception e) {
-            LOGGER.error("Error fetching town data for {}: {}", onlinePlayers, e.getMessage(), e);
+            logError("Error fetching townless players", e);
             return null;
         }
     }

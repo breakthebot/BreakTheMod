@@ -23,6 +23,8 @@ import net.chariskar.breakthemod.utils.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+
 abstract public class Service {
     protected static final Logger LOGGER = LoggerFactory.getLogger("breakthemod");
     protected final Fetch fetch = Fetch.getInstance();
@@ -30,7 +32,7 @@ abstract public class Service {
     protected void logError(String message, Exception e) {
         LOGGER.error("{}{}", message, e.getMessage());
         if (config.getInstance().isDev()) {
-            e.printStackTrace();
+            LOGGER.error("{}", Arrays.toString(e.getStackTrace()));
         }
     }
 
