@@ -108,40 +108,6 @@ public class Config  {
                 .build()
         );
 
-        general.addEntry(entryBuilder.startStrField(
-                                Text.literal("API URL"),
-                                config.getInstance().getApiURL()
-                        )
-                        .setSaveConsumer(text -> {
-                            config.getInstance().setApiURL(text);
-                            config.getInstance().saveConfig();
-                        }).setDefaultValue(() -> "https://api.earthmc.net/v3/aurora")
-                        .build()
-        );
-
-
-        general.addEntry(entryBuilder.startStrField(
-                                Text.literal("MAP URL"),
-                                config.getInstance().getMapURL()
-                        )
-                        .setSaveConsumer(text -> {
-                            config.getInstance().setMapUrl(text);
-                            config.getInstance().saveConfig();
-                        }).setDefaultValue(() -> "https://map.earthmc.net/")
-                        .build()
-        );
-
-
-        general.addEntry(entryBuilder.startStrField(
-                                Text.literal("STAFF REPO URL"),
-                                config.getInstance().getStaffRepoURL()
-                        )
-                        .setSaveConsumer(text -> {
-                            config.getInstance().setStaffRepoURL(text);
-                            config.getInstance().saveConfig();
-                        }).setDefaultValue(() -> "https://raw.githubusercontent.com/jwkerr/staff/master/staff.json")
-                        .build()
-        );
 
 
 
