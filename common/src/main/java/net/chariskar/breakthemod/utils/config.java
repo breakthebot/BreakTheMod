@@ -36,7 +36,6 @@ public class config {
     private static String BTM_VERSION = "1.2.3";
     private static String Staff_Repo_Url = "https://raw.githubusercontent.com/jwkerr/staff/master/staff.json";
     public boolean radarEnabled = true;
-
     private WidgetPosition widgetPosition = WidgetPosition.TOP_LEFT;
     private int customX = 0;
     private int customY = 0;
@@ -52,7 +51,6 @@ public class config {
         public String apiURL;
         public String mapURL;
         public String staffRepoURL;
-        public String btmVersion;
 
         public ConfigData() {}
 
@@ -65,8 +63,7 @@ public class config {
                 boolean devMode,
                 String apiURL,
                 String mapURL,
-                String staffRepoURL,
-                String btmVersion
+                String staffRepoURL
         ) {
             this.radarEnabled = radarEnabled;
             this.widgetPosition = widgetPosition;
@@ -77,18 +74,18 @@ public class config {
             this.apiURL = apiURL;
             this.mapURL = mapURL;
             this.staffRepoURL = staffRepoURL;
-            this.btmVersion = btmVersion;
         }
     }
 
     private config(ConfigData data) {
+        if (data == null) return; // keep static assignment
+
         this.radarEnabled = data.radarEnabled;
         this.widgetPosition = data.widgetPosition;
         this.customX = data.customX;
         this.customY = data.customY;
         this.enabledOnOtherServers = data.enabledOnOtherServers;
         dev = data.devMode;
-        BTM_VERSION = data.btmVersion;
         API_URL = data.apiURL;
         MAP_URL = data.mapURL;
         Staff_Repo_Url = data.staffRepoURL;
@@ -96,7 +93,7 @@ public class config {
 
     public static config getInstance() {
         if (instance == null) {
-            instance = new config(load_config().get());
+            instance = new config(load_config().isPresent() ? load_config().get() : null);
             return instance;
         }
         return instance;
@@ -197,8 +194,7 @@ public class config {
                         false,
                         API_URL,
                         MAP_URL,
-                        Staff_Repo_Url,
-                        BTM_VERSION
+                        Staff_Repo_Url
                 );
                 try (FileWriter writer = new FileWriter(configFile)) {
                     gson.toJson(defaultConfig, writer);
@@ -234,8 +230,7 @@ public class config {
                     false,
                     API_URL,
                     MAP_URL,
-                    Staff_Repo_Url,
-                    BTM_VERSION
+                    Staff_Repo_Url
             );
             try (FileWriter writer = new FileWriter(configFile)) {
                 gson.toJson(defaultConfig, writer);
@@ -276,8 +271,7 @@ public class config {
                 dev,
                 API_URL,
                 MAP_URL,
-                Staff_Repo_Url,
-                BTM_VERSION
+                Staff_Repo_Url
         );
 
         try {
@@ -291,7 +285,10 @@ public class config {
         }
     }
 
-
+    /**
+     * @param message The actual message to be logged.
+     * @param e The exception event to print stacktrace.
+     */
     protected static void logError(String message, Exception e) {
         LOGGER.error("{}{}", message, e.getMessage());
         if (config.getInstance().isDev()) {
