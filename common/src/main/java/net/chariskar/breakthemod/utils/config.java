@@ -17,17 +17,13 @@
 
 package net.chariskar.breakthemod.utils;
 
-
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import dev.architectury.platform.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.*;
 
 public class config {
     private static final Logger LOGGER = LoggerFactory.getLogger("breakthemod");
@@ -37,22 +33,70 @@ public class config {
     private static final File configFile = new File(Platform.getConfigFolder().toFile(), "breakthemod_config.json");
     private static String API_URL = "https://api.earthmc.net/v3/aurora";
     private static String MAP_URL = "https://map.earthmc.net/";
+    private static String BTM_VERSION = "1.2.3";
     private static String Staff_Repo_Url = "https://raw.githubusercontent.com/jwkerr/staff/master/staff.json";
     public boolean radarEnabled = true;
 
-    // config properties
     private WidgetPosition widgetPosition = WidgetPosition.TOP_LEFT;
     private int customX = 0;
     private int customY = 0;
     private boolean enabledOnOtherServers = false;
 
-    private config() {
-        loadConfig();
+    public static  class ConfigData {
+        public boolean radarEnabled;
+        public config.WidgetPosition widgetPosition;
+        public int customX;
+        public int customY;
+        public boolean enabledOnOtherServers;
+        public boolean devMode;
+        public String apiURL;
+        public String mapURL;
+        public String staffRepoURL;
+        public String btmVersion;
+
+        public ConfigData() {}
+
+        public ConfigData(
+                boolean radarEnabled,
+                config.WidgetPosition widgetPosition,
+                int customX,
+                int customY,
+                boolean enabledOnOtherServers,
+                boolean devMode,
+                String apiURL,
+                String mapURL,
+                String staffRepoURL,
+                String btmVersion
+        ) {
+            this.radarEnabled = radarEnabled;
+            this.widgetPosition = widgetPosition;
+            this.customX = customX;
+            this.customY = customY;
+            this.enabledOnOtherServers = enabledOnOtherServers;
+            this.devMode = devMode;
+            this.apiURL = apiURL;
+            this.mapURL = mapURL;
+            this.staffRepoURL = staffRepoURL;
+            this.btmVersion = btmVersion;
+        }
+    }
+
+    private config(ConfigData data) {
+        this.radarEnabled = data.radarEnabled;
+        this.widgetPosition = data.widgetPosition;
+        this.customX = data.customX;
+        this.customY = data.customY;
+        this.enabledOnOtherServers = data.enabledOnOtherServers;
+        dev = data.devMode;
+        BTM_VERSION = data.btmVersion;
+        API_URL = data.apiURL;
+        MAP_URL = data.mapURL;
+        Staff_Repo_Url = data.staffRepoURL;
     }
 
     public static config getInstance() {
         if (instance == null) {
-            instance = new config();
+            instance = new config(load_config().get());
             return instance;
         }
         return instance;
@@ -135,46 +179,74 @@ public class config {
         return formatURL(Staff_Repo_Url);
     }
 
-    public void saveConfig() {
-        JsonObject configJson = new JsonObject();
-        configJson.addProperty("widgetPosition", widgetPosition.name());
-        configJson.addProperty("customX", customX);
-        configJson.addProperty("customY", customY);
-        configJson.addProperty("radarEnabled", radarEnabled);
-        configJson.addProperty("enabledOnOtherServers", enabledOnOtherServers);
-        configJson.addProperty("dev", dev);
-        configJson.addProperty("API_URL", API_URL);
-        configJson.addProperty("MAP_URL", MAP_URL);
-        configJson.addProperty("STAFF_REPO_URL", MAP_URL);
+    public String getBtmVersion() {return BTM_VERSION;}
 
-        try (FileWriter writer = new FileWriter(configFile)) {
-            gson.toJson(configJson, writer);
-        } catch (IOException e) {
-            LOGGER.error("Unexpected I/O exception: {}", e.getMessage());
-        }
-    }
+    public void setBtmVersion(String version) { BTM_VERSION = version; }
 
-    private void loadConfig() {
-        if (configFile.exists()) {
-            try (FileReader reader = new FileReader(configFile)) {
-                JsonObject configJson = gson.fromJson(reader, JsonObject.class);
-                widgetPosition = configJson.has("widgetPosition")
-                        ? WidgetPosition.valueOf(configJson.get("widgetPosition").getAsString())
-                        : WidgetPosition.TOP_LEFT;
-                customX = configJson.has("customX") ? configJson.get("customX").getAsInt() : 0;
-                customY = configJson.has("customY") ? configJson.get("customY").getAsInt() : 0;
-                radarEnabled = !configJson.has("radarEnabled") || configJson.get("radarEnabled").getAsBoolean();
-                enabledOnOtherServers = configJson.has("enabledOnOtherServers") && configJson.get("enabledOnOtherServers").getAsBoolean();
-                dev = configJson.has("dev") ? configJson.get("dev").getAsBoolean() : dev;
-                API_URL = configJson.has("API_URL") ? configJson.get("API_URL").getAsString() : API_URL;
-                MAP_URL = configJson.has("MAP_URL") ? configJson.get("MAP_URL").getAsString() : MAP_URL;
-                Staff_Repo_Url = configJson.has("STAFF_REPO_URL") ? configJson.get("STAFF_REPO_URL").getAsString() : Staff_Repo_Url;
 
+    public static Optional<ConfigData> load_config() {
+        if (!configFile.exists()) {
+            try {
+                configFile.getParentFile().mkdirs();
+                ConfigData defaultConfig = new ConfigData(
+                        true,
+                        WidgetPosition.TOP_LEFT,
+                        0,
+                        0,
+                        false,
+                        false,
+                        API_URL,
+                        MAP_URL,
+                        Staff_Repo_Url,
+                        BTM_VERSION
+                );
+                try (FileWriter writer = new FileWriter(configFile)) {
+                    gson.toJson(defaultConfig, writer);
+                }
+                return Optional.of(defaultConfig);
             } catch (IOException e) {
-                LOGGER.error("Unexpected I/O exception: {}", e.getMessage());
+                logError("Unable to create default config file", e);
+                return Optional.empty();
             }
         }
+
+        try (FileReader file = new FileReader(configFile)) {
+            ConfigData data = gson.fromJson(file, ConfigData.class);
+            return Optional.ofNullable(data);
+        } catch (IOException e) {
+            logError("I/O exception when reading file", e);
+        } catch (JsonSyntaxException e) {
+            logError("Unable to parse config, regenerating with defaults", e);
+            return regenerateDefaultConfig();
+        }
+
+        return Optional.empty();
     }
+
+    private static Optional<ConfigData> regenerateDefaultConfig() {
+        try {
+            ConfigData defaultConfig = new ConfigData(
+                    true,
+                    WidgetPosition.TOP_LEFT,
+                    0,
+                    0,
+                    false,
+                    false,
+                    API_URL,
+                    MAP_URL,
+                    Staff_Repo_Url,
+                    BTM_VERSION
+            );
+            try (FileWriter writer = new FileWriter(configFile)) {
+                gson.toJson(defaultConfig, writer);
+            }
+            return Optional.of(defaultConfig);
+        } catch (IOException ex) {
+            logError("Unable to regenerate default config file", ex);
+            return Optional.empty();
+        }
+    }
+
 
     public enum WidgetPosition {
         TOP_LEFT,
@@ -192,5 +264,38 @@ public class config {
             url += "/";
         }
         return url;
+    }
+
+    public void saveConfig() {
+        ConfigData data = new ConfigData(
+                this.radarEnabled,
+                this.widgetPosition,
+                this.customX,
+                this.customY,
+                this.enabledOnOtherServers,
+                dev,
+                API_URL,
+                MAP_URL,
+                Staff_Repo_Url,
+                BTM_VERSION
+        );
+
+        try {
+            configFile.getParentFile().mkdirs();
+            try (FileWriter writer = new FileWriter(configFile)) {
+                gson.toJson(data, writer);
+            }
+            LOGGER.info("Config saved to {}", configFile.getAbsolutePath());
+        } catch (IOException e) {
+            logError("Unable to save config", e);
+        }
+    }
+
+
+    protected static void logError(String message, Exception e) {
+        LOGGER.error("{}{}", message, e.getMessage());
+        if (config.getInstance().isDev()) {
+            LOGGER.error("{}", Arrays.toString(e.getStackTrace()));
+        }
     }
 }
