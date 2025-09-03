@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "breakthemod-kt",
+  "version": "${version}",
+  "name": "breakthemod-kt",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "GPL-3.0",
+  "icon": "assets/breakthemod-kt/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "fabric-datagen": [
+      "net.chariskar.breakthemodKt.client.BreakthemodKtDataGenerator"
+    ],
+    "client": [
+      "net.chariskar.breakthemodKt.client.BreakthemodKtClient"
+    ],
+    "main": [
+      "net.chariskar.breakthemodKt.BreakthemodKt"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-language-kotlin": ">=${kotlin_loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
