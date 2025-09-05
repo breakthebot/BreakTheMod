@@ -17,16 +17,17 @@
 
 package net.chariskar.breakthemod.client.utils
 
-import com.google.gson.Gson
+import kotlinx.serialization.Serializable
 import net.minecraft.client.MinecraftClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
+import kotlinx.serialization.json.Json
 
 class Config private constructor(){
-    val gson: Gson = Gson()
     var config: ConfigData? = null
 
+    @Serializable
     data class ConfigData(
         var dev: Boolean = false,
         var enabledOnOtherServers: Boolean = true,
@@ -53,16 +54,22 @@ class Config private constructor(){
 
         private var instance: Config? = null
 
-        fun getInstance() = instance ?: synchronized(this) {
-                instance ?: Config().also { instance = it }
+        fun getInstance(): Config = instance ?: synchronized(this) {
+            if (instance == null) {
+                instance = Config().apply {
+                    config = loadConfig()
+                }
+            }
+            instance!!
         }
 
-        fun loadConfig() {
+
+        fun loadConfig(): ConfigData {
             if (configFile.exists()) {
                 val fileContent = configFile.readText()
 
                 try {
-                    getInstance().config = getInstance().gson.fromJson(fileContent, ConfigData::class.java)
+                    return Json.decodeFromString<ConfigData>(fileContent)
                 } catch (e: Exception) {
                     logger.error("Unable to parse config file regenerating, ${e.message}")
                     generateConfig()
@@ -71,13 +78,14 @@ class Config private constructor(){
             } else {
                 generateConfig()
             }
-
+            return ConfigData()
         }
 
         fun generateConfig() {
             val conf: ConfigData = ConfigData()
             try {
-                configFile.writeText(getInstance().gson.toJson(conf))
+
+                configFile.writeText(Json.encodeToString(conf))
             } catch (e: Exception) {
                 logger.error("Unable to write new config, ${e.message}")
             }
@@ -85,7 +93,7 @@ class Config private constructor(){
 
         fun saveConfig(data: ConfigData) {
             try {
-                configFile.writeText(getInstance().gson.toJson(data))
+                configFile.writeText(Json.encodeToString(data))
             } catch (e: Exception) {
                 logger.error("Unable to write new config, ${e.message}")
             }

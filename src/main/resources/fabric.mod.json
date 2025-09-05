@@ -11,13 +11,13 @@
   "environment": "client",
   "entrypoints": {
     "fabric-datagen": [
-      "net.chariskar.breakthemod.client.breakthemodDataGenerator"
+      "net.chariskar.breakthemod.client.DataGenerator"
     ],
     "client": [
-      "net.chariskar.breakthemod.client.breakthemodClient"
+      "net.chariskar.breakthemod.client.BreakthemodClient"
     ],
     "main": [
-      "net.chariskar.breakthemod.breakthemod"
+      "net.chariskar.breakthemod.Breakthemod"
     ]
   },
   "depends": {
