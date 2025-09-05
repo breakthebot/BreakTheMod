@@ -1,23 +1,23 @@
 {
   "schemaVersion": 1,
-  "id": "breakthemod-kt",
+  "id": "breakthemod",
   "version": "${version}",
-  "name": "breakthemod-kt",
+  "name": "breakthemod",
   "description": "",
   "authors": [],
   "contact": {},
   "license": "GPL-3.0",
-  "icon": "assets/breakthemod-kt/icon.png",
+  "icon": "assets/breakthemod/icon.png",
   "environment": "client",
   "entrypoints": {
     "fabric-datagen": [
-      "net.chariskar.breakthemodKt.client.BreakthemodKtDataGenerator"
+      "net.chariskar.breakthemod.client.breakthemodDataGenerator"
     ],
     "client": [
-      "net.chariskar.breakthemodKt.client.BreakthemodKtClient"
+      "net.chariskar.breakthemod.client.breakthemodClient"
     ],
     "main": [
-      "net.chariskar.breakthemodKt.BreakthemodKt"
+      "net.chariskar.breakthemod.breakthemod"
     ]
   },
   "depends": {

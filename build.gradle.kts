@@ -100,3 +100,8 @@ publishing {
         // retrieving dependencies.
     }
 }
+kotlin {
+    compilerOptions {
+        allWarningsAsErrors.set(true)
+    }
+}

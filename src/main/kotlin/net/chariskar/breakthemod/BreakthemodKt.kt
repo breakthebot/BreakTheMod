@@ -1,4 +1,4 @@
-package net.chariskar.breakthemodKt
+package net.chariskar.breakthemod
 
 import net.fabricmc.api.ModInitializer
 
