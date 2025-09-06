@@ -40,17 +40,17 @@ class Fetch {
             "discord" to "${Config.getApiUrl()}/discord"
         )
 
-        public data class ItemType<T>(
-            val url: String,
-            val type: T
-        )
 
         /**
          * List of items that can be looked up from the api, mapped to the url of each.
          */
-        public enum class ItemTypes(
-            TOWN: ItemType<town> = ItemType(urls["towns"]!!, town())
-        )
+        enum class ItemTypes(val url: String) {
+            TOWN(urls["towns"]!!),
+            NATION(urls["nations"]!!),
+            PLAYER(urls["players"]!!),
+            NEARBY(urls["nearby"]!!);
+        }
+
 
         /**
          * Send a get request.
@@ -109,7 +109,7 @@ class Fetch {
             val protocolEnd = url.indexOf("://")
             if (protocolEnd == -1) return url
 
-            val protocol = url.substring(0, protocolEnd + 3)
+            val protocol = url.take(protocolEnd + 3)
             var rest = url.substring(protocolEnd + 3)
 
             rest = rest.replace("/{2,}".toRegex(), "/")
@@ -124,16 +124,35 @@ class Fetch {
     }
 
     /**
-     * Sends a post request.
+     * Sends a post request to the api.
      * @generic T the type to infer the response into
-     * @param itemType The type of the item to fetch.
+     * @param item The type of the item to fetch.
+     * @param body The body to send
      */
-    inline fun <reified T> getObject(itemType: ItemTypes): List<T?>? {
-        try {
-
+    inline fun <reified T : Any> getObject(item: ItemTypes, body: String): List<T>? {
+        return try {
+            val url: String = item.url
+            return postRequest<List<T>>(url, body)
         } catch (e: Exception) {
             logError("Unable to fetch item", e)
-            return null
+            null
         }
     }
+
+    /**
+     * Sends a get request to the api.
+     * @generic T the type to infer the response into
+     * @param item The type of the item to fetch.
+     */
+    inline fun <reified T : Any> getAll(item: ItemTypes): List<T>? {
+        return try {
+            val url: String = item.url
+            return getRequest<List<T>?>(url)
+        } catch (e: Exception) {
+            logError("Unable to fetch item", e)
+            null
+        }
+    }
+
+
 }
