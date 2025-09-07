@@ -7,12 +7,9 @@
   "authors": [],
   "contact": {},
   "license": "GPL-3.0",
-  "icon": "assets/breakthemod/icon.png",
+  "icon": "assets/icon.png",
   "environment": "client",
   "entrypoints": {
-    "fabric-datagen": [
-      "net.chariskar.breakthemod.client.DataGenerator"
-    ],
     "client": [
       "net.chariskar.breakthemod.client.BreakthemodClient"
     ],
@@ -24,6 +21,6 @@
     "fabricloader": ">=${loader_version}",
     "fabric-language-kotlin": ">=${kotlin_loader_version}",
     "fabric": "*",
-    "minecraft": "${minecraft_version}"
+    "minecraft": "~1.21.4"
   }
 }

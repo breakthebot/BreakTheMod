@@ -1,9 +1,28 @@
 package net.chariskar.breakthemod
 
+import com.mojang.brigadier.CommandDispatcher
+import net.chariskar.breakthemod.client.api.Command
+import net.chariskar.breakthemod.client.commands.nearby
 import net.fabricmc.api.ModInitializer
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
+import net.minecraft.command.CommandRegistryAccess
+
 
 class Breakthemod : ModInitializer {
 
     override fun onInitialize() {
+        val commandList: MutableList<Command> = mutableListOf(
+            nearby()
+        )
+        loadCommands(commandList)
+    }
+
+    private fun loadCommands(commands: MutableList<Command>) {
+        ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, phase: CommandRegistryAccess ->
+            for (command in commands) {
+                command.register(dispatcher)
+            }
+        })
     }
 }

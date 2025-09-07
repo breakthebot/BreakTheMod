@@ -31,7 +31,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
 
-open class Command {
+abstract class Command {
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
     val fetch: Fetch = Fetch.getInstance()
 
@@ -44,7 +44,7 @@ open class Command {
     /**
      * @param ctx the command context.
      */
-    protected fun execute(ctx: CommandContext<FabricClientCommandSource?>?): Int {
+    protected open fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         return 0;
     }
 
@@ -55,7 +55,7 @@ open class Command {
      * @throws CommandSyntaxException If invalid syntax
      */
     @Throws(CommandSyntaxException::class)
-    protected fun run(ctx: CommandContext<FabricClientCommandSource?>?): Int {
+    protected open fun run(ctx: CommandContext<FabricClientCommandSource>): Int {
         try {
             return execute(ctx)
         } catch (e: CommandSyntaxException) {
@@ -71,10 +71,10 @@ open class Command {
         }
     }
 
-    fun register(dispatcher: CommandDispatcher<FabricClientCommandSource?>) {
+    fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         dispatcher.register(
-            LiteralArgumentBuilder.literal<FabricClientCommandSource?>(name)
-                .executes(Command { context: CommandContext<FabricClientCommandSource?>? ->
+            LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)
+                .executes(Command { context: CommandContext<FabricClientCommandSource> ->
                     if (!getEnabled()) {return@Command 0}
                     return@Command run(context)
                 })
