@@ -32,10 +32,12 @@ import org.slf4j.LoggerFactory
 import java.util.*
 
 open class Command {
+    val logger: Logger = LoggerFactory.getLogger("breakthemod")
+    val fetch: Fetch = Fetch.getInstance()
+
     var name: String = ""
     var description: String = ""
     var usageSuffix: String = ""
-    val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
     fun getUsage(): String { return "/" + name + (if (usageSuffix.isEmpty()) "" else usageSuffix) }
 

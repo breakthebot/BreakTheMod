@@ -1,24 +1,22 @@
 /*
- * This file is part of breakthemodRewrite.
+ * This file is part of breakthemod.
  *
- * breakthemodRewrite is free software: you can redistribute it and/or modify
+ * breakthemod is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * breakthemodRewrite is distributed in the hope that it will be useful,
+ * breakthemod is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with breakthemodRewrite. If not, see <https://www.gnu.org/licenses/>.
+ * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
-
 package net.chariskar.breakthemod.client.api
 
 import kotlinx.serialization.json.Json
-import net.chariskar.breakthemod.client.api.types.town
 import net.chariskar.breakthemod.client.utils.Config
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -28,7 +26,7 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 
 
-class Fetch {
+class Fetch private constructor() {
     companion object {
         val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
@@ -48,7 +46,8 @@ class Fetch {
             TOWN(urls["towns"]!!),
             NATION(urls["nations"]!!),
             PLAYER(urls["players"]!!),
-            NEARBY(urls["nearby"]!!);
+            NEARBY(urls["nearby"]!!),
+            DISCORD(urls["discord"]!!)
         }
 
 
@@ -121,6 +120,14 @@ class Fetch {
             return protocol + rest
         }
 
+        @Volatile
+        private var INSTANCE: Fetch? = null
+
+        fun getInstance(): Fetch {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: Fetch().also { INSTANCE = it }
+            }
+        }
     }
 
     /**
@@ -129,7 +136,7 @@ class Fetch {
      * @param item The type of the item to fetch.
      * @param body The body to send
      */
-    inline fun <reified T : Any> getObject(item: ItemTypes, body: String): List<T>? {
+    inline fun <reified T : Any> getObjects(item: ItemTypes, body: String): List<T>? {
         return try {
             val url: String = item.url
             return postRequest<List<T>>(url, body)
