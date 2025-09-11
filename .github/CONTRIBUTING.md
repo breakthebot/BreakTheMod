@@ -10,17 +10,23 @@ Thank you for your interest in contributing to *BreakTheMod*! Contributions help
 Here are some ways you can contribute:
 
 1. **Reporting Issues**  
-   - Found a bug? Submit it to the [Issues tab](https://github.com/Veyronity/BreakTheMod/issues).  
+   - Found a bug? Submit it to the [Issues tab](https://github.com/breakthebot/BreakTheMod/issues).  
    - Include details like:  
      - Steps to reproduce the issue  
      - Crash logs or screenshots (if applicable)
 
 2. **Suggesting Features**  
-   - Have an idea to improve the mod? Open a feature request in the [Issues tab](https://github.com/breakthebot/breakthemod/issues) under the idea label.
+    - Have an idea to improve the mod? Open a feature request in the [Issues tab](https://github.com/breakthebot/breakthemod/issues) under the idea label.
 
 3. **Coding**  
    - Fix bugs or add features by submitting pull requests (PRs).  
    - Check the [Issues tab](https://github.com/breakthebot/breakthemod/issues) for tasks labeled `triage-needed`.
+   - Have an idea to improve the mod? Open a feature request in the [Issues tab](https://github.com/breakthebot/BreakTheMod/issues) under the idea label.
+
+3. **Coding**  
+   - Fix bugs or add features by submitting pull requests (PRs).  
+   - Check the [Issues tab](https://github.com/breakthebot/BreakTheMod/issues) for tasks labeled `triage-needed`.
+
 
 4. **Documentation**  
    - Help improve the mod's documentation by editing the README, adding usage guides, or contributing to the wiki.
@@ -36,12 +42,12 @@ Here are some ways you can contribute:
 1. Fork this repository to your GitHub account.  
 2. Clone the forked repository to your local machine:  
    ```bash
-   git clone https://github.com/Veyronity/breakthemod.git
+   git clone https://github.com/breakthebot/BreakTheMod.git
    ```
 
 ### **Step 2: Set Up the Development Environment**
 1. Ensure you have the required tools installed:
-   - Java Development Kit (JDK) 17 or later  
+   - Java Development Kit (JDK) 21 or later  
    - [Fabric Development Environment](https://fabricmc.net/ )  
    - Gradle or an IDE like IntelliJ IDEA with Gradle support  
 
