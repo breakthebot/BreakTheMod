@@ -18,11 +18,12 @@
 package net.chariskar.breakthemod.client.api.types
 
 import kotlinx.serialization.Serializable
-import java.util.UUID
+import net.chariskar.breakthemod.client.utils.SerializableUUID
+
 
 @Serializable
 class Nation(val name: String) {
-    var uuid: UUID? = null
+    val uuid: SerializableUUID? = null
     var board: String? = null
     var dynmapColour: String? = null
     var dynmapOutline: String? = null
@@ -40,39 +41,45 @@ class Nation(val name: String) {
     var sanctioned: List<Resident>? = null
     var ranks: Ranks? = null
 
+    @Serializable
     data class Leader(
         var name: String? = null,
-        var uuid: UUID? = null
+    val uuid: SerializableUUID? = null
     )
 
+    @Serializable
     data class Capital(
         var name: String? = null,
-        var uuid: UUID? = null
+    val uuid: SerializableUUID? = null
     )
 
+    @Serializable
     data class Timestamps(
         var registered: Long? = null
     )
-
+    @Serializable
     data class Status(
         var isPublic: Boolean? = null,
         var isOpen: Boolean? = null,
         var isNeutral: Boolean? = null
     )
 
+    @Serializable
     data class Stats(
         var numTownBlocks: Int? = null,
         var numResidents: Int? = null,
         var numTowns: Int? = null,
         var numAllies: Int? = null,
         var numEnemies: Int? = null,
-        var balance: Int? = null
+        var balance: Float? = null
     )
 
+    @Serializable
     data class Coordinates(
         var spawn: Spawn? = null
     )
 
+    @Serializable
     data class Spawn(
         var world: String? = null,
         var x: Double? = null,
@@ -82,11 +89,13 @@ class Nation(val name: String) {
         var yaw: Float? = null
     )
 
+    @Serializable
     data class Resident(
         var name: String? = null,
-        var uuid: UUID? = null
+    val uuid: SerializableUUID? = null
     )
 
+    @Serializable
     data class Ranks(
         var Chancellor: List<Resident>? = null,
         var Colonist: List<Resident>? = null,

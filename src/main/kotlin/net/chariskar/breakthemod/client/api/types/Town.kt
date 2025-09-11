@@ -17,12 +17,12 @@
 package net.chariskar.breakthemod.client.api.types
 
 import kotlinx.serialization.Serializable
-import java.util.UUID
+import net.chariskar.breakthemod.client.utils.SerializableUUID
 
 @Serializable
 data class Town(
     val name: String,
-    val uuid: UUID? = null,
+    val uuid: SerializableUUID? = null,
     val board: String? = null,
     val founder: String? = null,
     val wiki: String? = null,
@@ -39,22 +39,26 @@ data class Town(
     val quarters: List<Reference>? = null,
     val ranks: Ranks? = null
 ) {
+    @Serializable
     data class Mayor(
         val name: String? = null,
-        val uuid: UUID? = null
+        val uuid: SerializableUUID? = null
     )
 
+    @Serializable
     data class Nation(
         val name: String? = null,
-        val uuid: UUID? = null
+        val uuid: SerializableUUID? = null
     )
 
+    @Serializable
     data class Timestamps(
         val registered: Long? = null,
         val joinedNationAt: Long? = null,
         val ruinedAt: Long? = null
     )
 
+    @Serializable
     data class Status(
         val isPublic: Boolean? = null,
         val isOpen: Boolean? = null,
@@ -68,16 +72,18 @@ data class Town(
         val canOutsidersSpawn: Boolean? = null
     )
 
+    @Serializable
     data class Stats(
         val numTownBlocks: Int? = null,
         val maxTownBlocks: Int? = null,
         val numResidents: Int? = null,
         val numTrusted: Int? = null,
         val numOutlaws: Int? = null,
-        val balance: Int? = null,
+        val balance: Float? = null,
         val forSalePrice: Int? = null
     )
 
+    @Serializable
     data class Perms(
         val build: List<Boolean>? = null,
         val destroy: List<Boolean>? = null,
@@ -86,6 +92,7 @@ data class Town(
         val flags: Flags? = null
     )
 
+    @Serializable
     data class Flags(
         val pvp: Boolean? = null,
         val explosion: Boolean? = null,
@@ -93,12 +100,14 @@ data class Town(
         val mobs: Boolean? = null
     )
 
+    @Serializable
     data class Coordinates(
         val spawn: Spawn? = null,
         val homeBlock: List<Int>? = null,
         val townBlocks: List<List<Int>>? = null
     )
 
+    @Serializable
     data class Spawn(
         val world: String? = null,
         val x: Double? = null,
@@ -108,11 +117,13 @@ data class Town(
         val yaw: Float? = null
     )
 
+    @Serializable
     data class Resident(
         val name: String? = null,
-        val uuid: UUID? = null
+        val uuid: SerializableUUID? = null
     )
 
+    @Serializable
     data class Ranks(
         val councillor: List<Resident>? = null,
         val builder: List<Resident>? = null,

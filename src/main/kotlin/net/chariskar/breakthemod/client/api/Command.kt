@@ -34,6 +34,7 @@ import java.util.*
 abstract class Command {
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
     val fetch: Fetch = Fetch.getInstance()
+    val client: MinecraftClient = MinecraftClient.getInstance()
 
     var name: String = ""
     var description: String = ""
@@ -71,7 +72,7 @@ abstract class Command {
         }
     }
 
-    fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
+    open fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         dispatcher.register(
             LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)
                 .executes(Command { context: CommandContext<FabricClientCommandSource> ->
