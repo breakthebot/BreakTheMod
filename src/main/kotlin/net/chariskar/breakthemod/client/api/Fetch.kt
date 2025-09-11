@@ -16,7 +16,12 @@
  */
 package net.chariskar.breakthemod.client.api
 
+import com.google.gson.Gson
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.putJsonArray
 import net.chariskar.breakthemod.client.utils.Config
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -27,29 +32,20 @@ import java.net.http.HttpResponse
 
 
 class Fetch private constructor() {
+    val gson: Gson = Gson()
+
     companion object {
         val logger: Logger = LoggerFactory.getLogger("breakthemod")
+        val gson: Gson = Gson()
 
         val urls = mapOf(
             "towns" to "${Config.getApiUrl()}/towns",
             "nations" to "${Config.getApiUrl()}/nations",
             "players" to "${Config.getApiUrl()}/players",
             "nearby" to "${Config.getApiUrl()}/nearby",
-            "discord" to "${Config.getApiUrl()}/discord"
+            "discord" to "${Config.getApiUrl()}/discord",
+            "staff" to Config.getStaffUrl()
         )
-
-
-        /**
-         * List of items that can be looked up from the api, mapped to the url of each.
-         */
-        enum class ItemTypes(val url: String) {
-            TOWN(urls["towns"]!!),
-            NATION(urls["nations"]!!),
-            PLAYER(urls["players"]!!),
-            NEARBY(urls["nearby"]!!),
-            DISCORD(urls["discord"]!!)
-        }
-
 
         /**
          * Send a get request.
@@ -79,14 +75,24 @@ class Fetch private constructor() {
          */
         inline fun <reified T> postRequest(url: String, body: String): T? {
              try {
+                 val uuids = body.removePrefix("[").removeSuffix("]").split(",").map { it.trim().removeSurrounding("\"") }
+
+                 val jsonBody = buildJsonObject {
+                     put("query", JsonArray(uuids.map { JsonPrimitive(it) }))
+                 }
+
+
+                 logger.debug("Json body ${jsonBody.toString()}")
                  val client = HttpClient.newHttpClient()
                  val request = HttpRequest.newBuilder()
                      .uri(URI(formatUrl(url)))
                      .header("Content-Type", "application/json")
-                     .POST(HttpRequest.BodyPublishers.ofString(body))
+                     .POST(HttpRequest.BodyPublishers.ofString(jsonBody.toString()))
                      .build()
 
                  val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+
+                 logger.debug("Response body ${response.body()}")
                  return Json.decodeFromString<T>(response.body())
 
              } catch (e: Exception) {
@@ -128,6 +134,18 @@ class Fetch private constructor() {
                 INSTANCE ?: Fetch().also { INSTANCE = it }
             }
         }
+    }
+
+    /**
+     * List of items that can be looked up from the api, mapped to the url of each.
+     */
+    enum class ItemTypes(val url: String) {
+        TOWN(urls["towns"]!!),
+        NATION(urls["nations"]!!),
+        PLAYER(urls["players"]!!),
+        NEARBY(urls["nearby"]!!),
+        DISCORD(urls["discord"]!!),
+        STAFF(urls["staff"]!!)
     }
 
     /**

@@ -18,12 +18,14 @@
 package net.chariskar.breakthemod.client.api.types
 
 import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import net.chariskar.breakthemod.client.utils.SerializableUUID
 import java.util.UUID
 
 @Serializable
 class Resident(val name: String) {
-    var uuid: UUID? = null
+    val uuid: SerializableUUID? = null
     var title: String? = null
     var surname: String? = null
     var formattedName: String? = null
@@ -37,12 +39,14 @@ class Resident(val name: String) {
     var ranks: Ranks? = null
     var friends: List<Reference>? = null
 
+    @Serializable
     data class Timestamps(
         var registered: Long? = null,
         var joinedTownAt: Long? = null,
         var lastOnline: Long? = null
     )
 
+    @Serializable
     data class Status(
         var isOnline: Boolean? = null,
         var isNPC: Boolean? = null,
@@ -52,20 +56,23 @@ class Resident(val name: String) {
         var hasNation: Boolean? = null
     )
 
+    @Serializable
     data class Stats(
-        var balance: Int? = null,
+        var balance: Float? = null,
         var numFriends: Int? = null
     )
 
+    @Serializable
     data class Perms(
         var build: List<Boolean>? = null,
         var destroy: List<Boolean>? = null,
         @SerializedName("switch")
-        var switchPerm: List<Boolean>? = null,
+        var switch: List<Boolean>? = null,
         var itemUse: List<Boolean>? = null,
         var flags: Flags? = null
     )
 
+    @Serializable
     data class Flags(
         var pvp: Boolean? = null,
         var explosion: Boolean? = null,
@@ -73,6 +80,7 @@ class Resident(val name: String) {
         var mobs: Boolean? = null
     )
 
+    @Serializable
     data class Ranks(
         var townRanks: List<String>? = null,
         var nationRanks: List<String>? = null

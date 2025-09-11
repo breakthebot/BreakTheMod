@@ -5,6 +5,7 @@ plugins {
     kotlin("jvm") version "2.2.10"
     id("fabric-loom") version "1.11-SNAPSHOT"
     id("maven-publish")
+    kotlin("plugin.serialization") version "1.9.10"
 }
 
 version = project.property("mod_version") as String
