@@ -67,7 +67,10 @@ class Config private constructor(){
         fun loadConfig(): ConfigData {
             if (configFile.exists()) {
                 val fileContent = configFile.readText()
-
+                if (fileContent.isEmpty()) {
+                    generateConfig()
+                    return ConfigData()
+                }
                 try {
                     return Json.decodeFromString<ConfigData>(fileContent)
                 } catch (e: Exception) {
