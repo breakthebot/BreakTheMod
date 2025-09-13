@@ -3,6 +3,7 @@ package net.chariskar.breakthemod
 import com.mojang.brigadier.CommandDispatcher
 import net.chariskar.breakthemod.client.api.Command
 import net.chariskar.breakthemod.client.commands.nearby
+import net.chariskar.breakthemod.client.commands.onlineFriends
 import net.chariskar.breakthemod.client.commands.onlineStaff
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
@@ -16,7 +17,8 @@ class Breakthemod : ModInitializer {
 
         val commandList: MutableList<Command> = mutableListOf(
             nearby(),
-            onlineStaff()
+            onlineStaff(),
+            onlineFriends()
         )
         loadCommands(commandList)
     }

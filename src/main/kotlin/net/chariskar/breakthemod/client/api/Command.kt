@@ -22,6 +22,10 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.CommandSyntaxException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.Prefix
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
@@ -31,10 +35,19 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
 
+private object CommandScope {
+    val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    fun shutdown() {
+        scope.cancel()
+    }
+}
 abstract class Command {
+
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
     val fetch: Fetch = Fetch.getInstance()
     val client: MinecraftClient = MinecraftClient.getInstance()
+    protected val scope = CommandScope.scope
+
 
     var name: String = ""
     var description: String = ""
@@ -89,29 +102,29 @@ abstract class Command {
      * @param client  The minecraft client instance
      * @param message The message to be sent
      */
-    fun sendMessage(client: MinecraftClient, message: Text?) {
-        client.execute({
+    fun sendMessage(client: MinecraftClient, message: Text) {
+        client.execute {
             if (client.player != null) {
                 val prefix: Text = Prefix().prefix
                 val chatMessage: Text? = Text.literal("").append(prefix).append(message)
                 client.player!!.sendMessage(chatMessage, false)
             }
-        })
+        }
+    }
+
+    fun sendError() {
+        sendMessage(client, Text.literal("Command has exited with an exception"))
     }
 
     fun getConnectedServerAddress(): String? {
         val client = MinecraftClient.getInstance() ?: return null
         val serverInfo = client.currentServerEntry ?: return null
-
         return serverInfo.address.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0]
     }
 
     fun getEnabled(): Boolean {
         val serverAddress = getConnectedServerAddress() ?: return true
-
         if (serverAddress.lowercase(Locale.getDefault()).contains("earthmc.net")) return true
-
-
         return Config.getEnabledServers()
     }
 

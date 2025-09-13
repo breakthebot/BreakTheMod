@@ -33,17 +33,17 @@ class Prefix {
 
     val prefix: Text
         get() {
-            val segments = arrayOf<Array<String?>?>(
-                arrayOf<String?>("Break", "#EAEAEA"),
-                arrayOf<String?>("The", "#4B56FF"),
-                arrayOf<String?>("Mod", "#FF8C1A"),
-                arrayOf<String?>(">> ", "#FFFFFF")
+            val segments = arrayOf<Array<String>>(
+                arrayOf<String>("Break", "#EAEAEA"),
+                arrayOf<String>("The", "#4B56FF"),
+                arrayOf<String>("Mod", "#FF8C1A"),
+                arrayOf<String>(">> ", "#FFFFFF")
             )
 
             val prefix = Text.empty()
             for (segment in segments) {
-                val text: String = segment!![0]!!
-                val color = getColorFromHex(segment[1]!!).getRgb()
+                val text: String = segment[0]
+                val color = getColorFromHex(segment[1]).rgb
 
                 for (c in text.toCharArray()) {
                     prefix.append(Text.literal(c.toString()).setStyle(Style.EMPTY.withColor(color)))

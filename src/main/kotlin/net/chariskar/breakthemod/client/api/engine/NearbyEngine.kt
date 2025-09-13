@@ -17,6 +17,11 @@
 
 package net.chariskar.breakthemod.client.api.engine
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.entity.player.PlayerEntity
@@ -29,6 +34,12 @@ import kotlin.concurrent.atomics.AtomicLong
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
+private object EngineScope {
+    val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    fun shutdown() {
+        scope.cancel()
+    }
+}
 
 class NearbyEngine {
 
@@ -36,6 +47,7 @@ class NearbyEngine {
         private const val UPDATE_INTERVAL_MS: Long = 1000
         private const val DISTANCE_THRESHOLD: Double = 200.0
         private const val DIRECTION_STEP: Double = 45.0
+        private val scope: CoroutineScope = EngineScope.scope
         public val DIRECTIONS: Array<String> = arrayOf<String>("S", "SW", "W", "NW", "N", "NE", "E", "SE")
         @OptIn(ExperimentalAtomicApi::class)
         private var lastUpdateTime: AtomicLong = AtomicLong(0)
@@ -98,8 +110,7 @@ class NearbyEngine {
     }
 
     @OptIn(ExperimentalAtomicApi::class)
-    @Synchronized
-    public fun updateNearbyPlayers(self: PlayerEntity, world: World): Set<PlayerInfo> {
+    suspend fun updateNearbyPlayers(self: PlayerEntity, world: World): Set<PlayerInfo> {
         val currentTime: Long = System.currentTimeMillis()
 
         if (currentTime - lastUpdateTime.load() < UPDATE_INTERVAL_MS) {

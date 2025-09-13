@@ -44,7 +44,7 @@ Here are some ways you can contribute:
 ### **Step 2: Set Up the Development Environment**
 
 1. Ensure you have the required tools installed:
-    - Java Development Kit (JDK) 21 or later
+    - Java Development Kit (JDK) 22 or later
     - [Fabric Development Environment](https://fabricmc.net/ )
     - Gradle or an IDE like IntelliJ IDEA with Gradle support
 

@@ -21,7 +21,10 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.putJsonArray
+import kotlinx.coroutines.*
+import net.chariskar.breakthemod.client.api.types.Nation
+import net.chariskar.breakthemod.client.api.types.Resident
+import net.chariskar.breakthemod.client.api.types.Town
 import net.chariskar.breakthemod.client.utils.Config
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -52,7 +55,7 @@ class Fetch private constructor() {
          * @generic T the type to infer response to.
          * @param url the url to send the request to.
          */
-        inline fun <reified T> getRequest(url: String): T? {
+        suspend inline fun <reified T> getRequest(url: String): T? {
             try {
                 val client = HttpClient.newHttpClient()
                 val request = HttpRequest.newBuilder()
@@ -73,7 +76,7 @@ class Fetch private constructor() {
          * @param url the url to send the request to
          * @param body The body to attach to the url
          */
-        inline fun <reified T> postRequest(url: String, body: String): T? {
+        suspend inline fun <reified T> postRequest(url: String, body: String): T? {
              try {
                  val uuids = body.removePrefix("[").removeSuffix("]").split(",").map { it.trim().removeSurrounding("\"") }
 
@@ -152,14 +155,44 @@ class Fetch private constructor() {
      * @param item The type of the item to fetch.
      * @param body The body to send
      */
-    inline fun <reified T : Any> getObjects(item: ItemTypes, body: String): List<T>? {
+    suspend inline fun <reified T : Any> getObjects(item: ItemTypes, body: String): List<T>? {
         return try {
             val url: String = item.url
-            return postRequest<List<T>>(url, body)
+            postRequest<List<T>>(url, body)
         } catch (e: Exception) {
             logError("Unable to fetch item", e)
             null
         }
+    }
+
+    suspend fun getResidents(residents: List<String>): List<Resident?>? {
+        return getObjects(Fetch.ItemTypes.PLAYER, residents.toString())
+    }
+
+    suspend fun getResident(resident: String): Resident? {
+        val resident = getResidents(arrayListOf(resident))
+        if (resident.isNullOrEmpty()) return null
+        return resident[0]
+    }
+
+    suspend fun getTowns(towns: List<String>): List<Town?>? {
+        return getObjects(Fetch.ItemTypes.TOWN, towns.toString())
+    }
+
+    suspend fun getTown(town: String): Town? {
+        val town = getTowns(arrayListOf(town))
+        if (town.isNullOrEmpty()) return null
+        return town[0]
+    }
+
+    suspend fun getNations(nations: List<String>): List<Nation?>? {
+        return getObjects(Fetch.ItemTypes.NATION, nations.toString())
+    }
+
+    suspend fun getNation(nation: String): Nation? {
+        val nation = getNations(arrayListOf(nation))
+        if (nation.isNullOrEmpty()) return null
+        return nation[0]
     }
 
     /**
@@ -167,10 +200,10 @@ class Fetch private constructor() {
      * @generic T the type to infer the response into
      * @param item The type of the item to fetch.
      */
-    inline fun <reified T : Any> getAll(item: ItemTypes): List<T>? {
+    suspend inline fun <reified T : Any> getAll(item: ItemTypes): List<T>? {
         return try {
             val url: String = item.url
-            return getRequest<List<T>?>(url)
+            getRequest<List<T>?>(url)
         } catch (e: Exception) {
             logError("Unable to fetch item", e)
             null
