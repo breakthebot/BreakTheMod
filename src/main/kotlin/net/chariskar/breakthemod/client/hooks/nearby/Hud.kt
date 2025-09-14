@@ -44,7 +44,7 @@ class Hud {
 
     init {
         engineScope.launch {
-            while (true) {
+            while (Config.getRadar()) {
                 val players = engine.getPlayers()
                 synchronized(playerList) {
                     playerList.clear()
