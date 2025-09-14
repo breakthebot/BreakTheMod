@@ -48,6 +48,20 @@ abstract class Command {
     val client: MinecraftClient = MinecraftClient.getInstance()
     protected val scope = CommandScope.scope
 
+    companion object {
+        fun getConnectedServerAddress(): String? {
+            val client = MinecraftClient.getInstance() ?: return null
+            val serverInfo = client.currentServerEntry ?: return null
+            return serverInfo.address.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0]
+        }
+
+        fun getEnabled(): Boolean {
+            val serverAddress = getConnectedServerAddress() ?: return true
+            if (serverAddress.lowercase(Locale.getDefault()).contains("earthmc.net")) return true
+            return Config.getEnabledServers()
+        }
+    }
+
 
     var name: String = ""
     var description: String = ""
@@ -114,18 +128,6 @@ abstract class Command {
 
     fun sendError() {
         sendMessage(client, Text.literal("Command has exited with an exception"))
-    }
-
-    fun getConnectedServerAddress(): String? {
-        val client = MinecraftClient.getInstance() ?: return null
-        val serverInfo = client.currentServerEntry ?: return null
-        return serverInfo.address.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0]
-    }
-
-    fun getEnabled(): Boolean {
-        val serverAddress = getConnectedServerAddress() ?: return true
-        if (serverAddress.lowercase(Locale.getDefault()).contains("earthmc.net")) return true
-        return Config.getEnabledServers()
     }
 
     protected fun logError(message: String?, e: java.lang.Exception) {

@@ -16,7 +16,8 @@ import net.minecraft.util.Formatting
 
 
 class nearby : Command() {
-    val engine: NearbyEngine = NearbyEngine()
+    val engine: NearbyEngine = NearbyEngine.getInstance()
+
     init {
         name = "nearby"
         description = "Shows nearby people"
@@ -33,7 +34,7 @@ class nearby : Command() {
                 header = Text.literal("No players nearby").setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.RED)))
             } else {
                 header = Text.literal("Players nearby:\n").setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.YELLOW)))
-                val playerText: MutableText = Text.empty()
+                val playerText: MutableText = Text.empty().setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.AQUA)))
 
                 for (player in players) {
                     playerText.append(player.toString() + "\n")
