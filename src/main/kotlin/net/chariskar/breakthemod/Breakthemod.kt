@@ -2,6 +2,7 @@ package net.chariskar.breakthemod
 
 import com.mojang.brigadier.CommandDispatcher
 import net.chariskar.breakthemod.client.api.Command
+import net.chariskar.breakthemod.client.commands.help
 import net.chariskar.breakthemod.client.commands.nearby
 import net.chariskar.breakthemod.client.commands.onlineFriends
 import net.chariskar.breakthemod.client.commands.onlineStaff
@@ -14,12 +15,17 @@ import net.minecraft.command.CommandRegistryAccess
 class Breakthemod : ModInitializer {
 
     override fun onInitialize() {
+        val helpCmd = help()
 
         val commandList: MutableList<Command> = mutableListOf(
             nearby(),
             onlineStaff(),
-            onlineFriends()
+            onlineFriends(),
+            helpCmd
         )
+
+        helpCmd.commands = commandList
+
         loadCommands(commandList)
     }
 

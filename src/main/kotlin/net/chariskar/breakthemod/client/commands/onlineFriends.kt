@@ -19,7 +19,6 @@ package net.chariskar.breakthemod.client.commands
 
 import com.mojang.brigadier.context.CommandContext
 import net.chariskar.breakthemod.client.api.Command
-import net.chariskar.breakthemod.client.utils.SerializableUUID
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import kotlinx.coroutines.*
 import net.minecraft.text.MutableText

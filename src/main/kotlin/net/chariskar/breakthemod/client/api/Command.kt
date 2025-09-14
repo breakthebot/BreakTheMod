@@ -128,8 +128,6 @@ abstract class Command {
         return Config.getEnabledServers()
     }
 
-
-
     protected fun logError(message: String?, e: java.lang.Exception) {
         logger.error("{}{}", message, e.message)
         if (Config.getDevMode()) {

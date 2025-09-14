@@ -18,11 +18,13 @@
 package net.chariskar.breakthemod.client.utils
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
 import net.minecraft.client.MinecraftClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 import kotlinx.serialization.json.Json
+import java.lang.classfile.instruction.ConstantInstruction
 
 class Config private constructor(){
     var config: ConfigData? = null
@@ -37,7 +39,7 @@ class Config private constructor(){
         var staffRepoUrl: String = "https://raw.githubusercontent.com/jwkerr/staff/master/staff.json",
         var customX: Int = 0,
         var customY: Int = 0,
-        var widgetPosition: WidgetPosition = WidgetPosition.TOP_LEFT,
+        var widgetPosition: WidgetPosition = WidgetPosition.TOP_LEFT
     )
 
     data class Widget(
@@ -48,6 +50,8 @@ class Config private constructor(){
 
     // static methods/properties go here.
     companion object {
+        private val json = Json { encodeDefaults = true }
+
         val configFile: File = File(MinecraftClient.getInstance().runDirectory, "config/breakthemod_config.json")
         val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
@@ -67,36 +71,31 @@ class Config private constructor(){
         fun loadConfig(): ConfigData {
             if (configFile.exists()) {
                 val fileContent = configFile.readText()
-                if (fileContent.isEmpty()) {
-                    generateConfig()
+
+                if (fileContent.isEmpty() || fileContent.length <= 2) {
+                    saveConfig(null)
                     return ConfigData()
                 }
                 try {
                     return Json.decodeFromString<ConfigData>(fileContent)
                 } catch (e: Exception) {
                     logger.error("Unable to parse config file regenerating, ${e.message}")
-                    generateConfig()
+                    saveConfig(null)
                 }
 
             } else {
-                generateConfig()
+                saveConfig(null)
             }
             return ConfigData()
         }
 
-        fun generateConfig() {
-            val conf: ConfigData = ConfigData()
-            try {
 
-                configFile.writeText(Json.encodeToString(conf))
-            } catch (e: Exception) {
-                logger.error("Unable to write new config, ${e.message}")
-            }
-        }
-
-        fun saveConfig(data: ConfigData) {
+        fun saveConfig(data: ConfigData?) {
+            val data = data ?: ConfigData()
             try {
-                configFile.writeText(Json.encodeToString(data))
+                val encoded: String = json.encodeToString<ConfigData>(data)
+                configFile.writeText(encoded )
+
             } catch (e: Exception) {
                 logger.error("Unable to write new config, ${e.message}")
             }
@@ -131,6 +130,7 @@ class Config private constructor(){
 
     }
 
+    @Serializable
     enum class WidgetPosition {
         TOP_LEFT,
         TOP_RIGHT,
