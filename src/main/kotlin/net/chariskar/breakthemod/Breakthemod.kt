@@ -13,6 +13,8 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer
 import net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper
+import net.minecraft.SharedConstants
+import net.minecraft.client.MinecraftClient
 import net.minecraft.command.CommandRegistryAccess
 import net.minecraft.util.Identifier
 
@@ -35,14 +37,17 @@ class Breakthemod : ModInitializer {
         loadCommands(commandList)
         val renderer: Hud = Hud()
 
-        HudLayerRegistrationCallback.EVENT.register(HudLayerRegistrationCallback { layeredDrawer ->
-            layeredDrawer!!.attachLayerBefore(
-                IdentifiedLayer.CHAT,
-                NEARBY_LAYER
-            ) { drawContext, tickCounter ->
-                renderer.renderOverlay(drawContext, tickCounter)
-            }
-        })
+        if (SharedConstants.getGameVersion().name <= "1.21.5") {
+            HudLayerRegistrationCallback.EVENT.register(HudLayerRegistrationCallback { layeredDrawer ->
+                layeredDrawer!!.attachLayerBefore(
+                    IdentifiedLayer.CHAT,
+                    NEARBY_LAYER
+                ) { drawContext, tickCounter ->
+                    renderer.renderOverlay(drawContext, tickCounter)
+                }
+            })
+        }
+
 
 
     }
