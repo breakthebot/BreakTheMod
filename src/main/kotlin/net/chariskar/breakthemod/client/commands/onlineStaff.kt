@@ -65,7 +65,6 @@ class onlineStaff : command() {
                 })
         )
     }
-
     @Serializable
     data class StaffList(
         @Contextual val owner: List<SerializableUUID>,

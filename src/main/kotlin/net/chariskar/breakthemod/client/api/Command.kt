@@ -78,7 +78,7 @@ abstract class Command {
 
     /**
      *
-     * @param ctx The Command context derives off the command source provided by the loader implementation of the class.
+     * @param ctx The Command context.
      * @return 0 if success, 1 if error
      * @throws CommandSyntaxException If invalid syntax
      */
@@ -89,11 +89,11 @@ abstract class Command {
         } catch (e: CommandSyntaxException) {
             throw e
         } catch (e: Exception) {
-            MinecraftClient.getInstance().execute(Runnable {
+            MinecraftClient.getInstance().execute {
                 if (MinecraftClient.getInstance().player != null) {
                     sendMessage(MinecraftClient.getInstance(), Text.empty().append("Unexpected error: " + e.message))
                 }
-            })
+            }
             logError("Unexpected error has occurred while running $name", e)
             return 0
         }

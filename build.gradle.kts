@@ -37,6 +37,14 @@ repositories {
     // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html
     // for more information about repositories.
+    maven ("https://maven.terraformersmc.com/") {
+        name = "Terraformers"
+    }
+    maven ("https://maven.nucleoid.xyz/") {
+        name = "Nucleoid"
+    }
+    maven("https://maven.shedaniel.me/")
+
 }
 
 dependencies {
@@ -47,6 +55,13 @@ dependencies {
     modImplementation("net.fabricmc:fabric-language-kotlin:${project.property("kotlin_loader_version")}")
 
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
+
+    modImplementation( "eu.pb4:placeholder-api:2.5.2+1.21.3")
+    modApi("me.shedaniel.cloth:cloth-config-fabric:17.0.144") {
+        exclude("net.fabricmc.fabric-api")
+    }
+    modApi("com.terraformersmc:modmenu:13.0.2")
+
 }
 
 tasks.processResources {

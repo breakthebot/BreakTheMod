@@ -126,6 +126,10 @@ class NearbyEngine private constructor() {
         return HashSet(playerInfoList)
     }
 
+    /**
+     * @param self Client player
+     * @param world World
+     */
     suspend fun updateNearbyPlayers(self: PlayerEntity, world: World): Set<PlayerInfo> {
         val selfPos = self.pos
         val selfName = self.gameProfile.name
