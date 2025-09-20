@@ -6,6 +6,7 @@ import net.chariskar.breakthemod.client.commands.help
 import net.chariskar.breakthemod.client.commands.nearby
 import net.chariskar.breakthemod.client.commands.onlineFriends
 import net.chariskar.breakthemod.client.commands.onlineStaff
+import net.chariskar.breakthemod.client.commands.townless
 import net.chariskar.breakthemod.client.hooks.nearby.Hud
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
@@ -29,6 +30,7 @@ class Breakthemod : ModInitializer {
             nearby(),
             onlineStaff(),
             onlineFriends(),
+            townless(),
             helpCmd
         )
 

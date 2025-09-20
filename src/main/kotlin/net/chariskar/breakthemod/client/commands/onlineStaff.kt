@@ -108,15 +108,20 @@ class onlineStaff : command() {
                 }
             }
 
-            val message: Text = Text.literal("")
-                .append(onlineStaffText)
-                .append(Text.literal(" [").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
-                .append(
-                    Text.literal(java.lang.String.valueOf(staffNames.size))
-                        .setStyle(Style.EMPTY.withColor(Formatting.WHITE))
-                )
-                .append(Text.literal("]").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
-
+            var message: Text
+            if (staffNames.isNotEmpty()) {
+                message = Text.literal("")
+                    .append(onlineStaffText)
+                    .append(Text.literal(" [").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
+                    .append(
+                        Text.literal(java.lang.String.valueOf(staffNames.size))
+                            .setStyle(Style.EMPTY.withColor(Formatting.WHITE))
+                    )
+                    .append(Text.literal("]").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
+            } else {
+                message = Text.empty()
+                    .append("No online staff").setStyle(Style.EMPTY.withColor(Formatting.AQUA))
+            }
             sendMessage(client, message)
         }
 

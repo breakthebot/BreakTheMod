@@ -106,6 +106,17 @@ class modmenuIntegration : ModMenuApi {
                     .build()
             )
 
+            general.addEntry(
+                entryBuilder.startStrField(
+                    Text.literal("Townless message"),
+                    Config.getTownlessMessage("TOWN")
+                ).setSaveConsumer { message: String ->
+                    Config.setTownlessMessage(message)
+                    Config.saveConfig(Config.getInstance().config)
+                }.setDefaultValue {
+                    Config.getTownlessMessage("TOWN")
+                }.build()
+            )
 
             general.addEntry(
                 entryBuilder.startBooleanToggle(
@@ -118,6 +129,7 @@ class modmenuIntegration : ModMenuApi {
                     }).setDefaultValue(Supplier { false })
                     .build()
             )
+
 
             return builder.build()
         }
