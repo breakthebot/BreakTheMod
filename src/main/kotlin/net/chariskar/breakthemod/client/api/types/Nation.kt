@@ -18,7 +18,7 @@
 package net.chariskar.breakthemod.client.api.types
 
 import kotlinx.serialization.Serializable
-import net.chariskar.breakthemod.client.utils.SerializableUUID
+import net.chariskar.breakthemod.client.utils.serialization.SerializableUUID
 
 
 @Serializable

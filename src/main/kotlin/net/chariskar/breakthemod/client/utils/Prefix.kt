@@ -33,11 +33,11 @@ class Prefix {
 
     val prefix: Text
         get() {
-            val segments = arrayOf<Array<String>>(
-                arrayOf<String>("Break", "#EAEAEA"),
-                arrayOf<String>("The", "#4B56FF"),
-                arrayOf<String>("Mod", "#FF8C1A"),
-                arrayOf<String>(">> ", "#FFFFFF")
+            val segments = arrayOf(
+                arrayOf("Break", "#EAEAEA"),
+                arrayOf("The", "#4B56FF"),
+                arrayOf("Mod", "#FF8C1A"),
+                arrayOf(">> ", "#FFFFFF")
             )
 
             val prefix = Text.empty()

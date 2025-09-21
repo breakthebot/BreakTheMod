@@ -21,7 +21,6 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
-import kotlinx.coroutines.*
 import net.chariskar.breakthemod.client.api.types.Nation
 import net.chariskar.breakthemod.client.api.types.Resident
 import net.chariskar.breakthemod.client.api.types.Town
@@ -35,11 +34,13 @@ import java.net.http.HttpResponse
 
 
 class Fetch private constructor() {
-    val gson: Gson = Gson()
 
     companion object {
         val logger: Logger = LoggerFactory.getLogger("breakthemod")
         val gson: Gson = Gson()
+        val json: Json =  Json {
+            ignoreUnknownKeys = true
+        }
 
         val urls = mapOf(
             "towns" to "${Config.getApiUrl()}/towns",
@@ -47,6 +48,7 @@ class Fetch private constructor() {
             "players" to "${Config.getApiUrl()}/players",
             "nearby" to "${Config.getApiUrl()}/nearby",
             "discord" to "${Config.getApiUrl()}/discord",
+            "location" to "${Config.getApiUrl()}/location",
             "staff" to Config.getStaffUrl()
         )
 
@@ -64,12 +66,43 @@ class Fetch private constructor() {
                     .build()
 
                 val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-                return Json.decodeFromString<T>(response.body())
+                val body = response.body()
+                return json.decodeFromString<T>(response.body())
             } catch (e: Exception) {
                 logError("Unable to send get request to target", e)
                 return null
             }
         }
+
+        /**
+         * Sends a post request.
+         * @generic T the type to infer the response into
+         * @param url the url to send the request to
+         * @param body The body to attach to the url
+         */
+        suspend inline fun <reified T> PostRequest(url: String, body: String): T? {
+            try {
+                val client = HttpClient.newHttpClient()
+                val request = HttpRequest.newBuilder()
+                    .uri(URI(formatUrl(url)))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(body))
+                    .build()
+
+                val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+                var body = response.body()
+                if (body.startsWith("[[") && body.endsWith("]]")) {
+                    body = body.substring(1, body.length - 1)
+                }
+
+                return json.decodeFromString<T>(body)
+
+            } catch (e: Exception) {
+                logError("Unable to send request to target", e)
+                return null
+            }
+        }
+
         /**
          * Sends a post request.
          * @generic T the type to infer the response into
@@ -84,18 +117,7 @@ class Fetch private constructor() {
                      put("query", JsonArray(uuids.map { JsonPrimitive(it) }))
                  }
 
-
-                 val client = HttpClient.newHttpClient()
-                 val request = HttpRequest.newBuilder()
-                     .uri(URI(formatUrl(url)))
-                     .header("Content-Type", "application/json")
-                     .POST(HttpRequest.BodyPublishers.ofString(jsonBody.toString()))
-                     .build()
-
-                 val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-
-                 return Json.decodeFromString<T>(response.body())
-
+                return PostRequest<T>(url, jsonBody.toString())
              } catch (e: Exception) {
                  logError("Unable to send request to target", e)
                  return null
@@ -146,7 +168,8 @@ class Fetch private constructor() {
         PLAYER(urls["players"]!!),
         NEARBY(urls["nearby"]!!),
         DISCORD(urls["discord"]!!),
-        STAFF(urls["staff"]!!)
+        STAFF(urls["staff"]!!),
+        LOCATION(urls["location"]!!)
     }
 
     /**

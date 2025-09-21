@@ -16,10 +16,8 @@
  */
 package net.chariskar.breakthemod.client.api.types
 
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import net.chariskar.breakthemod.client.utils.SerializableUUID
-import java.util.UUID
+import net.chariskar.breakthemod.client.utils.serialization.SerializableUUID
 
 @Serializable
 data class Reference(

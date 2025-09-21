@@ -122,7 +122,7 @@ class NearbyEngine private constructor() {
         playerInfoList.addAll(newPlayers)
     }
 
-    suspend fun getPlayers(): Set<PlayerInfo> {
+    fun getPlayers(): Set<PlayerInfo> {
         return HashSet(playerInfoList)
     }
 

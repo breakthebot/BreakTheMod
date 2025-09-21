@@ -26,11 +26,9 @@ import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import net.chariskar.breakthemod.client.api.Fetch
-import net.chariskar.breakthemod.client.api.types.Nation
 import net.chariskar.breakthemod.client.api.types.Resident
-import net.chariskar.breakthemod.client.utils.SerializableUUID
+import net.chariskar.breakthemod.client.utils.serialization.SerializableUUID
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.MutableText
 import net.minecraft.text.Style

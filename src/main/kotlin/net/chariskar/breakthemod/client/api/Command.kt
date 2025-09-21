@@ -30,7 +30,9 @@ import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.Prefix
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.client.MinecraftClient
+import net.minecraft.text.Style
 import net.minecraft.text.Text
+import net.minecraft.util.Formatting
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -120,7 +122,24 @@ abstract class Command {
         client.execute {
             if (client.player != null) {
                 val prefix: Text = Prefix().prefix
-                val chatMessage: Text? = Text.literal("").append(prefix).append(message)
+                val chatMessage: Text? = Text.empty().append(prefix).append(message)
+                client.player!!.sendMessage(chatMessage, false)
+            }
+        }
+    }
+
+    /**
+     * Helper utility for sending messages.
+     *
+     * @param client  The minecraft client instance
+     * @param message The message to be sent
+     * @param style The color to attach to the message
+     */
+    fun sendMessage(client: MinecraftClient, message: Text, style: Formatting) {
+        client.execute {
+            if (client.player != null) {
+                val prefix: Text = Prefix().prefix
+                val chatMessage: Text? = Text.empty().append(prefix).append(Text.empty().append(message).setStyle(Style.EMPTY.withColor(style)))
                 client.player!!.sendMessage(chatMessage, false)
             }
         }

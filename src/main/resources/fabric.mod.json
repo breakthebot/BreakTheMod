@@ -22,7 +22,7 @@
       "net.chariskar.breakthemod.Breakthemod"
     ],
     "modmenu": [
-      "net.chariskar.breakthemod.client.hooks.modmenuIntegration"
+      "net.chariskar.breakthemod.client.hooks.ModMenuIntegration"
     ]
   },
   "depends": {

@@ -18,7 +18,6 @@
 package net.chariskar.breakthemod.client.utils
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import net.minecraft.client.MinecraftClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

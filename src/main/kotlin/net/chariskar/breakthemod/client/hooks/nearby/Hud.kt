@@ -46,19 +46,19 @@ class Hud {
         engineScope.launch {
             while (Config.getRadar()) {
                 val players = engine.getPlayers()
-                synchronized(playerList) {
-                    playerList.clear()
-                    if (players.isEmpty()) {
-                        playerList.add("No players nearby")
-                    } else {
-                        playerList.addAll(players.map { it.toString() })
-                    }
+                playerList.clear()
+                if (players.isEmpty()) {
+                    playerList.add("No players nearby")
+                } else {
+                    playerList.addAll(players.map { it.toString() })
                 }
                 kotlinx.coroutines.delay(200)
             }
         }
+
     }
 
+    @Synchronized
     fun renderOverlay(drawContext: DrawContext, tickCounter: RenderTickCounter) {
         if (client.options.hudHidden || client.world == null || client.player == null) return
         if (!Config.getRadar() || !Config.getEnabledServers()) return
@@ -66,6 +66,7 @@ class Hud {
         val textRender: TextRenderer = client.textRenderer
 
         val width = (playerList.maxOfOrNull { textRender.getWidth(it) } ?: 100) + 2 * margin
+
         val height = (20 + playerList.size * entryHeight).coerceAtLeast(40)
 
         widgetPosition = Config.getWidgetPos()

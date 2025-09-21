@@ -1,4 +1,4 @@
-package net.chariskar.breakthemod.client.utils
+package net.chariskar.breakthemod.client.utils.serialization
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -26,5 +26,8 @@ object SerializableUUIDSerializer : KSerializer<SerializableUUID> {
 data class SerializableUUID(val value: UUID) {
     fun toUUID(): UUID {
         return value
+    }
+    override fun toString(): String {
+        return value.toString()
     }
 }

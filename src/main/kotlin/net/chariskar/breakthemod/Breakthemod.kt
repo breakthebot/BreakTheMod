@@ -2,9 +2,10 @@ package net.chariskar.breakthemod
 
 import com.mojang.brigadier.CommandDispatcher
 import net.chariskar.breakthemod.client.api.Command
+import net.chariskar.breakthemod.client.commands.findPlayer
+import net.chariskar.breakthemod.client.commands.goto
 import net.chariskar.breakthemod.client.commands.help
 import net.chariskar.breakthemod.client.commands.nearby
-import net.chariskar.breakthemod.client.commands.onlineFriends
 import net.chariskar.breakthemod.client.commands.onlineStaff
 import net.chariskar.breakthemod.client.commands.townless
 import net.chariskar.breakthemod.client.hooks.nearby.Hud
@@ -29,8 +30,9 @@ class Breakthemod : ModInitializer {
         val commandList: MutableList<Command> = mutableListOf(
             nearby(),
             onlineStaff(),
-            onlineFriends(),
             townless(),
+            goto(),
+            findPlayer(),
             helpCmd
         )
 
