@@ -16,7 +16,6 @@
  */
 package net.chariskar.breakthemod.client.api
 
-import com.google.gson.Gson
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonPrimitive
@@ -37,7 +36,6 @@ class Fetch private constructor() {
 
     companion object {
         val logger: Logger = LoggerFactory.getLogger("breakthemod")
-        val gson: Gson = Gson()
         val json: Json =  Json {
             ignoreUnknownKeys = true
         }
@@ -66,7 +64,7 @@ class Fetch private constructor() {
                     .build()
 
                 val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-                val body = response.body()
+                response.body()
                 return json.decodeFromString<T>(response.body())
             } catch (e: Exception) {
                 logError("Unable to send get request to target", e)
@@ -189,7 +187,7 @@ class Fetch private constructor() {
     }
 
     suspend fun getResidents(residents: List<String>): List<Resident?>? {
-        return getObjects(Fetch.ItemTypes.PLAYER, residents.toString())
+        return getObjects(ItemTypes.PLAYER, residents.toString())
     }
 
     suspend fun getResident(resident: String): Resident? {
@@ -199,7 +197,7 @@ class Fetch private constructor() {
     }
 
     suspend fun getTowns(towns: List<String>): List<Town?>? {
-        return getObjects(Fetch.ItemTypes.TOWN, towns.toString())
+        return getObjects(ItemTypes.TOWN, towns.toString())
     }
 
     suspend fun getTown(town: String): Town? {
@@ -209,7 +207,7 @@ class Fetch private constructor() {
     }
 
     suspend fun getNations(nations: List<String>): List<Nation?>? {
-        return getObjects(Fetch.ItemTypes.NATION, nations.toString())
+        return getObjects(ItemTypes.NATION, nations.toString())
     }
 
     suspend fun getNation(nation: String): Nation? {

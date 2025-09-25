@@ -5,6 +5,7 @@ import net.chariskar.breakthemod.client.api.Command
 import net.chariskar.breakthemod.client.commands.findPlayer
 import net.chariskar.breakthemod.client.commands.goto
 import net.chariskar.breakthemod.client.commands.help
+import net.chariskar.breakthemod.client.commands.lastSeen
 import net.chariskar.breakthemod.client.commands.nearby
 import net.chariskar.breakthemod.client.commands.onlineStaff
 import net.chariskar.breakthemod.client.commands.townless
@@ -14,9 +15,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer
-import net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper
 import net.minecraft.SharedConstants
-import net.minecraft.client.MinecraftClient
 import net.minecraft.command.CommandRegistryAccess
 import net.minecraft.util.Identifier
 
@@ -33,6 +32,7 @@ class Breakthemod : ModInitializer {
             townless(),
             goto(),
             findPlayer(),
+            lastSeen(),
             helpCmd
         )
 
