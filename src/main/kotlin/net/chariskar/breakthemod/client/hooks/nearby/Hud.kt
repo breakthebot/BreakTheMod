@@ -46,17 +46,19 @@ class Hud {
         engineScope.launch {
             while (Config.getRadar()) {
                 val players = engine.getPlayers()
-                playerList.clear()
-                if (players.isEmpty()) {
-                    playerList.add("No players nearby")
-                } else {
-                    playerList.addAll(players.map { it.toString() })
+                synchronized(playerList) {
+                    playerList.clear()
+                    if (players.isEmpty()) {
+                        playerList.add("No players nearby")
+                    } else {
+                        playerList.addAll(players.map { it.toString() })
+                    }
                 }
                 kotlinx.coroutines.delay(200)
             }
         }
-
     }
+
 
     @Synchronized
     fun renderOverlay(drawContext: DrawContext, tickCounter: RenderTickCounter) {
