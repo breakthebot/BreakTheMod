@@ -30,7 +30,7 @@ class help : Command() {
     var commands: MutableList<Command>? = null
 
     init {
-        name = "help"
+        name = "commands"
         description = "The help command"
         usageSuffix = ""
     }

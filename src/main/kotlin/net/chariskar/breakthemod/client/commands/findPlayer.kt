@@ -62,7 +62,6 @@ class findPlayer : Command() {
                     sendMessage(client, Text.literal(playerData.toString()), Formatting.AQUA)
                     return@launch
 
-
                 } else continue
 
             }

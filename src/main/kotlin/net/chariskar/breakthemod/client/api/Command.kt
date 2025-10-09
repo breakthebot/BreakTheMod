@@ -69,7 +69,7 @@ abstract class Command {
     var description: String = ""
     var usageSuffix: String = ""
 
-    fun getUsage(): String { return "/" + name + (if (usageSuffix.isEmpty()) "" else usageSuffix) }
+    fun getUsage(): String { return "/" + name + (usageSuffix.ifEmpty { "" }) }
 
     /**
      * @param ctx the command context.

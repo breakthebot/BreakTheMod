@@ -22,7 +22,6 @@ nearby.
 - coords: It gives you information about coordinates
 - discordLinked: It tells you if a user has linked their discord account to their emc account and if yes gives you the
   link to their discord account
-- nationpop: Shows the population and nation bonus of a nation
 - Player Radar: shows players nearby, completely legal based on /nearby
 
 ---
@@ -70,11 +69,6 @@ nearby.
 
 ![DiscordLinked Command](screenshots/discordLinked.png)
 *Tells if a user’s Discord account is linked, with a link if available.*
-
-### **nationpop**
-
-![NationPop Command](screenshots/nationpop.png)
-*Shows nation population and bonus information.*
 
 ### **calculateGold**
 
