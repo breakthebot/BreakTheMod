@@ -120,7 +120,7 @@ class onlineStaff : command() {
                 message = Text.empty()
                     .append("No online staff").setStyle(Style.EMPTY.withColor(Formatting.AQUA))
             }
-            sendMessage(client, message)
+            sendMessage(message)
         }
 
         return 0
@@ -163,7 +163,7 @@ class onlineStaff : command() {
                 message = Text.empty()
                     .append("No online staff").setStyle(Style.EMPTY.withColor(Formatting.AQUA))
             }
-            sendMessage(client, message)
+            sendMessage( message)
         }
 
 

@@ -2,6 +2,7 @@ package net.chariskar.breakthemod
 
 import com.mojang.brigadier.CommandDispatcher
 import net.chariskar.breakthemod.client.api.Command
+import net.chariskar.breakthemod.client.commands.discordId
 import net.chariskar.breakthemod.client.commands.findPlayer
 import net.chariskar.breakthemod.client.commands.goto
 import net.chariskar.breakthemod.client.commands.help
@@ -33,6 +34,7 @@ class Breakthemod : ModInitializer {
             goto(),
             findPlayer(),
             lastSeen(),
+            discordId(),
             helpCmd
         )
 

@@ -33,19 +33,19 @@ class goto: Command() {
             try {
                 val reqTown: Town? = fetch.getTown(townName)
                 if (reqTown == null) {
-                    sendMessage(client, Text.literal("$townName isn't a real town."), Formatting.RED)
+                    sendMessage(Text.literal("$townName isn't a real town."), Formatting.RED)
                     return@launch
                 }
 
                 if (reqTown.status?.isPublic == true && reqTown.status.canOutsidersSpawn == true) {
-                    sendMessage(client, Text.literal("You can do /t spawn ${reqTown.name}"), Formatting.AQUA)
+                    sendMessage(Text.literal("You can do /t spawn ${reqTown.name}"), Formatting.AQUA)
                     return@launch
                 }
 
                 if (reqTown.status?.isCapital == true) {
                     val nation = fetch.getNation(reqTown.nation?.uuid.toString())
                     if (nation?.status?.isPublic == true) {
-                        sendMessage(client, Text.literal("Found suitable spawn in:\n ${reqTown.name} (${nation.name})"), Formatting.AQUA)
+                        sendMessage(Text.literal("Found suitable spawn in:\n ${reqTown.name} (${nation.name})"), Formatting.AQUA)
                         return@launch
                     }
                 }
@@ -100,18 +100,18 @@ class goto: Command() {
                         val townText: MutableText = Text.empty()
                         validTowns.forEach { t -> townText.append(Text.literal("$t\n")) }
 
-                        sendMessage(client, Text.literal("Found suitable spawn in:\n").append(townText), Formatting.AQUA)
+                        sendMessage(Text.literal("Found suitable spawn in:\n").append(townText), Formatting.AQUA)
                         return@launch
                     }
 
                     radius += 500
                 }
 
-                sendMessage(client, Text.literal("No suitable spawns found near $townName."), Formatting.RED)
+                sendMessage(Text.literal("No suitable spawns found near $townName."), Formatting.RED)
 
             } catch (e: Exception) {
                 logger.error("Unexpected error occurred while fetching location", e)
-                sendMessage(client, Text.literal("Unexpected error occurred. See logs."), Formatting.RED)
+                sendMessage(Text.literal("Unexpected error occurred. See logs."), Formatting.RED)
             }
         }
 

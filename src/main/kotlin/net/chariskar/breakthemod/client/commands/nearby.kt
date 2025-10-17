@@ -39,7 +39,7 @@ class nearby : Command() {
                 header.append(playerText)
             }
 
-            sendMessage(client, header)
+            sendMessage(header)
         }
         return 0
     }

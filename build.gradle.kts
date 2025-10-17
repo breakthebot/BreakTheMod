@@ -51,7 +51,10 @@ dependencies {
     // To change the versions see the gradle.properties file
     minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
     mappings("net.fabricmc:yarn:${project.property("yarn_mappings")}:v2")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    compileOnly("org.jetbrains.kotlin:kotlin-stdlib")
+    compileOnly("org.jetbrains.kotlin:kotlin-reflect")
+
+    compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
     modImplementation("net.fabricmc:fabric-language-kotlin:${project.property("kotlin_loader_version")}")
@@ -59,6 +62,7 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
 
     modImplementation( "eu.pb4:placeholder-api:2.5.2+1.21.3")
+
     modApi("me.shedaniel.cloth:cloth-config-fabric:17.0.144") {
         exclude("net.fabricmc.fabric-api")
     }

@@ -26,14 +26,14 @@ class lastSeen : Command() {
         scope.launch {
             val player: Resident? = fetch.getResident(name)
             if (player == null) {
-                sendMessage(client, Text.literal("Unable to find $name"), Formatting.RED)
+                sendMessage(Text.literal("Unable to find $name"), Formatting.RED)
                 return@launch
             }
             val timestamps: List<Long> = Timestamps.parseTimestamp(player.timestamps?.lastOnline!!)
             if (player.status?.isOnline == true) {
-                sendMessage(client, Text.literal("${player.name} has been online right now, for ${timestamps[0]} days, ${timestamps[1]} hours and ${timestamps[2]} minutes."), Formatting.AQUA)
+                sendMessage(Text.literal("${player.name} has been online right now, for ${timestamps[0]} days, ${timestamps[1]} hours and ${timestamps[2]} minutes."), Formatting.AQUA)
             } else {
-                sendMessage(client, Text.literal("${player.name} was last online ${timestamps[0]} days, ${timestamps[1]} hours and ${timestamps[2]} minutes."), Formatting.AQUA)
+                sendMessage(Text.literal("${player.name} was last online ${timestamps[0]} days, ${timestamps[1]} hours and ${timestamps[2]} minutes."), Formatting.AQUA)
             }
             return@launch
         }

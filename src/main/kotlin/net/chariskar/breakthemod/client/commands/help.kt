@@ -37,11 +37,11 @@ class help : Command() {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         if (commands == null || commands!!.isEmpty()) {
-            sendMessage(client, Text.literal("No commands available.").setStyle(Style.EMPTY.withColor(Formatting.RED)))
+            sendMessage(Text.literal("No commands available.").setStyle(Style.EMPTY.withColor(Formatting.RED)))
             return 1
         }
 
-        sendMessage(client, Text.literal("=== Available Commands ===").setStyle(Style.EMPTY.withColor(Formatting.GOLD)))
+        sendMessage(Text.literal("=== Available Commands ===").setStyle(Style.EMPTY.withColor(Formatting.GOLD)))
 
         for (cmd in commands) {
             var cmdNameText: MutableText = Text.literal("/" + cmd.name)
@@ -56,7 +56,7 @@ class help : Command() {
             val descText: Text? = Text.literal(" - " + cmd.description)
                 .formatted(Formatting.WHITE)
 
-            sendMessage(client, cmdNameText.append(descText))
+            sendMessage(cmdNameText.append(descText))
         }
         return 0;
     }

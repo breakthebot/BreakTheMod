@@ -42,7 +42,7 @@ class findPlayer : Command() {
         scope.launch {
             val players: MutableList<Location>? = Fetch.getRequest<ApiResponse>(Config.getMapUrl() + "tiles/players.json")!!.players
             if (players.isNullOrEmpty()) {
-                sendMessage(client, Text.literal("Received empty player list from map."), Formatting.RED)
+                sendMessage(Text.literal("Received empty player list from map."), Formatting.RED)
                 return@launch
             }
             val playerData = PlayerLocationInfo(name, 0.0, 0.0, false,null, false)
@@ -59,7 +59,7 @@ class findPlayer : Command() {
                     if (locationData != null && locationData.isWilderness == false) {
                         playerData.townName = locationData.town?.name
                     }
-                    sendMessage(client, Text.literal(playerData.toString()), Formatting.AQUA)
+                    sendMessage(Text.literal(playerData.toString()), Formatting.AQUA)
                     return@launch
 
                 } else continue

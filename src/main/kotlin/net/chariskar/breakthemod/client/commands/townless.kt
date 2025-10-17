@@ -44,7 +44,7 @@ class townless : Command() {
         scope.launch {
             val onlinePlayers = client.networkHandler!!.playerUuids
             if (onlinePlayers.size == 1) {
-                sendMessage(client, Text.literal("No online players found"))
+                sendMessage(Text.literal("No online players found"))
                 return@launch
             }
             val townless: MutableList<String> = mutableListOf()
@@ -99,7 +99,7 @@ class townless : Command() {
 
                 message.append(userText).append(Text.literal("\n"))
             }
-            sendMessage(client, message)
+            sendMessage(message)
         }
         return 0
     }

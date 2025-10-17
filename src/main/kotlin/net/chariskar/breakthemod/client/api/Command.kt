@@ -91,11 +91,7 @@ abstract class Command {
         } catch (e: CommandSyntaxException) {
             throw e
         } catch (e: Exception) {
-            MinecraftClient.getInstance().execute {
-                if (MinecraftClient.getInstance().player != null) {
-                    sendMessage(MinecraftClient.getInstance(), Text.empty().append("Unexpected error: " + e.message))
-                }
-            }
+            sendError()
             logError("Unexpected error has occurred while running $name", e)
             return 0
         }
@@ -118,13 +114,9 @@ abstract class Command {
      * @param client  The minecraft client instance
      * @param message The message to be sent
      */
-    fun sendMessage(client: MinecraftClient, message: Text) {
+    fun sendMessage(message: Text) {
         client.execute {
-            if (client.player != null) {
-                val prefix: Text = Prefix().prefix
-                val chatMessage: Text? = Text.empty().append(prefix).append(message)
-                client.player!!.sendMessage(chatMessage, false)
-            }
+            client.player?.sendMessage(Prefix().prefix.copy().append(message), false)
         }
     }
 
@@ -135,18 +127,18 @@ abstract class Command {
      * @param message The message to be sent
      * @param style The color to attach to the message
      */
-    fun sendMessage(client: MinecraftClient, message: Text, style: Formatting) {
+    fun sendMessage(message: Text, style: Formatting) {
         client.execute {
             if (client.player != null) {
                 val prefix: Text = Prefix().prefix
-                val chatMessage: Text? = Text.empty().append(prefix).append(Text.empty().append(message).setStyle(Style.EMPTY.withColor(style)))
-                client.player!!.sendMessage(chatMessage, false)
+                val chatMessage: Text = Text.empty().append(prefix).append(Text.empty().append(message).setStyle(Style.EMPTY.withColor(style)))
+                sendMessage(chatMessage)
             }
         }
     }
 
     fun sendError() {
-        sendMessage(client, Text.literal("Command has exited with an exception"))
+        sendMessage(Text.literal("Command has exited with an exception"))
     }
 
     protected fun logError(message: String?, e: java.lang.Exception) {
