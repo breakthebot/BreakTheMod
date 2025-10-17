@@ -27,6 +27,7 @@ data class SerializableUUID(val value: UUID) {
     fun toUUID(): UUID {
         return value
     }
+
     override fun toString(): String {
         return value.toString()
     }

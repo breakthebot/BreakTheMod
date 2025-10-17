@@ -16,6 +16,7 @@
  */
 package net.chariskar.breakthemod.client.api
 
+import kotlinx.coroutines.future.await
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonPrimitive
@@ -39,6 +40,7 @@ class Fetch private constructor() {
         val json: Json =  Json {
             ignoreUnknownKeys = true
         }
+        val client: HttpClient = HttpClient.newHttpClient()
 
         val urls = mapOf(
             "towns" to "${Config.getApiUrl()}/towns",
@@ -56,16 +58,20 @@ class Fetch private constructor() {
          * @param url the url to send the request to.
          */
         suspend inline fun <reified T> getRequest(url: String): T? {
-            try {
-                val client = HttpClient.newHttpClient()
+            return try {
                 val request = HttpRequest.newBuilder()
                     .uri(URI(formatUrl(url)))
                     .header("Content-Type", "application/json")
                     .build()
 
-                val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-                response.body()
-                return json.decodeFromString<T>(response.body())
+                val response = client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).await()
+                val body = response.body()
+
+                if (T::class == String::class) {
+                    body as T
+                } else {
+                    json.decodeFromString<T>(body)
+                }
             } catch (e: Exception) {
                 logError("Unable to send get request to target", e)
                 return null
@@ -80,21 +86,24 @@ class Fetch private constructor() {
          */
         suspend inline fun <reified T> PostRequest(url: String, body: String): T? {
             try {
-                val client = HttpClient.newHttpClient()
                 val request = HttpRequest.newBuilder()
                     .uri(URI(formatUrl(url)))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(body))
                     .build()
 
-                val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+                val response = client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).await()
+
                 var body = response.body()
                 if (body.startsWith("[[") && body.endsWith("]]")) {
                     body = body.substring(1, body.length - 1)
                 }
 
-                return json.decodeFromString<T>(body)
-
+                return if (T::class == String::class) {
+                    body as T
+                } else {
+                    json.decodeFromString<T>(body)
+                }
             } catch (e: Exception) {
                 logError("Unable to send request to target", e)
                 return null
@@ -103,6 +112,7 @@ class Fetch private constructor() {
 
         /**
          * Sends a post request.
+         * only to be used for uuids/names.
          * @generic T the type to infer the response into
          * @param url the url to send the request to
          * @param body The body to attach to the url
