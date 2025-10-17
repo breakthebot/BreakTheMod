@@ -27,13 +27,14 @@ import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.render.RenderTickCounter
 import java.util.Collections
+import java.util.concurrent.CopyOnWriteArrayList
 
 class Hud {
 
     private val client = MinecraftClient.getInstance()
     private val engine = NearbyEngine.getInstance()
     private val engineScope: CoroutineScope = NearbyEngine.scope
-    private val playerList: MutableList<String> = Collections.synchronizedList(mutableListOf())
+    private val playerList: MutableList<String> = CopyOnWriteArrayList<String>()
 
     private val entryHeight = 15
     private val margin = 10
