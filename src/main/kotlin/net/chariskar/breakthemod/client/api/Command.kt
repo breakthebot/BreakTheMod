@@ -111,29 +111,23 @@ abstract class Command {
     /**
      * Helper utility for sending messages.
      *
-     * @param client  The minecraft client instance
      * @param message The message to be sent
      */
     fun sendMessage(message: Text) {
-        client.execute {
-            client.player?.sendMessage(Prefix().prefix.copy().append(message), false)
-        }
+        client.player?.sendMessage(Prefix().prefix.copy().append(message), false)
     }
 
     /**
      * Helper utility for sending messages.
      *
-     * @param client  The minecraft client instance
      * @param message The message to be sent
      * @param style The color to attach to the message
      */
     fun sendMessage(message: Text, style: Formatting) {
-        client.execute {
-            if (client.player != null) {
-                val prefix: Text = Prefix().prefix
-                val chatMessage: Text = Text.empty().append(prefix).append(Text.empty().append(message).setStyle(Style.EMPTY.withColor(style)))
-                sendMessage(chatMessage)
-            }
+        if (client.player != null) {
+            val prefix: Text = Prefix().prefix
+            val chatMessage: Text = Text.empty().append(prefix).append(Text.empty().append(message).setStyle(Style.EMPTY.withColor(style)))
+            sendMessage(chatMessage)
         }
     }
 

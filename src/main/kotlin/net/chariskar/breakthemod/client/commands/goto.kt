@@ -12,7 +12,6 @@ import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonArray
 import net.chariskar.breakthemod.client.api.Command
 import net.chariskar.breakthemod.client.api.Fetch
-import net.chariskar.breakthemod.client.api.types.Nation
 import net.chariskar.breakthemod.client.api.types.Reference
 import net.chariskar.breakthemod.client.api.types.Town
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
