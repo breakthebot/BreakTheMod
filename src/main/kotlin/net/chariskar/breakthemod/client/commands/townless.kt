@@ -1,18 +1,18 @@
 /*
- * This file is part of breakthemodRewrite.
+ * This file is part of breakthemod.
  *
- * breakthemodRewrite is free software: you can redistribute it and/or modify
+ * breakthemod is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * breakthemodRewrite is distributed in the hope that it will be useful,
+ * breakthemod is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with breakthemodRewrite. If not, see <https://www.gnu.org/licenses/>.
+ * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 package net.chariskar.breakthemod.client.commands
 
@@ -88,13 +88,7 @@ class townless : Command() {
                     .setStyle(
                         Style.EMPTY
                             .withColor(Formatting.AQUA)
-                            .withClickEvent(ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, inviteMessage))
-                            .withHoverEvent(
-                                HoverEvent(
-                                    HoverEvent.Action.SHOW_TEXT,
-                                    Text.literal("Click to copy invite message for $user")
-                                )
-                            )
+                            .withClickEvent(ClickEvent.CopyToClipboard(inviteMessage))
                     )
 
                 message.append(userText).append(Text.literal("\n"))

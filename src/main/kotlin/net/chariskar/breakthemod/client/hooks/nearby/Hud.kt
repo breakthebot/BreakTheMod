@@ -1,24 +1,25 @@
 /*
- * This file is part of breakthemodRewrite.
+ * This file is part of breakthemod.
  *
- * breakthemodRewrite is free software: you can redistribute it and/or modify
+ * breakthemod is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * breakthemodRewrite is distributed in the hope that it will be useful,
+ * breakthemod is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with breakthemodRewrite. If not, see <https://www.gnu.org/licenses/>.
+ * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package net.chariskar.breakthemod.client.hooks.nearby
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.engine.NearbyEngine
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.Config.WidgetPosition
@@ -26,6 +27,7 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.render.RenderTickCounter
+import org.slf4j.LoggerFactory
 import java.util.Collections
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -62,7 +64,7 @@ class Hud {
 
 
     @Synchronized
-    fun renderOverlay(drawContext: DrawContext, tickCounter: RenderTickCounter) {
+    fun render(drawContext: DrawContext, tickCounter: RenderTickCounter) {
         if (client.options.hudHidden || client.world == null || client.player == null) return
         if (!Config.getRadar() || !Config.getEnabledServers()) return
 
@@ -99,7 +101,8 @@ class Hud {
         var textY = y + 5
         synchronized(playerList) {
             for (line in playerList) {
-                val color = if (line == "No players nearby") 0xFF6B6B else 0xFFFFFF
+                val color = if (line == "No players nearby") 0xFFFF6B6B.toInt() else 0xFFFFFFFF.toInt()
+
                 drawContext.drawText(textRender, line, x + margin, textY, color, false)
                 textY += entryHeight
             }

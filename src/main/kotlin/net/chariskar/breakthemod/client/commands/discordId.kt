@@ -20,6 +20,7 @@ import net.minecraft.text.ClickEvent
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
+import java.net.URI
 import java.util.*
 
 
@@ -88,7 +89,7 @@ class discordId : Command() {
                     Style.EMPTY
                         .withColor(Formatting.BLUE)
                         .withClickEvent(
-                            ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.com/users/$userId")
+                            ClickEvent.OpenUrl(URI("https://discord.com/users/$userId"))
                         )
 
                 )

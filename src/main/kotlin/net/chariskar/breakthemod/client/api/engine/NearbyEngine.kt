@@ -18,6 +18,7 @@
 package net.chariskar.breakthemod.client.api.engine
 
 import kotlinx.coroutines.*
+import net.fabricmc.loader.impl.lib.sat4j.core.Vec
 import net.minecraft.client.MinecraftClient
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.util.math.BlockPos
@@ -72,7 +73,7 @@ class NearbyEngine private constructor() {
             val isInVehicle = player.hasVehicle()
             val isSneaking = player.isSneaking
             val inRiptide = player.isUsingRiptide
-            val isInNether = player.world.registryKey.value.toString().contains("nether")
+            val isInNether = MinecraftClient.getInstance().world?.registryKey?.value.toString().contains("nether")
             return isInVehicle || isSneaking || inRiptide || isInNether
         }
 
@@ -88,7 +89,7 @@ class NearbyEngine private constructor() {
         }
 
         fun distanceFrom(player: PlayerEntity): Int {
-            return sqrt(calculateDistance(player.pos)).toInt()
+            return sqrt(calculateDistance(Vec3d(player.x, player.y, player.z))).toInt()
         }
 
         override fun toString(): String {
@@ -131,14 +132,14 @@ class NearbyEngine private constructor() {
      * @param world World
      */
     suspend fun updateNearbyPlayers(self: PlayerEntity, world: World): Set<PlayerInfo> {
-        val selfPos = self.pos
+        val selfPos = Vec3d(self.x, self.z, self.y)
         val selfName = self.gameProfile.name
         val players = mutableSetOf<PlayerInfo>()
 
         for (other in world.players) {
             if (other == self || other.gameProfile.name == selfName) continue
 
-            val info = PlayerInfo(other.gameProfile.name, other.pos)
+            val info = PlayerInfo(other.gameProfile.name, Vec3d(other.x, other.y, other.z))
 
             val distance = info.calculateDistance(selfPos)
             if (distance > DISTANCE_THRESHOLD * DISTANCE_THRESHOLD) continue

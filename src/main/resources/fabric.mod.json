@@ -16,9 +16,6 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "net.chariskar.breakthemod.client.BreakthemodClient"
-    ],
-    "main": [
       "net.chariskar.breakthemod.Breakthemod"
     ],
     "modmenu": [
@@ -29,6 +26,6 @@
     "fabricloader": ">=${loader_version}",
     "fabric-language-kotlin": ">=${kotlin_loader_version}",
     "fabric": "*",
-    "minecraft": "~1.21.4"
+    "minecraft": "~1.21.8"
   }
 }

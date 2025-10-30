@@ -28,6 +28,7 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import net.chariskar.breakthemod.client.api.Fetch
 import net.chariskar.breakthemod.client.api.types.Resident
+import net.chariskar.breakthemod.client.api.types.StaffList
 import net.chariskar.breakthemod.client.utils.serialization.SerializableUUID
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.MutableText
@@ -62,19 +63,6 @@ class onlineStaff : command() {
                     return@Command execNormal(context)
                 })
         )
-    }
-    @Serializable
-    data class StaffList(
-        @Contextual val owner: List<SerializableUUID>,
-        @Contextual val admin: List<SerializableUUID>,
-        @Contextual val developer: List<SerializableUUID>,
-        @Contextual val staffmanager: List<SerializableUUID>,
-        @Contextual val moderator: List<SerializableUUID>,
-        @Contextual val helper: List<SerializableUUID>
-    ) {
-        fun allStaff(): List<SerializableUUID> {
-            return (owner + admin + staffmanager + moderator + helper + developer).distinct()
-        }
     }
 
     fun execNormal(ctx: CommandContext<FabricClientCommandSource>): Int {

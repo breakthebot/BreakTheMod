@@ -1,3 +1,4 @@
+import daomephsta.unpick.api.classresolvers.ClassResolvers.classpath
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -61,12 +62,13 @@ dependencies {
 
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
 
-    modImplementation( "eu.pb4:placeholder-api:2.5.2+1.21.3")
+    modImplementation( "eu.pb4:placeholder-api:2.7.2+1.21.8")
 
-    modApi("me.shedaniel.cloth:cloth-config-fabric:17.0.144") {
+    modApi("me.shedaniel.cloth:cloth-config-fabric:19.0.147") {
         exclude("net.fabricmc.fabric-api")
     }
-    modApi("com.terraformersmc:modmenu:13.0.2")
+
+    modApi("com.terraformersmc:modmenu:15.0.0")
 
 }
 
