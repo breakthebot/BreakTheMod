@@ -22,6 +22,17 @@
       "net.chariskar.breakthemod.client.hooks.ModMenuIntegration"
     ]
   },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/RVkwSrPyuq",
+        "modmenu.modrinth": "https://modrinth.com/mod/BreakTheMod",
+        "modmenu.github_releases": "https://github.com/breakthebot/BreakTheMod/releases"
+      },
+      "update-checker": true,
+      "modmenu.icon": "assets/icon.png"
+    }
+  },
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric-language-kotlin": ">=${kotlin_loader_version}",

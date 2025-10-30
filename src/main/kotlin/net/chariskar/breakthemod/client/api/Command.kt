@@ -104,7 +104,6 @@ abstract class Command {
                     if (!getEnabled()) {return@Command 0}
                     return@Command run(context)
                 })
-
         )
     }
 
