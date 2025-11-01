@@ -9,11 +9,10 @@ data class StaffList(
     @Contextual val owner: List<SerializableUUID>,
     @Contextual val admin: List<SerializableUUID>,
     @Contextual val developer: List<SerializableUUID>,
-    @Contextual val staffmanager: List<SerializableUUID>,
     @Contextual val moderator: List<SerializableUUID>,
     @Contextual val helper: List<SerializableUUID>
 ) {
     fun allStaff(): List<SerializableUUID> {
-        return (owner + admin + staffmanager + moderator + helper + developer).distinct()
+        return (owner + admin + moderator + helper + developer).distinct()
     }
 }

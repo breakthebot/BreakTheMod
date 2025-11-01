@@ -43,6 +43,7 @@ private object CommandScope {
         scope.cancel()
     }
 }
+
 abstract class Command {
 
     val logger: Logger = LoggerFactory.getLogger("breakthemod")

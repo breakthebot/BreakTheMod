@@ -21,6 +21,7 @@ import net.minecraft.text.Text
 import net.minecraft.text.TextColor
 
 class Prefix {
+
     fun getColorFromHex(hex: String): TextColor {
         try {
             require(hex.startsWith("#")) { "Invalid hex color format. Must start with #." }
