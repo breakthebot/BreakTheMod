@@ -70,7 +70,7 @@ class townless : Command() {
                     logger.warn("Received empty batch on townless")
                 } else {
                     players.forEach { resident ->
-                        if (resident?.status?.hasTown == true) {
+                        if (resident?.status?.hasTown == false) {
                             townless.add(resident.name)
                         }
                     }
@@ -89,6 +89,7 @@ class townless : Command() {
                         Style.EMPTY
                             .withColor(Formatting.AQUA)
                             .withClickEvent(ClickEvent.CopyToClipboard(inviteMessage))
+                            //.withHoverEvent(HoverEvent.ShowText(Text.literal("Click to copy message to clipboard.")))
                     )
 
                 message.append(userText).append(Text.literal("\n"))
