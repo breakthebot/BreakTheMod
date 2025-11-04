@@ -82,9 +82,9 @@ class Nation(val name: String) {
     @Serializable
     data class Spawn(
         var world: String? = null,
-        var x: Double? = null,
-        var y: Double? = null,
-        var z: Double? = null,
+        var x: Float? = null,
+        var y: Float? = null,
+        var z: Float? = null,
         var pitch: Float? = null,
         var yaw: Float? = null
     )

@@ -7,6 +7,7 @@ import net.chariskar.breakthemod.client.commands.findPlayer
 import net.chariskar.breakthemod.client.commands.goto
 import net.chariskar.breakthemod.client.commands.help
 import net.chariskar.breakthemod.client.commands.lastSeen
+import net.chariskar.breakthemod.client.commands.locate
 import net.chariskar.breakthemod.client.commands.nearby
 import net.chariskar.breakthemod.client.commands.onlineStaff
 import net.chariskar.breakthemod.client.commands.townless
@@ -16,7 +17,6 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements
-
 import net.minecraft.command.CommandRegistryAccess
 import net.minecraft.util.Identifier
 
@@ -43,6 +43,7 @@ class Breakthemod : ClientModInitializer {
             findPlayer(),
             lastSeen(),
             discordId(),
+            locate(),
             helpCmd
         )
 
