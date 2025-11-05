@@ -63,7 +63,10 @@ class locate : Command() {
 
         scope.launch {
             val coords = LocationRequest(type, name).get()
-            if (coords == null) {sendMessage(Text.literal("$name isn't a town or a nation"), Formatting.RED)}
+            if (coords == null) {
+                sendMessage(Text.literal("$name isn't a town or a nation"), Formatting.RED);
+                return@launch
+            }
             val link = Text.literal("click here")   .setStyle(
                 Style.EMPTY
                     .withColor(Formatting.BLUE)
