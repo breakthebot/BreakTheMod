@@ -47,6 +47,9 @@ class townless : Command() {
                 sendMessage(Text.literal("No online players found"))
                 return@launch
             }
+            val own: Resident = Fetch.getResident(client.session.username)!!
+            if (own.town?.name.isNullOrEmpty()) return@launch
+
             val townless: MutableList<String> = mutableListOf()
             val batch: MutableList<UUID> = mutableListOf()
 
@@ -78,8 +81,6 @@ class townless : Command() {
             }
 
             val message = Text.literal("Townless Users:\n").setStyle(Style.EMPTY.withColor(Formatting.AQUA))
-            val own: Resident = Fetch.getResident(client.session.username)!!
-            if (own.town?.name.isNullOrEmpty()) return@launch
 
             for (user in townless) {
                 val inviteMessage = "/msg $user " + Config.getTownlessMessage(own.town?.name!!)
