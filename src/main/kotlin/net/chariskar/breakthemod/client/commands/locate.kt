@@ -44,11 +44,11 @@ class locate : Command() {
         suspend fun get(): Pair<Float, Float>? {
             when (type) {
                 "town" ->  {
-                    val town = Fetch.getInstance().getTown(name) ?: return null
+                    val town = Fetch.getTown(name) ?: return null
                     return Pair(town.coordinates?.spawn?.x!!, town.coordinates.spawn.z!!) // we dont need NPE cause every town HAS to have a spawn so we can just tell kotlin to fuck off
                 }
                 "nation" -> {
-                    val nation = Fetch.getInstance().getNation(name) ?: return null
+                    val nation = Fetch.getNation(name) ?: return null
                     return Pair(nation.coordinates?.spawn?.x!!, nation.coordinates?.spawn?.z!!)
                 }
             }

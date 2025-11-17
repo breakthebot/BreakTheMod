@@ -47,7 +47,7 @@ private object CommandScope {
 abstract class Command {
 
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
-    val fetch: Fetch = Fetch.getInstance()
+    val fetch: Fetch = Fetch
     val client: MinecraftClient = MinecraftClient.getInstance()
     protected val scope = CommandScope.scope
 
@@ -114,7 +114,7 @@ abstract class Command {
      * @param message The message to be sent
      */
     fun sendMessage(message: Text) {
-        client.player?.sendMessage(Prefix().prefix.copy().append(message), false)
+        client.player?.sendMessage(Prefix.prefix.copy().append(message), false)
     }
 
     /**
@@ -125,7 +125,7 @@ abstract class Command {
      */
     fun sendMessage(message: Text, style: Formatting) {
         if (client.player != null) {
-            val prefix: Text = Prefix().prefix
+            val prefix: Text = Prefix.prefix
             val chatMessage: Text = Text.empty().append(prefix).append(Text.empty().append(message).setStyle(Style.EMPTY.withColor(style)))
             sendMessage(chatMessage)
         }

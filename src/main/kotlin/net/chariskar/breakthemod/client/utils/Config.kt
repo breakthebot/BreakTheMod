@@ -34,7 +34,7 @@ class Config private constructor(){
         var radarEnabled: Boolean = true,
         var mapUrl: String = "https://map.earthmc.net/",
         var apiUrl: String = "https://api.earthmc.net/v3/aurora",
-        var staffRepoUrl: String = "https://raw.githubusercontent.com/jwkerr/staff/master/staff.json",
+        var staffRepoUrl: String = "https://raw.githubusercontent.com/veyronity/staff/master/staff.json",
         var customX: Int = 0,
         var customY: Int = 0,
         var widgetPosition: WidgetPosition = WidgetPosition.TOP_LEFT,

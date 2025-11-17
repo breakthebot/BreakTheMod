@@ -20,7 +20,7 @@ import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.text.TextColor
 
-class Prefix {
+object Prefix {
 
     fun getColorFromHex(hex: String): TextColor {
         try {

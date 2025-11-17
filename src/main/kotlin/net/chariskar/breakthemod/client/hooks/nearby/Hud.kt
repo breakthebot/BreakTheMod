@@ -34,7 +34,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 class Hud {
 
     private val client = MinecraftClient.getInstance()
-    private val engine = NearbyEngine.getInstance()
+    private val engine = NearbyEngine
     private val engineScope: CoroutineScope = NearbyEngine.scope
     private val playerList: MutableList<String> = CopyOnWriteArrayList<String>()
 

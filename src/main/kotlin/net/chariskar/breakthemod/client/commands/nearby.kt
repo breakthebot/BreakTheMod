@@ -13,7 +13,6 @@ import net.minecraft.util.Formatting
 
 
 class nearby : Command() {
-    val engine: NearbyEngine = NearbyEngine.getInstance()
 
     init {
         name = "nearby"
@@ -23,7 +22,7 @@ class nearby : Command() {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         scope.launch {
-            val players: Set<NearbyEngine.PlayerInfo> = engine.updateNearbyPlayers(client.player!!, client.world!!)
+            val players: Set<NearbyEngine.PlayerInfo> = NearbyEngine.updateNearbyPlayers(client.player!!, client.world!!)
 
             var header: MutableText
 

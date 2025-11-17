@@ -33,139 +33,110 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 
 
-class Fetch private constructor() {
-
-    companion object {
-        val logger: Logger = LoggerFactory.getLogger("breakthemod")
-        val json: Json =  Json {
-            ignoreUnknownKeys = true
-        }
-        val client: HttpClient = HttpClient.newHttpClient()
-
-        val urls = mapOf(
-            "towns" to "${Config.getApiUrl()}/towns",
-            "nations" to "${Config.getApiUrl()}/nations",
-            "players" to "${Config.getApiUrl()}/players",
-            "nearby" to "${Config.getApiUrl()}/nearby",
-            "discord" to "${Config.getApiUrl()}/discord",
-            "location" to "${Config.getApiUrl()}/location",
-            "staff" to Config.getStaffUrl()
-        )
-
-        /**
-         * Send a get request.
-         * @generic T the type to infer response to.
-         * @param url the url to send the request to.
-         */
-        suspend inline fun <reified T> getRequest(url: String): T? {
-            return try {
-                val request = HttpRequest.newBuilder()
-                    .uri(URI(formatUrl(url)))
-                    .header("Content-Type", "application/json")
-                    .build()
-
-                val response = client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).await()
-                val body = response.body()
-
-                if (T::class == String::class) {
-                    body as T
-                } else {
-                    json.decodeFromString<T>(body)
-                }
-            } catch (e: Exception) {
-                logError("Unable to send get request to target", e)
-                return null
+object Fetch {
+    val logger: Logger = LoggerFactory.getLogger("breakthemod")
+    val json: Json =  Json {
+        ignoreUnknownKeys = true
+    }
+    val client: HttpClient = HttpClient.newHttpClient()
+    val urls = mapOf(
+        "towns" to "${Config.getApiUrl()}/towns",
+        "nations" to "${Config.getApiUrl()}/nations",
+        "players" to "${Config.getApiUrl()}/players",
+        "nearby" to "${Config.getApiUrl()}/nearby",
+        "discord" to "${Config.getApiUrl()}/discord",
+        "location" to "${Config.getApiUrl()}/location",
+        "staff" to Config.getStaffUrl()
+    )
+    /**
+     * Send a get request.
+     * @generic T the type to infer response to.
+     * @param url the url to send the request to.
+     */
+    suspend inline fun <reified T> getRequest(url: String): T? {
+        return try {
+            val request = HttpRequest.newBuilder()
+                .uri(URI(formatUrl(url)))
+                .header("Content-Type", "application/json")
+                .build()
+            val response = client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).await()
+            val body = response.body()
+            if (T::class == String::class) {
+                body as T
+            } else {
+                json.decodeFromString<T>(body)
             }
-        }
-
-        /**
-         * Sends a post request.
-         * @generic T the type to infer the response into
-         * @param url the url to send the request to
-         * @param body The body to attach to the url
-         */
-        suspend inline fun <reified T> PostRequest(url: String, body: String): T? {
-            try {
-                val request = HttpRequest.newBuilder()
-                    .uri(URI(formatUrl(url)))
-                    .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(body))
-                    .build()
-
-                val response = client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).await()
-
-                var body = response.body()
-                if (body.startsWith("[[") && body.endsWith("]]")) {
-                    body = body.substring(1, body.length - 1)
-                }
-
-                return if (T::class == String::class) {
-                    body as T
-                } else {
-                    json.decodeFromString<T>(body)
-                }
-            } catch (e: Exception) {
-                logError("Unable to send request to target", e)
-                return null
-            }
-        }
-
-        /**
-         * Sends a post request.
-         * only to be used for uuids/names.
-         * @generic T the type to infer the response into
-         * @param url the url to send the request to
-         * @param body The body to attach to the url
-         */
-        suspend inline fun <reified T> postRequest(url: String, body: String): T? {
-             try {
-                 val uuids = body.removePrefix("[").removeSuffix("]").split(",").map { it.trim().removeSurrounding("\"") }
-
-                 val jsonBody = buildJsonObject {
-                     put("query", JsonArray(uuids.map { JsonPrimitive(it) }))
-                 }
-
-                return PostRequest<T>(url, jsonBody.toString())
-             } catch (e: Exception) {
-                 logError("Unable to send request to target", e)
-                 return null
-             }
-        }
-
-        fun logError(message: String?, e: java.lang.Exception) {
-            logger.error("{}{}", message, e.message)
-            if (Config.getDevMode()) {
-                e.printStackTrace()
-            }
-        }
-
-        fun formatUrl(url: String): String {
-            if (url.isEmpty()) return url
-
-            val protocolEnd = url.indexOf("://")
-            if (protocolEnd == -1) return url
-
-            val protocol = url.take(protocolEnd + 3)
-            var rest = url.substring(protocolEnd + 3)
-
-            rest = rest.replace("/{2,}".toRegex(), "/")
-
-            if (rest.endsWith("/") && rest.length > 1) {
-                rest = rest.dropLast(1)
-            }
-
-            return protocol + rest
-        }
-
-        @Volatile
-        private var INSTANCE: Fetch? = null
-
-        fun getInstance(): Fetch {
-            return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: Fetch().also { INSTANCE = it }
-            }
+        } catch (e: Exception) {
+            logError("Unable to send get request to target", e)
+            return null
         }
     }
+    /**
+     * Sends a post request.
+     * @generic T the type to infer the response into
+     * @param url the url to send the request to
+     * @param body The body to attach to the url
+     */
+    suspend inline fun <reified T> PostRequest(url: String, body: String): T? {
+        try {
+            val request = HttpRequest.newBuilder()
+                .uri(URI(formatUrl(url)))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body))
+                .build()
+            val response = client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).await()
+            var body = response.body()
+            if (body.startsWith("[[") && body.endsWith("]]")) {
+                body = body.substring(1, body.length - 1)
+            }
+            return if (T::class == String::class) {
+                body as T
+            } else {
+                json.decodeFromString<T>(body)
+            }
+        } catch (e: Exception) {
+            logError("Unable to send request to target", e)
+            return null
+        }
+    }
+    /**
+     * Sends a post request.
+     * only to be used for uuids/names.
+     * @generic T the type to infer the response into
+     * @param url the url to send the request to
+     * @param body The body to attach to the url
+     */
+    suspend inline fun <reified T> postRequest(url: String, body: String): T? {
+        try {
+            val uuids = body.removePrefix("[").removeSuffix("]").split(",").map { it.trim().removeSurrounding("\"") }
+            val jsonBody = buildJsonObject {
+                put("query", JsonArray(uuids.map { JsonPrimitive(it) }))
+            }
+            return PostRequest<T>(url, jsonBody.toString())
+        } catch (e: Exception) {
+            logError("Unable to send request to target", e)
+            return null
+        }
+    }
+    fun logError(message: String?, e: java.lang.Exception) {
+        logger.error("{}{}", message, e.message)
+        if (Config.getDevMode()) {
+            e.printStackTrace()
+        }
+    }
+    fun formatUrl(url: String): String {
+        if (url.isEmpty()) return url
+        val protocolEnd = url.indexOf("://")
+        if (protocolEnd == -1) return url
+        val protocol = url.take(protocolEnd + 3)
+        var rest = url.substring(protocolEnd + 3)
+        rest = rest.replace("/{2,}".toRegex(), "/")
+        if (rest.endsWith("/") && rest.length > 1) {
+            rest = rest.dropLast(1)
+        }
+        return protocol + rest
+    }
+
 
     /**
      * List of items that can be looked up from the api, mapped to the url of each.

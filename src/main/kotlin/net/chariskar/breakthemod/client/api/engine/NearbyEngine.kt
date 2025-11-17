@@ -17,14 +17,19 @@
 
 package net.chariskar.breakthemod.client.api.engine
 
+import com.nimbusds.openid.connect.sdk.federation.entities.EntityType
 import kotlinx.coroutines.*
+import net.chariskar.breakthemod.Breakthemod
 import net.fabricmc.loader.impl.lib.sat4j.core.Vec
 import net.minecraft.client.MinecraftClient
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.Heightmap
 import net.minecraft.world.World
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 import java.util.concurrent.CopyOnWriteArraySet
@@ -34,21 +39,14 @@ private object EngineScope {
     fun shutdown() = scope.cancel()
 }
 
-class NearbyEngine private constructor() {
+object NearbyEngine {
+    val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
-    companion object {
-        private const val UPDATE_INTERVAL_MS: Long = 500
-        private const val DISTANCE_THRESHOLD: Double = 200.0
-        private const val DIRECTION_STEP: Double = 45.0
-        val DIRECTIONS = arrayOf("S", "SW", "W", "NW", "N", "NE", "E", "SE")
-        private var instance: NearbyEngine? = null
-        val scope: CoroutineScope get() = EngineScope.scope
-
-        fun getInstance(): NearbyEngine = instance ?: synchronized(this) {
-            if (instance == null) instance = NearbyEngine()
-            instance!!
-        }
-    }
+    private const val UPDATE_INTERVAL_MS: Long = 500
+    private const val DISTANCE_THRESHOLD: Double = 200.0
+    private const val DIRECTION_STEP: Double = 45.0
+    val DIRECTIONS = arrayOf("S", "SW", "W", "NW", "N", "NE", "E", "SE")
+    val scope: CoroutineScope get() = EngineScope.scope
 
     data class PlayerInfo(val name: String, var position: Vec3d) {
         fun calculateDistance(other: Vec3d): Double {
@@ -135,14 +133,16 @@ class NearbyEngine private constructor() {
         val selfPos = Vec3d(self.x, self.z, self.y)
         val selfName = self.gameProfile.name
         val players = mutableSetOf<PlayerInfo>()
+        val serverPlayers = world.players ?: return players
 
-        for (other in world.players) {
+        for (other in serverPlayers) {
             if (other == self || other.gameProfile.name == selfName) continue
 
             val info = PlayerInfo(other.gameProfile.name, Vec3d(other.x, other.y, other.z))
 
             val distance = info.calculateDistance(selfPos)
             if (distance > DISTANCE_THRESHOLD * DISTANCE_THRESHOLD) continue
+
             if (info.shouldSkip(other, world)) continue
             players.add(info)
         }

@@ -13,7 +13,7 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import net.chariskar.breakthemod.client.api.Command
 import net.chariskar.breakthemod.client.api.Fetch
-import net.chariskar.breakthemod.client.api.Fetch.Companion.json
+import net.chariskar.breakthemod.client.api.Fetch.json
 import net.chariskar.breakthemod.client.utils.serialization.SerializableUUID
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.ClickEvent

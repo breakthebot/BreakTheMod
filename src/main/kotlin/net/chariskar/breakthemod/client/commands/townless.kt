@@ -78,7 +78,7 @@ class townless : Command() {
             }
 
             val message = Text.literal("Townless Users:\n").setStyle(Style.EMPTY.withColor(Formatting.AQUA))
-            val own: Resident = Fetch.getInstance().getResident(client.session.username)!!
+            val own: Resident = Fetch.getResident(client.session.username)!!
             if (own.town?.name.isNullOrEmpty()) return@launch
 
             for (user in townless) {
