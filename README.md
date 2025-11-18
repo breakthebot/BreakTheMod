@@ -2,7 +2,7 @@
 # **BreakTheMod**
 
 ![Build Status](https://github.com/breakthebot/breakthemod/actions/workflows/build.yml/badge.svg)
-![BreakTheMod](/fabric/src/main/resources/assets/icon.png)
+![BreakTheMod](/src/main/resources/assets/icon.png)
 
 ## **Description**
 
@@ -86,21 +86,22 @@ nearby.
 
 ### **Requirements**
 
-- Minecraft version: `1.21.4`
+- Minecraft version: `1.21.8`
 - Mod loader: `Fabric`
 - dependencies:
     - `Fabric-API`
     - `ModMenu`
     - `ClothConfig`
-    - `Architectury API`
-
+    - `Fabric Language Kotlin`
+  
 ### **Steps**
 
 1. Download the mod from [Modrinth](https://modrinth.com/mod/breakthemod/).
 2. Install Fabric (if not already installed).
-3. Place the mod `.jar` file in the `mods` folder of your Minecraft directory.
-4. You are gonna need clothconfig2 >=13.0.138 and modmenu >=9.2.0
-5. Launch Minecraft and enjoy!
+3. Make sure fabric language kotlin is installed.
+4. Place the mod `.jar` file in the `mods` folder of your Minecraft directory.
+5. You are gonna need clothconfig2 >=13.0.138 and modmenu >=9.2.0
+6. Launch Minecraft and enjoy!
 
 ---
 
@@ -142,6 +143,9 @@ Review [CONTRIBUTING.md](/CONTRIBUTING.md) for more details.
 
 ---
 
-## **For nerds**
+## **Previous builds**
 
-- [BreakTheModSha256Checksum](/breakthemod.jar.sha256)
+| Path                                      | Checksum                                            |
+|-------------------------------------------|-----------------------------------------------------|
+| [1.4](builds/1.4/breakthemod-1.4.jar)     | [Checksum](builds/1.4/breakthemod-1.4.jar.sha256)   |
+| [1.4.1](builds/1.4/breakthemod-1.4.1.jar) | [Checksum](builds/1.4/breakthemod-1.4.1.jar.sha256) |
