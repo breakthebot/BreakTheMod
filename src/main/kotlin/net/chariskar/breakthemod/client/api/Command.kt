@@ -45,7 +45,6 @@ private object CommandScope {
 }
 
 abstract class Command {
-
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
     val fetch: Fetch = Fetch
     val client: MinecraftClient = MinecraftClient.getInstance()
@@ -65,7 +64,6 @@ abstract class Command {
         }
     }
 
-
     var name: String = ""
     var description: String = ""
     var usageSuffix: String = ""
@@ -80,7 +78,6 @@ abstract class Command {
     }
 
     /**
-     *
      * @param ctx The Command context.
      * @return 0 if success, 1 if error
      * @throws CommandSyntaxException If invalid syntax
@@ -135,11 +132,10 @@ abstract class Command {
         sendMessage(Text.literal("Command has exited with an exception"))
     }
 
-    protected fun logError(message: String?, e: java.lang.Exception) {
+    protected fun logError(message: String?, e: Exception) {
         logger.error("{}{}", message, e.message)
         if (Config.getDevMode()) {
             e.printStackTrace()
         }
     }
-
 }

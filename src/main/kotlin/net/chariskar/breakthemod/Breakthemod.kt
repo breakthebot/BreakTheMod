@@ -18,16 +18,14 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements
 import net.minecraft.command.CommandRegistryAccess
-import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.util.Identifier
 
 
 class Breakthemod : ClientModInitializer {
     val nearbyLayer: Identifier = Identifier.of("breakthemod", "nearby_layer")
 
-
     private fun loadCommands(commands: MutableList<Command>) {
-        ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, phase: CommandRegistryAccess ->
+        ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _: CommandRegistryAccess ->
             for (command in commands) {
                 command.register(dispatcher)
             }
@@ -36,7 +34,6 @@ class Breakthemod : ClientModInitializer {
 
     override fun onInitializeClient() {
         val helpCmd = help()
-
         val commandList: MutableList<Command> = mutableListOf(
             nearby(),
             onlineStaff(),
@@ -48,14 +45,9 @@ class Breakthemod : ClientModInitializer {
             locate(),
             helpCmd
         )
-
         helpCmd.commands = commandList
-
         loadCommands(commandList)
-        val renderer: Hud = Hud()
 
-        HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, nearbyLayer) { context, tickCounter -> renderer.render(context, tickCounter)};
+        HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, nearbyLayer) { context, _ -> Hud.render(context)}
     }
-
-
 }

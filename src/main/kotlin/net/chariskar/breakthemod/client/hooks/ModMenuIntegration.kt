@@ -117,6 +117,30 @@ class ModMenuIntegration : ModMenuApi {
             )
 
             general.addEntry(
+                entryBuilder.startIntField(
+                    Text.literal("Nearby entry height"),
+                    Config.getWidgetPos().entryHeight
+                )
+                    .setSaveConsumer { height: Int ->
+                        Config.getInstance().config!!.entryHeight = height
+                        Config.saveConfig(Config.getInstance().config)
+                    }.setDefaultValue { 15 }
+                    .build()
+            )
+
+            general.addEntry(
+                entryBuilder.startIntField(
+                    Text.literal("Nearby entry margin"),
+                    Config.getWidgetPos().entryHeight
+                )
+                    .setSaveConsumer { margin: Int ->
+                        Config.getInstance().config!!.margin = margin
+                        Config.saveConfig(Config.getInstance().config)
+                    }.setDefaultValue { 10 }
+                    .build()
+            )
+
+            general.addEntry(
                 entryBuilder.startBooleanToggle(
                     Text.literal("dev"),
                     Config.getDevMode()

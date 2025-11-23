@@ -17,14 +17,10 @@
 
 package net.chariskar.breakthemod.client.api.engine
 
-import com.nimbusds.openid.connect.sdk.federation.entities.EntityType
 import kotlinx.coroutines.*
-import net.chariskar.breakthemod.Breakthemod
-import net.fabricmc.loader.impl.lib.sat4j.core.Vec
 import net.minecraft.client.MinecraftClient
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.Heightmap
 import net.minecraft.world.World
@@ -48,6 +44,10 @@ object NearbyEngine {
     val DIRECTIONS = arrayOf("S", "SW", "W", "NW", "N", "NE", "E", "SE")
     val scope: CoroutineScope get() = EngineScope.scope
 
+    /**
+     * @param name The name of the player.
+     * @param position The position of the player.
+     * */
     data class PlayerInfo(val name: String, var position: Vec3d) {
         fun calculateDistance(other: Vec3d): Double {
             val dx = position.x - other.x
@@ -100,9 +100,9 @@ object NearbyEngine {
     }
 
     private val playerInfoList: MutableSet<PlayerInfo> = CopyOnWriteArraySet()
-    private var lastUpdateTime: Long = 0
 
     init {
+        logger.info("Nearby engine on.")
         scope.launch {
             while (isActive) {
                 updatePlayersSafe()

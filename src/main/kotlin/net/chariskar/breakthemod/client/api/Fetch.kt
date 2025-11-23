@@ -35,10 +35,13 @@ import java.net.http.HttpResponse
 
 object Fetch {
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
+
     val json: Json =  Json {
         ignoreUnknownKeys = true
     }
+
     val client: HttpClient = HttpClient.newHttpClient()
+
     val urls = mapOf(
         "towns" to "${Config.getApiUrl()}/towns",
         "nations" to "${Config.getApiUrl()}/nations",
@@ -48,6 +51,7 @@ object Fetch {
         "location" to "${Config.getApiUrl()}/location",
         "staff" to Config.getStaffUrl()
     )
+
     /**
      * Send a get request.
      * @generic T the type to infer response to.
@@ -71,6 +75,7 @@ object Fetch {
             return null
         }
     }
+
     /**
      * Sends a post request.
      * @generic T the type to infer the response into
@@ -99,6 +104,7 @@ object Fetch {
             return null
         }
     }
+
     /**
      * Sends a post request.
      * only to be used for uuids/names.
@@ -118,12 +124,14 @@ object Fetch {
             return null
         }
     }
+
     fun logError(message: String?, e: java.lang.Exception) {
         logger.error("{}{}", message, e.message)
         if (Config.getDevMode()) {
             e.printStackTrace()
         }
     }
+
     fun formatUrl(url: String): String {
         if (url.isEmpty()) return url
         val protocolEnd = url.indexOf("://")
@@ -136,7 +144,6 @@ object Fetch {
         }
         return protocol + rest
     }
-
 
     /**
      * List of items that can be looked up from the api, mapped to the url of each.
@@ -172,8 +179,7 @@ object Fetch {
     }
 
     suspend fun getResident(resident: String): Resident? {
-        val resident = getResidents(arrayListOf(resident))
-        if (resident.isNullOrEmpty()) return null
+        val resident = getResidents(arrayListOf(resident)) ?: return null
         return resident[0]
     }
 
@@ -182,8 +188,7 @@ object Fetch {
     }
 
     suspend fun getTown(town: String): Town? {
-        val town = getTowns(arrayListOf(town))
-        if (town.isNullOrEmpty()) return null
+        val town = getTowns(arrayListOf(town)) ?: return null
         return town[0]
     }
 
@@ -192,8 +197,7 @@ object Fetch {
     }
 
     suspend fun getNation(nation: String): Nation? {
-        val nation = getNations(arrayListOf(nation))
-        if (nation.isNullOrEmpty()) return null
+        val nation = getNations(arrayListOf(nation)) ?: return null
         return nation[0]
     }
 

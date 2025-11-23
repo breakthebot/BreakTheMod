@@ -82,7 +82,7 @@ nearby.
 
 ## **Installation**
 
-[BreakTheMod](/breakthemod.jar)
+[BreakTheMod](builds/1.4/breakthemod-1.4.1.jar)
 
 ### **Requirements**
 
@@ -149,3 +149,4 @@ Review [CONTRIBUTING.md](/CONTRIBUTING.md) for more details.
 |-------------------------------------------|-----------------------------------------------------|
 | [1.4](builds/1.4/breakthemod-1.4.jar)     | [Checksum](builds/1.4/breakthemod-1.4.jar.sha256)   |
 | [1.4.1](builds/1.4/breakthemod-1.4.1.jar) | [Checksum](builds/1.4/breakthemod-1.4.1.jar.sha256) |
+| [1.4.2](builds/1.4/breakthemod-1.4.2.jar) | [Checksum](builds/1.4/breakthemod-1.4.2.jar.sha256) |

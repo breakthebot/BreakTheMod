@@ -37,13 +37,17 @@ class Config private constructor(){
         var staffRepoUrl: String = "https://raw.githubusercontent.com/veyronity/staff/master/staff.json",
         var customX: Int = 0,
         var customY: Int = 0,
+        var entryHeight: Int = 15,
+        var margin: Int = 10,
         var widgetPosition: WidgetPosition = WidgetPosition.TOP_LEFT,
-        var townlessMessage: String = "Hi! I see you're new here, wanna join my Town? I can help you out! Get Free enchanted Armor, Pickaxe, Diamonds, Iron, wood, food, stone, house, and ability to teleport! Type /t join TOWN"
+        var townlessMessage: String = "Hi! I see you're new here, wanna join my Town? I can help you out! Get Free enchanted Armor, Pickaxe, Diamonds, Iron, wood, food, stone, house, and ability to teleport! Type /t join TOWN",
     )
 
     data class Widget(
         var customX: Int = 0,
         var customY: Int = 0,
+        var entryHeight: Int = 15,
+        var margin: Int = 10,
         var widgetPosition: WidgetPosition = WidgetPosition.TOP_LEFT
     )
 
@@ -124,6 +128,8 @@ class Config private constructor(){
         fun getWidgetPos(): Widget = Widget(
             getInstance().config?.customX ?: 0,
             getInstance().config?.customY ?: 0,
+            getInstance().config?.entryHeight ?: 15,
+            getInstance().config?.margin ?: 10,
             getInstance().config?.widgetPosition ?: WidgetPosition.TOP_LEFT
         )
 

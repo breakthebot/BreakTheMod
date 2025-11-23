@@ -19,27 +19,20 @@ package net.chariskar.breakthemod.client.hooks.nearby
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.engine.NearbyEngine
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.Config.WidgetPosition
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.render.RenderTickCounter
-import org.slf4j.LoggerFactory
-import java.util.Collections
 import java.util.concurrent.CopyOnWriteArrayList
 
-class Hud {
+object Hud {
 
     private val client = MinecraftClient.getInstance()
     private val engine = NearbyEngine
     private val engineScope: CoroutineScope = NearbyEngine.scope
     private val playerList: MutableList<String> = CopyOnWriteArrayList<String>()
-
-    private val entryHeight = 15
-    private val margin = 10
 
     var widgetPosition: Config.Widget = Config.getWidgetPos()
     private var x: Int = 0
@@ -64,9 +57,11 @@ class Hud {
 
 
     @Synchronized
-    fun render(drawContext: DrawContext, tickCounter: RenderTickCounter) {
+    fun render(drawContext: DrawContext) {
         if (client.options.hudHidden || client.world == null || client.player == null) return
         if (!Config.getRadar() || !Config.getEnabledServers()) return
+        val margin = Config.getWidgetPos().margin
+        val entryHeight = Config.getWidgetPos().entryHeight
 
         val textRender: TextRenderer = client.textRenderer
 
