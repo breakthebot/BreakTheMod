@@ -55,7 +55,7 @@ class findPlayer : Command() {
 
                     val coords = listOf(player.location.x, player.location.z)
                     val payload = Payload(listOf(coords))
-                    val locationData: Location? = Fetch.PostRequest<Location>(Fetch.ItemTypes.LOCATION.url, Json.encodeToString(payload))
+                    val locationData: Location? = Fetch.postRequest<Location>(Fetch.ItemTypes.LOCATION.url, Json.encodeToString(payload))
                     if (locationData != null && locationData.isWilderness == false) {
                         playerData.townName = locationData.town?.name
                     }

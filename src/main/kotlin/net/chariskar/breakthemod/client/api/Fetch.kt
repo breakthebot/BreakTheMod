@@ -82,7 +82,7 @@ object Fetch {
      * @param url the url to send the request to
      * @param body The body to attach to the url
      */
-    suspend inline fun <reified T> PostRequest(url: String, body: String): T? {
+    suspend inline fun <reified T> postRequest(url: String, body: String): T? {
         try {
             val request = HttpRequest.newBuilder()
                 .uri(URI(formatUrl(url)))
@@ -112,37 +112,49 @@ object Fetch {
      * @param url the url to send the request to
      * @param body The body to attach to the url
      */
-    suspend inline fun <reified T> postRequest(url: String, body: String): T? {
+    suspend inline fun <reified T> getUUIDs(url: String, body: String): T? {
         try {
             val uuids = body.removePrefix("[").removeSuffix("]").split(",").map { it.trim().removeSurrounding("\"") }
             val jsonBody = buildJsonObject {
                 put("query", JsonArray(uuids.map { JsonPrimitive(it) }))
             }
-            return PostRequest<T>(url, jsonBody.toString())
+            return postRequest<T>(url, jsonBody.toString())
         } catch (e: Exception) {
             logError("Unable to send request to target", e)
             return null
         }
     }
 
-    fun logError(message: String?, e: java.lang.Exception) {
-        logger.error("{}{}", message, e.message)
-        if (Config.getDevMode()) {
-            e.printStackTrace()
+    /**
+     * Sends a get request to the api.
+     * @generic T the type to infer the response into
+     * @param item The type of the item to fetch.
+     */
+    @Suppress("unused")
+    suspend inline fun <reified T : Any> getAll(item: ItemTypes): List<T>? {
+        return try {
+            val url: String = item.url
+            getRequest<List<T>?>(url)
+        } catch (e: Exception) {
+            logError("Unable to fetch item", e)
+            null
         }
     }
 
-    fun formatUrl(url: String): String {
-        if (url.isEmpty()) return url
-        val protocolEnd = url.indexOf("://")
-        if (protocolEnd == -1) return url
-        val protocol = url.take(protocolEnd + 3)
-        var rest = url.substring(protocolEnd + 3)
-        rest = rest.replace("/{2,}".toRegex(), "/")
-        if (rest.endsWith("/") && rest.length > 1) {
-            rest = rest.dropLast(1)
+    /**
+     * Sends a post request to the api.
+     * @generic T the type to infer the response into
+     * @param item The type of the item to fetch.
+     * @param body The body to send
+     */
+    suspend inline fun <reified T : Any> getObjects(item: ItemTypes, body: String): List<T>? {
+        return try {
+            val url: String = item.url
+            getUUIDs<List<T>>(url, body)
+        } catch (e: Exception) {
+            logError("Unable to fetch item", e)
+            null
         }
-        return protocol + rest
     }
 
     /**
@@ -157,64 +169,30 @@ object Fetch {
         STAFF(urls["staff"]!!),
         LOCATION(urls["location"]!!)
     }
+    
+    suspend fun getResidents(residents: List<String>): List<Resident?>? = getObjects(ItemTypes.PLAYER, residents.toString())
+    suspend fun getResident(resident: String): Resident? = getResidents(arrayListOf(resident))?.get(0)
+    suspend fun getTowns(towns: List<String>): List<Town?>? = getObjects(ItemTypes.TOWN, towns.toString())
+    suspend fun getTown(town: String): Town? = getTowns(arrayListOf(town))?.get(0)
+    suspend fun getNations(nations: List<String>): List<Nation?>? = getObjects(ItemTypes.NATION, nations.toString())
+    suspend fun getNation(nation: String): Nation? = getNations(arrayListOf(nation))?.get(0)
 
-    /**
-     * Sends a post request to the api.
-     * @generic T the type to infer the response into
-     * @param item The type of the item to fetch.
-     * @param body The body to send
-     */
-    suspend inline fun <reified T : Any> getObjects(item: ItemTypes, body: String): List<T>? {
-        return try {
-            val url: String = item.url
-            postRequest<List<T>>(url, body)
-        } catch (e: Exception) {
-            logError("Unable to fetch item", e)
-            null
+    fun logError(message: String?, e: java.lang.Exception) {
+        logger.error("{}{}", message, e.message)
+        if (Config.getDevMode()) {
+            e.printStackTrace()
         }
     }
-
-    suspend fun getResidents(residents: List<String>): List<Resident?>? {
-        return getObjects(ItemTypes.PLAYER, residents.toString())
-    }
-
-    suspend fun getResident(resident: String): Resident? {
-        val resident = getResidents(arrayListOf(resident)) ?: return null
-        return resident[0]
-    }
-
-    suspend fun getTowns(towns: List<String>): List<Town?>? {
-        return getObjects(ItemTypes.TOWN, towns.toString())
-    }
-
-    suspend fun getTown(town: String): Town? {
-        val town = getTowns(arrayListOf(town)) ?: return null
-        return town[0]
-    }
-
-    suspend fun getNations(nations: List<String>): List<Nation?>? {
-        return getObjects(ItemTypes.NATION, nations.toString())
-    }
-
-    suspend fun getNation(nation: String): Nation? {
-        val nation = getNations(arrayListOf(nation)) ?: return null
-        return nation[0]
-    }
-
-    /**
-     * Sends a get request to the api.
-     * @generic T the type to infer the response into
-     * @param item The type of the item to fetch.
-     */
-    suspend inline fun <reified T : Any> getAll(item: ItemTypes): List<T>? {
-        return try {
-            val url: String = item.url
-            getRequest<List<T>?>(url)
-        } catch (e: Exception) {
-            logError("Unable to fetch item", e)
-            null
+    fun formatUrl(url: String): String {
+        if (url.isEmpty()) return url
+        val protocolEnd = url.indexOf("://")
+        if (protocolEnd == -1) return url
+        val protocol = url.take(protocolEnd + 3)
+        var rest = url.substring(protocolEnd + 3)
+        rest = rest.replace("/{2,}".toRegex(), "/")
+        if (rest.endsWith("/") && rest.length > 1) {
+            rest = rest.dropLast(1)
         }
+        return protocol + rest
     }
-
-
 }

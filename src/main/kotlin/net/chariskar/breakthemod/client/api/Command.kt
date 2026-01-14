@@ -78,12 +78,13 @@ abstract class Command {
     }
 
     /**
+     * Internal method, executes command code.
      * @param ctx The Command context.
      * @return 0 if success, 1 if error
      * @throws CommandSyntaxException If invalid syntax
      */
     @Throws(CommandSyntaxException::class)
-    protected open fun run(ctx: CommandContext<FabricClientCommandSource>): Int {
+    protected fun run(ctx: CommandContext<FabricClientCommandSource>): Int {
         try {
             return execute(ctx)
         } catch (e: CommandSyntaxException) {
@@ -95,6 +96,10 @@ abstract class Command {
         }
     }
 
+    /**
+     * Command register function.
+     * @param dispatcher Command registration dispatcher
+     * */
     open fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         dispatcher.register(
             LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)

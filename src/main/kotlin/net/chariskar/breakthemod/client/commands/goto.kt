@@ -65,7 +65,7 @@ class goto: Command() {
                         putJsonArray("query") { add(query) }
                     }
 
-                    val resp: List<Reference>? = Fetch.PostRequest<List<Reference>>(
+                    val resp: List<Reference>? = Fetch.postRequest<List<Reference>>(
                         Fetch.ItemTypes.NEARBY.url,
                         body.toString()
                     )

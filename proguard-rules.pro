@@ -1,12 +1,28 @@
--dontnote
 -dontwarn
+-dontnote
 -dontoptimize
 
--keep class net.fabricmc.loader.** { *; }
--keep class net.minecraft.** { *; }
--keep class net.fabricmc.api.** { *; }
+-injars build/libs/breakthemod-1.4.1.jar
+-outjars build/libs/btm-obf.jar
 
--keep class net.charsikar.breakthemod.Breakthemod { *; }
+-libraryjars <java.home>/jmods/
 
--obfuscationdictionary obfuscation.txt
--classobfuscationdictionary obfuscation.txt
+-keepclassmembers class * {
+    @net.fabricmc.api.** *;
+}
+-keep interface net.fabricmc.api.ClientModInitializer { *; }
+
+-keep public class net.chariskar.breakthemod.Breakthemod { *; }
+
+-keep class net.chariskar.breakthemod.client.commands.** implements net.chariskar.breakthemod.client.api.* { *; }
+
+-keep public class net.chariskar.breakthemod.client.api.** { *; }
+-keep public class net.chariskar.breakthemod.client.hooks.** { *; }
+
+-keep class net.chariskar.breakthemod.client.utils.** { *; }
+
+-keepclassmembers class kotlin.Metadata { *; }
+-keepattributes RuntimeVisibleAnnotations,RuntimeInvisibleAnnotations
+
+-keepdirectories META-INF/**
+-keepdirectories resources/**

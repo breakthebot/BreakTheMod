@@ -81,7 +81,7 @@ class discordId : Command() {
                 )
             }
 
-            val emcResp = Fetch.PostRequest<String>(Fetch.ItemTypes.DISCORD.url, payload.toString())
+            val emcResp = Fetch.postRequest<String>(Fetch.ItemTypes.DISCORD.url, payload.toString())
             val userId = emcResp?.split(",")[0]?.split(":")[1]?.replace("\"", "")?.trim()
 
             val result: Text = Text.literal("Click Here")
