@@ -32,9 +32,10 @@ object Hud {
     private val client = MinecraftClient.getInstance()
     private val engine = NearbyEngine
     private val engineScope: CoroutineScope = NearbyEngine.scope
-    private val playerList: MutableList<String> = CopyOnWriteArrayList<String>()
+    private val playerList: MutableList<String> = CopyOnWriteArrayList()
 
-    var widgetPosition: Config.Widget = Config.getWidgetPos()
+    var widgetPosition: Config.Widget = Config.getWidget()
+
     private var x: Int = 0
     private var y: Int = 0
 
@@ -60,8 +61,8 @@ object Hud {
     fun render(drawContext: DrawContext) {
         if (client.options.hudHidden || client.world == null || client.player == null) return
         if (!Config.getRadar() || !Config.getEnabledServers()) return
-        val margin = Config.getWidgetPos().margin
-        val entryHeight = Config.getWidgetPos().entryHeight
+        val margin = Config.getWidget().margin
+        val entryHeight = Config.getWidget().entryHeight
 
         val textRender: TextRenderer = client.textRenderer
 
@@ -69,7 +70,7 @@ object Hud {
 
         val height = (20 + playerList.size * entryHeight).coerceAtLeast(40)
 
-        widgetPosition = Config.getWidgetPos()
+        widgetPosition = Config.getWidget()
         when (widgetPosition.widgetPosition) {
             WidgetPosition.TOP_LEFT -> {
                 x = margin

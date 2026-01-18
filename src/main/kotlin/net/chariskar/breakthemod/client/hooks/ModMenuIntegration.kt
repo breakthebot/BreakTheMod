@@ -44,8 +44,8 @@ class ModMenuIntegration : ModMenuApi {
                     Config.getEnabledServers()
                 )
                     .setSaveConsumer { enabled: Boolean ->
-                        Config.getInstance().config!!.enabledOnOtherServers = enabled
-                        Config.saveConfig(Config.getInstance().config)
+                        Config.config.enabledOnOtherServers = enabled
+                        Config.saveConfig(Config.config)
                     }
                     .setDefaultValue { false }
                     .build()
@@ -55,21 +55,21 @@ class ModMenuIntegration : ModMenuApi {
                 entryBuilder.startEnumSelector(
                     Text.literal("Widget Position"),
                     WidgetPosition::class.java,
-                    Config.getWidgetPos().widgetPosition
+                    Config.getWidget().widgetPosition
                 ).setSaveConsumer { position: WidgetPosition ->
-                    Config.getInstance().config!!.widgetPosition = position
-                    Config.saveConfig(Config.getInstance().config)
+                    Config.config.widget.widgetPosition = position
+                    Config.saveConfig(Config.config)
                 }.setDefaultValue { WidgetPosition.TOP_LEFT }.build()
             )
 
             general.addEntry(
                 entryBuilder.startIntField(
                     Text.literal("Custom X Position"),
-                    Config.getWidgetPos().customX
+                    Config.getWidget().customX
                 )
                     .setSaveConsumer { x: Int ->
-                        Config.getInstance().config!!.customX = x
-                        Config.saveConfig(Config.getInstance().config)
+                        Config.config.widget.customX = x
+                        Config.saveConfig(Config.config)
                     }
                     .setMin(0)
                     .setMax(MinecraftClient.getInstance().currentScreen!!.width)
@@ -80,11 +80,11 @@ class ModMenuIntegration : ModMenuApi {
             general.addEntry(
                 entryBuilder.startIntField(
                     Text.literal("Custom Y Position"),
-                    Config.getWidgetPos().customY
+                    Config.getWidget().customY
                 )
                     .setSaveConsumer { y: Int ->
-                        Config.getInstance().config!!.customY = y
-                        Config.saveConfig(Config.getInstance().config)
+                        Config.config.widget.customY = y
+                        Config.saveConfig(Config.config)
                     }
                     .setMin(0)
                     .setMax(MinecraftClient.getInstance().currentScreen!!.height)
@@ -98,8 +98,8 @@ class ModMenuIntegration : ModMenuApi {
                     Config.getRadar()
                 )
                     .setSaveConsumer { enabled: Boolean ->
-                        Config.getInstance().config!!.radarEnabled = enabled
-                        Config.saveConfig(Config.getInstance().config)
+                        Config.config.radarEnabled = enabled
+                        Config.saveConfig(Config.config)
                     }.setDefaultValue { true }
                     .build()
             )
@@ -110,7 +110,7 @@ class ModMenuIntegration : ModMenuApi {
                     Config.getTownlessMessage("TOWN")
                 ).setSaveConsumer { message: String ->
                     Config.setTownlessMessage(message)
-                    Config.saveConfig(Config.getInstance().config)
+                    Config.saveConfig(Config.config)
                 }.setDefaultValue {
                     Config.getTownlessMessage("TOWN")
                 }.build()
@@ -119,11 +119,11 @@ class ModMenuIntegration : ModMenuApi {
             general.addEntry(
                 entryBuilder.startIntField(
                     Text.literal("Nearby entry height"),
-                    Config.getWidgetPos().entryHeight
+                    Config.getWidget().entryHeight
                 )
                     .setSaveConsumer { height: Int ->
-                        Config.getInstance().config!!.entryHeight = height
-                        Config.saveConfig(Config.getInstance().config)
+                        Config.config.widget.entryHeight = height
+                        Config.saveConfig(Config.config)
                     }.setDefaultValue { 15 }
                     .build()
             )
@@ -131,11 +131,11 @@ class ModMenuIntegration : ModMenuApi {
             general.addEntry(
                 entryBuilder.startIntField(
                     Text.literal("Nearby entry margin"),
-                    Config.getWidgetPos().entryHeight
+                    Config.getWidget().margin
                 )
                     .setSaveConsumer { margin: Int ->
-                        Config.getInstance().config!!.margin = margin
-                        Config.saveConfig(Config.getInstance().config)
+                        Config.config.widget.margin = margin
+                        Config.saveConfig(Config.config)
                     }.setDefaultValue { 10 }
                     .build()
             )
@@ -146,8 +146,8 @@ class ModMenuIntegration : ModMenuApi {
                     Config.getDevMode()
                 )
                     .setSaveConsumer { enabled: Boolean ->
-                        Config.getInstance().config!!.dev = enabled
-                        Config.saveConfig(Config.getInstance().config)
+                        Config.config.dev = enabled
+                        Config.saveConfig(Config.config)
                     }.setDefaultValue { false }
                     .build()
             )

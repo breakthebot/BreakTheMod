@@ -24,8 +24,8 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import kotlinx.serialization.json.Json
 
-class Config private constructor(){
-    var config: ConfigData? = null
+object Config {
+    var config: ConfigData = ConfigData()
 
     @Serializable
     data class ConfigData(
@@ -35,14 +35,11 @@ class Config private constructor(){
         var mapUrl: String = "https://map.earthmc.net/",
         var apiUrl: String = "https://api.earthmc.net/v3/aurora",
         var staffRepoUrl: String = "https://raw.githubusercontent.com/veyronity/staff/master/staff.json",
-        var customX: Int = 0,
-        var customY: Int = 0,
-        var entryHeight: Int = 15,
-        var margin: Int = 10,
-        var widgetPosition: WidgetPosition = WidgetPosition.TOP_LEFT,
+        var widget: Widget = Widget(),
         var townlessMessage: String = "Hi! I see you're new here, wanna join my Town? I can help you out! Get Free enchanted Armor, Pickaxe, Diamonds, Iron, wood, food, stone, house, and ability to teleport! Type /t join TOWN",
     )
 
+    @Serializable
     data class Widget(
         var customX: Int = 0,
         var customY: Int = 0,
@@ -51,98 +48,66 @@ class Config private constructor(){
         var widgetPosition: WidgetPosition = WidgetPosition.TOP_LEFT
     )
 
-    // static methods/properties go here.
-    companion object {
-        private val json = Json { encodeDefaults = true }
+    private val json = Json { encodeDefaults = true }
+    val configFile: File = File(MinecraftClient.getInstance().runDirectory, "config/breakthemod_config.json")
+    val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
-        val configFile: File = File(MinecraftClient.getInstance().runDirectory, "config/breakthemod_config.json")
-        val logger: Logger = LoggerFactory.getLogger("breakthemod")
+    fun loadConfig() {
+        if (!configFile.exists()) { saveConfig(null) }
 
-
-        private var instance: Config? = null
-
-        fun getInstance(): Config = instance ?: synchronized(this) {
-            if (instance == null) {
-                instance = Config().apply {
-                    config = loadConfig()
-                }
-            }
-            instance!!
+        val fileContent = configFile.readText()
+        if (fileContent.isEmpty() || fileContent.length <= 2) {
+            saveConfig(null)
+        }
+        try {
+            config = Json.decodeFromString<ConfigData>(fileContent)
+        } catch (e: Exception) {
+            logger.error("Unable to parse config file regenerating, ${e.message}")
+            saveConfig(null)
         }
 
+    }
 
-        fun loadConfig(): ConfigData {
-            if (configFile.exists()) {
-                val fileContent = configFile.readText()
-
-                if (fileContent.isEmpty() || fileContent.length <= 2) {
-                    saveConfig(null)
-                    return ConfigData()
-                }
-                try {
-                    return Json.decodeFromString<ConfigData>(fileContent)
-                } catch (e: Exception) {
-                    logger.error("Unable to parse config file regenerating, ${e.message}")
-                    saveConfig(null)
-                }
-
-            } else {
-                saveConfig(null)
-            }
-            return ConfigData()
-        }
-
-
-        fun saveConfig(data: ConfigData?) {
-            val data = data ?: ConfigData()
-            try {
-                val encoded: String = json.encodeToString<ConfigData>(data)
-                configFile.writeText(encoded )
-
-            } catch (e: Exception) {
-                logger.error("Unable to write new config, ${e.message}")
-            }
-        }
-
-        /**
-         * Small function to have the proper URL.
-         */
-        fun formatURL(url: String): String {
-            val withProtocol = if (!url.startsWith("https://")) "https://$url" else url
-            return if (!withProtocol.endsWith("/")) "$withProtocol/" else withProtocol
-        }
-
-
-        fun getMapUrl(): String = formatURL(getInstance().config?.mapUrl ?: ConfigData().mapUrl)
-
-        fun getApiUrl(): String = formatURL(getInstance().config?.apiUrl ?: ConfigData().apiUrl)
-
-        fun getStaffUrl(): String = formatURL(getInstance().config?.staffRepoUrl ?: ConfigData().staffRepoUrl)
-
-        fun getDevMode(): Boolean = getInstance().config?.dev ?: false
-
-        fun getRadar(): Boolean = getInstance().config?.radarEnabled ?: true
-
-        fun getEnabledServers(): Boolean = getInstance().config?.enabledOnOtherServers ?: true
-
-        fun getWidgetPos(): Widget = Widget(
-            getInstance().config?.customX ?: 0,
-            getInstance().config?.customY ?: 0,
-            getInstance().config?.entryHeight ?: 15,
-            getInstance().config?.margin ?: 10,
-            getInstance().config?.widgetPosition ?: WidgetPosition.TOP_LEFT
-        )
-
-        fun getTownlessMessage(townName: String): String {
-            return getInstance().config?.townlessMessage?.replace("TOWN", townName)!!
-        }
-
-        fun setTownlessMessage(message: String): Boolean {
-            if (!message.contains("TOWN")) return false
-            getInstance().config?.townlessMessage = message
-            return true
+    fun saveConfig(data: ConfigData?) {
+        val data = data ?: ConfigData()
+        try {
+            val encoded: String = json.encodeToString<ConfigData>(data)
+            configFile.writeText(encoded )
+        } catch (e: Exception) {
+            logger.error("Unable to write new config, ${e.message}")
         }
     }
+
+    /**
+     * Small function to have the proper URL.
+     */
+    fun formatURL(url: String): String {
+        val withProtocol = if (!url.startsWith("https://")) "https://$url" else url
+        return if (!withProtocol.endsWith("/")) "$withProtocol/" else withProtocol
+    }
+    fun getMapUrl(): String = formatURL(config.mapUrl)
+
+    fun getApiUrl(): String = formatURL(config.apiUrl)
+
+    fun getStaffUrl(): String = formatURL(config.staffRepoUrl)
+
+    fun getDevMode(): Boolean = config.dev
+
+    fun getRadar(): Boolean = config.radarEnabled
+
+    fun getWidget(): Widget = config.widget
+
+    fun getEnabledServers(): Boolean = config.enabledOnOtherServers
+
+    fun getTownlessMessage(townName: String): String {
+        return config.townlessMessage.replace("TOWN", townName)
+    }
+    fun setTownlessMessage(message: String): Boolean {
+        if (!message.contains("TOWN")) return false
+        config.townlessMessage = message
+        return true
+    }
+
 
     @Serializable
     enum class WidgetPosition {

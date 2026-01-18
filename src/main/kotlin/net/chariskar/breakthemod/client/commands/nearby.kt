@@ -4,6 +4,7 @@ import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.client.api.Command
 import net.chariskar.breakthemod.client.api.engine.NearbyEngine
+import net.chariskar.breakthemod.client.api.engine.PlayerInfo
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.MutableText
 import net.minecraft.text.Style
@@ -22,7 +23,7 @@ class nearby : Command() {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         scope.launch {
-            val players: Set<NearbyEngine.PlayerInfo> = NearbyEngine.updateNearbyPlayers(client.player!!, client.world!!)
+            val players: Set<PlayerInfo> = NearbyEngine.updateNearbyPlayers(client.player!!, client.world!!)
 
             var header: MutableText
 

@@ -18,6 +18,8 @@
 package net.chariskar.breakthemod.client.api.engine
 
 import kotlinx.coroutines.*
+import net.chariskar.breakthemod.client.utils.Config
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.client.MinecraftClient
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.util.math.BlockPos
@@ -40,113 +42,56 @@ object NearbyEngine {
 
     private const val UPDATE_INTERVAL_MS: Long = 500
     private const val DISTANCE_THRESHOLD: Double = 200.0
-    private const val DIRECTION_STEP: Double = 45.0
-    val DIRECTIONS = arrayOf("S", "SW", "W", "NW", "N", "NE", "E", "SE")
+
     val scope: CoroutineScope get() = EngineScope.scope
 
-    /**
-     * @param name The name of the player.
-     * @param position The position of the player.
-     * */
-    data class PlayerInfo(val name: String, var position: Vec3d) {
-        fun calculateDistance(other: Vec3d): Double {
-            val dx = position.x - other.x
-            val dy = position.y - other.y
-            val dz = position.z - other.z
-            return dx * dx + dy * dy + dz * dz
-        }
-
-        fun isUnderBlock(world: World): Boolean {
-            val x = position.x.toInt()
-            val z = position.z.toInt()
-            val topY = world.getTopY(Heightmap.Type.WORLD_SURFACE, x, z)
-            if (position.y.toInt() > topY) return false
-            for (y in position.y.toInt() until topY) {
-                if (!world.getBlockState(BlockPos(x, y, z)).isAir) return true
-            }
-            return false
-        }
-
-        fun shouldSkipSpecial(player: PlayerEntity): Boolean {
-            val isInVehicle = player.hasVehicle()
-            val isSneaking = player.isSneaking
-            val inRiptide = player.isUsingRiptide
-            val isInNether = MinecraftClient.getInstance().world?.registryKey?.value.toString().contains("nether")
-            return isInVehicle || isSneaking || inRiptide || isInNether
-        }
-
-        suspend fun shouldSkip(player: PlayerEntity, world: World): Boolean = withContext(Dispatchers.Default) {
-            shouldSkipSpecial(player) || isUnderBlock(world)
-        }
-
-
-        fun directionFrom(player: PlayerEntity): String {
-            val normalized = ((player.yaw + 180) % 360 + 360) % 360
-            val index = (normalized / DIRECTION_STEP).roundToInt() % 8
-            return DIRECTIONS[index]
-        }
-
-        fun distanceFrom(player: PlayerEntity): Int {
-            return sqrt(calculateDistance(Vec3d(player.x, player.y, player.z))).toInt()
-        }
-
-        override fun toString(): String {
-            val client = MinecraftClient.getInstance()
-            val player = client.player ?: return name
-            val distance = distanceFrom(player)
-            val direction = directionFrom(player)
-            return "-$name (${position.x.toInt()}, ${position.z.toInt()}) direction: $direction, distance: $distance blocks"
-        }
-    }
-
     private val playerInfoList: MutableSet<PlayerInfo> = CopyOnWriteArraySet()
-
-    init {
-        logger.info("Nearby engine on.")
-        scope.launch {
-            while (isActive) {
-                updatePlayersSafe()
-                delay(UPDATE_INTERVAL_MS)
-            }
-        }
-    }
-
-    private suspend fun updatePlayersSafe() {
-        val client = MinecraftClient.getInstance()
-        val player = client.player ?: return
-        val world = client.world ?: return
-
-        val newPlayers = updateNearbyPlayers(player, world)
-        playerInfoList.clear()
-        playerInfoList.addAll(newPlayers)
-    }
+    public var engineRunning: Boolean = false
 
     fun getPlayers(): Set<PlayerInfo> {
         return HashSet(playerInfoList)
     }
 
-    /**
-     * @param self Client player
-     * @param world World
-     */
-    suspend fun updateNearbyPlayers(self: PlayerEntity, world: World): Set<PlayerInfo> {
-        val selfPos = Vec3d(self.x, self.z, self.y)
+    fun updateNearbyPlayers(
+        self: PlayerEntity,
+        world: World
+    ): Set<PlayerInfo> {
+        val selfPos = Vec3d(self.x, self.y, self.z)
         val selfName = self.gameProfile.name
         val players = mutableSetOf<PlayerInfo>()
-        val serverPlayers = world.players ?: return players
 
-        for (other in serverPlayers) {
-            if (other == self || other.gameProfile.name == selfName) continue
+        for (other in world.players) {
+            if (other === self) continue
+            if (other.gameProfile.name == selfName) continue
 
-            val info = PlayerInfo(other.gameProfile.name, Vec3d(other.x, other.y, other.z))
+            val info = PlayerInfo(
+                other.gameProfile.name,
+                Vec3d(other.x, other.y, other.z)
+            )
 
-            val distance = info.calculateDistance(selfPos)
-            if (distance > DISTANCE_THRESHOLD * DISTANCE_THRESHOLD) continue
+            if (info.calculateDistance(selfPos) >
+                DISTANCE_THRESHOLD * DISTANCE_THRESHOLD
+            ) continue
 
             if (info.shouldSkip(other, world)) continue
             players.add(info)
         }
 
         return players
+    }
+
+    fun register() {
+        ClientTickEvents.END_CLIENT_TICK.register { client ->
+            if (!Config.config.radarEnabled) return@register
+            if (!engineRunning) return@register
+
+            val player = client.player ?: return@register
+            val world = client.world ?: return@register
+
+            val nearby = updateNearbyPlayers(player, world)
+
+            playerInfoList.clear()
+            playerInfoList.addAll(nearby)
+        }
     }
 }
