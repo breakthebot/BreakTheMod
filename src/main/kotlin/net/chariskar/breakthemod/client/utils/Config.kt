@@ -32,6 +32,8 @@ object Config {
         var dev: Boolean = false,
         var enabledOnOtherServers: Boolean = true,
         var radarEnabled: Boolean = true,
+        var debug: Boolean = false,
+        var xaerosRdr: Boolean = false,
         var mapUrl: String = "https://map.earthmc.net/",
         var apiUrl: String = "https://api.earthmc.net/v3/aurora",
         var staffRepoUrl: String = "https://raw.githubusercontent.com/veyronity/staff/master/staff.json",
@@ -99,9 +101,12 @@ object Config {
 
     fun getEnabledServers(): Boolean = config.enabledOnOtherServers
 
-    fun getTownlessMessage(townName: String): String {
-        return config.townlessMessage.replace("TOWN", townName)
-    }
+    fun getTownlessMessage(townName: String): String = config.townlessMessage.replace("TOWN", townName)
+
+    fun getDbg() = config.debug
+
+    fun getXaerosRdr() = config.xaerosRdr
+
     fun setTownlessMessage(message: String): Boolean {
         if (!message.contains("TOWN")) return false
         config.townlessMessage = message

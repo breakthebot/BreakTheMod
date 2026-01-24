@@ -2,7 +2,7 @@
 -dontnote
 -dontoptimize
 
--injars build/libs/breakthemod-1.4.1.jar
+-injars build/libs/breakthemod-1.4.3.jar
 -outjars build/libs/btm-obf.jar
 
 -libraryjars <java.home>/jmods/

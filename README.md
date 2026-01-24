@@ -142,11 +142,3 @@ Review [CONTRIBUTING.md](/CONTRIBUTING.md) for more details.
 - [Discord Server](https://discord.gg/RVkwSrPyuq)
 
 ---
-
-## **Previous builds**
-
-| Path                                      | Checksum                                            |
-|-------------------------------------------|-----------------------------------------------------|
-| [1.4](builds/1.4/breakthemod-1.4.jar)     | [Checksum](builds/1.4/breakthemod-1.4.jar.sha256)   |
-| [1.4.1](builds/1.4/breakthemod-1.4.1.jar) | [Checksum](builds/1.4/breakthemod-1.4.1.jar.sha256) |
-| [1.4.2](builds/1.4/breakthemod-1.4.2.jar) | [Checksum](builds/1.4/breakthemod-1.4.2.jar.sha256) |

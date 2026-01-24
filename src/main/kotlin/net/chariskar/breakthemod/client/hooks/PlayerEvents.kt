@@ -17,23 +17,23 @@
 package net.chariskar.breakthemod.client.hooks
 
 import net.chariskar.breakthemod.client.api.engine.NearbyEngine
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 object PlayerEvents {
+    val logger: Logger = LoggerFactory.getLogger("breakthemod")
+
     public fun onServerJoin() {
-        ServerPlayConnectionEvents.JOIN.register { handler, _, _ ->
+        ClientPlayConnectionEvents.JOIN.register { handler, sender, client ->
             NearbyEngine.engineRunning = true
         }
     }
 
     public fun onServerLeave() {
-        ServerPlayConnectionEvents.DISCONNECT.register { handler, server ->
+        ClientPlayConnectionEvents.DISCONNECT.register { handler, server ->
             NearbyEngine.engineRunning = false
         }
     }
 
-    public fun init(){
-        onServerJoin()
-        onServerLeave()
-    }
 }

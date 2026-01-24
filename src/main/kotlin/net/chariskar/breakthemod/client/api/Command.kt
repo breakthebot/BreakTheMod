@@ -28,6 +28,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.Prefix
+import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.client.MinecraftClient
 import net.minecraft.text.Style
@@ -49,20 +50,6 @@ abstract class Command {
     val fetch: Fetch = Fetch
     val client: MinecraftClient = MinecraftClient.getInstance()
     protected val scope = CommandScope.scope
-
-    companion object {
-        fun getConnectedServerAddress(): String? {
-            val client = MinecraftClient.getInstance() ?: return null
-            val serverInfo = client.currentServerEntry ?: return null
-            return serverInfo.address.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0]
-        }
-
-        fun getEnabled(): Boolean {
-            val serverAddress = getConnectedServerAddress() ?: return true
-            if (serverAddress.lowercase(Locale.getDefault()).contains("earthmc.net")) return true
-            return Config.getEnabledServers()
-        }
-    }
 
     var name: String = ""
     var description: String = ""
