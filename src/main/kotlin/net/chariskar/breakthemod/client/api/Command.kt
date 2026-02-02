@@ -36,7 +36,6 @@ import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.util.*
 
 private object CommandScope {
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -55,7 +54,7 @@ abstract class Command {
     var description: String = ""
     var usageSuffix: String = ""
 
-    fun getUsage(): String { return "/" + name + (usageSuffix.ifEmpty { "" }) }
+    fun getUsage(): String { return "/" + name + ( usageSuffix.ifEmpty { "" } ) }
 
     /**
      * @param ctx the command context.
@@ -91,8 +90,10 @@ abstract class Command {
         dispatcher.register(
             LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)
                 .executes(Command { context: CommandContext<FabricClientCommandSource> ->
-                    if (!getEnabled()) {return@Command 0}
-                    return@Command run(context)
+                    if (!getEnabled()) { return@Command 0 }
+                    return@Command run(
+                        context
+                    )
                 })
         )
     }
@@ -110,19 +111,15 @@ abstract class Command {
      * Helper utility for sending messages.
      *
      * @param message The message to be sent
-     * @param style The color to attach to the message
+     * @param colour The color to attach to the message
      */
-    fun sendMessage(message: Text, style: Formatting) {
-        if (client.player != null) {
-            val prefix: Text = Prefix.prefix
-            val chatMessage: Text = Text.empty().append(prefix).append(Text.empty().append(message).setStyle(Style.EMPTY.withColor(style)))
-            sendMessage(chatMessage)
-        }
+    fun sendMessage(message: Text, colour: Formatting) {
+        val chatMessage = Text.empty().append(Prefix.prefix).append(Text.empty().append(message).setStyle(Style.EMPTY.withColor(colour)))
+        sendMessage(chatMessage)
     }
 
-    fun sendError() {
-        sendMessage(Text.literal("Command has exited with an exception"))
-    }
+    fun sendError() = sendMessage(Text.literal("Command has exited with an exception"))
+
 
     protected fun logError(message: String?, e: Exception) {
         logger.error("{}{}", message, e.message)

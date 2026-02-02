@@ -15,11 +15,12 @@
 -keep public class net.chariskar.breakthemod.Breakthemod { *; }
 
 -keep class net.chariskar.breakthemod.client.commands.** implements net.chariskar.breakthemod.client.api.* { *; }
-
+-keep class * implements net.fabricmc.api.ClientModInitializer { *; }
 -keep public class net.chariskar.breakthemod.client.api.** { *; }
 -keep public class net.chariskar.breakthemod.client.hooks.** { *; }
 
 -keep class net.chariskar.breakthemod.client.utils.** { *; }
+-keep public class net.chariskar.breakthemod.mixins.** { *; }
 
 -keepclassmembers class kotlin.Metadata { *; }
 -keepattributes RuntimeVisibleAnnotations,RuntimeInvisibleAnnotations

@@ -12,8 +12,8 @@ import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonArray
 import net.chariskar.breakthemod.client.api.Command
 import net.chariskar.breakthemod.client.api.Fetch
-import net.chariskar.breakthemod.client.api.types.Reference
-import net.chariskar.breakthemod.client.api.types.Town
+import net.chariskar.breakthemod.client.objects.Reference
+import net.chariskar.breakthemod.client.objects.Town
 import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.MutableText

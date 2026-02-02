@@ -13,8 +13,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import xaero.common.effect.Effects;
-import xaero.common.misc.Misc;
 import xaero.hud.category.rule.resolver.ObjectCategoryRuleResolver;
 import xaero.hud.minimap.radar.category.EntityRadarCategory;
 import xaero.hud.minimap.radar.category.EntityRadarCategoryManager;

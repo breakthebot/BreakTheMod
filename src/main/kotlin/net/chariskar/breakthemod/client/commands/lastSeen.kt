@@ -8,7 +8,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.client.api.Command
-import net.chariskar.breakthemod.client.api.types.Resident
+import net.chariskar.breakthemod.client.objects.Resident
 import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
 import net.chariskar.breakthemod.client.utils.Timestamps
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource

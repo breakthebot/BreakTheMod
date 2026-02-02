@@ -20,7 +20,6 @@ import net.minecraft.block.ShapeContext
 import net.minecraft.client.MinecraftClient
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.util.hit.HitResult
-import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.RaycastContext
 import net.minecraft.world.World
@@ -84,8 +83,6 @@ data class PlayerInfo(val name: String, var position: Vec3d) {
     override fun toString(): String {
         val client = MinecraftClient.getInstance()
         val player = client.player ?: return name
-        val distance = distanceFrom(player)
-        val direction = directionFrom(player)
-        return "-$name (${position.x.toInt()}, ${position.z.toInt()}) direction: $direction, distance: $distance blocks"
+        return "-$name (${position.x.toInt()}, ${position.z.toInt()}) direction: ${directionFrom(player)}, distance: ${distanceFrom(player)} blocks"
     }
 }

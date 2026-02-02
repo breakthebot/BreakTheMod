@@ -1,4 +1,4 @@
-package net.chariskar.breakthemod.client.api.objects
+package net.chariskar.breakthemod.client.objects
 
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable

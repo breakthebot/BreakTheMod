@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
-package net.chariskar.breakthemod.client.api.objects
+package net.chariskar.breakthemod.client.objects
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

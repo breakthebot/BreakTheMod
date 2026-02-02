@@ -16,7 +16,6 @@
  */
 package net.chariskar.breakthemod
 
-import com.mojang.brigadier.CommandDispatcher
 import net.chariskar.breakthemod.client.api.Command
 import net.chariskar.breakthemod.client.api.engine.NearbyEngine
 import net.chariskar.breakthemod.client.commands.Debug
@@ -29,7 +28,6 @@ import net.chariskar.breakthemod.client.commands.locate
 import net.chariskar.breakthemod.client.commands.nearby
 import net.chariskar.breakthemod.client.commands.onlineStaff
 import net.chariskar.breakthemod.client.commands.townless
-import net.chariskar.breakthemod.client.hooks.PlayerEvents
 import net.chariskar.breakthemod.client.hooks.nearby.Hud
 import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.api.ClientModInitializer
@@ -39,13 +37,11 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements
 import net.minecraft.command.CommandRegistryAccess
 import net.minecraft.util.Identifier
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import com.mojang.brigadier.CommandDispatcher
 
 
 class Breakthemod : ClientModInitializer {
     val nearbyLayer: Identifier = Identifier.of("breakthemod", "nearby_layer")
-    val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
     private fun loadCommands(commands: MutableList<Command>) {
         ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _: CommandRegistryAccess ->
@@ -72,8 +68,6 @@ class Breakthemod : ClientModInitializer {
         )
         helpCmd.commands = commandList
         loadCommands(commandList)
-        PlayerEvents.onServerJoin()
-        PlayerEvents.onServerLeave()
         NearbyEngine.register()
         HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, nearbyLayer) { context, _ -> Hud.render(context)}
     }

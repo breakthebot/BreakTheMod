@@ -21,9 +21,9 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
-import net.chariskar.breakthemod.client.api.types.Nation
-import net.chariskar.breakthemod.client.api.types.Resident
-import net.chariskar.breakthemod.client.api.types.Town
+import net.chariskar.breakthemod.client.objects.Nation
+import net.chariskar.breakthemod.client.objects.Resident
+import net.chariskar.breakthemod.client.objects.Town
 import net.chariskar.breakthemod.client.utils.Config
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -171,11 +171,17 @@ object Fetch {
     }
     
     suspend fun getResidents(residents: List<String>): List<Resident?>? = getObjects(ItemTypes.PLAYER, residents.toString())
+
     suspend fun getResident(resident: String): Resident? = getResidents(arrayListOf(resident))?.get(0)
+
     suspend fun getTowns(towns: List<String>): List<Town?>? = getObjects(ItemTypes.TOWN, towns.toString())
+
     suspend fun getTown(town: String): Town? = getTowns(arrayListOf(town))?.get(0)
+
     suspend fun getNations(nations: List<String>): List<Nation?>? = getObjects(ItemTypes.NATION, nations.toString())
+
     suspend fun getNation(nation: String): Nation? = getNations(arrayListOf(nation))?.get(0)
+
 
     fun logError(message: String?, e: java.lang.Exception) {
         logger.error("{}{}", message, e.message)
@@ -183,6 +189,7 @@ object Fetch {
             e.printStackTrace()
         }
     }
+
     fun formatUrl(url: String): String {
         if (url.isEmpty()) return url
         val protocolEnd = url.indexOf("://")

@@ -67,14 +67,13 @@ object Config {
             logger.error("Unable to parse config file regenerating, ${e.message}")
             saveConfig(null)
         }
-
     }
 
     fun saveConfig(data: ConfigData?) {
         val data = data ?: ConfigData()
         try {
-            val encoded: String = json.encodeToString<ConfigData>(data)
-            configFile.writeText(encoded )
+            val encoded= json.encodeToString<ConfigData>(data)
+            configFile.writeText(encoded)
         } catch (e: Exception) {
             logger.error("Unable to write new config, ${e.message}")
         }
@@ -87,6 +86,7 @@ object Config {
         val withProtocol = if (!url.startsWith("https://")) "https://$url" else url
         return if (!withProtocol.endsWith("/")) "$withProtocol/" else withProtocol
     }
+
     fun getMapUrl(): String = formatURL(config.mapUrl)
 
     fun getApiUrl(): String = formatURL(config.apiUrl)

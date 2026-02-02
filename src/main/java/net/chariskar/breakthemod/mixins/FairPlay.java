@@ -16,7 +16,6 @@ public abstract class FairPlay {
     @Inject(method = "isFairPlay", at = @At("HEAD"), cancellable = true)
     private void inject(CallbackInfoReturnable<Boolean> cir) {
         if (!ServerUtils.INSTANCE.isEarthMc() && Config.INSTANCE.getXaerosRdr()) return;
-        LoggerFactory.getLogger("breakthemod").info("Bypassed fairplay");
         cir.setReturnValue(false);
     }
 }

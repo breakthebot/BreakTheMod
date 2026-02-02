@@ -11,8 +11,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import net.chariskar.breakthemod.client.api.Command
 import net.chariskar.breakthemod.client.api.Fetch
-import net.chariskar.breakthemod.client.api.types.Location
-import net.chariskar.breakthemod.client.api.types.PlayerLocationInfo
+import net.chariskar.breakthemod.client.objects.Location
+import net.chariskar.breakthemod.client.objects.PlayerLocationInfo
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource

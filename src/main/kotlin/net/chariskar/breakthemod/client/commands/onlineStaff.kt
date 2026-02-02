@@ -24,13 +24,10 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Contextual
-import kotlinx.serialization.Serializable
 import net.chariskar.breakthemod.client.api.Fetch
-import net.chariskar.breakthemod.client.api.types.Resident
-import net.chariskar.breakthemod.client.api.types.StaffList
+import net.chariskar.breakthemod.client.objects.Resident
+import net.chariskar.breakthemod.client.objects.StaffList
 import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
-import net.chariskar.breakthemod.client.utils.serialization.SerializableUUID
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.MutableText
 import net.minecraft.text.Style

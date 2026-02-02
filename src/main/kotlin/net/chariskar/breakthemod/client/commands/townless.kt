@@ -20,7 +20,7 @@ import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.client.api.Command
 import net.chariskar.breakthemod.client.api.Fetch
-import net.chariskar.breakthemod.client.api.types.Resident
+import net.chariskar.breakthemod.client.objects.Resident
 import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.ClickEvent

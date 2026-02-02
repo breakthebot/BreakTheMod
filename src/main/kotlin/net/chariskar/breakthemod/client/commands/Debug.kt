@@ -17,7 +17,7 @@ class Debug : Command() {
     }
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
-        if (!Config.getDbg()) return 1
+        if (!Config.getDbg()) return 0
         sendMessage(
             Text.literal("players" + MinecraftClient.getInstance().world?.players)
         )

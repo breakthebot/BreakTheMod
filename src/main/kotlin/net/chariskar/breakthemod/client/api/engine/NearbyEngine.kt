@@ -46,7 +46,7 @@ object NearbyEngine {
     val scope: CoroutineScope get() = EngineScope.scope
 
     private val playerInfoList: MutableSet<PlayerInfo> = CopyOnWriteArraySet()
-    public var engineRunning: Boolean = false
+    var engineRunning: Boolean = false
 
     fun getPlayers(): Set<PlayerInfo> {
         return HashSet(playerInfoList)
