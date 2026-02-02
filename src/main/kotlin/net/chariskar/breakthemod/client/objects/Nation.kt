@@ -15,7 +15,7 @@
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.chariskar.breakthemod.client.api.types
+package net.chariskar.breakthemod.client.api.objects
 
 import kotlinx.serialization.Serializable
 import net.chariskar.breakthemod.client.utils.serialization.SerializableUUID

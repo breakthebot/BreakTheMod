@@ -1,7 +1,6 @@
-package net.chariskar.breakthemod.client.api.types
+package net.chariskar.breakthemod.client.api.objects
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.descriptors.PrimitiveKind
 
 @Serializable
 data class PlayerLocationInfo(

@@ -15,7 +15,7 @@
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.chariskar.breakthemod.client.api.types
+package net.chariskar.breakthemod.client.api.objects
 
 import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
