@@ -8,6 +8,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.chariskar.breakthemod.client.api.Command
 import net.chariskar.breakthemod.client.api.Fetch
@@ -33,15 +34,23 @@ class findPlayer : Command() {
     )
 
     @Serializable
+    data class MapResponse(
+        val name: String? = null,
+        val x: Double,
+        val z: Double
+    )
+
+    @Serializable
     data class ApiResponse(
         val max: Int? = null,
-        val players: MutableList<Location>? = null
+        val players: MutableList<MapResponse>? = null
     )
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val name: String = ctx.getArgument("name", String::class.java)
         scope.launch {
-            val players: MutableList<Location>? = Fetch.getRequest<ApiResponse>(Config.getMapUrl() + "tiles/players.json")!!.players
+            val players: MutableList<MapResponse>? = Fetch.getRequest<ApiResponse>(Config.getMapUrl() + "tiles/players.json")!!.players
+
             if (players.isNullOrEmpty()) {
                 sendMessage(Text.literal("Received empty player list from map."), Formatting.RED)
                 return@launch
@@ -51,12 +60,15 @@ class findPlayer : Command() {
             for (player in players) {
                 if (player.name.equals(name, ignoreCase = true)) {
                     playerData.found = true
-                    playerData.x = player.location?.x!!
-                    playerData.z = player.location.z!!
+                    playerData.x = player.x
+                    playerData.z = player.z
 
-                    val coords = listOf(player.location.x, player.location.z)
+                    val coords = listOf(player.x, player.z)
                     val payload = Payload(listOf(coords))
-                    val locationData: Location? = Fetch.postRequest<Location>(Fetch.ItemTypes.LOCATION.url, Json.encodeToString(payload))
+                    val payloadJson = Json.encodeToString(payload)
+
+                    val locationData: Location? = Fetch.postRequest<List<Location>>(Fetch.ItemTypes.LOCATION.url, Json.encodeToString(payload))?.first()
+
                     if (locationData != null && locationData.isWilderness == false) {
                         playerData.townName = locationData.town?.name
                     }

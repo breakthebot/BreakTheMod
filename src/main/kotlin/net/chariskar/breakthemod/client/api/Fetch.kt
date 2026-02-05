@@ -36,7 +36,7 @@ import java.net.http.HttpResponse
 object Fetch {
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
-    val json: Json =  Json {
+    val json: Json = Json {
         ignoreUnknownKeys = true
     }
 
@@ -89,6 +89,7 @@ object Fetch {
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(body))
                 .build()
+
             val response = client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).await()
             var body = response.body()
             if (body.startsWith("[[") && body.endsWith("]]")) {

@@ -27,30 +27,19 @@ data class Town(
     val board: String? = null,
     val founder: String? = null,
     val wiki: String? = null,
-    val mayor: Mayor? = null,
-    val nation: Nation? = null,
+    val mayor: Reference? = null,
+    val nation: Reference? = null,
     val timestamps: Timestamps? = null,
     val status: Status? = null,
     val stats: Stats? = null,
     val perms: Perms? = null,
     val coordinates: Coordinates? = null,
-    val residents: List<Resident>? = null,
-    val trusted: List<Resident>? = null,
-    val outlaws: List<Resident>? = null,
+    val residents: List<Reference>? = null,
+    val trusted: List<Reference>? = null,
+    val outlaws: List<Reference>? = null,
     val quarters: List<Reference>? = null,
     val ranks: Ranks? = null
 ) {
-    @Serializable
-    data class Mayor(
-        val name: String? = null,
-        val uuid: SerializableUUID? = null
-    )
-
-    @Serializable
-    data class Nation(
-        val name: String? = null,
-        val uuid: SerializableUUID? = null
-    )
 
     @Serializable
     data class Timestamps(
@@ -118,12 +107,6 @@ data class Town(
         val z: Float? = null,
         val pitch: Float? = null,
         val yaw: Float? = null
-    )
-
-    @Serializable
-    data class Resident(
-        val name: String? = null,
-        val uuid: SerializableUUID? = null
     )
 
     @Serializable

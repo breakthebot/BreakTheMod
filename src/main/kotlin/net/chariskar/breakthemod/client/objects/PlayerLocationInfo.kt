@@ -19,7 +19,7 @@ data class PlayerLocationInfo(
     override fun toString(): String {
         return if (!found) {
             "$username is either offline or not showing up on the map."
-        } else if (isWilderness) {
+        } else if (townName == null) {
             "$username at x: $x, z: $z is in wilderness."
         } else {
             "$username at x: $x, z: $z is in town: $townName."

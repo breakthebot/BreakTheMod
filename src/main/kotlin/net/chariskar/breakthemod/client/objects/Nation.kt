@@ -28,30 +28,18 @@ class Nation(val name: String) {
     var dynmapColour: String? = null
     var dynmapOutline: String? = null
     var wiki: String? = null
-    var king: Leader? = null
-    var capital: Capital? = null
+    var king: Reference? = null
+    var capital: Reference? = null
     var timestamps: Timestamps? = null
     var status: Status? = null
     var stats: Stats? = null
     var coordinates: Coordinates? = null
-    var residents: List<Resident>? = null
-    var towns: List<Resident>? = null
-    var allies: List<Resident>? = null
-    var enemies: List<Resident>? = null
-    var sanctioned: List<Resident>? = null
+    var residents: List<Reference>? = null
+    var towns: List<Reference>? = null
+    var allies: List<Reference>? = null
+    var enemies: List<Reference>? = null
+    var sanctioned: List<Reference>? = null
     var ranks: Ranks? = null
-
-    @Serializable
-    data class Leader(
-        var name: String? = null,
-    val uuid: SerializableUUID? = null
-    )
-
-    @Serializable
-    data class Capital(
-        var name: String? = null,
-    val uuid: SerializableUUID? = null
-    )
 
     @Serializable
     data class Timestamps(
@@ -87,12 +75,6 @@ class Nation(val name: String) {
         var z: Float? = null,
         var pitch: Float? = null,
         var yaw: Float? = null
-    )
-
-    @Serializable
-    data class Resident(
-        var name: String? = null,
-    val uuid: SerializableUUID? = null
     )
 
     @Serializable
