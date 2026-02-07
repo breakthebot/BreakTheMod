@@ -51,10 +51,12 @@ object Config {
     )
 
     private val json = Json { encodeDefaults = true }
-    val configFile: File = File(MinecraftClient.getInstance().runDirectory, "config/breakthemod_config.json")
+    val configFile: File = File(MinecraftClient.getInstance()?.runDirectory, "config/breakthemod_config.json")
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
     fun loadConfig() {
+        if (MinecraftClient.getInstance() == null) return
+
         if (!configFile.exists()) { saveConfig(null) }
 
         val fileContent = configFile.readText()
