@@ -65,11 +65,8 @@ object Fetch {
                 .build()
             val response = client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).await()
             val body = response.body()
-            if (T::class == String::class) {
-                body as T
-            } else {
-                json.decodeFromString<T>(body)
-            }
+            if (T::class == String::class) { body as T }
+            json.decodeFromString<T>(body)
         } catch (e: Exception) {
             logError("Unable to send get request to target", e)
             return null
@@ -132,7 +129,7 @@ object Fetch {
      * @param item The type of the item to fetch.
      */
     @Suppress("unused")
-    suspend inline fun <reified T : Any> getAll(item: ItemTypes): List<T>? {
+    suspend inline fun <reified T : Any> getAll(item: Items): List<T>? {
         return try {
             val url: String = item.url
             getRequest<List<T>?>(url)
@@ -148,7 +145,7 @@ object Fetch {
      * @param item The type of the item to fetch.
      * @param body The body to send
      */
-    suspend inline fun <reified T : Any> getObjects(item: ItemTypes, body: String): List<T>? {
+    suspend inline fun <reified T : Any> getObjects(item: Items, body: String): List<T>? {
         return try {
             val url: String = item.url
             getUUIDs<List<T>>(url, body)
@@ -161,7 +158,7 @@ object Fetch {
     /**
      * List of items that can be looked up from the api, mapped to the url of each.
      */
-    enum class ItemTypes(val url: String) {
+    enum class Items(val url: String) {
         TOWN(urls["towns"]!!),
         NATION(urls["nations"]!!),
         PLAYER(urls["players"]!!),
@@ -171,15 +168,15 @@ object Fetch {
         LOCATION(urls["location"]!!)
     }
     
-    suspend fun getResidents(residents: List<String>): List<Resident?>? = getObjects(ItemTypes.PLAYER, residents.toString())
+    suspend fun getResidents(residents: List<String>): List<Resident?>? = getObjects(Items.PLAYER, residents.toString())
 
     suspend fun getResident(resident: String): Resident? = getResidents(arrayListOf(resident))?.get(0)
 
-    suspend fun getTowns(towns: List<String>): List<Town?>? = getObjects(ItemTypes.TOWN, towns.toString())
+    suspend fun getTowns(towns: List<String>): List<Town?>? = getObjects(Items.TOWN, towns.toString())
 
     suspend fun getTown(town: String): Town? = getTowns(arrayListOf(town))?.get(0)
 
-    suspend fun getNations(nations: List<String>): List<Nation?>? = getObjects(ItemTypes.NATION, nations.toString())
+    suspend fun getNations(nations: List<String>): List<Nation?>? = getObjects(Items.NATION, nations.toString())
 
     suspend fun getNation(nation: String): Nation? = getNations(arrayListOf(nation))?.get(0)
 

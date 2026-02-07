@@ -78,6 +78,9 @@ dependencies {
 
     modApi("com.terraformersmc:modmenu:${project.property("modmenu")}")
     modImplementation("maven.modrinth:xaeros-minimap:${project.property("xaeros_version")}")
+
+    testImplementation(kotlin("test"))
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
 }
 
 tasks.processResources {
@@ -115,24 +118,9 @@ tasks.jar {
     }
 }
 
-// configure the maven publication
-publishing {
-    publications {
-        create<MavenPublication>("mavenJava") {
-            artifactId = project.property("archives_base_name") as String
-            from(components["java"])
-        }
-    }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
-    }
+tasks.test {
+    useJUnitPlatform()
 }
-
 
 kotlin {
     compilerOptions {

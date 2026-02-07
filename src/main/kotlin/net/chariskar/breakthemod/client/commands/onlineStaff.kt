@@ -65,7 +65,7 @@ class onlineStaff : command() {
 
     fun execNormal(ctx: CommandContext<FabricClientCommandSource>): Int {
         scope.launch {
-            val staff: StaffList = Fetch.getRequest<StaffList>(Fetch.ItemTypes.STAFF.url)!!
+            val staff: StaffList = Fetch.getRequest<StaffList>(Fetch.Items.STAFF.url)!!
             val uuids: List<UUID> = staff.allStaff().map { uid-> uid.toUUID() }
 
             val onlinePlayers: List<UUID> = client.networkHandler!!.playerList.stream().map { pl -> pl.profile.id }.toList()
@@ -114,9 +114,9 @@ class onlineStaff : command() {
 
     fun execAPI(ctx: CommandContext<FabricClientCommandSource>): Int {
         scope.launch {
-            val staff: StaffList = Fetch.getRequest<StaffList>(Fetch.ItemTypes.STAFF.url)!!
+            val staff: StaffList = Fetch.getRequest<StaffList>(Fetch.Items.STAFF.url)!!
 
-            val staffNames: List<String> = fetch.getObjects<Resident>(Fetch.ItemTypes.PLAYER, staff.allStaff().map { v->v.toUUID() }.toString() )!!
+            val staffNames: List<String> = fetch.getObjects<Resident>(Fetch.Items.PLAYER, staff.allStaff().map { v->v.toUUID() }.toString() )!!
                 .filter { r -> r.status!!.isOnline == true }
                 .map { r -> r.name }
 

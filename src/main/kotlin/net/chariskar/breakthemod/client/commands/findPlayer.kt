@@ -8,7 +8,6 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.chariskar.breakthemod.client.api.Command
 import net.chariskar.breakthemod.client.api.Fetch
@@ -67,7 +66,7 @@ class findPlayer : Command() {
                     val payload = Payload(listOf(coords))
                     val payloadJson = Json.encodeToString(payload)
 
-                    val locationData: Location? = Fetch.postRequest<List<Location>>(Fetch.ItemTypes.LOCATION.url, Json.encodeToString(payload))?.first()
+                    val locationData: Location? = Fetch.postRequest<List<Location>>(Fetch.Items.LOCATION.url, Json.encodeToString(payload))?.first()
 
                     if (locationData != null && locationData.isWilderness == false) {
                         playerData.townName = locationData.town?.name
@@ -75,8 +74,8 @@ class findPlayer : Command() {
                     sendMessage(Text.literal(playerData.toString()), Formatting.AQUA)
                     return@launch
 
-                } else continue
-
+                }
+                continue
             }
         }
         return 0

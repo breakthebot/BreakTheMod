@@ -111,14 +111,14 @@ data class Town(
 
     @Serializable
     data class Ranks(
-        @SerialName("Councilor") val councillor: List<Resident>? = null,
-        @SerialName("Builder") val builder: List<Resident>? = null,
-        @SerialName("Recruiter") val recruiter: List<Resident>? = null,
-        @SerialName("Police") val police: List<Resident>? = null,
-        @SerialName("Tax-Exempt") val taxExempt: List<Resident>? = null,
-        @SerialName("Treasurer") val treasurer: List<Resident>? = null,
-        @SerialName("Realtor") val realtor: List<Resident>? = null,
-        @SerialName("Settler") val settler: List<Resident>? = null
+        @SerialName("Councilor") val councillor: List<Reference>? = null,
+        @SerialName("Builder") val builder: List<Reference>? = null,
+        @SerialName("Recruiter") val recruiter: List<Reference>? = null,
+        @SerialName("Police") val police: List<Reference>? = null,
+        @SerialName("Tax-Exempt") val taxExempt: List<Reference>? = null,
+        @SerialName("Treasurer") val treasurer: List<Reference>? = null,
+        @SerialName("Realtor") val realtor: List<Reference>? = null,
+        @SerialName("Settler") val settler: List<Reference>? = null
     )
 
 }

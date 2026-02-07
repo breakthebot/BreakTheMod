@@ -67,7 +67,7 @@ class goto: Command() {
                     }
 
                     val resp: List<Reference>? = Fetch.postRequest<List<Reference>>(
-                        Fetch.ItemTypes.NEARBY.url,
+                        Fetch.Items.NEARBY.url,
                         body.toString()
                     )
 
