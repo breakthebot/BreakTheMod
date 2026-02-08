@@ -79,8 +79,8 @@ class Nation(val name: String) {
 
     @Serializable
     data class Ranks(
-        var Chancellor: List<Resident>? = null,
-        var Colonist: List<Resident>? = null,
-        var Diplomat: List<Resident>? = null
+        var Chancellor: List<Reference>? = null,
+        var Colonist: List<Reference>? = null,
+        var Diplomat: List<Reference>? = null
     )
 }

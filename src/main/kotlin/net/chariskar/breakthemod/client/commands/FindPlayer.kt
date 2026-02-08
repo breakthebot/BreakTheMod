@@ -19,7 +19,7 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class findPlayer : Command() {
+class FindPlayer : Command() {
     init {
         name = "findPlayer"
         description = "Tells you where a player is based on the map api."
@@ -44,6 +44,8 @@ class findPlayer : Command() {
         val max: Int? = null,
         val players: MutableList<MapResponse>? = null
     )
+
+
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val name: String = ctx.getArgument("name", String::class.java)
@@ -80,6 +82,7 @@ class findPlayer : Command() {
         }
         return 0
     }
+
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         dispatcher.register(
             LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)

@@ -1,7 +1,9 @@
 package net.chariskar.breakthemod.apiTest;
 
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import net.chariskar.breakthemod.Main
+import net.chariskar.breakthemod.TestScope
 import net.chariskar.breakthemod.client.api.Fetch
 import net.chariskar.breakthemod.client.objects.Nation
 import net.chariskar.breakthemod.client.objects.Resident
@@ -15,10 +17,11 @@ import kotlin.test.assertIs
  * Test class for [net.chariskar.breakthemod.client.api.Fetch]
  * */
 class EarthmcApiTest {
+    val scope = TestScope.scope
 
     @Test
     fun `test GET request`() {
-        runBlocking {
+        scope.launch {
             val result = Fetch.getRequest<StaffList>(Main.config.staffRepoUrl)
             assertNotNull(result)
             assertIs<StaffList>(result)
@@ -27,7 +30,7 @@ class EarthmcApiTest {
 
     @Test
     fun `test towns`() {
-        runBlocking {
+        scope.launch {
             val result = Fetch.getTown("paris")
             assertNotNull(result)
             assertIs<Town>(result)
@@ -36,7 +39,7 @@ class EarthmcApiTest {
 
     @Test
     fun `test nations`() {
-        runBlocking {
+        scope.launch {
             val result = Fetch.getNation("france")
             assertNotNull(result)
             assertIs<Nation>(result)
@@ -45,7 +48,7 @@ class EarthmcApiTest {
 
     @Test
     fun `test players`() {
-        runBlocking {
+        scope.launch {
             val result = Fetch.getResident("charis_k")
             assertNotNull(result)
             assertIs<Resident>(result)

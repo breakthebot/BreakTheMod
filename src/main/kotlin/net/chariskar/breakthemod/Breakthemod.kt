@@ -20,7 +20,7 @@ import net.chariskar.breakthemod.client.api.Command
 import net.chariskar.breakthemod.client.api.engine.NearbyEngine
 import net.chariskar.breakthemod.client.commands.Debug
 import net.chariskar.breakthemod.client.commands.discordId
-import net.chariskar.breakthemod.client.commands.findPlayer
+import net.chariskar.breakthemod.client.commands.FindPlayer
 import net.chariskar.breakthemod.client.commands.goto
 import net.chariskar.breakthemod.client.commands.help
 import net.chariskar.breakthemod.client.commands.lastSeen
@@ -59,7 +59,7 @@ class Breakthemod : ClientModInitializer {
             onlineStaff(),
             townless(),
             goto(),
-            findPlayer(),
+            FindPlayer(),
             lastSeen(),
             discordId(),
             locate(),
