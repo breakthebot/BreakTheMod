@@ -1,7 +1,6 @@
 package net.chariskar.breakthemod.client.objects
 
 import kotlinx.serialization.Serializable
-import net.chariskar.breakthemod.client.utils.serialization.SerializableUUID
 
 @Serializable
 data class Location (

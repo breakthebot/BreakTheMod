@@ -25,26 +25,27 @@ import net.chariskar.breakthemod.client.utils.serialization.SerializableUUID
 class Nation(val name: String) {
     val uuid: SerializableUUID? = null
     var board: String? = null
-    var dynmapColour: String? = null
-    var dynmapOutline: String? = null
-    var wiki: String? = null
-    var king: Reference? = null
-    var capital: Reference? = null
-    var timestamps: Timestamps? = null
-    var status: Status? = null
-    var stats: Stats? = null
-    var coordinates: Coordinates? = null
-    var residents: List<Reference>? = null
-    var towns: List<Reference>? = null
-    var allies: List<Reference>? = null
-    var enemies: List<Reference>? = null
-    var sanctioned: List<Reference>? = null
-    var ranks: Ranks? = null
+//    var dynmapColour: String? = null
+//    var dynmapOutline: String? = null
+//    var wiki: String? = null
+//    var king: Reference? = null
+//    var capital: Reference? = null
+//    var timestamps: Timestamps? = null
+      var status: Status? = null
+//    var stats: Stats? = null
+var coordinates: Coordinates? = null
+//    var residents: List<Reference>? = null
+//    var towns: List<Reference>? = null
+//    var allies: List<Reference>? = null
+//    var enemies: List<Reference>? = null
+//    var sanctioned: List<Reference>? = null
+//    var ranks: Ranks? = null
 
-    @Serializable
-    data class Timestamps(
-        var registered: Long? = null
-    )
+    //@Serializable
+//    data class Timestamps(
+//        var registered: Long? = null
+//    )
+
     @Serializable
     data class Status(
         var isPublic: Boolean? = null,
@@ -52,15 +53,15 @@ class Nation(val name: String) {
         var isNeutral: Boolean? = null
     )
 
-    @Serializable
-    data class Stats(
-        var numTownBlocks: Int? = null,
-        var numResidents: Int? = null,
-        var numTowns: Int? = null,
-        var numAllies: Int? = null,
-        var numEnemies: Int? = null,
-        var balance: Float? = null
-    )
+//    @Serializable
+//    data class Stats(
+//        var numTownBlocks: Int? = null,
+//        var numResidents: Int? = null,
+//        var numTowns: Int? = null,
+//        var numAllies: Int? = null,
+//        var numEnemies: Int? = null,
+//        var balance: Float? = null
+//    )
 
     @Serializable
     data class Coordinates(
@@ -77,10 +78,10 @@ class Nation(val name: String) {
         var yaw: Float? = null
     )
 
-    @Serializable
-    data class Ranks(
-        var Chancellor: List<Reference>? = null,
-        var Colonist: List<Reference>? = null,
-        var Diplomat: List<Reference>? = null
-    )
+//    @Serializable
+//    data class Ranks(
+//        var Chancellor: List<Reference>? = null,
+//        var Colonist: List<Reference>? = null,
+//        var Diplomat: List<Reference>? = null
+//    )
 }
