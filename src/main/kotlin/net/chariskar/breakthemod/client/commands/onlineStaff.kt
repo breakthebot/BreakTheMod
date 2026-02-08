@@ -25,9 +25,11 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.client.api.Fetch
+import net.chariskar.breakthemod.client.api.Fetch.Items
 import net.chariskar.breakthemod.client.objects.Resident
 import net.chariskar.breakthemod.client.objects.StaffList
 import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
+import net.chariskar.breakthemod.client.utils.serialization.SerializableUUID
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.MutableText
 import net.minecraft.text.Style
@@ -52,107 +54,69 @@ class onlineStaff : command() {
                         if (!getEnabled()) {return@Command 0}
                         val arg: String = context.getArgument("api", String::class.java)
 
-                        if (arg == "api") return@Command execAPI(context)
-                        return@Command execNormal(context)
+                        return@Command exec(context, arg == "api")
                     }))
                 .executes(Command { context: CommandContext<FabricClientCommandSource> ->
                     if (!getEnabled()) {return@Command 0}
 
-                    return@Command execNormal(context)
+                    return@Command exec(context, null)
                 })
         )
     }
 
-    fun execNormal(ctx: CommandContext<FabricClientCommandSource>): Int {
-        scope.launch {
-            val staff: StaffList = Fetch.getRequest<StaffList>(Fetch.Items.STAFF.url)!!
-            val uuids: List<UUID> = staff.allStaff().map { uid-> uid.toUUID() }
 
-            val onlinePlayers: List<UUID> = client.networkHandler!!.playerList.stream().map { pl -> pl.profile.id }.toList()
-            val onlineStaff: MutableList<UUID> = mutableListOf()
-            onlinePlayers.forEach { pl ->
-                if (pl in uuids) onlineStaff.add(pl)
-            }
-            val staffNames: List<String> = onlineStaff.mapNotNull { uuid ->
-                client.networkHandler!!.playerList.firstOrNull {
-                    it.profile.id == uuid
-                }?.profile?.name
-            }
-            var onlineStaffText: MutableText = Text.empty()
+    suspend fun onlineStaff(api: Boolean): Text {
+        val staff: List<SerializableUUID>? = fetch.getRequest<StaffList>(Items.STAFF.url)?.allStaff()
 
-            for (i in 0..<staffNames.size) {
-                onlineStaffText = onlineStaffText.append(
-                    Text.literal(staffNames.get(i)).setStyle(Style.EMPTY.withColor(Formatting.AQUA))
-                )
+        if (staff.isNullOrEmpty()) return Text.literal("Received invalid staff list.").setStyle(Style.EMPTY.withColor(Formatting.RED))
 
-                if (i < staffNames.size - 1) {
-                    onlineStaffText = onlineStaffText.append(
-                        Text.literal(", ").setStyle(Style.EMPTY.withColor(Formatting.WHITE))
-                    )
-                }
-            }
+        var onlineStaffText: MutableText = Text.empty()
+        var message: MutableText
 
-            var message: Text
-            if (staffNames.isNotEmpty()) {
-                message = Text.literal("")
-                    .append(onlineStaffText)
-                    .append(Text.literal(" [").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
-                    .append(
-                        Text.literal(java.lang.String.valueOf(staffNames.size))
-                            .setStyle(Style.EMPTY.withColor(Formatting.WHITE))
-                    )
-                    .append(Text.literal("]").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
-            } else {
-                message = Text.empty()
-                    .append("No online staff").setStyle(Style.EMPTY.withColor(Formatting.AQUA))
-            }
-            sendMessage(message)
-        }
-
-        return 0
-    }
-
-    fun execAPI(ctx: CommandContext<FabricClientCommandSource>): Int {
-        scope.launch {
-            val staff: StaffList = Fetch.getRequest<StaffList>(Fetch.Items.STAFF.url)!!
-
-            val staffNames: List<String> = fetch.getObjects<Resident>(Fetch.Items.PLAYER, staff.allStaff().map { v->v.toUUID() }.toString() )!!
+        val staffNames: List<String> = if (api) {
+            fetch.getObjects<Resident>(Items.PLAYER, staff.map { v->v.toUUID() }.toString() )!!
                 .filter { r -> r.status!!.isOnline == true }
                 .map { r -> r.name }
-
-
-            var onlineStaffText: MutableText = Text.empty()
-
-            for (i in 0..<staffNames.size) {
-                onlineStaffText = onlineStaffText.append(
-                    Text.literal(staffNames[i]).setStyle(Style.EMPTY.withColor(Formatting.AQUA))
-                )
-
-                if (i < staffNames.size - 1) {
-                    onlineStaffText = onlineStaffText.append(
-                        Text.literal(", ").setStyle(Style.EMPTY.withColor(Formatting.WHITE))
-                    )
-                }
+        } else {
+            staff.mapNotNull { uuid ->
+                client.networkHandler!!.playerList.firstOrNull {
+                    it.profile.id == uuid.toUUID()
+                }?.profile?.name
             }
-            var message: Text
-
-            if (staffNames.isNotEmpty()) {
-                message = Text.literal("")
-                    .append(onlineStaffText)
-                    .append(Text.literal(" [").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
-                    .append(
-                        Text.literal(java.lang.String.valueOf(staffNames.size))
-                            .setStyle(Style.EMPTY.withColor(Formatting.WHITE))
-                    )
-                    .append(Text.literal("]").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
-            } else {
-                message = Text.empty()
-                    .append("No online staff").setStyle(Style.EMPTY.withColor(Formatting.AQUA))
-            }
-            sendMessage( message)
         }
 
 
+        for (i in staffNames.indices) {
+            onlineStaffText = onlineStaffText.append(
+                Text.literal(staffNames[i]).setStyle(Style.EMPTY.withColor(Formatting.AQUA))
+            )
+
+            if (i < staffNames.size - 1) {
+                onlineStaffText = onlineStaffText.append(
+                    Text.literal(", ").setStyle(Style.EMPTY.withColor(Formatting.WHITE))
+                )
+            }
+        }
+
+        if (staffNames.isNotEmpty()) {
+           message = Text.literal("")
+               .append(onlineStaffText)
+               .append(Text.literal(" [").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
+               .append(
+                   Text.literal(java.lang.String.valueOf(staffNames.size))
+                       .setStyle(Style.EMPTY.withColor(Formatting.WHITE))
+               )
+               .append(Text.literal("]").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
+       } else {
+           message = Text.empty()
+               .append("No online staff").setStyle(Style.EMPTY.withColor(Formatting.AQUA))
+       }
+
+       return message
+    }
+
+    fun exec(ctx: CommandContext<FabricClientCommandSource>, api: Boolean?): Int {
+        scope.launch { sendMessage(onlineStaff(api ?: false)) }
         return 0
     }
 }
