@@ -85,7 +85,6 @@ class onlineStaff : command() {
             }
         }
 
-
         for (i in staffNames.indices) {
             onlineStaffText = onlineStaffText.append(
                 Text.literal(staffNames[i]).setStyle(Style.EMPTY.withColor(Formatting.AQUA))
