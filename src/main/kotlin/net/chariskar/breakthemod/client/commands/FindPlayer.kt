@@ -45,8 +45,6 @@ class FindPlayer : Command() {
         val players: MutableList<MapResponse>? = null
     )
 
-
-
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val name: String = ctx.getArgument("name", String::class.java)
         scope.launch {
@@ -66,7 +64,6 @@ class FindPlayer : Command() {
 
                     val coords = listOf(player.x, player.z)
                     val payload = Payload(listOf(coords))
-                    val payloadJson = Json.encodeToString(payload)
 
                     val locationData: Location? = Fetch.postRequest<List<Location>>(Fetch.Items.LOCATION.url, Json.encodeToString(payload))?.first()
 
