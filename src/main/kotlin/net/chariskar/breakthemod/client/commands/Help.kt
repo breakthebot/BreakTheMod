@@ -26,7 +26,7 @@ import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
 
-class help : BaseCommand() {
+class Help : BaseCommand() {
     var commands: MutableList<BaseCommand>? = null
 
     init {

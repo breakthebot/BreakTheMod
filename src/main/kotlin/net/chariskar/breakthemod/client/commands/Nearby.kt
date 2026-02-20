@@ -29,7 +29,7 @@ import net.minecraft.text.TextColor
 import net.minecraft.util.Formatting
 
 
-class nearby : BaseCommand() {
+class Nearby : BaseCommand() {
 
     init {
         name = "nearby"

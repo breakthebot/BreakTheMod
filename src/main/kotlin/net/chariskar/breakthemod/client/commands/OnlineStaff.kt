@@ -35,7 +35,7 @@ import org.breakthebot.breakthelibrary.api.StaffAPI
 import net.chariskar.breakthemod.client.api.BaseCommand as command
 
 
-class onlineStaff : command() {
+class OnlineStaff : command() {
     init {
         name = "onlinestaff"
         description = "Shows online staff"

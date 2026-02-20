@@ -43,7 +43,7 @@ import java.util.concurrent.CompletableFuture
 import com.mojang.brigadier.Command as command
 
 
-class locate : BaseCommand() {
+class Locate : BaseCommand() {
 
     init {
         name = "locate"

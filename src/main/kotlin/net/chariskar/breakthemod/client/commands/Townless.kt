@@ -30,7 +30,7 @@ import org.breakthebot.breakthelibrary.api.PlayerAPI
 import java.util.UUID
 
 
-class townless : BaseCommand() {
+class Townless : BaseCommand() {
     val batchSize: Int = 100
 
     init {
