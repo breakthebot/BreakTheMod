@@ -1,3 +1,20 @@
+/*
+ * This file is part of breakthemod.
+ *
+ * breakthemod is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * breakthemod is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.chariskar.breakthemod.client.commands
 
 import com.mojang.brigadier.CommandDispatcher
@@ -10,9 +27,7 @@ import com.mojang.brigadier.suggestion.SuggestionProvider
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
-import net.chariskar.breakthemod.client.api.Command
-import net.chariskar.breakthemod.client.api.Fetch
+import net.chariskar.breakthemod.client.api.BaseCommand
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
@@ -20,21 +35,21 @@ import net.minecraft.text.ClickEvent
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
+import org.breakthebot.breakthelibrary.api.NationAPI
+import org.breakthebot.breakthelibrary.api.TownAPI
 import java.net.URI
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import com.mojang.brigadier.Command as command
 
 
-class locate : Command() {
+class locate : BaseCommand() {
 
     init {
         name = "locate"
         description = "Gives you the coordinates of a town/nation."
         usageSuffix = "<type> <name>"
     }
-
-    @Serializable
     /**
      * trying a more object-oriented style.
      * */
@@ -45,11 +60,11 @@ class locate : Command() {
         suspend fun get(): Pair<Float, Float>? {
             when (type) {
                 "town" ->  {
-                    val town = Fetch.getTown(name) ?: return null
-                    return Pair(town.coordinates?.spawn?.x!!, town.coordinates.spawn.z!!) // we dont need NPE cause every town HAS to have a spawn so we can just tell kotlin to fuck off
+                    val town = TownAPI.getTown(name) ?: return null
+                    return Pair(town.coordinates?.spawn?.x!!, town.coordinates!!.spawn!!.z!!) // we dont need NPE cause every town HAS to have a spawn so we can just tell kotlin to fuck off
                 }
                 "nation" -> {
-                    val nation = Fetch.getNation(name) ?: return null
+                    val nation = NationAPI.getNation(name) ?: return null
                     return Pair(nation.coordinates?.spawn?.x!!, nation.coordinates?.spawn?.z!!)
                 }
             }
@@ -70,12 +85,12 @@ class locate : Command() {
                 Style.EMPTY
                     .withColor(Formatting.BLUE)
                     .withClickEvent(
-                        ClickEvent.OpenUrl(URI("${Config.getMapUrl()}?world=minecraft_overworld&zoom=3&x=${coords?.first}&z=${coords?.second}"))
+                        ClickEvent.OpenUrl(URI("${Config.getMapUrl()}?world=minecraft_overworld&zoom=3&x=${coords.first}&z=${coords.second}"))
                     )
 
             )
 
-            sendMessage(Text.literal("$name is located at x: ${coords?.first}, z: ${coords?.second} ").append(link))
+            sendMessage(Text.literal("$name is located at x: ${coords.first}, z: ${coords.second} ").append(link))
         }
 
         return 0
@@ -99,17 +114,17 @@ class locate : Command() {
     }
 
     class LocateSuggestion : SuggestionProvider<FabricClientCommandSource?> {
-        val allSuggestions: MutableList<String> = mutableListOf<String>("town", "nation")
+        val allSuggestions: MutableList<String> = mutableListOf("town", "nation")
 
         @Throws(CommandSyntaxException::class)
         override fun getSuggestions(
             context: CommandContext<FabricClientCommandSource?>?,
             builder: SuggestionsBuilder
         ): CompletableFuture<Suggestions> {
-            val input = builder.getRemaining().lowercase(Locale.getDefault())
+            val input = builder.remaining.lowercase(Locale.getDefault())
 
             allSuggestions.stream()
-                .filter({ s -> s?.startsWith(input) == true })
+                .filter { s -> s?.startsWith(input) == true }
                 .forEach(builder::suggest)
 
             return builder.buildFuture()

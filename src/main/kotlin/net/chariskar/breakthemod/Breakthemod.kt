@@ -16,7 +16,7 @@
  */
 package net.chariskar.breakthemod
 
-import net.chariskar.breakthemod.client.api.Command
+import net.chariskar.breakthemod.client.api.BaseCommand
 import net.chariskar.breakthemod.client.api.engine.NearbyEngine
 import net.chariskar.breakthemod.client.commands.Debug
 import net.chariskar.breakthemod.client.commands.discordId
@@ -43,7 +43,7 @@ import com.mojang.brigadier.CommandDispatcher
 class Breakthemod : ClientModInitializer {
     val nearbyLayer: Identifier = Identifier.of("breakthemod", "nearby_layer")
 
-    private fun loadCommands(commands: MutableList<Command>) {
+    private fun loadCommands(commands: MutableList<BaseCommand>) {
         ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _: CommandRegistryAccess ->
             for (command in commands) {
                 command.register(dispatcher)
@@ -54,7 +54,7 @@ class Breakthemod : ClientModInitializer {
     override fun onInitializeClient() {
         Config.loadConfig()
         val helpCmd = help()
-        val commandList: MutableList<Command> = mutableListOf(
+        val commandList: MutableList<BaseCommand> = mutableListOf(
             nearby(),
             onlineStaff(),
             townless(),

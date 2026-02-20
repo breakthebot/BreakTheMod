@@ -1,3 +1,19 @@
+/*
+ * This file is part of breakthemod.
+ *
+ * breakthemod is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * breakthemod is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
+ */
 package net.chariskar.breakthemod.client.commands
 
 import com.mojang.brigadier.Command as command
@@ -7,15 +23,15 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
-import net.chariskar.breakthemod.client.api.Command
-import net.chariskar.breakthemod.client.objects.Resident
+import net.chariskar.breakthemod.client.api.BaseCommand
 import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
 import net.chariskar.breakthemod.client.utils.Timestamps
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
+import org.breakthebot.breakthelibrary.api.PlayerAPI
 
-class lastSeen : Command() {
+class lastSeen : BaseCommand() {
     init {
         name = "lastSeen"
         description = "Shows the last time a user was online"
@@ -25,7 +41,7 @@ class lastSeen : Command() {
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val name: String = ctx.getArgument("name", String::class.java)
         scope.launch {
-            val player: Resident? = fetch.getResident(name)
+            val player = PlayerAPI.getPlayer(name)
             if (player == null) {
                 sendMessage(Text.literal("Unable to find $name"), Formatting.RED)
                 return@launch

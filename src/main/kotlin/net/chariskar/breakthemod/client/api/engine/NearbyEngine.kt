@@ -20,16 +20,11 @@ package net.chariskar.breakthemod.client.api.engine
 import kotlinx.coroutines.*
 import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.minecraft.client.MinecraftClient
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
-import net.minecraft.world.Heightmap
 import net.minecraft.world.World
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import kotlin.math.roundToInt
-import kotlin.math.sqrt
 import java.util.concurrent.CopyOnWriteArraySet
 
 private object EngineScope {
