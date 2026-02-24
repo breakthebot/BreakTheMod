@@ -23,7 +23,6 @@
     ]
   },
   "mixins": [
-    "breakthemod.mixins.json"
   ],
   "custom": {
     "modmenu": {
@@ -37,9 +36,12 @@
     }
   },
   "depends": {
+    "minecraft": "~${minecraft_version}",
     "fabricloader": ">=${loader_version}",
     "fabric-language-kotlin": ">=${kotlin_loader_version}",
-    "fabric": "*",
-    "minecraft": "~1.21.8"
+    "fabric-api": "*",
+    "modmenu": ">=${modmenu}",
+    "placeholder-api": ">=${placeholder_api}",
+    "cloth-config2": ">=${cloth_config}"
   }
 }

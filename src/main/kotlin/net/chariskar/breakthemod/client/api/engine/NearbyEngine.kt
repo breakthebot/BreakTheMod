@@ -33,20 +33,19 @@ private object EngineScope {
 }
 
 object NearbyEngine {
-    val logger: Logger = LoggerFactory.getLogger("breakthemod")
-
-    private const val UPDATE_INTERVAL_MS: Long = 500
     private const val DISTANCE_THRESHOLD: Double = 200.0
 
     val scope: CoroutineScope get() = EngineScope.scope
 
     private val playerInfoList: MutableSet<PlayerInfo> = CopyOnWriteArraySet()
-    var engineRunning: Boolean = false
 
-    fun getPlayers(): Set<PlayerInfo> {
-        return HashSet(playerInfoList)
-    }
+    fun getPlayers(): Set<PlayerInfo> = HashSet(playerInfoList)
 
+    /**
+     * Checks if there are any players nearby.
+     * @param self The player entity
+     * @param world The client world
+     * */
     fun updateNearbyPlayers(
         self: PlayerEntity,
         world: World
@@ -78,7 +77,6 @@ object NearbyEngine {
     fun register() {
         ClientTickEvents.END_CLIENT_TICK.register { client ->
             if (!Config.config.radarEnabled) return@register
-            if (!engineRunning) return@register
 
             val player = client.player ?: return@register
             val world = client.world ?: return@register

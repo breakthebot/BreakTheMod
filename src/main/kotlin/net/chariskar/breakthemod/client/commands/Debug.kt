@@ -28,8 +28,6 @@ import net.minecraft.text.Text
 class Debug : BaseCommand() {
     init {
         name = "btmdbg"
-        description = ""
-        usageSuffix = ""
     }
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
@@ -38,7 +36,7 @@ class Debug : BaseCommand() {
             Text.literal("players" + MinecraftClient.getInstance().world?.players)
         )
         sendMessage(
-            Text.literal("Nearby engine state: Running(${NearbyEngine.engineRunning}), Players(${NearbyEngine.getPlayers()})")
+            Text.literal("Nearby engine state: Running(${Config.getRadar()}), Players(${NearbyEngine.getPlayers()})")
         )
         sendMessage(
             Text.literal("Server status: isEmc(${ServerUtils.isEarthMc()}), enabled(${ServerUtils.getEnabled()})")

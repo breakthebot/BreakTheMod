@@ -17,50 +17,31 @@
 
 package net.chariskar.breakthemod.client.hooks.nearby
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.client.api.engine.NearbyEngine
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.Config.WidgetPosition
+import net.chariskar.breakthemod.client.utils.ServerUtils
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
-import java.util.concurrent.CopyOnWriteArrayList
 
 object Hud {
-
     private val client = MinecraftClient.getInstance()
-    private val engine = NearbyEngine
-    private val engineScope: CoroutineScope = NearbyEngine.scope
-    private val playerList: MutableList<String> = CopyOnWriteArrayList()
-
     var widgetPosition: Config.Widget = Config.getWidget()
 
     private var x: Int = 0
     private var y: Int = 0
 
-    init {
-        engineScope.launch {
-            while (Config.getRadar()) {
-                val players = engine.getPlayers()
-                synchronized(playerList) {
-                    playerList.clear()
-                    if (players.isEmpty()) {
-                        playerList.add("No players nearby")
-                    } else {
-                        playerList.addAll(players.map { it.toString() })
-                    }
-                }
-                kotlinx.coroutines.delay(200)
-            }
-        }
-    }
-
-
     @Synchronized
     fun render(drawContext: DrawContext) {
         if (client.options.hudHidden || client.world == null || client.player == null) return
-        if (!Config.getRadar() || !Config.getEnabledServers()) return
+        if (!Config.getRadar() || !ServerUtils.getEnabled()) return
+        val players = NearbyEngine.getPlayers()
+
+        val playerList = if (players.isEmpty()) {
+            listOf("No players nearby")
+        } else players.map { it.toString() }
+
         val margin = Config.getWidget().margin
         val entryHeight = Config.getWidget().entryHeight
 

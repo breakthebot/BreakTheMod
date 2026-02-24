@@ -61,7 +61,7 @@ class Locate : BaseCommand() {
             when (type) {
                 "town" ->  {
                     val town = TownAPI.getTown(name) ?: return null
-                    return Pair(town.coordinates?.spawn?.x!!, town.coordinates!!.spawn!!.z!!) // we dont need NPE cause every town HAS to have a spawn so we can just tell kotlin to fuck off
+                    return Pair(town.coordinates?.spawn?.x!!, town.coordinates!!.spawn!!.z!!)
                 }
                 "nation" -> {
                     val nation = NationAPI.getNation(name) ?: return null
