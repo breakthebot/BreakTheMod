@@ -41,7 +41,6 @@ import net.minecraft.world.World
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
-
 /**
  * Helper class for the NearbyEngine.
  * @param name The name of the player.

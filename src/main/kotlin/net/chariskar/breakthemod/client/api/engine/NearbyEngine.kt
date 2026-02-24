@@ -23,19 +23,12 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.util.concurrent.CopyOnWriteArraySet
-
-private object EngineScope {
-    val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-    fun shutdown() = scope.cancel()
-}
 
 object NearbyEngine {
     private const val DISTANCE_THRESHOLD: Double = 200.0
 
-    val scope: CoroutineScope get() = EngineScope.scope
+    val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     private val playerInfoList: MutableSet<PlayerInfo> = CopyOnWriteArraySet()
 
