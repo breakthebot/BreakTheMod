@@ -38,7 +38,7 @@ Here are some ways you can contribute:
 1. Fork this repository to your GitHub account.
 2. Clone the forked repository to your local machine:
    ```bash
-   git clone https://github.com/breakthemod/breakthemod.git
+   git clone https://github.com/breakthebot/breakthemod.git
    ```
 
 ### **Step 2: Set Up the Development Environment**
