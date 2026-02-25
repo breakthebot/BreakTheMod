@@ -49,7 +49,6 @@ object NearbyEngine {
 
         for (other in world.players) {
             if (other === self) continue
-            if (other.gameProfile.name == selfName) continue
 
             val info = PlayerInfo(
                 other.gameProfile.name,
