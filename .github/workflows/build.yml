@@ -2,20 +2,20 @@ name: Build Check
 
 on:
   push:
-    branches: [ master ]
+    branches: [ "*" ]
   pull_request:
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
       - name: Set up JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -31,7 +31,7 @@ jobs:
             gradle-
 
       - name: Build with Gradle
-        run: ./gradlew.bat build --no-daemon
+        run: ./gradlew build --no-daemon
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4

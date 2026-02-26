@@ -51,8 +51,7 @@ object Hud {
 
         val height = (20 + playerList.size * entryHeight).coerceAtLeast(40)
 
-        widgetPosition = Config.getWidget()
-        when (widgetPosition.widgetPosition) {
+        when (Config.getWidget().widgetPosition) {
             WidgetPosition.TOP_LEFT -> {
                 x = margin
                 y = margin
