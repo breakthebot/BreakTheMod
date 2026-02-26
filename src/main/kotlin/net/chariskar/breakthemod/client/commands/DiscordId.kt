@@ -1,3 +1,19 @@
+/*
+ * This file is part of breakthemod.
+ *
+ * breakthemod is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * breakthemod is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
+ */
 package net.chariskar.breakthemod.client.commands
 
 import com.mojang.brigadier.Command as command
@@ -7,25 +23,22 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.encodeToJsonElement
-import net.chariskar.breakthemod.client.api.Command
-import net.chariskar.breakthemod.client.api.Fetch
-import net.chariskar.breakthemod.client.api.Fetch.json
+import net.chariskar.breakthemod.client.api.BaseCommand
 import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
-import net.chariskar.breakthemod.client.utils.serialization.SerializableUUID
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.ClickEvent
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
+import org.breakthebot.breakthelibrary.api.DiscordAPI
+import org.breakthebot.breakthelibrary.models.DiscordPayloadMinecraft
+import org.breakthebot.breakthelibrary.network.Fetch
+import org.breakthebot.breakthelibrary.utils.SerializableUUID
 import java.net.URI
 import java.util.*
 
 
-class discordId : Command() {
+class DiscordId : BaseCommand() {
 
     init {
         name = "discordLinked"
@@ -46,17 +59,10 @@ class discordId : Command() {
         return uuid.matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$".toRegex())
     }
 
-    @Serializable
-    data class discordPayload(
-        val type: String,
-        val target: SerializableUUID
-    )
-
-
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val name: String = ctx.getArgument("name", String::class.java)
         scope.launch {
-            val mojangResponse = Fetch.getRequest<String>("https://api.mojang.com/users/profiles/minecraft/$name")
+            val mojangResponse = Fetch.getRequest<String?>("https://api.mojang.com/users/profiles/minecraft/$name")
             val rawUuid = mojangResponse?.split(",")[0]?.split(":")[1]
 
             if (rawUuid == null) {
@@ -72,25 +78,14 @@ class discordId : Command() {
 
             val uuid = UUID.fromString(formattedUuid)
 
-            val payload = buildJsonObject {
-                put(
-                    "query",
-                    JsonArray(listOf(json.encodeToJsonElement(discordPayload(
-                        "minecraft",
-                        SerializableUUID(uuid)
-                    ))))
-                )
-            }
-
-            val emcResp = Fetch.postRequest<String>(Fetch.Items.DISCORD.url, payload.toString())
-            val userId = emcResp?.split(",")[0]?.split(":")[1]?.replace("\"", "")?.trim()
+            val discord = DiscordAPI.getDiscord(listOf(DiscordPayloadMinecraft( target = SerializableUUID(uuid) )))?.first()
 
             val result: Text = Text.literal("Click Here")
                 .setStyle(
                     Style.EMPTY
                         .withColor(Formatting.BLUE)
                         .withClickEvent(
-                            ClickEvent.OpenUrl(URI("https://discord.com/users/$userId"))
+                            ClickEvent.OpenUrl(URI("https://discord.com/users/${discord?.id}"))
                         )
 
                 )

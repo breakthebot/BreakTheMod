@@ -18,9 +18,7 @@ package net.chariskar.breakthemod.client.commands
 
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
-import net.chariskar.breakthemod.client.api.Command
-import net.chariskar.breakthemod.client.api.Fetch
-import net.chariskar.breakthemod.client.objects.Resident
+import net.chariskar.breakthemod.client.api.BaseCommand
 import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.ClickEvent
@@ -28,10 +26,11 @@ import net.minecraft.text.HoverEvent
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
-import java.util.*
+import org.breakthebot.breakthelibrary.api.PlayerAPI
+import java.util.UUID
 
 
-class townless : Command() {
+class Townless : BaseCommand() {
     val batchSize: Int = 100
 
     init {
@@ -47,8 +46,9 @@ class townless : Command() {
                 sendMessage(Text.literal("No online players found"))
                 return@launch
             }
-            val own: Resident = Fetch.getResident(client.session.username)!!
-            if (own.town?.name.isNullOrEmpty()) return@launch
+            val own = PlayerAPI.getPlayer(client.session.username)
+
+            if (own?.town?.name.isNullOrEmpty()) return@launch
 
             val townless: MutableList<String> = mutableListOf()
             val batch: MutableList<UUID> = mutableListOf()
@@ -56,24 +56,24 @@ class townless : Command() {
             for (p in onlinePlayers) {
                 batch.add(p)
                 if (batch.size == batchSize) {
-                    val players: List<Resident?>? = fetch.getResidents(batch.map { u -> u.toString() })
+                    val players = PlayerAPI.getPlayers(batch.map { u -> u.toString() })
                     if (players.isNullOrEmpty()) {
                         logger.warn("Received empty batch on townless")
                     }
                     players?.forEach { p ->
-                        if (p?.status?.hasTown == false) townless.add(p.name)
+                        if (p.status?.hasTown == false) townless.add(p.name)
                     }
                     batch.clear()
                 }
             }
 
             if (batch.isNotEmpty()) {
-                val players: List<Resident?>? = fetch.getResidents(batch.map { it.toString() })
+                val players = PlayerAPI.getPlayers(batch.map { it.toString() })
                 if (players.isNullOrEmpty()) {
                     logger.warn("Received empty batch on townless")
                 } else {
                     players.forEach { resident ->
-                        if (resident?.status?.hasTown == false) {
+                        if (resident.status?.hasTown == false) {
                             townless.add(resident.name)
                         }
                     }
@@ -95,6 +95,7 @@ class townless : Command() {
 
                 message.append(userText).append(Text.literal("\n"))
             }
+
             sendMessage(message)
         }
         return 0

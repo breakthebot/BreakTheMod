@@ -24,22 +24,18 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
-import net.chariskar.breakthemod.client.api.Fetch
-import net.chariskar.breakthemod.client.api.Fetch.Items
-import net.chariskar.breakthemod.client.objects.Resident
-import net.chariskar.breakthemod.client.objects.StaffList
 import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
-import net.chariskar.breakthemod.client.utils.serialization.SerializableUUID
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.MutableText
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
-import java.util.*
-import net.chariskar.breakthemod.client.api.Command as command
+import org.breakthebot.breakthelibrary.api.PlayerAPI
+import org.breakthebot.breakthelibrary.api.StaffAPI
+import net.chariskar.breakthemod.client.api.BaseCommand as command
 
 
-class onlineStaff : command() {
+class OnlineStaff : command() {
     init {
         name = "onlinestaff"
         description = "Shows online staff"
@@ -66,7 +62,7 @@ class onlineStaff : command() {
 
 
     suspend fun onlineStaff(api: Boolean): Text {
-        val staff: List<SerializableUUID>? = fetch.getRequest<StaffList>(Items.STAFF.url)?.allStaff()
+        val staff = StaffAPI.get()
 
         if (staff.isNullOrEmpty()) return Text.literal("Received invalid staff list.").setStyle(Style.EMPTY.withColor(Formatting.RED))
 
@@ -74,7 +70,7 @@ class onlineStaff : command() {
         var message: MutableText
 
         val staffNames: List<String> = if (api) {
-            fetch.getObjects<Resident>(Items.PLAYER, staff.map { v->v.toUUID() }.toString() )!!
+            PlayerAPI.getPlayers( staff.map { v->v.toString() } )!!
                 .filter { r -> r.status!!.isOnline == true }
                 .map { r -> r.name }
         } else {

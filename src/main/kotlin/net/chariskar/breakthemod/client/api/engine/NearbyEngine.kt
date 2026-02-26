@@ -20,38 +20,25 @@ package net.chariskar.breakthemod.client.api.engine
 import kotlinx.coroutines.*
 import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.minecraft.client.MinecraftClient
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
-import net.minecraft.world.Heightmap
 import net.minecraft.world.World
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import kotlin.math.roundToInt
-import kotlin.math.sqrt
 import java.util.concurrent.CopyOnWriteArraySet
 
-private object EngineScope {
-    val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-    fun shutdown() = scope.cancel()
-}
-
 object NearbyEngine {
-    val logger: Logger = LoggerFactory.getLogger("breakthemod")
-
-    private const val UPDATE_INTERVAL_MS: Long = 500
     private const val DISTANCE_THRESHOLD: Double = 200.0
 
-    val scope: CoroutineScope get() = EngineScope.scope
+    val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     private val playerInfoList: MutableSet<PlayerInfo> = CopyOnWriteArraySet()
-    var engineRunning: Boolean = false
 
-    fun getPlayers(): Set<PlayerInfo> {
-        return HashSet(playerInfoList)
-    }
+    fun getPlayers(): Set<PlayerInfo> = HashSet(playerInfoList)
 
+    /**
+     * Checks if there are any players nearby.
+     * @param self The player entity
+     * @param world The client world
+     * */
     fun updateNearbyPlayers(
         self: PlayerEntity,
         world: World
@@ -62,7 +49,6 @@ object NearbyEngine {
 
         for (other in world.players) {
             if (other === self) continue
-            if (other.gameProfile.name == selfName) continue
 
             val info = PlayerInfo(
                 other.gameProfile.name,
@@ -83,7 +69,6 @@ object NearbyEngine {
     fun register() {
         ClientTickEvents.END_CLIENT_TICK.register { client ->
             if (!Config.config.radarEnabled) return@register
-            if (!engineRunning) return@register
 
             val player = client.player ?: return@register
             val world = client.world ?: return@register

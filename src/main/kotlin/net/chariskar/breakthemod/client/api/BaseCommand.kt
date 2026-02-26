@@ -44,9 +44,8 @@ private object CommandScope {
     }
 }
 
-abstract class Command {
+abstract class BaseCommand {
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
-    val fetch: Fetch = Fetch
     val client: MinecraftClient = MinecraftClient.getInstance()
     protected val scope = CommandScope.scope
 

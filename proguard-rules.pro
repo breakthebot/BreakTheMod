@@ -2,7 +2,7 @@
 -dontnote
 -dontoptimize
 
--injars build/libs/breakthemod-1.4.3.jar
+-injars build/libs/breakthemod-1.4.5-shadowed.jar
 -outjars build/libs/btm-obf.jar
 
 -libraryjars <java.home>/jmods/
@@ -14,16 +14,21 @@
 
 -keep public class net.chariskar.breakthemod.Breakthemod { *; }
 
--keep class net.chariskar.breakthemod.client.commands.** implements net.chariskar.breakthemod.client.api.* { *; }
--keep class * implements net.fabricmc.api.ClientModInitializer { *; }
--keep public class net.chariskar.breakthemod.client.api.** { *; }
--keep public class net.chariskar.breakthemod.client.hooks.** { *; }
+-keep class net.chariskar.breakthemod.client.commands.** implements net.chariskar.breakthemod.client.api.BaseCommand { *; }
 
--keep class net.chariskar.breakthemod.client.utils.** { *; }
+# -keep public class net.chariskar.breakthemod.Breakthemod implements net.fabricmc.api.ClientModInitializer { *; }
+
+-keep public class net.chariskar.breakthebot.breakthelibrary.models.** { *; }
+
 -keep public class net.chariskar.breakthemod.mixins.** { *; }
 
 -keepclassmembers class kotlin.Metadata { *; }
--keepattributes RuntimeVisibleAnnotations,RuntimeInvisibleAnnotations
+-keepattributes RuntimeVisibleAnnotations,
+                RuntimeInvisibleAnnotations,
+                Signature,
+                InnerClasses,
+                EnclosingMethod,
+                Exceptions
 
 -keepdirectories META-INF/**
 -keepdirectories resources/**

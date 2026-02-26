@@ -18,7 +18,7 @@
 package net.chariskar.breakthemod.client.commands
 
 import com.mojang.brigadier.context.CommandContext
-import net.chariskar.breakthemod.client.api.Command
+import net.chariskar.breakthemod.client.api.BaseCommand
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.MutableText
 import net.minecraft.text.Style
@@ -26,8 +26,8 @@ import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
 
-class help : Command() {
-    var commands: MutableList<Command>? = null
+class Help : BaseCommand() {
+    var commands: MutableList<BaseCommand>? = null
 
     init {
         name = "commands"

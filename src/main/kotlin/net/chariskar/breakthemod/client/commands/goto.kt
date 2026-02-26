@@ -1,3 +1,19 @@
+/*
+ * This file is part of breakthemod.
+ *
+ * breakthemod is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * breakthemod is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
+ */
 package net.chariskar.breakthemod.client.commands
 
 import com.mojang.brigadier.Command as command
@@ -7,20 +23,19 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
-import kotlinx.serialization.json.putJsonArray
-import net.chariskar.breakthemod.client.api.Command
-import net.chariskar.breakthemod.client.api.Fetch
-import net.chariskar.breakthemod.client.objects.Reference
-import net.chariskar.breakthemod.client.objects.Town
+import net.chariskar.breakthemod.client.api.BaseCommand
 import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
+import org.breakthebot.breakthelibrary.api.NationAPI
+import org.breakthebot.breakthelibrary.api.NearbyAPI
+import org.breakthebot.breakthelibrary.api.TownAPI
+import org.breakthebot.breakthelibrary.models.NearbyItem
+import org.breakthebot.breakthelibrary.models.NearbyType
 
-class goto: Command() {
+class goto: BaseCommand() {
     init {
         name = "goto"
         description = "Shows you the nearest spawnable town of the town you selected."
@@ -31,19 +46,21 @@ class goto: Command() {
 
         scope.launch {
             try {
-                val reqTown: Town? = fetch.getTown(townName)
+                val reqTown = TownAPI.getTown(townName)
+
                 if (reqTown == null) {
                     sendMessage(Text.literal("$townName isn't a real town."), Formatting.RED)
                     return@launch
                 }
 
-                if (reqTown.status?.isPublic == true && reqTown.status.canOutsidersSpawn == true) {
+                if (reqTown.status?.isPublic == true && reqTown.status?.canOutsidersSpawn == true) {
                     sendMessage(Text.literal("You can do /t spawn ${reqTown.name}"), Formatting.AQUA)
                     return@launch
                 }
 
                 if (reqTown.status?.isCapital == true) {
-                    val nation = fetch.getNation(reqTown.nation?.uuid.toString())
+                    val nation = NationAPI.getNation(reqTown.nation?.name!!)
+
                     if (nation?.status?.isPublic == true) {
                         sendMessage(Text.literal("Found suitable spawn in:\n ${reqTown.name} (${nation.name})"), Formatting.AQUA)
                         return@launch
@@ -55,21 +72,13 @@ class goto: Command() {
                 val validTowns: MutableList<String> = mutableListOf()
 
                 while (attempts-- > 0) {
-                    val query = buildJsonObject {
-                        put("target_type", "TOWN")
-                        put("target", townName)
-                        put("search_type", "TOWN")
-                        put("radius", radius)
-                    }
 
-                    val body = buildJsonObject {
-                        putJsonArray("query") { add(query) }
-                    }
-
-                    val resp: List<Reference>? = Fetch.postRequest<List<Reference>>(
-                        Fetch.Items.NEARBY.url,
-                        body.toString()
-                    )
+                    val resp = NearbyAPI.get(NearbyItem(
+                        NearbyType.TOWN,
+                        townName,
+                        NearbyType.TOWN,
+                        radius
+                    ))
 
                     val names: List<String> = resp?.mapNotNull { it.name } ?: emptyList()
                     if (names.isEmpty()) {
@@ -77,19 +86,19 @@ class goto: Command() {
                         continue
                     }
 
-                    val townDetails: List<Town?>? = fetch.getTowns(names)
+                    val townDetails = TownAPI.getTowns(names)
+
                     if (townDetails.isNullOrEmpty()) {
                         radius += 500
                         continue
                     }
 
                     for (town in townDetails) {
-                        if (town == null) continue
                         val status = town.status
                         if (status?.isPublic == true && status.canOutsidersSpawn == true) {
                             validTowns.add(town.name)
                         } else if (status?.isCapital == true) {
-                            val nation = fetch.getNation(town.nation?.uuid.toString())
+                            val nation = NationAPI.getNation(town.nation?.name!!)
                             if (nation?.status?.isPublic == true) {
                                 validTowns.add(town.name)
                             }

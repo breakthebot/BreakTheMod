@@ -16,18 +16,18 @@
  */
 package net.chariskar.breakthemod
 
-import net.chariskar.breakthemod.client.api.Command
+import net.chariskar.breakthemod.client.api.BaseCommand
 import net.chariskar.breakthemod.client.api.engine.NearbyEngine
 import net.chariskar.breakthemod.client.commands.Debug
-import net.chariskar.breakthemod.client.commands.discordId
+import net.chariskar.breakthemod.client.commands.DiscordId
 import net.chariskar.breakthemod.client.commands.FindPlayer
 import net.chariskar.breakthemod.client.commands.goto
-import net.chariskar.breakthemod.client.commands.help
-import net.chariskar.breakthemod.client.commands.lastSeen
-import net.chariskar.breakthemod.client.commands.locate
-import net.chariskar.breakthemod.client.commands.nearby
-import net.chariskar.breakthemod.client.commands.onlineStaff
-import net.chariskar.breakthemod.client.commands.townless
+import net.chariskar.breakthemod.client.commands.Help
+import net.chariskar.breakthemod.client.commands.LastSeen
+import net.chariskar.breakthemod.client.commands.Locate
+import net.chariskar.breakthemod.client.commands.Nearby
+import net.chariskar.breakthemod.client.commands.OnlineStaff
+import net.chariskar.breakthemod.client.commands.Townless
 import net.chariskar.breakthemod.client.hooks.nearby.Hud
 import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.api.ClientModInitializer
@@ -43,7 +43,7 @@ import com.mojang.brigadier.CommandDispatcher
 class Breakthemod : ClientModInitializer {
     val nearbyLayer: Identifier = Identifier.of("breakthemod", "nearby_layer")
 
-    private fun loadCommands(commands: MutableList<Command>) {
+    private fun loadCommands(commands: MutableList<BaseCommand>) {
         ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _: CommandRegistryAccess ->
             for (command in commands) {
                 command.register(dispatcher)
@@ -53,16 +53,16 @@ class Breakthemod : ClientModInitializer {
 
     override fun onInitializeClient() {
         Config.loadConfig()
-        val helpCmd = help()
-        val commandList: MutableList<Command> = mutableListOf(
-            nearby(),
-            onlineStaff(),
-            townless(),
+        val helpCmd = Help()
+        val commandList: MutableList<BaseCommand> = mutableListOf(
+            Nearby(),
+            OnlineStaff(),
+            Townless(),
             goto(),
             FindPlayer(),
-            lastSeen(),
-            discordId(),
-            locate(),
+            LastSeen(),
+            DiscordId(),
+            Locate(),
             Debug(),
             helpCmd
         )

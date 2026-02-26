@@ -34,10 +34,8 @@ object Config {
         var radarEnabled: Boolean = true,
         var debug: Boolean = false,
         var xaerosRdr: Boolean = false,
-        var mapUrl: String = "https://map.earthmc.net/",
-        var apiUrl: String = "https://api.earthmc.net/v3/aurora",
-        var staffRepoUrl: String = "https://raw.githubusercontent.com/veyronity/staff/master/staff.json",
         var widget: Widget = Widget(),
+        var mapUrl: String = "https://map.earthmc.net/",
         var townlessMessage: String = "Hi! I see you're new here, wanna join my Town? I can help you out! Get Free enchanted Armor, Pickaxe, Diamonds, Iron, wood, food, stone, house, and ability to teleport! Type /t join TOWN",
     )
 
@@ -90,10 +88,6 @@ object Config {
     }
 
     fun getMapUrl(): String = formatURL(config.mapUrl)
-
-    fun getApiUrl(): String = formatURL(config.apiUrl)
-
-    fun getStaffUrl(): String = formatURL(config.staffRepoUrl)
 
     fun getDevMode(): Boolean = config.dev
 
