@@ -17,6 +17,7 @@
 package net.chariskar.breakthemod
 
 import net.chariskar.breakthemod.client.api.BaseCommand
+import net.chariskar.breakthemod.client.api.Module
 import net.chariskar.breakthemod.client.api.engine.NearbyEngine
 import net.chariskar.breakthemod.client.commands.Debug
 import net.chariskar.breakthemod.client.commands.DiscordId
@@ -38,6 +39,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements
 import net.minecraft.command.CommandRegistryAccess
 import net.minecraft.util.Identifier
 import com.mojang.brigadier.CommandDispatcher
+import net.chariskar.breakthemod.client.modules.AutoHUD
 
 
 class Breakthemod : ClientModInitializer {
@@ -51,8 +53,11 @@ class Breakthemod : ClientModInitializer {
         })
     }
 
+    private fun loadModules(modules: MutableList<Module>) { modules.forEach { it.launch() } }
+
     override fun onInitializeClient() {
         Config.loadConfig()
+
         val helpCmd = Help()
         val commandList: MutableList<BaseCommand> = mutableListOf(
             Nearby(),
@@ -68,6 +73,12 @@ class Breakthemod : ClientModInitializer {
         )
         helpCmd.commands = commandList
         loadCommands(commandList)
+
+        val modules = mutableListOf<Module>(
+            AutoHUD
+        )
+        loadModules(modules)
+
         NearbyEngine.register()
         HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, nearbyLayer) { context, _ -> Hud.render(context)}
     }

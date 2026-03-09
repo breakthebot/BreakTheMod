@@ -25,6 +25,7 @@ import net.chariskar.breakthemod.client.utils.Config.WidgetPosition
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.text.Text
+import net.chariskar.breakthemod.client.utils.Config.AutoHudType
 
 
 class ModMenuIntegration : ModMenuApi {
@@ -60,6 +61,17 @@ class ModMenuIntegration : ModMenuApi {
                     Config.config.widget.widgetPosition = position
                     Config.saveConfig(Config.config)
                 }.setDefaultValue { WidgetPosition.TOP_LEFT }.build()
+            )
+
+            general.addEntry(
+                entryBuilder.startEnumSelector(
+                    Text.literal("AutoHUD type"),
+                    AutoHudType::class.java,
+                    Config.getHud()
+                ).setSaveConsumer { hudType: AutoHudType ->
+                    Config.config.hudType = hudType
+                    Config.saveConfig(Config.config)
+                }.setDefaultValue { AutoHudType.None }.build()
             )
 
             general.addEntry(

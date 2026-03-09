@@ -22,8 +22,6 @@
       "net.chariskar.breakthemod.client.hooks.ModMenuIntegration"
     ]
   },
-  "mixins": [
-  ],
   "custom": {
     "modmenu": {
       "links": {

@@ -23,6 +23,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 import kotlinx.serialization.json.Json
+import net.chariskar.breakthemod.client.modules.AutoHUD
 
 object Config {
     var config: ConfigData = ConfigData()
@@ -36,8 +37,17 @@ object Config {
         var xaerosRdr: Boolean = false,
         var widget: Widget = Widget(),
         var mapUrl: String = "https://map.earthmc.net/",
+        var channelName: String = "",
+        var hudType: AutoHudType = AutoHudType.None,
         var townlessMessage: String = "Hi! I see you're new here, wanna join my Town? I can help you out! Get Free enchanted Armor, Pickaxe, Diamonds, Iron, wood, food, stone, house, and ability to teleport! Type /t join TOWN",
     )
+
+    @Serializable
+    enum class AutoHudType {
+        None,
+        MapHud,
+        PermHud
+    }
 
     @Serializable
     data class Widget(
@@ -100,6 +110,8 @@ object Config {
     fun getTownlessMessage(townName: String): String = config.townlessMessage.replace("TOWN", townName)
 
     fun getDbg() = config.debug
+
+    fun getHud() = config.hudType
 
     fun getXaerosRdr() = config.xaerosRdr
 

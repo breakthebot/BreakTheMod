@@ -120,10 +120,6 @@ abstract class BaseCommand {
     fun sendError() = sendMessage(Text.literal("Command has exited with an exception"))
 
 
-    protected fun logError(message: String?, e: Exception) {
-        logger.error("{}{}", message, e.message)
-        if (Config.getDevMode()) {
-            e.printStackTrace()
-        }
-    }
+    protected fun logError(message: String, e: Exception) = logger.error("$message: ${e.message}", e)
+
 }

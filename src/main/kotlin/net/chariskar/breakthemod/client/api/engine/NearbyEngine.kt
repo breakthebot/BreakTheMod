@@ -44,7 +44,6 @@ object NearbyEngine {
         world: World
     ): Set<PlayerInfo> {
         val selfPos = Vec3d(self.x, self.y, self.z)
-        val selfName = self.gameProfile.name
         val players = mutableSetOf<PlayerInfo>()
 
         for (other in world.players) {

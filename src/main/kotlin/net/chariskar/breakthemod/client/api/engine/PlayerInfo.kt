@@ -49,6 +49,7 @@ import kotlin.math.sqrt
 data class PlayerInfo(val name: String, var position: Vec3d) {
     private val directionStep: Double = 45.0
     val directions = arrayOf("S", "SW", "W", "NW", "N", "NE", "E", "SE")
+    val client: MinecraftClient = MinecraftClient.getInstance()
 
     fun calculateDistance(other: Vec3d): Double {
         val dx = position.x - other.x
@@ -75,8 +76,8 @@ data class PlayerInfo(val name: String, var position: Vec3d) {
         val isInVehicle = player.hasVehicle()
         val isSneaking = player.isSneaking
         val inRiptide = player.isUsingRiptide
-        val isInNether = MinecraftClient.getInstance()
-            .world?.registryKey?.value.toString().contains("nether")
+        val isInNether = client.world
+            ?.registryKey?.value.toString().contains("nether")
         return isInVehicle || isSneaking || inRiptide || isInNether
     }
 
@@ -93,7 +94,6 @@ data class PlayerInfo(val name: String, var position: Vec3d) {
     }
 
     override fun toString(): String {
-        val client = MinecraftClient.getInstance()
         val player = client.player ?: return name
         return "-$name (${position.x.toInt()}, ${position.z.toInt()}) direction: ${directionFrom(player)}, distance: ${distanceFrom(player)} blocks"
     }

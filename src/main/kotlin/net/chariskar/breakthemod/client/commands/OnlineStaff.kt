@@ -26,6 +26,7 @@ import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
+import net.minecraft.client.MinecraftClient
 import net.minecraft.text.MutableText
 import net.minecraft.text.Style
 import net.minecraft.text.Text
@@ -111,7 +112,10 @@ class OnlineStaff : command() {
     }
 
     fun exec(ctx: CommandContext<FabricClientCommandSource>, api: Boolean?): Int {
-        scope.launch { sendMessage(onlineStaff(api ?: false)) }
+        scope.launch {
+            val staff = onlineStaff(api ?: false)
+            client.execute { sendMessage(staff) }
+        }
         return 0
     }
 }

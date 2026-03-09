@@ -3,9 +3,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "2.2.10"
-    id("fabric-loom") version "1.11-SNAPSHOT"
+    id("fabric-loom") version "1.15-SNAPSHOT"
     kotlin("plugin.serialization") version "1.9.10"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "9.2.0"
 
 }
 
@@ -56,6 +56,8 @@ val shade: Configuration by configurations.creating {
     isVisible = false
 }
 
+val actionBuild = project.hasProperty("release")
+
 val mcVer = project.property("minecraft_version")
 val mappings = project.property("yarn_mappings")
 
@@ -64,7 +66,6 @@ val fabricLoader = project.property("loader_version")
 val kotlinLoader = project.property("kotlin_loader_version")
 val ktSere = project.property("kt_sere")
 
-val xaerosVersion = project.property("xaeros_version")
 val clothVersion = project.property("cloth_config")
 val modmenu = project.property("modmenu")
 val placeholderVersion = project.property("placeholder_api")
@@ -95,9 +96,6 @@ dependencies {
     shade("com.github.breakthebot:breakthelibrary:1.0.4") {
         isTransitive = false
     }
-
-    modImplementation("maven.modrinth:xaeros-minimap:${project.property("xaeros_version")}")
-
 }
 
 tasks.processResources {
@@ -109,12 +107,12 @@ tasks.processResources {
     filesMatching("fabric.mod.json") {
         expand(
             "version" to project.version,
-            "minecraft_version" to mcVer,
-            "loader_version" to fabricLoader,
-            "kotlin_loader_version" to kotlinLoader,
-            "cloth_config" to clothVersion,
-            "placeholder_api" to placeholderVersion,
-            "modmenu" to modmenu
+            "minecraft_version" to mcVer!!,
+            "loader_version" to fabricLoader!!,
+            "kotlin_loader_version" to kotlinLoader!!,
+            "cloth_config" to clothVersion!!,
+            "placeholder_api" to placeholderVersion!!,
+            "modmenu" to modmenu!!
         )
     }
 }
@@ -170,6 +168,14 @@ val remapShadowJar by tasks.registering(net.fabricmc.loom.task.RemapJarTask::cla
 }
 
 tasks["build"].dependsOn(addHeader, remapShadowJar)
+
+tasks.named("build") {
+    if (actionBuild)
+    doLast {
+        val normalJarFile = tasks.jar.get().archiveFile.get().asFile
+        normalJarFile.delete()
+    }
+}
 
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions.jvmTarget.set(JvmTarget.fromTarget(targetJavaVersion.toString()))
