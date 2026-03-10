@@ -50,7 +50,7 @@ object AutoHUD : Module() {
                     else -> ""
                 }
 
-                client?.networkHandler?.sendChatCommand(command)
+                client.networkHandler?.sendChatCommand(command)
             }, 6L, TimeUnit.SECONDS)
         })
     }

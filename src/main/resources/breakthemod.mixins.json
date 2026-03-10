@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.chariskar.breakthemod.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "ChatPreviewOverlay"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

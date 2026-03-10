@@ -40,6 +40,7 @@ import net.minecraft.command.CommandRegistryAccess
 import net.minecraft.util.Identifier
 import com.mojang.brigadier.CommandDispatcher
 import net.chariskar.breakthemod.client.modules.AutoHUD
+import net.chariskar.breakthemod.client.modules.ChatPreview
 
 
 class Breakthemod : ClientModInitializer {
@@ -74,9 +75,11 @@ class Breakthemod : ClientModInitializer {
         helpCmd.commands = commandList
         loadCommands(commandList)
 
-        val modules = mutableListOf<Module>(
-            AutoHUD
+        val modules = mutableListOf(
+            AutoHUD,
+            ChatPreview
         )
+
         loadModules(modules)
 
         NearbyEngine.register()

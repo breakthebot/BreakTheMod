@@ -37,7 +37,6 @@ object Config {
         var xaerosRdr: Boolean = false,
         var widget: Widget = Widget(),
         var mapUrl: String = "https://map.earthmc.net/",
-        var channelName: String = "",
         var hudType: AutoHudType = AutoHudType.None,
         var townlessMessage: String = "Hi! I see you're new here, wanna join my Town? I can help you out! Get Free enchanted Armor, Pickaxe, Diamonds, Iron, wood, food, stone, house, and ability to teleport! Type /t join TOWN",
     )
