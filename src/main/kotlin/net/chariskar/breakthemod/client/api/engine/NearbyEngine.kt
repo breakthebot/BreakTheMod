@@ -17,7 +17,6 @@
 
 package net.chariskar.breakthemod.client.api.engine
 
-import kotlinx.coroutines.*
 import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.entity.player.PlayerEntity
@@ -27,8 +26,6 @@ import java.util.concurrent.CopyOnWriteArraySet
 
 object NearbyEngine {
     private const val DISTANCE_THRESHOLD: Double = 200.0
-
-    val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     private val playerInfoList: MutableSet<PlayerInfo> = CopyOnWriteArraySet()
 

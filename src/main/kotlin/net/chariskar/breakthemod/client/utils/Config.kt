@@ -17,13 +17,17 @@
 
 package net.chariskar.breakthemod.client.utils
 
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import net.minecraft.client.MinecraftClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 import kotlinx.serialization.json.Json
+import me.shedaniel.autoconfig.ConfigManager
 import net.chariskar.breakthemod.client.modules.AutoHUD
+import org.breakthebot.breakthelibrary.utils.ConfigHandler
+import org.breakthebot.breakthelibrary.utils.Urls
 
 object Config {
     var config: ConfigData = ConfigData()
@@ -36,9 +40,12 @@ object Config {
         var debug: Boolean = false,
         var xaerosRdr: Boolean = false,
         var widget: Widget = Widget(),
-        var mapUrl: String = "https://map.earthmc.net/",
         var hudType: AutoHudType = AutoHudType.None,
+        var nametagInfo: Boolean = true,
+        var cacheEnabled: Boolean = true,
         var townlessMessage: String = "Hi! I see you're new here, wanna join my Town? I can help you out! Get Free enchanted Armor, Pickaxe, Diamonds, Iron, wood, food, stone, house, and ability to teleport! Type /t join TOWN",
+        var options: Boolean = false,
+        @Contextual var urls: Urls = Urls()
     )
 
     @Serializable
@@ -57,7 +64,7 @@ object Config {
         var widgetPosition: WidgetPosition = WidgetPosition.TOP_LEFT
     )
 
-    private val json = Json { encodeDefaults = true }
+    private val json = Json { encodeDefaults = true; prettyPrint = true }
     val configFile: File = File(MinecraftClient.getInstance()?.runDirectory, "config/breakthemod_config.json")
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
@@ -96,7 +103,7 @@ object Config {
         return if (!withProtocol.endsWith("/")) "$withProtocol/" else withProtocol
     }
 
-    fun getMapUrl(): String = formatURL(config.mapUrl)
+    fun getMapUrl(): String = formatURL(config.urls.mapUrl)
 
     fun getDevMode(): Boolean = config.dev
 
@@ -114,12 +121,42 @@ object Config {
 
     fun getXaerosRdr() = config.xaerosRdr
 
+    fun getNameTag() = config.nametagInfo && config.cacheEnabled
+
+    fun getCache() = config.cacheEnabled
+
     fun setTownlessMessage(message: String): Boolean {
         if (!message.contains("TOWN")) return false
         config.townlessMessage = message
         return true
     }
 
+    fun setApiUrl(apiUrl: String) {
+        val oldUrls = config.urls
+        config.urls = Urls(
+            apiUrl,
+            oldUrls.mapUrl,
+            oldUrls.staffUrl
+        )
+    }
+
+    fun setMapUrl(mapUrl: String) {
+        val oldUrls = config.urls
+        config.urls = Urls(
+            oldUrls.apiUrl,
+            mapUrl,
+            oldUrls.staffUrl
+        )
+    }
+
+    fun setStaffUrl(staffUrl: String) {
+        val oldUrls = config.urls
+        config.urls = Urls(
+            oldUrls.apiUrl,
+            oldUrls.mapUrl,
+            staffUrl
+        )
+    }
 
     @Serializable
     enum class WidgetPosition {

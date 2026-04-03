@@ -22,12 +22,12 @@ package net.chariskar.breakthemod.client.modules
 import net.chariskar.breakthemod.client.api.Module
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.Config.AutoHudType
+import net.chariskar.breakthemod.client.utils.Scheduler
 import net.chariskar.breakthemod.client.utils.ServerUtils
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.PacketSender
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayNetworkHandler
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 
@@ -36,8 +36,7 @@ object AutoHUD : Module() {
 
     override fun enable() {
         ClientPlayConnectionEvents.JOIN.register(ClientPlayConnectionEvents.Join { _: ClientPlayNetworkHandler?, _: PacketSender?, client: MinecraftClient ->
-            val scheduler = Executors.newSingleThreadScheduledExecutor()
-            scheduler.schedule( {
+            Scheduler.schedule( {
                 if (!ServerUtils.isEarthMc()) { return@schedule }
 
                 val hud: AutoHudType = Config.getHud()

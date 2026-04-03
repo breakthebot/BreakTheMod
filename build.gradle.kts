@@ -1,27 +1,35 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.gradle.jvm.toolchain.JavaLanguageVersion
 
 plugins {
     kotlin("jvm") version "2.2.10"
-    id("fabric-loom") version "1.15-SNAPSHOT"
     kotlin("plugin.serialization") version "1.9.10"
-    id("com.gradleup.shadow") version "9.2.0"
 
+    id("fabric-loom") version "1.15-SNAPSHOT"
+    id("com.gradleup.shadow") version "9.2.0"
 }
 
-version = project.property("mod_version") as String
 group = project.property("maven_group") as String
+version = project.property("mod_version") as String
 
 base {
     archivesName.set(project.property("archives_base_name") as String)
 }
 
 val targetJavaVersion = 21
+
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
     withSourcesJar()
 }
 
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.fromTarget(targetJavaVersion.toString()))
+        allWarningsAsErrors.set(true)
+    }
+}
 
 fabricApi {
     configureDataGeneration {
@@ -30,15 +38,12 @@ fabricApi {
 }
 
 repositories {
-    maven ("https://maven.terraformersmc.com/") {
-        name = "Terraformers"
-    }
-    maven ("https://maven.nucleoid.xyz/") {
-        name = "Nucleoid"
-    }
+    maven("https://maven.terraformersmc.com/")
+    maven("https://maven.nucleoid.xyz/")
     maven("https://maven.shedaniel.me/")
     maven("https://maven.isxander.dev/releases")
     maven("https://jitpack.io")
+
     exclusiveContent {
         forRepository {
             maven("https://api.modrinth.com/maven")
@@ -47,148 +52,122 @@ repositories {
             includeGroup("maven.modrinth")
         }
     }
-
 }
 
-val shade: Configuration by configurations.creating {
-    isCanBeConsumed = false
-    isCanBeResolved = true
-    isVisible = false
-}
+val shade by configurations.creating
 
-val actionBuild = project.hasProperty("release")
-
-val mcVer = project.property("minecraft_version")
-val mappings = project.property("yarn_mappings")
-
-val fabricVersion = project.property("fabric_version")
-val fabricLoader = project.property("loader_version")
-val kotlinLoader = project.property("kotlin_loader_version")
-val ktSere = project.property("kt_sere")
-
-val clothVersion = project.property("cloth_config")
-val modmenu = project.property("modmenu")
-val placeholderVersion = project.property("placeholder_api")
+val mcVer: String by project
+val mappings: String by project
+val fabricVersion: String by project
+val fabricLoader: String by project
+val kotlinLoader: String by project
+val ktSere: String by project
+val clothVersion: String by project
+val modmenu: String by project
+val placeholderVersion: String by project
+val breakTheLibrary: String by project
 
 dependencies {
     minecraft("com.mojang:minecraft:$mcVer")
     mappings("net.fabricmc:yarn:$mappings:v2")
 
-    compileOnly("org.jetbrains.kotlin:kotlin-stdlib")
-    compileOnly("org.jetbrains.kotlin:kotlin-reflect")
-
-    compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:$ktSere")
-
     modImplementation("net.fabricmc:fabric-loader:$fabricLoader")
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
-
     modImplementation("net.fabricmc:fabric-language-kotlin:$kotlinLoader")
 
     modImplementation("eu.pb4:placeholder-api:$placeholderVersion")
 
     modApi("me.shedaniel.cloth:cloth-config-fabric:$clothVersion") {
-        exclude("net.fabricmc.fabric-api")
+        exclude(group = "net.fabricmc.fabric-api")
     }
 
     modApi("com.terraformersmc:modmenu:$modmenu")
 
-    implementation("com.github.breakthebot:breakthelibrary:1.0.4")
-    shade("com.github.breakthebot:breakthelibrary:1.0.4") {
+    implementation("com.github.breakthebot:BreakTheLibrary:$breakTheLibrary")
+    shade("com.github.breakthebot:BreakTheLibrary:$breakTheLibrary") {
         isTransitive = false
     }
+
+    compileOnly(kotlin("stdlib"))
+    compileOnly(kotlin("reflect"))
+    compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:$ktSere")
 }
 
 tasks.processResources {
-    inputs.property("version", project.version)
-    inputs.property("minecraft_version", project.property("minecraft_version"))
-    inputs.property("loader_version", project.property("loader_version"))
-    filteringCharset = "UTF-8"
+    inputs.property("version", version)
 
     filesMatching("fabric.mod.json") {
         expand(
-            "version" to project.version,
-            "minecraft_version" to mcVer!!,
-            "loader_version" to fabricLoader!!,
-            "kotlin_loader_version" to kotlinLoader!!,
-            "cloth_config" to clothVersion!!,
-            "placeholder_api" to placeholderVersion!!,
-            "modmenu" to modmenu!!
+            mapOf(
+                "version" to version,
+                "minecraft_version" to mcVer,
+                "loader_version" to fabricLoader,
+                "kotlin_loader_version" to kotlinLoader,
+                "cloth_config" to clothVersion,
+                "placeholder_api" to placeholderVersion,
+                "modmenu" to modmenu
+            )
         )
     }
 }
 
 tasks.withType<JavaCompile>().configureEach {
-    options.encoding = "UTF-8"
     options.release.set(targetJavaVersion)
-}
-
-val headerText = file("header.txt").readText()
-
-val addHeader by tasks.registering {
-    group = "build"
-
-    val targetFiles = fileTree("src") {
-        include("**/*.kt")
-        include("**/*.java")
-    }
-
-    doLast {
-        targetFiles.forEach { file: File ->
-            val content = file.readText()
-            if (!content.startsWith(headerText)) {
-                file.writeText("$headerText\n$content")
-            }
-        }
-    }
-}
-
-tasks.shadowJar {
-    dependsOn(tasks.jar)
-
-    archiveClassifier.set("shadow-dev")
-
-    configurations = listOf(shade)
-
-    from(zipTree(tasks.jar.get().archiveFile))
-
-    relocate(
-        "org.breakthebot.breakthelibrary",
-        "net.chariskar.breakthebot.breakthelibrary"
-    )
-}
-
-val remapShadowJar by tasks.registering(net.fabricmc.loom.task.RemapJarTask::class) {
-    dependsOn(tasks.shadowJar)
-    inputFile.set(tasks.shadowJar.get().archiveFile)
-    archiveClassifier.set("shadowed")
-
-    doLast {
-        delete(tasks.shadowJar.get().archiveFile.get().asFile)
-    }
-}
-
-tasks["build"].dependsOn(addHeader, remapShadowJar)
-
-tasks.named("build") {
-    if (actionBuild)
-    doLast {
-        val normalJarFile = tasks.jar.get().archiveFile.get().asFile
-        normalJarFile.delete()
-    }
+    options.encoding = "UTF-8"
 }
 
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions.jvmTarget.set(JvmTarget.fromTarget(targetJavaVersion.toString()))
 }
 
-tasks.jar {
-    from("LICENSE") {
-        rename { "${it}_${project.base.archivesName}" }
+val headerText = file("header.txt").takeIf { it.exists() }?.readText()
+
+val addHeader by tasks.registering {
+    onlyIf { headerText != null }
+
+    doLast {
+        fileTree("src") {
+            include("**/*.kt", "**/*.java")
+        }.forEach { file ->
+            val content = file.readText()
+            if (!content.startsWith(headerText!!)) {
+                file.writeText("$headerText\n$content")
+            }
+        }
     }
 }
 
-kotlin {
-    compilerOptions {
-        allWarningsAsErrors.set(true)
+val shadowJarTask = tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
+    archiveClassifier.set("dev-shadow")
+    configurations = listOf(shade)
+
+    relocate(
+        "org.breakthebot.breakthelibrary",
+        "${project.group}.shadow.breakthelibrary"
+    )
+}
+
+tasks.remapJar {
+    dependsOn(shadowJarTask)
+
+    inputFile.set(shadowJarTask.flatMap { it.archiveFile })
+    archiveClassifier.set(null as String?)
+}
+
+
+tasks.build {
+    dependsOn(addHeader)
+}
+
+if (project.hasProperty("release")) {
+    tasks.jar {
+        enabled = false
+    }
+}
+
+
+tasks.jar {
+    from("LICENSE") {
+        rename { "${it}_${project.base.archivesName.get()}" }
     }
 }

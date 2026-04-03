@@ -40,11 +40,13 @@ import net.minecraft.command.CommandRegistryAccess
 import net.minecraft.util.Identifier
 import com.mojang.brigadier.CommandDispatcher
 import net.chariskar.breakthemod.client.modules.AutoHUD
+import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.modules.ChatPreview
 
 
 class Breakthemod : ClientModInitializer {
     val nearbyLayer: Identifier = Identifier.of("breakthemod", "nearby_layer")
+
 
     private fun loadCommands(commands: MutableList<BaseCommand>) {
         ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _: CommandRegistryAccess ->
@@ -77,7 +79,8 @@ class Breakthemod : ClientModInitializer {
 
         val modules = mutableListOf(
             AutoHUD,
-            ChatPreview
+            ChatPreview,
+            Cache
         )
 
         loadModules(modules)

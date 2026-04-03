@@ -19,6 +19,7 @@ package net.chariskar.breakthemod.client.commands
 import com.mojang.brigadier.context.CommandContext
 import net.chariskar.breakthemod.client.api.BaseCommand
 import net.chariskar.breakthemod.client.api.engine.NearbyEngine
+import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.ServerUtils
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
@@ -42,7 +43,7 @@ class Debug : BaseCommand() {
             Text.literal("Server status: isEmc(${ServerUtils.isEarthMc()}), enabled(${ServerUtils.getEnabled()})")
         )
         sendMessage(
-            Text.literal("")
+            Text.literal("Cache size: ${Cache.cachedPlayers.size}")
         )
 
         return 0

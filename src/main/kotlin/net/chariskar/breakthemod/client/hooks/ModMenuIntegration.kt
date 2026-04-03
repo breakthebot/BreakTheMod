@@ -20,6 +20,7 @@ package net.chariskar.breakthemod.client.hooks
 import com.terraformersmc.modmenu.api.ConfigScreenFactory
 import com.terraformersmc.modmenu.api.ModMenuApi
 import me.shedaniel.clothconfig2.api.ConfigBuilder
+import me.shedaniel.clothconfig2.api.ConfigCategory
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.Config.WidgetPosition
 import net.minecraft.client.MinecraftClient
@@ -39,6 +40,12 @@ class ModMenuIntegration : ModMenuApi {
             val entryBuilder = builder.entryBuilder()
             val general = builder.getOrCreateCategory(Text.literal("BreakTheMod config"))
 
+            val devOptions: ConfigCategory? = if ( Config.getDevMode() ) {
+                builder.getOrCreateCategory(Text.literal("BreakTheMod developer settings"))
+            } else null
+
+            val urlOptions = builder.getOrCreateCategory(Text.literal("API urls"))
+
             general.addEntry(
                 entryBuilder.startBooleanToggle(
                     Text.literal("Enable BreakTheMod on other servers"),
@@ -46,9 +53,9 @@ class ModMenuIntegration : ModMenuApi {
                 )
                     .setSaveConsumer { enabled: Boolean ->
                         Config.config.enabledOnOtherServers = enabled
-                        Config.saveConfig(Config.config)
+                        saveConfig()
                     }
-                    .setDefaultValue { false }
+                    .setDefaultValue { Config.config.enabledOnOtherServers}
                     .build()
             )
 
@@ -59,7 +66,7 @@ class ModMenuIntegration : ModMenuApi {
                     Config.getWidget().widgetPosition
                 ).setSaveConsumer { position: WidgetPosition ->
                     Config.config.widget.widgetPosition = position
-                    Config.saveConfig(Config.config)
+                    saveConfig()
                 }.setDefaultValue { WidgetPosition.TOP_LEFT }.build()
             )
 
@@ -70,7 +77,7 @@ class ModMenuIntegration : ModMenuApi {
                     Config.getHud()
                 ).setSaveConsumer { hudType: AutoHudType ->
                     Config.config.hudType = hudType
-                    Config.saveConfig(Config.config)
+                    saveConfig()
                 }.setDefaultValue { AutoHudType.None }.build()
             )
 
@@ -81,11 +88,11 @@ class ModMenuIntegration : ModMenuApi {
                 )
                     .setSaveConsumer { x: Int ->
                         Config.config.widget.customX = x
-                        Config.saveConfig(Config.config)
+                        saveConfig()
                     }
                     .setMin(0)
                     .setMax(MinecraftClient.getInstance().currentScreen!!.width)
-                    .setDefaultValue { 0 }
+                    .setDefaultValue { Config.config.widget.customX }
                     .build()
             )
 
@@ -96,11 +103,11 @@ class ModMenuIntegration : ModMenuApi {
                 )
                     .setSaveConsumer { y: Int ->
                         Config.config.widget.customY = y
-                        Config.saveConfig(Config.config)
+                        saveConfig()
                     }
                     .setMin(0)
                     .setMax(MinecraftClient.getInstance().currentScreen!!.height)
-                    .setDefaultValue { 0 }
+                    .setDefaultValue { Config.config.widget.customY }
                     .build()
             )
 
@@ -111,8 +118,8 @@ class ModMenuIntegration : ModMenuApi {
                 )
                     .setSaveConsumer { enabled: Boolean ->
                         Config.config.radarEnabled = enabled
-                        Config.saveConfig(Config.config)
-                    }.setDefaultValue { true }
+                        saveConfig()
+                    }.setDefaultValue { Config.config.radarEnabled }
                     .build()
             )
 
@@ -122,34 +129,10 @@ class ModMenuIntegration : ModMenuApi {
                     Config.getTownlessMessage("TOWN")
                 ).setSaveConsumer { message: String ->
                     Config.setTownlessMessage(message)
-                    Config.saveConfig(Config.config)
+                    saveConfig()
                 }.setDefaultValue {
                     Config.getTownlessMessage("TOWN")
                 }.build()
-            )
-
-            general.addEntry(
-                entryBuilder.startIntField(
-                    Text.literal("Nearby entry height"),
-                    Config.getWidget().entryHeight
-                )
-                    .setSaveConsumer { height: Int ->
-                        Config.config.widget.entryHeight = height
-                        Config.saveConfig(Config.config)
-                    }.setDefaultValue { 15 }
-                    .build()
-            )
-
-            general.addEntry(
-                entryBuilder.startIntField(
-                    Text.literal("Nearby entry margin"),
-                    Config.getWidget().margin
-                )
-                    .setSaveConsumer { margin: Int ->
-                        Config.config.widget.margin = margin
-                        Config.saveConfig(Config.config)
-                    }.setDefaultValue { 10 }
-                    .build()
             )
 
             general.addEntry(
@@ -159,15 +142,102 @@ class ModMenuIntegration : ModMenuApi {
                 )
                     .setSaveConsumer { enabled: Boolean ->
                         Config.config.dev = enabled
-                        Config.saveConfig(Config.config)
-                    }.setDefaultValue { false }
+                        saveConfig()
+                    }.setDefaultValue { Config.config.dev}
                     .build()
             )
 
+            general.addEntry(
+                entryBuilder.startBooleanToggle(
+                    Text.literal("Options"),
+                    Config.config.options
+                )
+                    .setSaveConsumer { enabled: Boolean ->
+                        Config.config.options = enabled
+                        saveConfig()
+                    } .setDefaultValue { Config.config.options }
+                    .build()
+            )
+
+            devOptions?.addEntry(
+                entryBuilder.startIntField(
+                    Text.literal("Nearby entry height"),
+                    Config.getWidget().entryHeight
+                )
+                    .setSaveConsumer { height: Int ->
+                        Config.config.widget.entryHeight = height
+                        saveConfig()
+                    }.setDefaultValue { 15 }
+                    .build()
+            )
+
+            devOptions?.addEntry(
+                entryBuilder.startIntField(
+                    Text.literal("Nearby entry margin"),
+                    Config.getWidget().margin
+                )
+                    .setSaveConsumer { margin: Int ->
+                        Config.config.widget.margin = margin
+                        saveConfig()
+                    }.setDefaultValue { 10 }
+                    .build()
+            )
+
+            devOptions?.addEntry(
+                entryBuilder.startBooleanToggle(
+                    Text.literal("Cache"),
+                    Config.getCache(),
+                )
+                    .setSaveConsumer { enabled: Boolean ->
+                        Config.config.cacheEnabled = enabled
+                        saveConfig()
+                    }.setDefaultValue { true }
+                    .build()
+            )
+
+            urlOptions.addEntry(
+                entryBuilder.startStrField(
+                    Text.literal("API url"),
+                    Config.config.urls.apiUrl
+                )
+                    .setSaveConsumer { url: String ->
+                        Config.setApiUrl(url)
+                        saveConfig()
+                    }.setDefaultValue { Config.config.urls.apiUrl }
+                    .build()
+            )
+
+            urlOptions.addEntry(
+                entryBuilder.startStrField(
+                    Text.literal("Map url"),
+                    Config.config.urls.mapUrl
+                )
+                    .setSaveConsumer { url: String ->
+                        Config.setMapUrl(url)
+                        saveConfig()
+                    }.setDefaultValue { Config.config.urls.mapUrl }
+                    .build()
+            )
+
+            urlOptions.addEntry(
+                entryBuilder.startStrField(
+                    Text.literal("Staff url"),
+                    Config.config.urls.staffUrl
+                )
+                    .setSaveConsumer { url: String ->
+                        Config.setStaffUrl(url)
+                        saveConfig()
+                    }.setDefaultValue { Config.config.urls.staffUrl }
+                    .build()
+            )
 
             return builder.build()
         }
+
+        fun saveConfig() = Config.saveConfig(Config.config)
     }
+
+
 
     override fun getModConfigScreenFactory(): ConfigScreenFactory<Screen> {
         return ConfigScreenFactory(::createConfigScreen)

@@ -36,6 +36,7 @@ import org.breakthebot.breakthelibrary.models.NearbyItem
 import org.breakthebot.breakthelibrary.models.NearbyType
 
 class goto: BaseCommand() {
+    
     init {
         name = "goto"
         description = "Shows you the nearest spawnable town of the town you selected."

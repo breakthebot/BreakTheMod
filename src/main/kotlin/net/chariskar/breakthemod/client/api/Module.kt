@@ -18,6 +18,7 @@
 package net.chariskar.breakthemod.client.api
 
 import net.chariskar.breakthemod.client.utils.Config
+import net.minecraft.client.MinecraftClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -29,6 +30,7 @@ abstract class Module {
     val name: String = ""
     val description: String = ""
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
+    val client: MinecraftClient = MinecraftClient.getInstance()
 
     fun launch() {
         try {

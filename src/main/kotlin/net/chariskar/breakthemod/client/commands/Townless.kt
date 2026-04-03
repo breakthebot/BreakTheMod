@@ -58,9 +58,10 @@ class Townless : BaseCommand() {
                 if (batch.size == batchSize) {
                     val players = PlayerAPI.getPlayers(batch.map { u -> u.toString() })
                     if (players.isNullOrEmpty()) {
-                        logger.warn("Received empty batch on townless")
+                        logger.warn("Received empty batch on townless.")
+                        return@launch
                     }
-                    players?.forEach { p ->
+                    players.forEach { p ->
                         if (p.status?.hasTown == false) townless.add(p.name)
                     }
                     batch.clear()
@@ -71,13 +72,14 @@ class Townless : BaseCommand() {
                 val players = PlayerAPI.getPlayers(batch.map { it.toString() })
                 if (players.isNullOrEmpty()) {
                     logger.warn("Received empty batch on townless")
-                } else {
-                    players.forEach { resident ->
-                        if (resident.status?.hasTown == false) {
-                            townless.add(resident.name)
-                        }
+                    return@launch
+                }
+                players.forEach { resident ->
+                    if (resident.status?.hasTown == false) {
+                        townless.add(resident.name)
                     }
                 }
+
             }
 
             val message = Text.literal("Townless Users:\n").setStyle(Style.EMPTY.withColor(Formatting.AQUA))
