@@ -86,7 +86,7 @@ nearby.
 
 ### **Requirements**
 
-- Minecraft version: `1.21.8`
+- Minecraft version: `1.21.11`
 - Mod loader: `Fabric`
 - dependencies:
     - `Fabric-API`
@@ -100,14 +100,20 @@ nearby.
 2. Install Fabric (if not already installed).
 3. Make sure fabric language kotlin is installed.
 4. Place the mod `.jar` file in the `mods` folder of your Minecraft directory.
-5. You are gonna need clothconfig2 >=13.0.138 and modmenu >=9.2.0
+5. You are gonna need clothconfig2>=21.11.153, modmenu>=17.0.0-beta.2.
 6. Launch Minecraft and enjoy!
 
 ---
 
+### **How to build**
+1. Copy the repo by doing `git clone https://github.com/breakthebot/BreakTheBot.git`
+2. Do `gradle build -Prelease`
+3. And you're done, select the breakthemod-ver-dev-shadow.jar.
+---
+
 ## **Compatibility**
 
-- Compatible with Minecraft versions: `>=1.21.4`
+- Compatible with Minecraft versions: `>=1.21.11`
 
 ---
 

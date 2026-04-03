@@ -44,7 +44,9 @@ class ModMenuIntegration : ModMenuApi {
                 builder.getOrCreateCategory(Text.literal("BreakTheMod developer settings"))
             } else null
 
-            val urlOptions = builder.getOrCreateCategory(Text.literal("API urls"))
+            val options: ConfigCategory? = if ( Config.config.options ) {
+                builder.getOrCreateCategory(Text.literal("Options"))
+            } else null
 
             general.addEntry(
                 entryBuilder.startBooleanToggle(
@@ -79,36 +81,6 @@ class ModMenuIntegration : ModMenuApi {
                     Config.config.hudType = hudType
                     saveConfig()
                 }.setDefaultValue { AutoHudType.None }.build()
-            )
-
-            general.addEntry(
-                entryBuilder.startIntField(
-                    Text.literal("Custom X Position"),
-                    Config.getWidget().customX
-                )
-                    .setSaveConsumer { x: Int ->
-                        Config.config.widget.customX = x
-                        saveConfig()
-                    }
-                    .setMin(0)
-                    .setMax(MinecraftClient.getInstance().currentScreen!!.width)
-                    .setDefaultValue { Config.config.widget.customX }
-                    .build()
-            )
-
-            general.addEntry(
-                entryBuilder.startIntField(
-                    Text.literal("Custom Y Position"),
-                    Config.getWidget().customY
-                )
-                    .setSaveConsumer { y: Int ->
-                        Config.config.widget.customY = y
-                        saveConfig()
-                    }
-                    .setMin(0)
-                    .setMax(MinecraftClient.getInstance().currentScreen!!.height)
-                    .setDefaultValue { Config.config.widget.customY }
-                    .build()
             )
 
             general.addEntry(
@@ -195,7 +167,37 @@ class ModMenuIntegration : ModMenuApi {
                     .build()
             )
 
-            urlOptions.addEntry(
+            options?.addEntry(
+                entryBuilder.startIntField(
+                    Text.literal("Custom X Position"),
+                    Config.getWidget().customX
+                )
+                    .setSaveConsumer { x: Int ->
+                        Config.config.widget.customX = x
+                        saveConfig()
+                    }
+                    .setMin(0)
+                    .setMax(MinecraftClient.getInstance().currentScreen!!.width)
+                    .setDefaultValue { Config.config.widget.customX }
+                    .build()
+            )
+
+            options?.addEntry(
+                entryBuilder.startIntField(
+                    Text.literal("Custom Y Position"),
+                    Config.getWidget().customY
+                )
+                    .setSaveConsumer { y: Int ->
+                        Config.config.widget.customY = y
+                        saveConfig()
+                    }
+                    .setMin(0)
+                    .setMax(MinecraftClient.getInstance().currentScreen!!.height)
+                    .setDefaultValue { Config.config.widget.customY }
+                    .build()
+            )
+
+            options?.addEntry(
                 entryBuilder.startStrField(
                     Text.literal("API url"),
                     Config.config.urls.apiUrl
@@ -207,7 +209,7 @@ class ModMenuIntegration : ModMenuApi {
                     .build()
             )
 
-            urlOptions.addEntry(
+            options?.addEntry(
                 entryBuilder.startStrField(
                     Text.literal("Map url"),
                     Config.config.urls.mapUrl
@@ -219,7 +221,7 @@ class ModMenuIntegration : ModMenuApi {
                     .build()
             )
 
-            urlOptions.addEntry(
+            options?.addEntry(
                 entryBuilder.startStrField(
                     Text.literal("Staff url"),
                     Config.config.urls.staffUrl

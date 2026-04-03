@@ -24,9 +24,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 import kotlinx.serialization.json.Json
-import me.shedaniel.autoconfig.ConfigManager
-import net.chariskar.breakthemod.client.modules.AutoHUD
-import org.breakthebot.breakthelibrary.utils.ConfigHandler
 import org.breakthebot.breakthelibrary.utils.Urls
 
 object Config {

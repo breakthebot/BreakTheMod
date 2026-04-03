@@ -71,10 +71,11 @@ class Breakthemod : ClientModInitializer {
             LastSeen(),
             DiscordId(),
             Locate(),
-            Debug(),
             helpCmd
         )
         helpCmd.commands = commandList
+        commandList.add(Debug())
+
         loadCommands(commandList)
 
         val modules = mutableListOf(
