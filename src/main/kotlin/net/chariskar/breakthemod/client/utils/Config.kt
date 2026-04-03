@@ -42,7 +42,8 @@ object Config {
         var cacheEnabled: Boolean = true,
         var townlessMessage: String = "Hi! I see you're new here, wanna join my Town? I can help you out! Get Free enchanted Armor, Pickaxe, Diamonds, Iron, wood, food, stone, house, and ability to teleport! Type /t join TOWN",
         var options: Boolean = false,
-        @Contextual var urls: Urls = Urls()
+        @Contextual
+        var urls: Urls = Urls()
     )
 
     @Serializable

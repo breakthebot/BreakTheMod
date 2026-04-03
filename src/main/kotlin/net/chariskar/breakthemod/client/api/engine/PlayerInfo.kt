@@ -16,22 +16,6 @@
  */
 
 package net.chariskar.breakthemod.client.api.engine
-/*
- * This file is part of breakthemod.
- *
- * breakthemod is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * breakthemod is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
- */
 
 import net.minecraft.client.MinecraftClient
 import net.minecraft.entity.player.PlayerEntity
@@ -60,7 +44,6 @@ data class PlayerInfo(val name: String, var position: Vec3d) {
 
     fun isUnderBlock(world: World, pos: BlockPos): Boolean {
         val topY = world.dimension.logicalHeight
-
         for (y in pos.y + 1..topY) {
             val checkPos = BlockPos(pos.x, y, pos.z)
             val state = world.getBlockState(checkPos)

@@ -108,7 +108,7 @@ nearby.
 ### **How to build**
 1. Copy the repo by doing `git clone https://github.com/breakthebot/BreakTheBot.git`
 2. Do `gradle build -Prelease`
-3. And you're done, select the breakthemod-ver-dev-shadow.jar.
+3. And you're done, select the breakthemod-ver.jar.
 ---
 
 ## **Compatibility**

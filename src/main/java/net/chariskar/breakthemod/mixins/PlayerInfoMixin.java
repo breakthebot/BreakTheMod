@@ -17,16 +17,16 @@
 
 package net.chariskar.breakthemod.mixins;
 
-import net.chariskar.breakthemod.client.modules.Cache;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
-
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
+
+import net.chariskar.breakthemod.client.modules.Cache;
 import org.breakthebot.breakthelibrary.models.Resident;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
@@ -84,6 +84,8 @@ public abstract class PlayerInfoMixin {
                 state.squaredDistanceToCamera,
                 cameraRenderState
         );
+
+        matrices.pop();
     }
 
     @Unique
