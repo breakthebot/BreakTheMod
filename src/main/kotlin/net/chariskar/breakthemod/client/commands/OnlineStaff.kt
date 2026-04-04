@@ -90,17 +90,19 @@ class OnlineStaff : command() {
             }
         }
 
-       return Text.empty().apply { if (staffNames.isNotEmpty()) {
-           append(onlineStaffText)
-           append(Text.literal(" [").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
-           append(
-               Text.literal(java.lang.String.valueOf(staffNames.size))
-                   .setStyle(Style.EMPTY.withColor(Formatting.WHITE))
-           )
-           append(Text.literal("]").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
-       } else {
-           append("No online staff").style = Style.EMPTY.withColor(Formatting.AQUA)
-       }}
+       return Text.empty().apply {
+           if (staffNames.isNotEmpty()) {
+                append(onlineStaffText)
+                append(Text.literal(" [").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
+                append(
+                    Text.literal(java.lang.String.valueOf(staffNames.size))
+                        .setStyle(Style.EMPTY.withColor(Formatting.WHITE))
+                )
+                append(Text.literal("]").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
+           } else {
+               append("No online staff").style = Style.EMPTY.withColor(Formatting.AQUA)
+           }
+       }
     }
 
     fun exec(api: Boolean?): Int {

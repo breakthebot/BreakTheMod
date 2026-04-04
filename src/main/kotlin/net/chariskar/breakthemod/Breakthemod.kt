@@ -47,7 +47,7 @@ import java.io.File
 
 
 class Breakthemod : ClientModInitializer {
-    val nearbyLayer: Identifier = Identifier.of("BreakTheMod", "nearby_layer")
+    val nearbyLayer: Identifier = Identifier.of("breakthemod", "nearby_layer")
 
 
     private fun loadCommands(commands: MutableList<BaseCommand>) {
