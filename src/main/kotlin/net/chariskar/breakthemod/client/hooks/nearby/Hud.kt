@@ -19,15 +19,16 @@ package net.chariskar.breakthemod.client.hooks.nearby
 
 import net.chariskar.breakthemod.client.api.engine.NearbyEngine
 import net.chariskar.breakthemod.client.utils.Config
-import net.chariskar.breakthemod.client.utils.Config.WidgetPosition
 import net.chariskar.breakthemod.client.utils.ServerUtils
+import net.chariskar.breakthemod.client.utils.Widget
+import net.chariskar.breakthemod.client.utils.WidgetPosition
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
 
 object Hud {
     private val client = MinecraftClient.getInstance()
-    var widgetPosition: Config.Widget = Config.getWidget()
+    var widgetPosition: Widget = Config.getWidget()
 
     private var x: Int = 0
     private var y: Int = 0
@@ -51,7 +52,9 @@ object Hud {
 
         val height = (20 + playerList.size * entryHeight).coerceAtLeast(40)
 
-        when (Config.getWidget().widgetPosition) {
+        when (
+            Config.getWidget().widgetPosition
+        ) {
             WidgetPosition.TOP_LEFT -> {
                 x = margin
                 y = margin

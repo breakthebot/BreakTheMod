@@ -26,7 +26,6 @@ import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.client.MinecraftClient
 import net.minecraft.text.MutableText
 import net.minecraft.text.Style
 import net.minecraft.text.Text
@@ -50,13 +49,11 @@ class OnlineStaff : command() {
                     .executes(Command { context: CommandContext<FabricClientCommandSource> ->
                         if (!getEnabled()) {return@Command 0}
                         val arg: String = context.getArgument("api", String::class.java)
-
-                        return@Command exec(context, arg == "api")
+                        return@Command exec(arg == "api")
                     }))
-                .executes(Command { context: CommandContext<FabricClientCommandSource> ->
+                .executes(Command { _: CommandContext<FabricClientCommandSource> ->
                     if (!getEnabled()) {return@Command 0}
-
-                    return@Command exec(context, null)
+                    return@Command exec(null)
                 })
         )
     }
@@ -68,7 +65,6 @@ class OnlineStaff : command() {
         if (staff.isNullOrEmpty()) return Text.literal("Received invalid staff list.").setStyle(Style.EMPTY.withColor(Formatting.RED))
 
         var onlineStaffText: MutableText = Text.empty()
-        var message: MutableText
 
         val staffNames: List<String> = if (api) {
             PlayerAPI.getPlayers( staff.map { v->v.toString() } )!!
@@ -94,25 +90,20 @@ class OnlineStaff : command() {
             }
         }
 
-        if (staffNames.isNotEmpty()) {
-           message = Text.literal("").apply {
-               append(onlineStaffText)
-               append(Text.literal(" [").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
-               append(
-                   Text.literal(java.lang.String.valueOf(staffNames.size))
-                       .setStyle(Style.EMPTY.withColor(Formatting.WHITE))
-               )
-               append(Text.literal("]").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
-           }
-        } else {
-            message = Text.empty()
-                .append("No online staff").setStyle(Style.EMPTY.withColor(Formatting.AQUA))
-        }
-
-       return message
+       return Text.empty().apply { if (staffNames.isNotEmpty()) {
+           append(onlineStaffText)
+           append(Text.literal(" [").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
+           append(
+               Text.literal(java.lang.String.valueOf(staffNames.size))
+                   .setStyle(Style.EMPTY.withColor(Formatting.WHITE))
+           )
+           append(Text.literal("]").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
+       } else {
+           append("No online staff").style = Style.EMPTY.withColor(Formatting.AQUA)
+       }}
     }
 
-    fun exec(ctx: CommandContext<FabricClientCommandSource>, api: Boolean?): Int {
+    fun exec(api: Boolean?): Int {
         scope.launch {
             val staff = onlineStaff(api ?: false)
             client.execute { sendMessage(staff) }

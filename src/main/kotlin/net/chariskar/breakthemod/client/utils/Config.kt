@@ -17,8 +17,6 @@
 
 package net.chariskar.breakthemod.client.utils
 
-import kotlinx.serialization.Contextual
-import kotlinx.serialization.Serializable
 import net.minecraft.client.MinecraftClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -29,38 +27,7 @@ import org.breakthebot.breakthelibrary.utils.Urls
 object Config {
     var config: ConfigData = ConfigData()
 
-    @Serializable
-    data class ConfigData(
-        var dev: Boolean = false,
-        var enabledOnOtherServers: Boolean = true,
-        var radarEnabled: Boolean = true,
-        var debug: Boolean = false,
-        var xaerosRdr: Boolean = false,
-        var widget: Widget = Widget(),
-        var hudType: AutoHudType = AutoHudType.None,
-        var nametagInfo: Boolean = true,
-        var cacheEnabled: Boolean = true,
-        var townlessMessage: String = "Hi! I see you're new here, wanna join my Town? I can help you out! Get Free enchanted Armor, Pickaxe, Diamonds, Iron, wood, food, stone, house, and ability to teleport! Type /t join TOWN",
-        var options: Boolean = false,
-        @Contextual
-        var urls: Urls = Urls()
-    )
 
-    @Serializable
-    enum class AutoHudType {
-        None,
-        MapHud,
-        PermHud
-    }
-
-    @Serializable
-    data class Widget(
-        var customX: Int = 0,
-        var customY: Int = 0,
-        var entryHeight: Int = 15,
-        var margin: Int = 10,
-        var widgetPosition: WidgetPosition = WidgetPosition.TOP_LEFT
-    )
 
     private val json = Json { encodeDefaults = true; prettyPrint = true }
     lateinit var configFile: File
@@ -121,8 +88,6 @@ object Config {
 
     fun getHud() = config.hudType
 
-    fun getXaerosRdr() = config.xaerosRdr
-
     fun getNameTag() = config.nametagInfo && config.cacheEnabled
 
     fun getCache() = config.cacheEnabled
@@ -160,12 +125,5 @@ object Config {
         )
     }
 
-    @Serializable
-    enum class WidgetPosition {
-        TOP_LEFT,
-        TOP_RIGHT,
-        BOTTOM_RIGHT,
-        BOTTOM_LEFT,
-        CUSTOM
-    }
+
 }

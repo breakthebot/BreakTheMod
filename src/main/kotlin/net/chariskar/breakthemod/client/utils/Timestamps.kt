@@ -31,7 +31,7 @@ object Timestamps {
         val days: Long = duration.toDays()
         val hours: Long = duration.toHours() % 24
         val minutes: Long = duration.toMinutes() % 60
-        val list: MutableList<Long> = ArrayList<Long>()
+        val list: MutableList<Long> = ArrayList()
         list.add(days)
         list.add(hours)
         list.add(minutes)

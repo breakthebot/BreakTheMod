@@ -66,6 +66,7 @@ public abstract class PlayerInfoMixin {
         matrices.push();
 
         matrices.scale(0.75F, 0.75F, 0.75F);
+        matrices.translate(0.0D, 0.6D, 0.0D);
 
         Vec3d labelPos = state.nameLabelPos.add(0, 2.2, 0);
         matrices.translate(

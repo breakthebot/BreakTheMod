@@ -22,7 +22,7 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
-import kotlin.math.roundToInt
+import kotlin.math.atan2
 import kotlin.math.sqrt
 
 /**
@@ -31,7 +31,7 @@ import kotlin.math.sqrt
  * @param position The position of the player.
  * */
 data class PlayerInfo(val name: String, var position: Vec3d) {
-    private val directionStep: Double = 45.0
+    //private val directionStep: Double = 45.0
     val directions = arrayOf("S", "SW", "W", "NW", "N", "NE", "E", "SE")
     val client: MinecraftClient = MinecraftClient.getInstance()
 
@@ -67,8 +67,13 @@ data class PlayerInfo(val name: String, var position: Vec3d) {
     fun shouldSkip(player: PlayerEntity, world: World): Boolean = shouldSkipSpecial(player) || isUnderBlock(world, player.blockPos)
 
     fun directionFrom(player: PlayerEntity): String {
-        val normalized = ((player.yaw + 180) % 360 + 360) % 360
-        val index = (normalized / directionStep).roundToInt() % 8
+        val dx = position.x - player.x
+        val dz = position.z - player.z
+        val angle = Math.toDegrees(atan2(dz, dx))
+
+        val normalized = (angle + 360) % 360
+        val index = ((normalized + 22.5) / 45.0).toInt() % 8
+
         return directions[index]
     }
 

@@ -21,12 +21,12 @@ import com.terraformersmc.modmenu.api.ConfigScreenFactory
 import com.terraformersmc.modmenu.api.ModMenuApi
 import me.shedaniel.clothconfig2.api.ConfigBuilder
 import me.shedaniel.clothconfig2.api.ConfigCategory
+import net.chariskar.breakthemod.client.utils.AutoHudType
 import net.chariskar.breakthemod.client.utils.Config
-import net.chariskar.breakthemod.client.utils.Config.WidgetPosition
+import net.chariskar.breakthemod.client.utils.WidgetPosition
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.text.Text
-import net.chariskar.breakthemod.client.utils.Config.AutoHudType
 
 
 class ModMenuIntegration : ModMenuApi {

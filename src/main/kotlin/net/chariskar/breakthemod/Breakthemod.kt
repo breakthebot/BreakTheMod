@@ -47,7 +47,7 @@ import java.io.File
 
 
 class Breakthemod : ClientModInitializer {
-    val nearbyLayer: Identifier = Identifier.of("breakthemod", "nearby_layer")
+    val nearbyLayer: Identifier = Identifier.of("BreakTheMod", "nearby_layer")
 
 
     private fun loadCommands(commands: MutableList<BaseCommand>) {
@@ -79,10 +79,10 @@ class Breakthemod : ClientModInitializer {
             LastSeen(),
             DiscordId(),
             Locate(),
+            Debug(),
             helpCmd
         )
-        helpCmd.commands = commandList
-        commandList.add(Debug())
+        helpCmd.commands = commandList.filterNot { it is Debug }.toMutableList()
 
         loadCommands(commandList)
 

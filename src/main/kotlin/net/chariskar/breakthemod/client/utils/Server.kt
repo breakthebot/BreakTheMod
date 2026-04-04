@@ -18,7 +18,6 @@
 package net.chariskar.breakthemod.client.utils
 
 import net.minecraft.client.MinecraftClient
-import java.util.Locale
 
 object ServerUtils {
 

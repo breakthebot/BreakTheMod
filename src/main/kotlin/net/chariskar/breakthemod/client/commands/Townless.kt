@@ -57,10 +57,7 @@ class Townless : BaseCommand() {
                 batch.add(p)
                 if (batch.size == batchSize) {
                     val players = PlayerAPI.getPlayers(batch.map { u -> u.toString() })
-                    if (players.isNullOrEmpty()) {
-                        logger.warn("Received empty batch on townless.")
-                        return@launch
-                    }
+                    if (players.isNullOrEmpty()) { return@launch }
                     players.forEach { p ->
                         if (p.status?.hasTown == false) townless.add(p.name)
                     }
@@ -70,16 +67,12 @@ class Townless : BaseCommand() {
 
             if (batch.isNotEmpty()) {
                 val players = PlayerAPI.getPlayers(batch.map { it.toString() })
-                if (players.isNullOrEmpty()) {
-                    logger.warn("Received empty batch on townless")
-                    return@launch
-                }
+                if (players.isNullOrEmpty()) { return@launch }
                 players.forEach { resident ->
                     if (resident.status?.hasTown == false) {
                         townless.add(resident.name)
                     }
                 }
-
             }
 
             val message = Text.literal("Townless Users:\n").setStyle(Style.EMPTY.withColor(Formatting.AQUA))
@@ -89,10 +82,11 @@ class Townless : BaseCommand() {
 
                 val userText: Text = Text.literal(user)
                     .setStyle(
-                        Style.EMPTY
-                            .withColor(Formatting.AQUA)
-                            .withClickEvent(ClickEvent.CopyToClipboard(inviteMessage))
-                            .withHoverEvent(HoverEvent.ShowText(Text.literal("Click to copy message to clipboard.")))
+                        Style.EMPTY.apply {
+                            withColor(Formatting.AQUA)
+                            withClickEvent(ClickEvent.CopyToClipboard(inviteMessage))
+                            withHoverEvent(HoverEvent.ShowText(Text.literal("Click to copy message to clipboard.")))
+                        }
                     )
 
                 message.append(userText).append(Text.literal("\n"))

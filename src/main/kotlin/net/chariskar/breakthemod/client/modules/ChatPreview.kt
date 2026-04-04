@@ -66,7 +66,6 @@ object ChatPreview : Module() {
                 inPartyChat = false
             }
 
-
         })
 
         ClientPlayConnectionEvents.DISCONNECT.register(ClientPlayConnectionEvents.Disconnect { handler: ClientPlayNetworkHandler?, client: MinecraftClient? ->
@@ -75,8 +74,8 @@ object ChatPreview : Module() {
     }
 
     private fun parseCurrentChatChannel(message: String?): ChatChannel {
-        val pattern: Pattern = Pattern.compile("(\\w+) \\(write\\)")
-        val matcher: Matcher = pattern.matcher(message)
+        val pattern = Pattern.compile("(\\w+) \\(write\\)")
+        val matcher = pattern.matcher(message)
 
         if (matcher.find()) {
             val name: String = matcher.group(1) ?: return ChatChannel.GLOBAL

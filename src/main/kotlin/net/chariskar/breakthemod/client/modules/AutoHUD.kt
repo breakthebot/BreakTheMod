@@ -20,8 +20,8 @@
 package net.chariskar.breakthemod.client.modules
 
 import net.chariskar.breakthemod.client.api.Module
+import net.chariskar.breakthemod.client.utils.AutoHudType
 import net.chariskar.breakthemod.client.utils.Config
-import net.chariskar.breakthemod.client.utils.Config.AutoHudType
 import net.chariskar.breakthemod.client.utils.Scheduler
 import net.chariskar.breakthemod.client.utils.ServerUtils
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
@@ -39,11 +39,11 @@ object AutoHUD : Module() {
             Scheduler.schedule( {
                 if (!ServerUtils.isEarthMc()) { return@schedule }
 
-                val hud: AutoHudType = Config.getHud()
+                val hud = Config.getHud()
 
                 if (hud == AutoHudType.None) { return@schedule }
 
-                val command: String = when(hud) {
+                val command = when(hud) {
                     AutoHudType.PermHud -> "plot perm hud"
                     AutoHudType.MapHud -> "towny map hud"
                     else -> ""
