@@ -58,9 +58,7 @@ abstract class BaseCommand {
     /**
      * @param ctx the command context.
      */
-    protected open fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
-        return 0;
-    }
+    protected open fun execute(ctx: CommandContext<FabricClientCommandSource>): Int = 0
 
     /**
      * Internal method, executes command code.
@@ -102,9 +100,8 @@ abstract class BaseCommand {
      *
      * @param message The message to be sent
      */
-    fun sendMessage(message: Text) {
-        client.player?.sendMessage(Prefix.prefix.copy().append(message), false)
-    }
+    fun sendMessage(message: Text) = client.player?.sendMessage(Prefix.prefix.copy().append(message), false)
+
 
     /**
      * Helper utility for sending messages.

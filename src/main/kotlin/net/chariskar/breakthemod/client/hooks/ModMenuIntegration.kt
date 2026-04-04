@@ -40,12 +40,12 @@ class ModMenuIntegration : ModMenuApi {
             val entryBuilder = builder.entryBuilder()
             val general = builder.getOrCreateCategory(Text.literal("BreakTheMod config"))
 
-            val devOptions: ConfigCategory? = if ( Config.getDevMode() ) {
-                builder.getOrCreateCategory(Text.literal("BreakTheMod developer settings"))
-            } else null
-
             val options: ConfigCategory? = if ( Config.config.options ) {
                 builder.getOrCreateCategory(Text.literal("Options"))
+            } else null
+
+            val devOptions: ConfigCategory? = if ( Config.getDevMode() ) {
+                builder.getOrCreateCategory(Text.literal("Developer Settings"))
             } else null
 
             general.addEntry(
@@ -57,7 +57,7 @@ class ModMenuIntegration : ModMenuApi {
                         Config.config.enabledOnOtherServers = enabled
                         saveConfig()
                     }
-                    .setDefaultValue { Config.config.enabledOnOtherServers}
+                    .setDefaultValue { Config.config.enabledOnOtherServers }
                     .build()
             )
 
@@ -238,8 +238,6 @@ class ModMenuIntegration : ModMenuApi {
 
         fun saveConfig() = Config.saveConfig(Config.config)
     }
-
-
 
     override fun getModConfigScreenFactory(): ConfigScreenFactory<Screen> {
         return ConfigScreenFactory(::createConfigScreen)

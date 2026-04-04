@@ -41,19 +41,26 @@ class Nearby : BaseCommand() {
         scope.launch {
             val players: Set<PlayerInfo> = NearbyEngine.updateNearbyPlayers(client.player!!, client.world!!)
 
-            var header: MutableText
-
-            if (players.isEmpty()) {
-                header = Text.literal("No players nearby").setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.RED)))
+            val header: MutableText = if (players.isEmpty()) {
+                Text.literal("No players nearby").setStyle(
+                    Style.EMPTY.withColor(
+                        TextColor.fromFormatting(Formatting.RED)
+                    )
+                )
             } else {
-                header = Text.literal("Players nearby:\n").setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.YELLOW)))
-                val playerText: MutableText = Text.empty().setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.AQUA)))
-
-                for (player in players) {
-                    playerText.append(player.toString() + "\n")
-                }
-                header.append(playerText)
+                Text.literal("Players nearby:\n").setStyle(
+                    Style.EMPTY.withColor(
+                        TextColor.fromFormatting(Formatting.YELLOW)
+                    )
+                )
             }
+
+            val playerText: MutableText = Text.empty().setStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.AQUA)))
+
+            for (player in players) {
+                playerText.append(player.toString() + "\n")
+            }
+            header.append(playerText)
 
             sendMessage(header)
         }

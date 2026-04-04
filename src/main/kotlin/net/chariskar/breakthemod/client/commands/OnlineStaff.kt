@@ -95,18 +95,19 @@ class OnlineStaff : command() {
         }
 
         if (staffNames.isNotEmpty()) {
-           message = Text.literal("")
-               .append(onlineStaffText)
-               .append(Text.literal(" [").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
-               .append(
+           message = Text.literal("").apply {
+               append(onlineStaffText)
+               append(Text.literal(" [").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
+               append(
                    Text.literal(java.lang.String.valueOf(staffNames.size))
                        .setStyle(Style.EMPTY.withColor(Formatting.WHITE))
                )
-               .append(Text.literal("]").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
-       } else {
-           message = Text.empty()
-               .append("No online staff").setStyle(Style.EMPTY.withColor(Formatting.AQUA))
-       }
+               append(Text.literal("]").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
+           }
+        } else {
+            message = Text.empty()
+                .append("No online staff").setStyle(Style.EMPTY.withColor(Formatting.AQUA))
+        }
 
        return message
     }

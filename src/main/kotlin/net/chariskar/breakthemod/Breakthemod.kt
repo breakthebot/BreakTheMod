@@ -42,6 +42,8 @@ import com.mojang.brigadier.CommandDispatcher
 import net.chariskar.breakthemod.client.modules.AutoHUD
 import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.modules.ChatPreview
+import net.minecraft.client.MinecraftClient
+import java.io.File
 
 
 class Breakthemod : ClientModInitializer {
@@ -59,10 +61,16 @@ class Breakthemod : ClientModInitializer {
     private fun loadModules(modules: MutableList<Module>) { modules.forEach { it.launch() } }
 
     override fun onInitializeClient() {
+        Config.setFile(
+            File(
+            MinecraftClient.getInstance()?.runDirectory,
+            "config/breakthemod_config.json"
+            )
+        )
         Config.loadConfig()
 
         val helpCmd = Help()
-        val commandList: MutableList<BaseCommand> = mutableListOf(
+        val commandList = mutableListOf(
             Nearby(),
             OnlineStaff(),
             Townless(),

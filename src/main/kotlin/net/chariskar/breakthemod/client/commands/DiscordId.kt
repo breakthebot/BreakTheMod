@@ -78,7 +78,7 @@ class DiscordId : BaseCommand() {
 
             val uuid = UUID.fromString(formattedUuid)
 
-            val discord = DiscordAPI.getDiscord(listOf(DiscordPayloadMinecraft( target = SerializableUUID(uuid) )))?.first()
+            val discord = DiscordAPI.getDiscord(listOf(DiscordPayloadMinecraft( SerializableUUID(uuid) )))?.first()
 
             val result: Text = Text.literal("Click Here")
                 .setStyle(

@@ -45,7 +45,6 @@ class Debug : BaseCommand() {
         sendMessage(
             Text.literal("Cache size: ${Cache.cachedPlayers.size}")
         )
-
         return 0
     }
 }

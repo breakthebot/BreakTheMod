@@ -27,6 +27,8 @@ import net.chariskar.breakthemod.client.api.BaseCommand
 import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
 import net.chariskar.breakthemod.client.utils.Timestamps
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
+import net.minecraft.entity.passive.FrogBrain
+import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import org.breakthebot.breakthelibrary.api.PlayerAPI
@@ -47,11 +49,22 @@ class LastSeen : BaseCommand() {
                 return@launch
             }
             val timestamps: List<Long> = Timestamps.parseTimestamp(player.timestamps?.lastOnline!!)
-            if (player.status?.isOnline == true) {
-                sendMessage(Text.literal("${player.name} has been online right now, for ${timestamps[0]} days, ${timestamps[1]} hours and ${timestamps[2]} minutes."), Formatting.AQUA)
+
+            val message = if (player.status?.isOnline == true) {
+                Text.literal("${player.name} has been online right now, for ${timestamps[0]} days, ${timestamps[1]} hours and ${timestamps[2]} minutes.").setStyle(
+                    Style.EMPTY.withColor(
+                        Formatting.AQUA
+                    )
+                )
             } else {
-                sendMessage(Text.literal("${player.name} was last online ${timestamps[0]} days, ${timestamps[1]} hours and ${timestamps[2]} minutes."), Formatting.AQUA)
+                Text.literal("${player.name} was last online ${timestamps[0]} days, ${timestamps[1]} hours and ${timestamps[2]} minutes.").setStyle(
+                    Style.EMPTY.withColor(
+                        Formatting.RED
+                    )
+                )
             }
+            sendMessage(message)
+
             return@launch
         }
         return 0
