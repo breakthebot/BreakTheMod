@@ -65,13 +65,10 @@ object Cache : Module() {
 
             scope.launch {
                 val apiPlayers = PlayerAPI.getPlayers(players)
+                cachedPlayers.clear()
+                if (apiPlayers.isNullOrEmpty()) { return@launch }
 
-                if (apiPlayers.isNullOrEmpty()) {
-                    cachedPlayers.clear()
-                } else {
-                    cachedPlayers.clear()
-                    cachedPlayers.addAll(apiPlayers)
-                }
+                cachedPlayers.addAll(apiPlayers)
             }
         }
     }

@@ -44,6 +44,11 @@ private object CommandScope {
     }
 }
 
+/**
+ * @property name The command name
+ * @property description The command description
+ * @property usageSuffix The args that must be passed to the commands in a readable format (eg. <name>)
+ * */
 abstract class BaseCommand {
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
     val client: MinecraftClient = MinecraftClient.getInstance()
@@ -110,7 +115,13 @@ abstract class BaseCommand {
      * @param colour The color to attach to the message
      */
     fun sendMessage(message: Text, colour: Formatting) {
-        val chatMessage = Text.empty().append(Prefix.prefix).append(Text.empty().append(message).setStyle(Style.EMPTY.withColor(colour)))
+        val chatMessage = Text.empty()
+            .append(Text.empty()
+                .append(message)
+                .setStyle(
+                    Style.EMPTY.withColor(colour)
+                )
+            )
         sendMessage(chatMessage)
     }
 

@@ -27,7 +27,7 @@ import net.minecraft.util.Formatting
 
 
 class Help : BaseCommand() {
-    var commands: MutableList<BaseCommand>? = null
+    var commands: List<BaseCommand>? = null
 
     init {
         name = "commands"
@@ -44,19 +44,12 @@ class Help : BaseCommand() {
         sendMessage(Text.literal("=== Available Commands ===").setStyle(Style.EMPTY.withColor(Formatting.GOLD)))
 
         for (cmd in commands) {
-            var cmdNameText: MutableText = Text.literal("/" + cmd.name)
-                .formatted(Formatting.GRAY)
-
-            if (!cmd.usageSuffix.isEmpty()) {
-                cmdNameText = cmdNameText.append(
-                    Text.literal(" " + cmd.usageSuffix)
-                )
-            }
-
-            val descText: Text? = Text.literal(" - " + cmd.description)
-                .formatted(Formatting.WHITE)
-
-            sendMessage(cmdNameText.append(descText))
+            sendMessage(
+                Text.literal(
+                    cmd.getUsage()
+                ),
+                Formatting.GRAY
+            )
         }
         return 0;
     }

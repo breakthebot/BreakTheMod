@@ -82,7 +82,7 @@ class Breakthemod : ClientModInitializer {
             Debug(),
             helpCmd
         )
-        helpCmd.commands = commandList.filterNot { it is Debug }.toMutableList()
+        helpCmd.commands = commandList.filterNot { it is Debug }
 
         loadCommands(commandList)
 
