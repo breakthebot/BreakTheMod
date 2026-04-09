@@ -70,6 +70,7 @@ public abstract class PlayerInfoMixin extends LivingEntityRenderer<AbstractClien
         if (cachedPlayer == null) return;
 
         Text townyText = createTownyText(cachedPlayer);
+        matrices.translate(0D, 0.1225D, 0D);
 
         matrices.push();
 
@@ -87,8 +88,8 @@ public abstract class PlayerInfoMixin extends LivingEntityRenderer<AbstractClien
                 state.squaredDistanceToCamera,
                 cameraRenderState
         );
-
         matrices.pop();
+
     }
 
 
