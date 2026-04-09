@@ -17,7 +17,6 @@
 
 package net.chariskar.breakthemod.client.utils
 
-import net.minecraft.client.MinecraftClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -26,10 +25,7 @@ import org.breakthebot.breakthelibrary.utils.Urls
 
 object Config {
     var config: ConfigData = ConfigData()
-
-
-
-    private val json = Json { encodeDefaults = true; prettyPrint = true }
+    private val json = Json { encodeDefaults = true; prettyPrint = true; ignoreUnknownKeys = true }
     lateinit var configFile: File
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
@@ -38,8 +34,6 @@ object Config {
     }
 
     fun loadConfig() {
-        if (MinecraftClient.getInstance() == null) return
-
         if (!configFile.exists()) { saveConfig(null) }
 
         val fileContent = configFile.readText()
@@ -47,9 +41,10 @@ object Config {
             saveConfig(null)
         }
         try {
-            config = Json.decodeFromString<ConfigData>(fileContent)
+            config = json.decodeFromString<ConfigData>(fileContent)
         } catch (e: Exception) {
-            logger.error("Unable to parse config file regenerating, ${e.message}")
+            logger.error("Encountered an exception when trying to parse the config: ${e.message}")
+            logger.warn("Regenerating config.")
             saveConfig(null)
         }
     }
@@ -76,9 +71,9 @@ object Config {
 
     fun getDevMode(): Boolean = config.dev
 
-    fun getRadar(): Boolean = config.radarEnabled
+    fun getRadar(): Boolean = config.features.radarEnabled
 
-    fun getWidget(): Widget = config.widget
+    fun getWidget(): Widget = config.features.widget
 
     fun getEnabledServers(): Boolean = config.enabledOnOtherServers
 
@@ -86,11 +81,12 @@ object Config {
 
     fun getDbg() = config.debug
 
-    fun getHud() = config.hudType
+    fun getHud() = config.features.hudType
 
-    fun getNameTag() = config.nametagInfo && config.cacheEnabled
+    fun getNameTag() = config.features.nameTagInfo && config.features.cacheEnabled
 
-    fun getCache() = config.cacheEnabled
+    fun getCache() = config.features.cacheEnabled
+
 
     fun setTownlessMessage(message: String): Boolean {
         if (!message.contains("TOWN")) return false

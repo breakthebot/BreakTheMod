@@ -72,4 +72,8 @@ object Cache : Module() {
             }
         }
     }
+
+    fun getPlayer(
+        name: String
+    ): Resident?  = cachedPlayers.firstOrNull { it.name.equals(name, true) }
 }

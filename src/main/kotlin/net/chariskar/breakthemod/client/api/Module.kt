@@ -23,12 +23,13 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
- * @property name Module name
- * @property description Description
+ * @property name Module name.
+ * @property description Description.
  * */
 abstract class Module {
     val name: String = ""
     val description: String = ""
+
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
     val client: MinecraftClient = MinecraftClient.getInstance()
 

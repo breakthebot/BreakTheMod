@@ -46,7 +46,6 @@ class DiscordId : BaseCommand() {
         usageSuffix = "<name>"
     }
 
-
     private fun formatUUID(raw: String): String {
         val clean = raw.trim().replace("\"", "")
         return clean.replaceFirst(
@@ -94,8 +93,6 @@ class DiscordId : BaseCommand() {
         }
         return 0
     }
-
-
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         dispatcher.register(

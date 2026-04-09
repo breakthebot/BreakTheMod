@@ -118,3 +118,5 @@ runs/
 !gradle-wrapper.jar
 
 logs/**
+
+*.jar

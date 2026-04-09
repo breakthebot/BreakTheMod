@@ -69,9 +69,9 @@ class FindPlayer : BaseCommand() {
                     if (locationData != null && locationData.isWilderness == false) {
                         playerData.townName = locationData.town?.name
                     }
+
                     sendMessage(Text.literal(playerData.toString()), Formatting.AQUA)
                     return@launch
-
                 }
                 continue
             }

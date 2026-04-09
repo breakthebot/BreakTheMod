@@ -17,8 +17,13 @@
 
 package net.chariskar.breakthemod.mixins;
 
+import net.chariskar.breakthemod.client.utils.ServerUtils;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
+import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
+import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
@@ -29,6 +34,8 @@ import net.minecraft.util.math.Vec3d;
 import net.chariskar.breakthemod.client.modules.Cache;
 import org.breakthebot.breakthelibrary.models.Resident;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -38,11 +45,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 /// Credit to [...](https://github.com/Veyronity/Earthy/blob/master/client/fabric/src/main/java/au/lupine/earthy/fabric/mixin/PlayerRendererMixin.java)
 
 @Mixin(PlayerEntityRenderer.class)
-public abstract class PlayerInfoMixin {
+public abstract class PlayerInfoMixin extends LivingEntityRenderer<AbstractClientPlayerEntity, PlayerEntityRenderState, PlayerEntityModel> {
+
+    public PlayerInfoMixin(EntityRendererFactory.Context context, PlayerEntityModel model, float shadowRadius) {
+        super(context, model, shadowRadius);
+    }
+
+    @Unique
+    Logger logger = LoggerFactory.getLogger("breakthemod");
 
     @Inject(
-            method = "renderLabelIfPresent(Lnet/minecraft/client/render/entity/state/PlayerEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;Lnet/minecraft/client/render/state/CameraRenderState;)V",
-            at = @At("TAIL")
+            method = "renderLabelIfPresent",
+            at = @At("HEAD")
     )
     private void inject(
             PlayerEntityRenderState state,
@@ -51,29 +65,24 @@ public abstract class PlayerInfoMixin {
             CameraRenderState cameraRenderState,
             CallbackInfo ci
     ) {
-       // if (!ServerUtils.INSTANCE.isEarthMc()) return;
+        //if (!ServerUtils.INSTANCE.isEarthMc()) return;
 
         String nameString = state.displayName != null ? state.displayName.getString() : "";
 
-        Resident cachedPlayer = Cache.INSTANCE.getCachedPlayers().stream()
-                .filter(current -> current.getName().equals(nameString))
-                .findFirst()
-                .orElse(null);
-
+        Resident cachedPlayer = Cache.INSTANCE.getPlayer(nameString);
         if (cachedPlayer == null) return;
 
+        logger.info("Player here {}", cachedPlayer.getName());
+
         Text townyText = createTownyText(cachedPlayer);
+
+        logger.info("towny text {}", townyText);
+
         matrices.push();
 
         matrices.scale(0.75F, 0.75F, 0.75F);
-        matrices.translate(0.0D, 0.6D, 0.0D);
 
-        Vec3d labelPos = state.nameLabelPos.add(0, 2.2, 0);
-        matrices.translate(
-                labelPos.x - state.x,
-                labelPos.y - state.y,
-                labelPos.z - state.z
-        );
+        matrices.translate(0.0F, 0.6F, 0.0F);
 
         queue.submitLabel(
                 matrices,
@@ -91,7 +100,7 @@ public abstract class PlayerInfoMixin {
 
     @Unique
     private Text createTownyText(@NotNull Resident player) {
-        if (player.getStatus() == null) return Text.empty();
+        //if (player.getStatus() == null) return Text.empty();
 
         if (!Boolean.TRUE.equals(player.getStatus().getHasTown())) {
             return Text.literal("Nomad").formatted(Formatting.DARK_AQUA);
@@ -99,7 +108,7 @@ public abstract class PlayerInfoMixin {
 
         StringBuilder builder = new StringBuilder();
         if (Boolean.TRUE.equals(player.getStatus().isMayor())) {
-            builder.append("👑 ");
+            builder.append("\uD83D\uDC51 ");
         }
 
         builder.append("[");

@@ -67,7 +67,7 @@ class ModMenuIntegration : ModMenuApi {
                     WidgetPosition::class.java,
                     Config.getWidget().widgetPosition
                 ).setSaveConsumer { position: WidgetPosition ->
-                    Config.config.widget.widgetPosition = position
+                    Config.config.features.widget.widgetPosition = position
                     saveConfig()
                 }.setDefaultValue { WidgetPosition.TOP_LEFT }.build()
             )
@@ -78,9 +78,19 @@ class ModMenuIntegration : ModMenuApi {
                     AutoHudType::class.java,
                     Config.getHud()
                 ).setSaveConsumer { hudType: AutoHudType ->
-                    Config.config.hudType = hudType
+                    Config.config.features.hudType = hudType
                     saveConfig()
                 }.setDefaultValue { AutoHudType.None }.build()
+            )
+
+            general.addEntry(
+                entryBuilder.startBooleanToggle(
+                    Text.literal("Player name tag info"),
+                    Config.getNameTag()
+                ).setSaveConsumer { enabled: Boolean ->
+                    Config.config.features.nameTagInfo = enabled
+                    saveConfig()
+                }.setDefaultValue( Config.getNameTag() ).build()
             )
 
             general.addEntry(
@@ -89,9 +99,9 @@ class ModMenuIntegration : ModMenuApi {
                     Config.getRadar()
                 )
                     .setSaveConsumer { enabled: Boolean ->
-                        Config.config.radarEnabled = enabled
+                        Config.config.features.radarEnabled = enabled
                         saveConfig()
-                    }.setDefaultValue { Config.config.radarEnabled }
+                    }.setDefaultValue { Config.config.features.radarEnabled }
                     .build()
             )
 
@@ -137,7 +147,7 @@ class ModMenuIntegration : ModMenuApi {
                     Config.getWidget().entryHeight
                 )
                     .setSaveConsumer { height: Int ->
-                        Config.config.widget.entryHeight = height
+                        Config.config.features.widget.entryHeight = height
                         saveConfig()
                     }.setDefaultValue { 15 }
                     .build()
@@ -149,7 +159,7 @@ class ModMenuIntegration : ModMenuApi {
                     Config.getWidget().margin
                 )
                     .setSaveConsumer { margin: Int ->
-                        Config.config.widget.margin = margin
+                        Config.config.features.widget.margin = margin
                         saveConfig()
                     }.setDefaultValue { 10 }
                     .build()
@@ -161,7 +171,7 @@ class ModMenuIntegration : ModMenuApi {
                     Config.getCache(),
                 )
                     .setSaveConsumer { enabled: Boolean ->
-                        Config.config.cacheEnabled = enabled
+                        Config.config.features.cacheEnabled = enabled
                         saveConfig()
                     }.setDefaultValue { true }
                     .build()
@@ -173,12 +183,12 @@ class ModMenuIntegration : ModMenuApi {
                     Config.getWidget().customX
                 )
                     .setSaveConsumer { x: Int ->
-                        Config.config.widget.customX = x
+                        Config.config.features.widget.customX = x
                         saveConfig()
                     }
                     .setMin(0)
                     .setMax(MinecraftClient.getInstance().currentScreen!!.width)
-                    .setDefaultValue { Config.config.widget.customX }
+                    .setDefaultValue { Config.config.features.widget.customX }
                     .build()
             )
 
@@ -188,12 +198,12 @@ class ModMenuIntegration : ModMenuApi {
                     Config.getWidget().customY
                 )
                     .setSaveConsumer { y: Int ->
-                        Config.config.widget.customY = y
+                        Config.config.features.widget.customY = y
                         saveConfig()
                     }
                     .setMin(0)
                     .setMax(MinecraftClient.getInstance().currentScreen!!.height)
-                    .setDefaultValue { Config.config.widget.customY }
+                    .setDefaultValue { Config.config.features.widget.customY }
                     .build()
             )
 

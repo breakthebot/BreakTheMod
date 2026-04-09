@@ -25,15 +25,10 @@ import org.breakthebot.breakthelibrary.utils.Urls
 data class ConfigData(
     var dev: Boolean = false,
     var enabledOnOtherServers: Boolean = true,
-    var radarEnabled: Boolean = true,
     var debug: Boolean = false,
-    var xaerosRdr: Boolean = false,
-    var widget: Widget = Widget(),
-    var hudType: AutoHudType = AutoHudType.None,
-    var nametagInfo: Boolean = true,
-    var cacheEnabled: Boolean = true,
     var townlessMessage: String = "Hi! I see you're new here, wanna join my Town? I can help you out! Get Free enchanted Armor, Pickaxe, Diamonds, Iron, wood, food, stone, house, and ability to teleport! Type /t join TOWN",
     var options: Boolean = false,
+    var features: Features = Features(),
     @Contextual
     var urls: Urls = Urls()
 )
@@ -52,6 +47,16 @@ data class Widget(
     var entryHeight: Int = 15,
     var margin: Int = 10,
     var widgetPosition: WidgetPosition = WidgetPosition.TOP_LEFT
+)
+
+@Serializable
+data class Features(
+    var hudType: AutoHudType = AutoHudType.None,
+    var radarEnabled: Boolean = true,
+    var widget: Widget = Widget(),
+
+    var nameTagInfo: Boolean = true,
+    var cacheEnabled: Boolean = true,
 )
 
 @Serializable

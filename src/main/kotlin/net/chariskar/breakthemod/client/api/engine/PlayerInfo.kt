@@ -47,10 +47,7 @@ data class PlayerInfo(val name: String, var position: Vec3d) {
         for (y in pos.y + 1..topY) {
             val checkPos = BlockPos(pos.x, y, pos.z)
             val state = world.getBlockState(checkPos)
-
-            if (!state.isAir) {
-                return true
-            }
+            if (!state.isAir) { return true }
         }
         return false
     }
@@ -59,9 +56,10 @@ data class PlayerInfo(val name: String, var position: Vec3d) {
         val isInVehicle = player.hasVehicle()
         val isSneaking = player.isSneaking
         val inRiptide = player.isUsingRiptide
+        val isInvisible = player.isInvisible
         val isInNether = client.world
             ?.registryKey?.value.toString().contains("nether")
-        return isInVehicle || isSneaking || inRiptide || isInNether
+        return isInVehicle || isSneaking || inRiptide || isInNether || isInvisible
     }
 
     fun shouldSkip(player: PlayerEntity, world: World): Boolean = shouldSkipSpecial(player) || isUnderBlock(world, player.blockPos)
@@ -69,14 +67,14 @@ data class PlayerInfo(val name: String, var position: Vec3d) {
     fun directionFrom(player: PlayerEntity): String {
         val dx = position.x - player.x
         val dz = position.z - player.z
-        val angle = Math.toDegrees(atan2(dz, dx))
+
+        val angle = Math.toDegrees(atan2(-dx, dz))
 
         val normalized = (angle + 360) % 360
         val index = ((normalized + 22.5) / 45.0).toInt() % 8
 
         return directions[index]
     }
-
     fun distanceFrom(player: PlayerEntity): Int {
         return sqrt(calculateDistance(Vec3d(player.x, player.y, player.z))).toInt()
     }

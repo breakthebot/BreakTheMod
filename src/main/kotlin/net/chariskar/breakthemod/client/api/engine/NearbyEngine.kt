@@ -55,7 +55,7 @@ object NearbyEngine {
                 DISTANCE_THRESHOLD * DISTANCE_THRESHOLD
             ) continue
 
-            if (info.shouldSkip(other, world)) continue
+            if (info.shouldSkip(other, world).or(Config.getDbg())) continue
             players.add(info)
         }
 
@@ -64,7 +64,7 @@ object NearbyEngine {
 
     fun register() {
         ClientTickEvents.END_CLIENT_TICK.register { client ->
-            if (!Config.config.radarEnabled) return@register
+            if (!Config.config.features.radarEnabled.or(Config.getDbg())) return@register
 
             val player = client.player ?: return@register
             val world = client.world ?: return@register

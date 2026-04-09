@@ -26,7 +26,7 @@ object ServerUtils {
         val serverInfo = MinecraftClient.getInstance().currentServerEntry ?: return false
         return serverInfo.address.split(",".toRegex()).dropLastWhile {
             it.isEmpty()
-        }.toTypedArray()[0].lowercase().contains("earthmc")
+        }.toTypedArray()[0].lowercase().contains("earthmc").or(Config.getDbg())
     }
 
     fun getEnabled(): Boolean {

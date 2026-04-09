@@ -45,14 +45,14 @@ private object CommandScope {
 }
 
 /**
- * @property name The command name
- * @property description The command description
- * @property usageSuffix The args that must be passed to the commands in a readable format (eg. <name>)
+ * @property name The command name.
+ * @property description The command description.
+ * @property usageSuffix The args that must be passed to the commands in a readable format (eg. <name>).
  * */
 abstract class BaseCommand {
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
     val client: MinecraftClient = MinecraftClient.getInstance()
-    protected val scope = CommandScope.scope
+    protected val scope  = CommandScope.scope
 
     var name: String = ""
     var description: String = ""
@@ -68,8 +68,8 @@ abstract class BaseCommand {
     /**
      * Internal method, executes command code.
      * @param ctx The Command context.
-     * @return 0 if success, 1 if error
-     * @throws CommandSyntaxException If invalid syntax
+     * @return 0 if success, 1 if error.
+     * @throws CommandSyntaxException If invalid syntax.
      */
     @Throws(CommandSyntaxException::class)
     protected fun run(ctx: CommandContext<FabricClientCommandSource>): Int {
@@ -126,7 +126,6 @@ abstract class BaseCommand {
     }
 
     fun sendError() = sendMessage(Text.literal("Command has exited with an exception"))
-
 
     protected fun logError(message: String, e: Exception) = logger.error("$message: ${e.message}", e)
 

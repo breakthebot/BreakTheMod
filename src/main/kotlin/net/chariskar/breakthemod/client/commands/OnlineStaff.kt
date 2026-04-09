@@ -95,7 +95,7 @@ class OnlineStaff : command() {
                 append(onlineStaffText)
                 append(Text.literal(" [").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
                 append(
-                    Text.literal(java.lang.String.valueOf(staffNames.size))
+                    Text.literal(staffNames.size.toString())
                         .setStyle(Style.EMPTY.withColor(Formatting.WHITE))
                 )
                 append(Text.literal("]").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))

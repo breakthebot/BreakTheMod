@@ -52,9 +52,7 @@ class Breakthemod : ClientModInitializer {
 
     private fun loadCommands(commands: MutableList<BaseCommand>) {
         ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _: CommandRegistryAccess ->
-            for (command in commands) {
-                command.register(dispatcher)
-            }
+            commands.forEach { it.register(dispatcher) }
         })
     }
 
