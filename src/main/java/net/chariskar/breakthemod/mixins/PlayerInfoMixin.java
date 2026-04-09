@@ -27,20 +27,20 @@ import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
 
 import net.chariskar.breakthemod.client.modules.Cache;
 import org.breakthebot.breakthelibrary.models.Resident;
-import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.awt.*;
 
 /// Credit to [...](https://github.com/Veyronity/Earthy/blob/master/client/fabric/src/main/java/au/lupine/earthy/fabric/mixin/PlayerRendererMixin.java)
 
@@ -50,9 +50,6 @@ public abstract class PlayerInfoMixin extends LivingEntityRenderer<AbstractClien
     public PlayerInfoMixin(EntityRendererFactory.Context context, PlayerEntityModel model, float shadowRadius) {
         super(context, model, shadowRadius);
     }
-
-    @Unique
-    Logger logger = LoggerFactory.getLogger("breakthemod");
 
     @Inject(
             method = "renderLabelIfPresent",
@@ -65,24 +62,20 @@ public abstract class PlayerInfoMixin extends LivingEntityRenderer<AbstractClien
             CameraRenderState cameraRenderState,
             CallbackInfo ci
     ) {
-        //if (!ServerUtils.INSTANCE.isEarthMc()) return;
+        if (!ServerUtils.INSTANCE.isEarthMc()) return;
 
         String nameString = state.displayName != null ? state.displayName.getString() : "";
 
         Resident cachedPlayer = Cache.INSTANCE.getPlayer(nameString);
         if (cachedPlayer == null) return;
 
-        logger.info("Player here {}", cachedPlayer.getName());
-
         Text townyText = createTownyText(cachedPlayer);
-
-        logger.info("towny text {}", townyText);
 
         matrices.push();
 
         matrices.scale(0.75F, 0.75F, 0.75F);
 
-        matrices.translate(0.0F, 0.6F, 0.0F);
+        matrices.translate(0.0D, 2.25F, 0.0D);
 
         queue.submitLabel(
                 matrices,
@@ -98,27 +91,32 @@ public abstract class PlayerInfoMixin extends LivingEntityRenderer<AbstractClien
         matrices.pop();
     }
 
+
     @Unique
-    private Text createTownyText(@NotNull Resident player) {
-        //if (player.getStatus() == null) return Text.empty();
+    private Text createTownyText(Resident player) {
+        if (player.getStatus() == null) { return Text.empty(); }
 
-        if (!Boolean.TRUE.equals(player.getStatus().getHasTown())) {
-            return Text.literal("Nomad").formatted(Formatting.DARK_AQUA);
+        if (!player.getStatus().getHasTown()) return Text.empty().formatted(Formatting.DARK_AQUA);
+
+        MutableText text = Text.empty();
+
+        if (player.getStatus().isMayor()) {
+            Formatting colour = player.getStatus().isKing() ? Formatting.GOLD : Formatting.DARK_AQUA;
+            text.append(Text.literal("\uD83D\uDC51").formatted(colour));
+            text.append("");
         }
 
-        StringBuilder builder = new StringBuilder();
-        if (Boolean.TRUE.equals(player.getStatus().isMayor())) {
-            builder.append("\uD83D\uDC51 ");
+        text.append(Text.of("[").copy().formatted(Formatting.GRAY));
+
+        if (player.getStatus().getHasNation()) {
+            text.append(Text.literal(player.getNation().getName()).formatted(Formatting.GOLD));
+            text.append(Text.literal("|").formatted(Formatting.GRAY));
         }
 
-        builder.append("[");
-        if (Boolean.TRUE.equals(player.getStatus().getHasNation())) {
-            builder.append(player.getNation().getName()).append("|");
-        }
-        builder.append(player.getTown().getName()).append("]");
+        text.append(Text.literal(player.getTown().getName()).formatted(Formatting.DARK_AQUA));
+        text.append(Text.literal("]").formatted(Formatting.GRAY));
 
-        return Text.literal(builder.toString())
-                .formatted(Formatting.DARK_AQUA);
+        return text;
     }
 
 }
