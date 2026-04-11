@@ -70,7 +70,7 @@ public abstract class PlayerInfoMixin extends LivingEntityRenderer<AbstractClien
         if (cachedPlayer == null) return;
 
         Text townyText = createTownyText(cachedPlayer);
-        matrices.translate(0D, 0.1225D, 0D);
+        matrices.translate(0D, 0.12225D, 0D);
 
         matrices.push();
 
@@ -103,8 +103,7 @@ public abstract class PlayerInfoMixin extends LivingEntityRenderer<AbstractClien
 
         if (player.getStatus().isMayor()) {
             Formatting colour = player.getStatus().isKing() ? Formatting.GOLD : Formatting.DARK_AQUA;
-            text.append(Text.literal("\uD83D\uDC51").formatted(colour));
-            text.append("");
+            text.append(Text.literal("\uD83D\uDC51 ").formatted(colour));
         }
 
         text.append(Text.of("[").copy().formatted(Formatting.GRAY));

@@ -23,7 +23,7 @@ object ServerUtils {
 
     /** is this emc. */
     fun isEarthMc(): Boolean {
-        val serverInfo = MinecraftClient.getInstance().currentServerEntry ?: return false
+        val serverInfo = MinecraftClient.getInstance().currentServerEntry ?: return Config.getDbg()
         return serverInfo.address.split(",".toRegex()).dropLastWhile {
             it.isEmpty()
         }.toTypedArray()[0].lowercase().contains("earthmc").or(Config.getDbg())
