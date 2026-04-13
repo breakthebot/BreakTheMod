@@ -48,6 +48,7 @@ object Cache : Module() {
         ClientPlayConnectionEvents.JOIN.register(ClientPlayConnectionEvents.Join { _: ClientPlayNetworkHandler?, _: PacketSender?, _: MinecraftClient? ->
             Scheduler.schedule({
                 if (!ServerUtils.isEarthMc() || !Config.getNameTag()) { return@schedule }
+                ServerUtils.replaceApiUrl()
                 updatePlayers()
             }, 6L, TimeUnit.SECONDS)
         })

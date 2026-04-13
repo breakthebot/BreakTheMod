@@ -24,12 +24,28 @@ object ServerUtils {
     /** is this emc. */
     fun isEarthMc(): Boolean {
         val serverInfo = MinecraftClient.getInstance().currentServerEntry ?: return Config.getDbg()
-        return serverInfo.address.split(",".toRegex()).dropLastWhile {
-            it.isEmpty()
-        }.toTypedArray()[0].lowercase().contains("earthmc").or(Config.getDbg())
+        return splitAddress(serverInfo.address).contains("earthmc").or(Config.getDbg())
     }
 
-    fun getEnabled(): Boolean {
-        return isEarthMc().or(Config.getEnabledServers())
+    fun getEnabled(): Boolean = isEarthMc().or(Config.getEnabledServers())
+
+
+    fun replaceApiUrl() {
+        val serverInfo = MinecraftClient.getInstance().currentServerEntry?.address ?: return
+        if (
+            splitAddress(serverInfo).contains("earthmc")
+            &&
+            Config.config.urls.apiUrl.contains("aurora")
+        ) {
+            Config.setApiUrl(
+                "https://api.earthmc.net/v4/nostra"
+            )
+        }
+    }
+
+    private fun splitAddress(serverInfo: String): String {
+        return serverInfo.split(",".toRegex()).dropLastWhile {
+            it.isEmpty()
+        }.toTypedArray()[0].lowercase()
     }
 }

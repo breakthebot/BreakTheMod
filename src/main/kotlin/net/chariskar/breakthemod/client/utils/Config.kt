@@ -21,6 +21,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 import kotlinx.serialization.json.Json
+import org.breakthebot.breakthelibrary.utils.ConfigHandler
 import org.breakthebot.breakthelibrary.utils.Urls
 
 object Config {
@@ -40,6 +41,7 @@ object Config {
         }
         try {
             config = json.decodeFromString<ConfigData>(fileContent)
+            ConfigHandler.setup(config.urls)
         } catch (e: Exception) {
             logger.error("Encountered an exception when trying to parse the config: ${e.message}")
             logger.warn("Regenerating config.")

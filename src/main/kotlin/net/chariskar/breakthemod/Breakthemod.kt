@@ -97,6 +97,6 @@ class Breakthemod : ClientModInitializer {
         loadModules(modules)
 
         NearbyEngine.register()
-        HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, nearbyLayer) { context, _ -> Hud.render(context)}
+        HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, nearbyLayer) { context, _ -> Hud.render(context) }
     }
 }
