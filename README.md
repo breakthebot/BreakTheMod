@@ -73,11 +73,11 @@ nearby.
 ### **calculateGold**
 
 ![CalculateGold command](screenshots/calculateGold.png)
-*Returns how many blocks the ingots are*
+*Returns how many blocks the ingots are.*
 
 ### **calculateStacks**
 
-![CalculateGold command](screenshots/calculateStacks.png)
+![CalculateStacks command](screenshots/calculateStacks.png)
 *Tells you the amount of stacks.*
 
 ## **Installation**

@@ -29,9 +29,7 @@ object Config {
     lateinit var configFile: File
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
-    fun setFile(file: File) {
-        configFile = file
-    }
+    fun setFile(file: File) { configFile = file }
 
     fun loadConfig() {
         if (!configFile.exists()) { saveConfig(null) }
@@ -67,17 +65,17 @@ object Config {
         return if (!withProtocol.endsWith("/")) "$withProtocol/" else withProtocol
     }
 
-    fun getMapUrl(): String = formatURL(config.urls.mapUrl)
+    fun getMapUrl() = formatURL(config.urls.mapUrl)
 
-    fun getDevMode(): Boolean = config.dev
+    fun getDevMode() = config.dev
 
-    fun getRadar(): Boolean = config.features.radarEnabled
+    fun getRadar() = config.features.radarEnabled
 
-    fun getWidget(): Widget = config.features.widget
+    fun getWidget() = config.features.widget
 
-    fun getEnabledServers(): Boolean = config.enabledOnOtherServers
+    fun getEnabledServers() = config.enabledOnOtherServers
 
-    fun getTownlessMessage(townName: String): String = config.townlessMessage.replace("TOWN", townName)
+    fun getTownlessMessage(townName: String) = config.townlessMessage.replace("TOWN", townName)
 
     fun getDbg() = config.debug
 
