@@ -38,7 +38,7 @@ object ServerUtils {
             Config.config.urls.apiUrl.contains("aurora")
         ) {
             Config.setApiUrl(
-                "https://api.earthmc.net/v4/nostra"
+                "https://api.earthmc.net/v4"
             )
         }
     }
