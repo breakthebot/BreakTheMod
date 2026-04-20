@@ -23,6 +23,7 @@ import me.shedaniel.clothconfig2.api.ConfigBuilder
 import me.shedaniel.clothconfig2.api.ConfigCategory
 import net.chariskar.breakthemod.client.utils.AutoHudType
 import net.chariskar.breakthemod.client.utils.Config
+import net.chariskar.breakthemod.client.utils.Config.config
 import net.chariskar.breakthemod.client.utils.WidgetPosition
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.Screen
@@ -215,7 +216,7 @@ class ModMenuIntegration : ModMenuApi {
                     .setSaveConsumer { url: String ->
                         Config.setApiUrl(url)
                         saveConfig()
-                    }.setDefaultValue { Config.config.urls.apiUrl }
+                    }.setDefaultValue { config.urls.apiUrl }
                     .build()
             )
 

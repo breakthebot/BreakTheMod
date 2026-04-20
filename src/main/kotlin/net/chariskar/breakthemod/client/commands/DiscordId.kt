@@ -31,7 +31,6 @@ import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import org.breakthebot.breakthelibrary.api.DiscordAPI
-import org.breakthebot.breakthelibrary.models.DiscordPayloadMinecraft
 import org.breakthebot.breakthelibrary.network.Fetch
 import org.breakthebot.breakthelibrary.utils.SerializableUUID
 import java.net.URI
@@ -46,45 +45,17 @@ class DiscordId : BaseCommand() {
         usageSuffix = "<name>"
     }
 
-    private fun formatUUID(raw: String): String {
-        val clean = raw.trim().replace("\"", "")
-        return clean.replaceFirst(
-            "(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})".toRegex(),
-            "$1-$2-$3-$4-$5"
-        )
-    }
-
-    private fun isValidUUID(uuid: String): Boolean {
-        return uuid.matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$".toRegex())
-    }
-
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val name: String = ctx.getArgument("name", String::class.java)
         scope.launch {
-            val mojangResponse = Fetch.getRequest<String?>("https://api.mojang.com/users/profiles/minecraft/$name")
-            val rawUuid = mojangResponse?.split(",")[0]?.split(":")[1]
-
-            if (rawUuid == null) {
-                sendMessage(Text.literal("Unable to obtain uuid for $name."))
-                return@launch
-            }
-            val formattedUuid = formatUUID(rawUuid)
-
-            if (!isValidUUID(formattedUuid)) {
-                sendMessage(Text.literal("Received invalid uuid for $name"))
-                return@launch
-            }
-
-            val uuid = UUID.fromString(formattedUuid)
-
-            val discord = DiscordAPI.getDiscord(listOf(DiscordPayloadMinecraft( SerializableUUID(uuid) )))?.first()
+            val discord = DiscordAPI.getDiscord(listOf(name))?.first()
 
             val result: Text = Text.literal("Click Here")
                 .setStyle(
                     Style.EMPTY
                         .withColor(Formatting.BLUE)
                         .withClickEvent(
-                            ClickEvent.OpenUrl(URI("https://discord.com/users/${discord?.id}"))
+                            ClickEvent.OpenUrl(URI("https://discord.com/users/${discord}"))
                         )
 
                 )

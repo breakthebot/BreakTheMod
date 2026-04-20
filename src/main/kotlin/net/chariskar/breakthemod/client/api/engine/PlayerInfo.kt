@@ -62,7 +62,10 @@ data class PlayerInfo(val name: String, var position: Vec3d) {
         return isInVehicle || isSneaking || inRiptide || isInNether || isInvisible
     }
 
-    fun shouldSkip(player: PlayerEntity, world: World): Boolean = shouldSkipSpecial(player) || isUnderBlock(world, player.blockPos)
+    fun shouldSkip(
+        player: PlayerEntity,
+        world: World
+    ): Boolean = shouldSkipSpecial(player) || isUnderBlock(world, player.blockPos)
 
     fun directionFrom(player: PlayerEntity): String {
         val dx = position.x - player.x

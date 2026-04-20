@@ -101,6 +101,7 @@ object Config {
             oldUrls.mapUrl,
             oldUrls.staffUrl
         )
+        ConfigHandler.setup(config.urls)
     }
 
     fun setMapUrl(mapUrl: String) {
@@ -110,6 +111,7 @@ object Config {
             mapUrl,
             oldUrls.staffUrl
         )
+        ConfigHandler.setup(config.urls)
     }
 
     fun setStaffUrl(staffUrl: String) {
@@ -119,7 +121,6 @@ object Config {
             oldUrls.mapUrl,
             staffUrl
         )
+        ConfigHandler.setup(config.urls)
     }
-
-
 }
