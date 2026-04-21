@@ -63,8 +63,8 @@ class Breakthemod : ClientModInitializer {
     override fun onInitializeClient() {
         Config.setFile(
             File(
-            MinecraftClient.getInstance()?.runDirectory,
-            "config/breakthemod_config.json"
+                MinecraftClient.getInstance()?.runDirectory,
+                "config/breakthemod_config.json"
             )
         )
         Config.loadConfig()
@@ -86,7 +86,6 @@ class Breakthemod : ClientModInitializer {
         )
         helpCmd.commands = commandList.filterNot { it is Debug }
 
-        loadCommands(commandList)
 
         val modules = mutableListOf(
             AutoHUD,
@@ -94,7 +93,11 @@ class Breakthemod : ClientModInitializer {
             Cache
         )
 
+        helpCmd.modules = modules
+
         loadModules(modules)
+        loadCommands(commandList)
+
 
         NearbyEngine.register()
         HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, nearbyLayer) { context, _ -> Hud.render(context) }

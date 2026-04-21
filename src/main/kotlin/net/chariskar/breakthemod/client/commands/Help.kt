@@ -19,19 +19,19 @@ package net.chariskar.breakthemod.client.commands
 
 import com.mojang.brigadier.context.CommandContext
 import net.chariskar.breakthemod.client.api.BaseCommand
+import net.chariskar.breakthemod.client.api.Module
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.text.MutableText
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-
 class Help : BaseCommand() {
     var commands: List<BaseCommand>? = null
+    var modules: List<Module>? = null
 
     init {
         name = "commands"
-        description = "The help command"
+        description = "This very command."
         usageSuffix = ""
     }
 
@@ -51,6 +51,23 @@ class Help : BaseCommand() {
                 Formatting.GRAY
             )
         }
-        return 0;
+
+        if (modules == null || modules!!.isEmpty()) {
+            sendMessage(Text.literal("No features available."))
+            return 1
+        }
+
+        sendMessage(Text.literal("=== Available Features ===").setStyle(Style.EMPTY.withColor(Formatting.GOLD)))
+
+        for (module in modules) {
+            sendMessage(
+                Text.literal(
+                    module.getModuleDescription()
+                ),
+                Formatting.GRAY
+            )
+        }
+
+        return 0
     }
 }

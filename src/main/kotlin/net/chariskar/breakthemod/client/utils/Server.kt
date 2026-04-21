@@ -43,7 +43,9 @@ object ServerUtils {
         }
     }
 
-    private fun splitAddress(serverInfo: String): String {
+    private fun splitAddress(
+        serverInfo: String
+    ): String {
         return serverInfo.split(",".toRegex()).dropLastWhile {
             it.isEmpty()
         }.toTypedArray()[0].lowercase()

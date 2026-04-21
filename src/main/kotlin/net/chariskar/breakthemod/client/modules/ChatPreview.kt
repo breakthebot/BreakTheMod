@@ -30,8 +30,18 @@ import net.minecraft.text.Text
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-
+/**
+ * Chat preview logic handler.
+ *
+ * @property inPartyChat Party chat flag.
+ * @property chatChannel The current channel the player is in.
+ * */
 object ChatPreview : Module() {
+    init {
+        name = "ChatPreview"
+        description = "Chat preview logic handler."
+    }
+
     var inPartyChat: Boolean = false
     var chatChannel: ChatChannel? = null
 
@@ -68,7 +78,7 @@ object ChatPreview : Module() {
 
         })
 
-        ClientPlayConnectionEvents.DISCONNECT.register(ClientPlayConnectionEvents.Disconnect { handler: ClientPlayNetworkHandler?, client: MinecraftClient? ->
+        ClientPlayConnectionEvents.DISCONNECT.register(ClientPlayConnectionEvents.Disconnect { _: ClientPlayNetworkHandler?, _: MinecraftClient? ->
             inPartyChat = false
         })
     }

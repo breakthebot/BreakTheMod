@@ -68,6 +68,7 @@ class Townless : BaseCommand() {
             if (batch.isNotEmpty()) {
                 val players = PlayerAPI.getPlayers(batch.map { it.toString() })
                 if (players.isNullOrEmpty()) { return@launch }
+
                 players.forEach { resident ->
                     if (resident.status?.hasTown == false) {
                         townless.add(resident.name)

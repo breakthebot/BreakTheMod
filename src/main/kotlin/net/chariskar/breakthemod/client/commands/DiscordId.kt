@@ -31,10 +31,7 @@ import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import org.breakthebot.breakthelibrary.api.DiscordAPI
-import org.breakthebot.breakthelibrary.network.Fetch
-import org.breakthebot.breakthelibrary.utils.SerializableUUID
 import java.net.URI
-import java.util.*
 
 
 class DiscordId : BaseCommand() {

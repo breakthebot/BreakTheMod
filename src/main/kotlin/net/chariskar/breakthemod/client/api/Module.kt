@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory
  * @property description Description.
  * */
 abstract class Module {
-    val name: String = ""
-    val description: String = ""
+    var name: String = ""
+    var description: String = ""
 
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
     val client: MinecraftClient = MinecraftClient.getInstance()
@@ -46,4 +46,7 @@ abstract class Module {
     abstract fun disable()
 
     abstract fun enable()
+
+    open fun getModuleDescription(): String = "$name: $description"
+
 }

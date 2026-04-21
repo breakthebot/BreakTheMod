@@ -36,11 +36,21 @@ import java.util.concurrent.TimeUnit
 
 /// Credit to https://github.com/Veyronity/Earthy/blob/master/client/fabric/src/main/java/au/lupine/earthy/fabric/module/Cache.java
 
+/**
+ * Cache update handler for PlayerNametagInfo feature.
+ *
+ * @property scope The execution scope.
+ * @property cachedPlayers The player currently cached in memory.
+ * */
 object Cache : Module() {
+
+    init {
+        name = "Cache"
+        description = "Cache handler for the PlayerNametagInfo feature."
+    }
+
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-
     val cachedPlayers: MutableList<Resident> = CopyOnWriteArrayList()
-
 
     override fun disable() {}
 

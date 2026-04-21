@@ -39,7 +39,7 @@ class OnlineStaff : command() {
     init {
         name = "onlinestaff"
         description = "Shows online staff"
-        usageSuffix = "<api>"
+        usageSuffix = "[api]"
     }
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {

@@ -24,10 +24,15 @@ import kotlinx.serialization.json.Json
 import org.breakthebot.breakthelibrary.utils.ConfigHandler
 import org.breakthebot.breakthelibrary.utils.Urls
 
+/**
+ * Config handler.
+ * */
 object Config {
-    var config: ConfigData = ConfigData()
     private val json = Json { encodeDefaults = true; prettyPrint = true; ignoreUnknownKeys = true }
+
+    var config: ConfigData = ConfigData()
     lateinit var configFile: File
+
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
     fun setFile(file: File) { configFile = file }

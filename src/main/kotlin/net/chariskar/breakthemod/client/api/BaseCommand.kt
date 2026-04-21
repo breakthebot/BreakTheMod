@@ -25,8 +25,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.Prefix
 import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
@@ -39,31 +37,31 @@ import org.slf4j.LoggerFactory
 
 private object CommandScope {
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-    fun shutdown() {
-        scope.cancel()
-    }
 }
 
 /**
+ * Base for commands.
  * @property name The command name.
  * @property description The command description.
- * @property usageSuffix The args that must be passed to the commands in a readable format (eg. <name>).
- * */
+ * @property usageSuffix The args that must be passed to the commands in a readable format (e.g. <name>).
+ *  */
 abstract class BaseCommand {
-    val logger: Logger = LoggerFactory.getLogger("breakthemod")
-    val client: MinecraftClient = MinecraftClient.getInstance()
-    protected val scope  = CommandScope.scope
-
     var name: String = ""
     var description: String = ""
     var usageSuffix: String = ""
 
-    fun getUsage(): String { return "/" + name + ( usageSuffix.ifEmpty { "" } ) }
+    val logger: Logger = LoggerFactory.getLogger("breakthemod")
+    val client: MinecraftClient = MinecraftClient.getInstance()
+    protected val scope  = CommandScope.scope
+
+    fun getUsage(): String { return "/$name + $usageSuffix" }
 
     /**
      * @param ctx the command context.
      */
-    protected open fun execute(ctx: CommandContext<FabricClientCommandSource>): Int = 0
+    protected open fun execute(
+        ctx: CommandContext<FabricClientCommandSource>
+    ): Int = 0
 
     /**
      * Internal method, executes command code.
@@ -72,7 +70,9 @@ abstract class BaseCommand {
      * @throws CommandSyntaxException If invalid syntax.
      */
     @Throws(CommandSyntaxException::class)
-    protected fun run(ctx: CommandContext<FabricClientCommandSource>): Int {
+    protected fun run(
+        ctx: CommandContext<FabricClientCommandSource>
+    ): Int {
         try {
             return execute(ctx)
         } catch (e: CommandSyntaxException) {
@@ -114,14 +114,14 @@ abstract class BaseCommand {
      * @param message The message to be sent
      * @param colour The color to attach to the message
      */
-    fun sendMessage(message: Text, colour: Formatting) {
-        val chatMessage = Text.empty()
-            .append(Text.empty()
-                .append(message)
-                .setStyle(
-                    Style.EMPTY.withColor(colour)
-                )
-            )
+    fun sendMessage(
+        message: Text,
+        colour: Formatting
+    ) {
+        val chatMessage = Text.empty().apply {
+            append(message)
+            style = Style.EMPTY.withColor(colour)
+        }
         sendMessage(chatMessage)
     }
 
