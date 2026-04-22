@@ -70,15 +70,9 @@ nearby.
 ![DiscordLinked Command](screenshots/discordLinked.png)
 *Tells if a user’s Discord account is linked, with a link if available.*
 
-### **calculateGold**
+![Calculate Command](./screenshots/calculate.png)
+*Helps with the conversions of stacks & blocks.*
 
-![CalculateGold command](screenshots/calculateGold.png)
-*Returns how many blocks the ingots are.*
-
-### **calculateStacks**
-
-![CalculateStacks command](screenshots/calculateStacks.png)
-*Tells you the amount of stacks.*
 
 ## **Installation**
 

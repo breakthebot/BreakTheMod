@@ -39,8 +39,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements
 import net.minecraft.command.CommandRegistryAccess
 import net.minecraft.util.Identifier
 import com.mojang.brigadier.CommandDispatcher
-import net.chariskar.breakthemod.client.commands.CalculateGold
-import net.chariskar.breakthemod.client.commands.CalculateStacks
+import net.chariskar.breakthemod.client.commands.Calculate
 import net.chariskar.breakthemod.client.modules.AutoHUD
 import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.modules.ChatPreview
@@ -83,8 +82,7 @@ class Breakthemod : ClientModInitializer {
             DiscordId(),
             Locate(),
             Debug(),
-            CalculateGold(),
-            CalculateStacks(),
+            Calculate(),
             helpCmd
         )
         helpCmd.commands = commandList.filterNot { it is Debug }
