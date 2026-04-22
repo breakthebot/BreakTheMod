@@ -18,7 +18,7 @@ package net.chariskar.breakthemod
 
 import net.chariskar.breakthemod.client.api.BaseCommand
 import net.chariskar.breakthemod.client.api.Module
-import net.chariskar.breakthemod.client.api.engine.NearbyEngine
+import net.chariskar.breakthemod.client.modules.NearbyEngine
 import net.chariskar.breakthemod.client.commands.Debug
 import net.chariskar.breakthemod.client.commands.DiscordId
 import net.chariskar.breakthemod.client.commands.FindPlayer
@@ -51,6 +51,9 @@ import java.io.File
 class Breakthemod : ClientModInitializer {
     val nearbyLayer: Identifier = Identifier.of("breakthemod", "nearby_layer")
 
+    companion object {
+        const val VERSION: String = "1.5.0"
+    }
 
     private fun loadCommands(commands: MutableList<BaseCommand>) {
         ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _: CommandRegistryAccess ->
@@ -90,7 +93,8 @@ class Breakthemod : ClientModInitializer {
         val modules = mutableListOf(
             AutoHUD,
             ChatPreview,
-            Cache
+            Cache,
+            NearbyEngine
         )
 
         helpCmd.modules = modules
@@ -98,8 +102,6 @@ class Breakthemod : ClientModInitializer {
         loadModules(modules)
         loadCommands(commandList)
 
-
-        NearbyEngine.register()
         HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, nearbyLayer) { context, _ -> Hud.render(context) }
     }
 }

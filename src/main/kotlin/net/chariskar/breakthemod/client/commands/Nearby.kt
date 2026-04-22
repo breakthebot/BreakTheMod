@@ -19,8 +19,8 @@ package net.chariskar.breakthemod.client.commands
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.client.api.BaseCommand
-import net.chariskar.breakthemod.client.api.engine.NearbyEngine
-import net.chariskar.breakthemod.client.api.engine.PlayerInfo
+import net.chariskar.breakthemod.client.modules.NearbyEngine
+import net.chariskar.breakthemod.client.api.PlayerInfo
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.MutableText
 import net.minecraft.text.Style

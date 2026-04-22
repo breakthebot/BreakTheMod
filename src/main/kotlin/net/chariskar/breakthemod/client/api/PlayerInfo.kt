@@ -15,7 +15,7 @@
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.chariskar.breakthemod.client.api.engine
+package net.chariskar.breakthemod.client.api
 
 import net.minecraft.client.MinecraftClient
 import net.minecraft.entity.player.PlayerEntity
@@ -31,7 +31,6 @@ import kotlin.math.sqrt
  * @param position The position of the player.
  * */
 data class PlayerInfo(val name: String, var position: Vec3d) {
-    //private val directionStep: Double = 45.0
     val directions = arrayOf("S", "SW", "W", "NW", "N", "NE", "E", "SE")
     val client: MinecraftClient = MinecraftClient.getInstance()
 
@@ -78,6 +77,7 @@ data class PlayerInfo(val name: String, var position: Vec3d) {
 
         return directions[index]
     }
+
     fun distanceFrom(player: PlayerEntity): Int {
         return sqrt(calculateDistance(Vec3d(player.x, player.y, player.z))).toInt()
     }

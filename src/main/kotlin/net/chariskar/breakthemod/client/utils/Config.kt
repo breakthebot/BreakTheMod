@@ -28,7 +28,7 @@ import org.breakthebot.breakthelibrary.utils.Urls
  * Config handler.
  * */
 object Config {
-    private val json = Json { encodeDefaults = true; prettyPrint = true; ignoreUnknownKeys = true }
+    private val json = Json { prettyPrint = true; ignoreUnknownKeys = true }
 
     var config: ConfigData = ConfigData()
     lateinit var configFile: File
@@ -84,7 +84,7 @@ object Config {
 
     fun getTownlessMessage(townName: String) = config.townlessMessage.replace("TOWN", townName)
 
-    fun getDbg() = config.debug
+    fun getDbg() = config.debug && config.dev
 
     fun getHud() = config.features.hudType
 

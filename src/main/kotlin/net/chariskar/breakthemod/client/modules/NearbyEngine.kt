@@ -15,8 +15,10 @@
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.chariskar.breakthemod.client.api.engine
+package net.chariskar.breakthemod.client.modules
 
+import net.chariskar.breakthemod.client.api.PlayerInfo
+import net.chariskar.breakthemod.client.api.Module
 import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.entity.player.PlayerEntity
@@ -24,7 +26,13 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
 import java.util.concurrent.CopyOnWriteArraySet
 
-object NearbyEngine {
+object NearbyEngine : Module() {
+
+    init {
+        name = "Nearby Engine"
+        description = "Gets nearby players automatically."
+    }
+
     private const val DISTANCE_THRESHOLD: Double = 200.0
 
     private val playerInfoList: MutableSet<PlayerInfo> = CopyOnWriteArraySet()
@@ -62,7 +70,7 @@ object NearbyEngine {
         return players
     }
 
-    fun register() {
+    override fun enable() {
         ClientTickEvents.END_CLIENT_TICK.register { client ->
             if (!Config.config.features.radarEnabled.or(Config.getDbg())) return@register
 
@@ -75,4 +83,6 @@ object NearbyEngine {
             playerInfoList.addAll(nearby)
         }
     }
+
+    override fun disable() { }
 }

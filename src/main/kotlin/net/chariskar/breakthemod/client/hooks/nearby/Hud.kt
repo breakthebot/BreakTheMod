@@ -17,7 +17,7 @@
 
 package net.chariskar.breakthemod.client.hooks.nearby
 
-import net.chariskar.breakthemod.client.api.engine.NearbyEngine
+import net.chariskar.breakthemod.client.modules.NearbyEngine
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.ServerUtils
 import net.chariskar.breakthemod.client.utils.Widget

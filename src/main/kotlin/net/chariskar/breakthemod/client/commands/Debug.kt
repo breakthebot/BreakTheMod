@@ -18,8 +18,9 @@
 package net.chariskar.breakthemod.client.commands
 
 import com.mojang.brigadier.context.CommandContext
+import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.BaseCommand
-import net.chariskar.breakthemod.client.api.engine.NearbyEngine
+import net.chariskar.breakthemod.client.modules.NearbyEngine
 import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.ServerUtils
@@ -30,10 +31,14 @@ import net.minecraft.text.Text
 class Debug : BaseCommand() {
     init {
         name = "btmdbg"
+        description = "do NOT use on emc."
     }
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         if (!Config.getDbg()) return 0
+        sendMessage(
+            Text.literal("Version: ${Breakthemod.VERSION}")
+        )
         sendMessage(
             Text.literal("players" + MinecraftClient.getInstance().world?.players)
         )

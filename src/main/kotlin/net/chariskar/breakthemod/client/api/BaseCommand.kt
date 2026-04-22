@@ -54,7 +54,7 @@ abstract class BaseCommand {
     val client: MinecraftClient = MinecraftClient.getInstance()
     protected val scope  = CommandScope.scope
 
-    fun getUsage(): String { return "/$name + $usageSuffix" }
+    fun getUsage(): String { return "/$name $usageSuffix" }
 
     /**
      * @param ctx the command context.
