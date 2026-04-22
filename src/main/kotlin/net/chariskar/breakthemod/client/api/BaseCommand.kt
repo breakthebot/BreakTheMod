@@ -35,10 +35,6 @@ import net.minecraft.util.Formatting
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-private object CommandScope {
-    val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-}
-
 /**
  * Base for commands.
  * @property name The command name.
@@ -52,7 +48,7 @@ abstract class BaseCommand {
 
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
     val client: MinecraftClient = MinecraftClient.getInstance()
-    protected val scope  = CommandScope.scope
+    protected val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     fun getUsage(): String { return "/$name $usageSuffix" }
 
