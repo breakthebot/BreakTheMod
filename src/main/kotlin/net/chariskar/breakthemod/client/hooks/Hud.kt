@@ -15,14 +15,13 @@
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.chariskar.breakthemod.client.hooks.nearby
+package net.chariskar.breakthemod.client.hooks
 
 import net.chariskar.breakthemod.client.modules.NearbyEngine
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.ServerUtils
 import net.chariskar.breakthemod.client.utils.Widget
 import net.chariskar.breakthemod.client.utils.WidgetPosition
-
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext

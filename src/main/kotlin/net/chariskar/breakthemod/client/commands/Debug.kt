@@ -35,7 +35,7 @@ class Debug : BaseCommand() {
     }
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
-        if (!Config.getDbg()) return 0
+        if (!Config.getDbg()) return 1
         sendMessage(
             Text.literal("Version: ${Breakthemod.VERSION}")
         )

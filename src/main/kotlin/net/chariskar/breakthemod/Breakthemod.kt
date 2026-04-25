@@ -29,7 +29,7 @@ import net.chariskar.breakthemod.client.commands.Locate
 import net.chariskar.breakthemod.client.commands.Nearby
 import net.chariskar.breakthemod.client.commands.OnlineStaff
 import net.chariskar.breakthemod.client.commands.Townless
-import net.chariskar.breakthemod.client.hooks.nearby.Hud
+import net.chariskar.breakthemod.client.hooks.Hud
 import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
