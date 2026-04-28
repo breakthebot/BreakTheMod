@@ -50,7 +50,6 @@ class Calculate : BaseCommand() {
             "blocks" -> {
                 val fullBlocks = amount / 9
                 val remainder = amount % 9
-
                 sendMessage(Text.literal("$amount gold ingots equal $fullBlocks blocks and $remainder ingots."))
                 0
             }

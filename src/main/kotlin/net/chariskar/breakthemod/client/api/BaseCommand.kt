@@ -114,9 +114,8 @@ abstract class BaseCommand {
         message: Text,
         colour: Formatting
     ) {
-        val chatMessage = Text.empty().apply {
-            append(message)
-            style = Style.EMPTY.withColor(colour)
+        val chatMessage = Text.of(message).apply {
+            Style.EMPTY.withColor(colour)
         }
         sendMessage(chatMessage)
     }

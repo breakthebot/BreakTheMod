@@ -48,7 +48,10 @@ class Townless : BaseCommand() {
             }
             val own = PlayerAPI.getPlayer(client.session.username)
 
-            if (own?.town?.name.isNullOrEmpty()) return@launch
+            if (own?.town?.name.isNullOrEmpty()) {
+                sendMessage(Text.literal("You have to be in a town to access this command."))
+                return@launch
+            }
 
             val townless: MutableList<String> = mutableListOf()
             val batch: MutableList<UUID> = mutableListOf()
@@ -57,7 +60,10 @@ class Townless : BaseCommand() {
                 batch.add(p)
                 if (batch.size == batchSize) {
                     val players = PlayerAPI.getPlayers(batch.map { u -> u.toString() })
-                    if (players.isNullOrEmpty()) { return@launch }
+                    if (players.isNullOrEmpty()) {
+                        sendMessage(Text.literal("No players online."))
+                        return@launch
+                    }
                     players.forEach { p ->
                         if (p.status?.hasTown == false) townless.add(p.name)
                     }
@@ -67,7 +73,9 @@ class Townless : BaseCommand() {
 
             if (batch.isNotEmpty()) {
                 val players = PlayerAPI.getPlayers(batch.map { it.toString() })
-                if (players.isNullOrEmpty()) { return@launch }
+                if (players.isNullOrEmpty()) {
+                    return@launch
+                }
 
                 players.forEach { resident ->
                     if (resident.status?.hasTown == false) {
@@ -81,14 +89,13 @@ class Townless : BaseCommand() {
             for (user in townless) {
                 val inviteMessage = "/msg $user " + Config.getTownlessMessage(own.town?.name!!)
 
-                val userText: Text = Text.literal(user)
-                    .setStyle(
-                        Style.EMPTY.apply {
-                            withColor(Formatting.AQUA)
-                            withClickEvent(ClickEvent.CopyToClipboard(inviteMessage))
-                            withHoverEvent(HoverEvent.ShowText(Text.literal("Click to copy message to clipboard.")))
-                        }
-                    )
+                val userText: Text = Text.literal(user).apply {
+                    Style.EMPTY.apply {
+                        withColor(Formatting.AQUA)
+                        withClickEvent(ClickEvent.CopyToClipboard(inviteMessage))
+                        withHoverEvent(HoverEvent.ShowText(Text.literal("Click to copy message to clipboard.")))
+                    }
+                }
 
                 message.append(userText).append(Text.literal("\n"))
             }

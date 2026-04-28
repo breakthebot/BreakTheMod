@@ -46,16 +46,17 @@ class DiscordId : BaseCommand() {
         val name: String = ctx.getArgument("name", String::class.java)
         scope.launch {
             val discord = DiscordAPI.getDiscord(listOf(name))?.first()
+            val result: Text = if (discord != null) {
+                Text.literal("Click Here")
+                    .apply {
+                        Style.EMPTY
+                            .withColor(Formatting.BLUE)
+                            .withClickEvent(
+                                ClickEvent.OpenUrl(URI("https://discord.com/users/${discord}"))
+                            )
+                    }
+            } else Text.of("No player found.")
 
-            val result: Text = Text.literal("Click Here")
-                .setStyle(
-                    Style.EMPTY
-                        .withColor(Formatting.BLUE)
-                        .withClickEvent(
-                            ClickEvent.OpenUrl(URI("https://discord.com/users/${discord}"))
-                        )
-
-                )
             sendMessage(result)
             return@launch
         }

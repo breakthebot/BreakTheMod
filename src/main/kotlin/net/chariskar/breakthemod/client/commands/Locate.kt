@@ -57,17 +57,38 @@ class Locate : BaseCommand() {
         val type: String,
         val name: String
     ) {
-        suspend fun get(): Pair<Float, Float>? {
+        suspend fun get(): Text {
             return when (type) {
                 "town" ->  {
-                    val town = TownAPI.getTown(name) ?: return null
-                    Pair(town.coordinates?.spawn?.x!!, town.coordinates!!.spawn!!.z!!)
+                    val town = TownAPI.getTown(name) ?: return Text.of("No town with $name found.")
+                    val coords = town.coordinates?.spawn!!
+                    Text.literal("$name is located at x: ${coords.x}, z: ${coords.z} ").append(getMapText(
+                        coords.x!!,
+                        coords.z!!
+                    ))
                 }
                 "nation" -> {
-                    val nation = NationAPI.getNation(name) ?: return null
-                    Pair(nation.coordinates?.spawn?.x!!, nation.coordinates?.spawn?.z!!)
+                    val nation = NationAPI.getNation(name) ?:  return Text.of("No nation with $name found.")
+                    val coords = nation.coordinates?.spawn!!
+                    Text.literal("$name is located at x: ${coords.x}, z: ${coords.z} ").append(getMapText(
+                        coords.x!!,
+                        coords.z!!
+                    ))
                 }
-                else -> null
+                else -> Text.of("$type isn't town or nation.").apply {
+                    Style.EMPTY.withColor(Formatting.RED)
+                }
+            }
+        }
+
+        private fun getMapText(x: Float, z: Float): Text {
+            val mapUrl = "${Config.getMapUrl()}?world=minecraft_overworld&zoom=5&x=$x&z=$z"
+            return Text.of("Click here").apply {
+                Style.EMPTY
+                    .withColor(Formatting.BLUE)
+                    .withClickEvent (
+                        ClickEvent.OpenUrl(URI.create(mapUrl))
+                    )
             }
         }
     }
@@ -77,18 +98,7 @@ class Locate : BaseCommand() {
         val name: String = ctx.getArgument("name", String::class.java)
 
         scope.launch {
-            val coords = LocationRequest(type, name).get()
-            if (coords == null) {sendMessage(Text.literal("$name isn't a town or a nation"), Formatting.RED); return@launch}
-
-            val link = Text.literal("click here").setStyle(
-                Style.EMPTY
-                    .withColor(Formatting.BLUE)
-                    .withClickEvent(
-                        ClickEvent.OpenUrl(URI("${Config.getMapUrl()}?world=minecraft_overworld&zoom=5&x=${coords.first}&z=${coords.second}"))
-                    )
-            )
-
-            sendMessage(Text.literal("$name is located at x: ${coords.first}, z: ${coords.second} ").append(link))
+            sendMessage(LocationRequest(type, name).get())
         }
 
         return 0
