@@ -27,7 +27,6 @@ import net.chariskar.breakthemod.client.api.BaseCommand
 import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
 import net.chariskar.breakthemod.client.utils.Timestamps
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.entity.passive.FrogBrain
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting

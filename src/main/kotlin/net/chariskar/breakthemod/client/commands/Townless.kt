@@ -89,12 +89,12 @@ class Townless : BaseCommand() {
             for (user in townless) {
                 val inviteMessage = "/msg $user " + Config.getTownlessMessage(own.town?.name!!)
 
-                val userText: Text = Text.literal(user).apply {
-                    Style.EMPTY.apply {
-                        withColor(Formatting.AQUA)
-                        withClickEvent(ClickEvent.CopyToClipboard(inviteMessage))
-                        withHoverEvent(HoverEvent.ShowText(Text.literal("Click to copy message to clipboard.")))
-                    }
+                val userText: Text = Text.literal(user).styled {
+                    Style.EMPTY
+                        .withColor(Formatting.AQUA)
+                        .withClickEvent(ClickEvent.CopyToClipboard(inviteMessage))
+                        .withHoverEvent(HoverEvent.ShowText(Text.literal("Click to copy message to clipboard.")))
+
                 }
 
                 message.append(userText).append(Text.literal("\n"))

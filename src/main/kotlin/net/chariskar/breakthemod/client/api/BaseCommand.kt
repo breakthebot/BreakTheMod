@@ -101,7 +101,11 @@ abstract class BaseCommand {
      *
      * @param message The message to be sent
      */
-    fun sendMessage(message: Text) = client.player?.sendMessage(Prefix.prefix.copy().append(message), false)
+    fun sendMessage(message: Text)  {
+        client.execute {
+            client.player?.sendMessage(Prefix.prefix.copy().append(message), false)
+        }
+    }
 
 
     /**

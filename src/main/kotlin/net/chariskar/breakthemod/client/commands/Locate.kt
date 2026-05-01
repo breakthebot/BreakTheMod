@@ -75,7 +75,7 @@ class Locate : BaseCommand() {
                         coords.z!!
                     ))
                 }
-                else -> Text.of("$type isn't town or nation.").apply {
+                else -> Text.literal("$type isn't town or nation.").styled {
                     Style.EMPTY.withColor(Formatting.RED)
                 }
             }
@@ -83,7 +83,7 @@ class Locate : BaseCommand() {
 
         private fun getMapText(x: Float, z: Float): Text {
             val mapUrl = "${Config.getMapUrl()}?world=minecraft_overworld&zoom=5&x=$x&z=$z"
-            return Text.of("Click here").apply {
+            return Text.literal("Click here").styled {
                 Style.EMPTY
                     .withColor(Formatting.BLUE)
                     .withClickEvent (

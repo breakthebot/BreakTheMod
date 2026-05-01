@@ -80,9 +80,9 @@ object Hud {
         var textY = y + 5
         synchronized(playerList) {
             for (line in playerList) {
-                val color = if (line == "No players nearby") 0xFFFF6B6B.toInt() else 0xFFFFFFFF.toInt()
+                val color = if (line == "No players nearby") 0xFFFF6B6B else 0xFFFFFFFF
 
-                drawContext.drawText(textRender, line, x + margin, textY, color, false)
+                drawContext.drawText(textRender, line, x + margin, textY, color.toInt(), false)
                 textY += entryHeight
             }
         }
