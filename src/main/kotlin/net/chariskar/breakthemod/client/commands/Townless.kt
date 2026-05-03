@@ -17,7 +17,12 @@
 package net.chariskar.breakthemod.client.commands
 
 import com.mojang.brigadier.context.CommandContext
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import net.chariskar.breakthemod.client.api.BaseCommand
 import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
@@ -27,11 +32,13 @@ import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import org.breakthebot.breakthelibrary.api.PlayerAPI
+import org.breakthebot.breakthelibrary.models.Resident
 import java.util.UUID
 
 
 class Townless : BaseCommand() {
     val batchSize: Int = 100
+    val username: String = client.session.username
 
     init {
         name = "townless"
@@ -40,68 +47,66 @@ class Townless : BaseCommand() {
     }
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
+        val onlinePlayers = client.networkHandler!!.playerUuids.toList()
         scope.launch {
-            val onlinePlayers = client.networkHandler!!.playerUuids
-            if (onlinePlayers.size == 1) {
+            if (onlinePlayers.size <= 1) {
                 sendMessage(Text.literal("No online players found"))
                 return@launch
             }
-            val own = PlayerAPI.getPlayer(client.session.username)
 
-            if (own?.town?.name.isNullOrEmpty()) {
+            val own = PlayerAPI.getPlayer(username)
+            val townName = own?.town?.name
+
+            if (townName.isNullOrEmpty()) {
                 sendMessage(Text.literal("You have to be in a town to access this command."))
                 return@launch
             }
 
-            val townless: MutableList<String> = mutableListOf()
-            val batch: MutableList<UUID> = mutableListOf()
+            val batches = onlinePlayers.chunked(batchSize)
+            val semaphore = Semaphore(3)
 
-            for (p in onlinePlayers) {
-                batch.add(p)
-                if (batch.size == batchSize) {
-                    val players = PlayerAPI.getPlayers(batch.map { u -> u.toString() })
-                    if (players.isNullOrEmpty()) {
-                        sendMessage(Text.literal("No players online."))
-                        return@launch
+            val results = coroutineScope {
+                batches.map { batch ->
+                    async {
+                        semaphore.withPermit {
+                            PlayerAPI.getPlayers(batch.map { it.toString() })
+                        }
                     }
-                    players.forEach { p ->
-                        if (p.status?.hasTown == false) townless.add(p.name)
-                    }
-                    batch.clear()
-                }
+                }.awaitAll()
             }
 
-            if (batch.isNotEmpty()) {
-                val players = PlayerAPI.getPlayers(batch.map { it.toString() })
-                if (players.isNullOrEmpty()) {
-                    return@launch
-                }
+            val townless = results
+                .filterNotNull()
+                .flatten()
+                .filter { it.status?.hasTown == false }
+                .map { it.name }
 
-                players.forEach { resident ->
-                    if (resident.status?.hasTown == false) {
-                        townless.add(resident.name)
-                    }
-                }
+            if (townless.isEmpty()) {
+                sendMessage(Text.literal("No townless players found"))
+                return@launch
             }
 
-            val message = Text.literal("Townless Users:\n").setStyle(Style.EMPTY.withColor(Formatting.AQUA))
+            val message = Text.literal("Townless Users:\n")
+                .setStyle(Style.EMPTY.withColor(Formatting.AQUA))
 
             for (user in townless) {
-                val inviteMessage = "/msg $user " + Config.getTownlessMessage(own.town?.name!!)
-
-                val userText: Text = Text.literal(user).styled {
+                val inviteMessage = "/msg $user " + Config.getTownlessMessage(townName)
+                val userText = Text.literal(user).styled {
                     Style.EMPTY
                         .withColor(Formatting.AQUA)
                         .withClickEvent(ClickEvent.CopyToClipboard(inviteMessage))
-                        .withHoverEvent(HoverEvent.ShowText(Text.literal("Click to copy message to clipboard.")))
-
+                        .withHoverEvent(
+                            HoverEvent.ShowText(
+                                Text.literal("Click to copy message to clipboard.")
+                            )
+                        )
                 }
-
                 message.append(userText).append(Text.literal("\n"))
             }
-
             sendMessage(message)
+
         }
+
         return 0
     }
 

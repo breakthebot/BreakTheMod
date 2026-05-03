@@ -48,7 +48,7 @@ class DiscordId : BaseCommand() {
             val discord = DiscordAPI.getDiscord(listOf(name))?.first()
             val result: Text = if (discord != null) {
                 Text.literal("Click Here")
-                    .apply {
+                    .styled {
                         Style.EMPTY
                             .withColor(Formatting.BLUE)
                             .withClickEvent(

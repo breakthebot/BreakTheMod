@@ -22,9 +22,11 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.CommandSyntaxException
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.Prefix
 import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
@@ -48,7 +50,15 @@ abstract class BaseCommand {
 
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
     val client: MinecraftClient = MinecraftClient.getInstance()
-    protected val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+    private val handler = CoroutineExceptionHandler { _, e ->
+        sendError()
+        if (Config.getDevMode()) {
+            logError("Unexpected error occurred while running $name", e as Exception)
+        }
+    }
+
+    protected val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default + handler)
 
     fun getUsage(): String { return "/$name $usageSuffix" }
 
@@ -125,6 +135,10 @@ abstract class BaseCommand {
     }
 
     fun sendError() = sendMessage(Text.literal("Command has exited with an exception"))
+
+    fun sendError(message: String) = sendMessage(Text.literal(message), Formatting.RED)
+
+    fun sendWarning(message: String) = sendMessage(Text.literal(message), Formatting.YELLOW)
 
     protected fun logError(message: String, e: Exception) = logger.error("$message: ${e.message}", e)
 
