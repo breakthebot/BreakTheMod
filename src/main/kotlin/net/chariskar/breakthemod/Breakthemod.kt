@@ -51,7 +51,7 @@ class Breakthemod : ClientModInitializer {
     val nearbyLayer: Identifier = Identifier.of("breakthemod", "nearby_layer")
 
     companion object {
-        const val VERSION: String = "1.5.0"
+        const val VERSION: String = "1.5.1-BETA"
     }
 
     private fun loadCommands(commands: MutableList<BaseCommand>) {

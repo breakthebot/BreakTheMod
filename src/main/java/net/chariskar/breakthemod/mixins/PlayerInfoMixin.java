@@ -95,9 +95,9 @@ public abstract class PlayerInfoMixin extends LivingEntityRenderer<AbstractClien
 
     @Unique
     private Text createTownyText(Resident player) {
-        if (player.getStatus() == null) { return Text.empty(); }
+        if (player.getStatus() == null) { return Text.literal("Nomad"); }
 
-        if (!player.getStatus().getHasTown()) return Text.empty().formatted(Formatting.DARK_AQUA);
+        if (!player.getStatus().getHasTown()) return Text.literal("Nomad").formatted(Formatting.DARK_AQUA);
 
         MutableText text = Text.empty();
 

@@ -70,18 +70,18 @@ object Cache : Module() {
 
     private fun updatePlayers() {
         if (!ServerUtils.isEarthMc() || !Config.getNameTag()) return
+        cachedPlayers.clear()
 
-        client.execute {
-            val players = client.networkHandler?.playerList?.map { it.profile.name } ?: return@execute
-
-            scope.launch {
-                val apiPlayers = PlayerAPI.getPlayers(players)
-                cachedPlayers.clear()
+        val players = client.networkHandler!!.playerUuids.toList().chunked(100)
+        
+        scope.launch {
+            for (players in players) {
+                val apiPlayers = PlayerAPI.getPlayers(players.map { it.toString() })
                 if (apiPlayers.isNullOrEmpty()) { return@launch }
-
                 cachedPlayers.addAll(apiPlayers)
             }
         }
+
     }
 
     fun getPlayer(
