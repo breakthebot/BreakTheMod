@@ -20,6 +20,8 @@ package net.chariskar.breakthemod.debug
 import com.mojang.brigadier.CommandDispatcher
 import net.chariskar.breakthemod.debug.commands.CacheDebug
 import net.chariskar.breakthemod.debug.commands.Debug
+import net.chariskar.breakthemod.debug.commands.LoadModule
+import net.chariskar.breakthemod.debug.commands.UnloadModule
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.command.CommandRegistryAccess
@@ -29,7 +31,9 @@ class DebugLoader {
     fun loadDebugCommands() {
         val commands = listOf(
             Debug(),
-            CacheDebug()
+            CacheDebug(),
+            LoadModule,
+            UnloadModule
         )
         ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _: CommandRegistryAccess ->
             commands.forEach { it.register(dispatcher) }

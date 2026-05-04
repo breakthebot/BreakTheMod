@@ -29,7 +29,6 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.text.Text
 
-
 class ModMenuIntegration : ModMenuApi {
 
     companion object {
@@ -41,7 +40,7 @@ class ModMenuIntegration : ModMenuApi {
             val entryBuilder = builder.entryBuilder()
             val general = builder.getOrCreateCategory(Text.literal("BreakTheMod config"))
 
-            val options: ConfigCategory? = if ( Config.config.options ) {
+            val options: ConfigCategory? = if ( config.options ) {
                 builder.getOrCreateCategory(Text.literal("Options"))
             } else null
 

@@ -52,20 +52,24 @@ object Cache : Module() {
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     val cachedPlayers: MutableList<Resident> = CopyOnWriteArrayList()
 
-    override fun disable() {}
+    override fun disable() {
+        enabled = false
+    }
 
     override fun enable() {
-        ClientPlayConnectionEvents.JOIN.register(ClientPlayConnectionEvents.Join { _: ClientPlayNetworkHandler?, _: PacketSender?, _: MinecraftClient? ->
-            Scheduler.schedule({
-                if (!ServerUtils.isEarthMc() || !Config.getNameTag()) { return@schedule }
-                ServerUtils.replaceApiUrl()
-                updatePlayers()
-            }, 6L, TimeUnit.SECONDS)
-        })
 
+        ClientPlayConnectionEvents.JOIN.register { _: ClientPlayNetworkHandler?, _: PacketSender?, _: MinecraftClient? ->
+            ServerUtils.replaceApiUrl()
+            runTask()
+            Scheduler.schedule({
+                runTask()
+            }, 10L, TimeUnit.MINUTES)
+        }
         ClientPlayConnectionEvents.DISCONNECT.register(ClientPlayConnectionEvents.Disconnect { _: ClientPlayNetworkHandler?, _: MinecraftClient? ->
             cachedPlayers.clear()
         })
+
+        
     }
 
     private fun updatePlayers() {
@@ -82,6 +86,11 @@ object Cache : Module() {
             }
         }
 
+    }
+
+    fun runTask() {
+        if (!ServerUtils.isEarthMc() || !Config.getNameTag()) return
+        updatePlayers()
     }
 
     fun getPlayer(

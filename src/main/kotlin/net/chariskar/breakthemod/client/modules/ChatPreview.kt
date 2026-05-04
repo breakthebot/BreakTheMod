@@ -27,7 +27,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayNetworkHandler
 import net.minecraft.text.Text
-import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 /**
@@ -48,7 +47,7 @@ object ChatPreview : Module() {
     override fun disable() {}
 
     override fun enable() {
-        ClientReceiveMessageEvents.GAME.register(ClientReceiveMessageEvents.Game { message: Text?, overlay: Boolean ->
+        ClientReceiveMessageEvents.GAME.register(ClientReceiveMessageEvents.Game { message: Text?, _: Boolean ->
             if (!ServerUtils.isEarthMc()) return@Game
 
             val string = message?.string ?: return@Game

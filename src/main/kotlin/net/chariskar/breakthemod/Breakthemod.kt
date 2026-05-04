@@ -28,12 +28,16 @@ import net.chariskar.breakthemod.client.commands.Locate
 import net.chariskar.breakthemod.client.commands.Nearby
 import net.chariskar.breakthemod.client.commands.OnlineStaff
 import net.chariskar.breakthemod.client.commands.Townless
+import net.chariskar.breakthemod.client.commands.Shop
+import net.chariskar.breakthemod.client.commands.Calculate
+
 import net.chariskar.breakthemod.client.hooks.Hud
 import net.chariskar.breakthemod.client.utils.Config
-import net.chariskar.breakthemod.client.commands.Calculate
+
 import net.chariskar.breakthemod.client.modules.AutoHUD
 import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.modules.ChatPreview
+import net.chariskar.breakthemod.client.modules.ShopTracker
 
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
@@ -48,13 +52,15 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 
-class Breakthemod : ClientModInitializer {
+object Breakthemod : ClientModInitializer {
+
     val nearbyLayer: Identifier = Identifier.of("breakthemod", "nearby_layer")
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
-    companion object {
-        const val VERSION: String = "1.5.1-BETA"
-    }
+    val modules: MutableList<Module> = mutableListOf()
+    val commands: MutableList<BaseCommand> = mutableListOf()
+
+    const val VERSION: String = "1.5.1-BETA"
 
     private fun loadCommands(commands: MutableList<BaseCommand>) {
         ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _: CommandRegistryAccess ->
@@ -64,20 +70,23 @@ class Breakthemod : ClientModInitializer {
 
     private fun loadModules(modules: MutableList<Module>) { modules.forEach { it.launch() } }
 
+    /**
+     * Load debugging modules.
+     * */
     private fun loadDebug() {
         try {
             val clazz = Class.forName("net.chariskar.breakthemod.debug.DebugLoader")
             val instance = clazz.getDeclaredConstructor().newInstance()
             val method = clazz.getMethod("loadDebugCommands")
             method.invoke(instance)
-        } catch (e: ClassNotFoundException) {
-            logger.info("Debug module not present, skipping debug commands.")
+            logger.info("Loaded debugging modules successfully.")
         } catch (e: Exception) {
             logger.error("Unexpected error loading debug commands", e)
         }
     }
 
     override fun onInitializeClient() {
+
         Config.setFile(
             File(
                 MinecraftClient.getInstance()?.runDirectory,
@@ -87,31 +96,37 @@ class Breakthemod : ClientModInitializer {
         Config.loadConfig()
 
         val helpCmd = Help()
-        val commandList = mutableListOf(
-            Nearby(),
-            OnlineStaff(),
-            Townless(),
-            goto(),
-            FindPlayer(),
-            LastSeen(),
-            DiscordId(),
-            Locate(),
-            Calculate(),
-            helpCmd
+        commands.addAll(
+            listOf(
+                Nearby(),
+                OnlineStaff(),
+                Townless(),
+                goto(),
+                FindPlayer(),
+                LastSeen(),
+                DiscordId(),
+                Locate(),
+                Calculate(),
+                Shop(),
+                helpCmd
+            )
         )
-        helpCmd.commands = commandList
+        helpCmd.commands = commands
 
-        val modules = mutableListOf(
-            AutoHUD,
-            ChatPreview,
-            Cache,
-            NearbyEngine
+        modules.addAll(
+            listOf(
+                AutoHUD,
+                ChatPreview,
+                Cache,
+                NearbyEngine,
+                ShopTracker
+            )
         )
 
         helpCmd.modules = modules
 
         loadModules(modules)
-        loadCommands(commandList)
+        loadCommands(commands)
 
         if (Config.getDbg()) { loadDebug() }
         HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, nearbyLayer) { context, _ -> Hud.render(context) }

@@ -82,7 +82,10 @@ object NearbyEngine : Module() {
             playerInfoList.clear()
             playerInfoList.addAll(nearby)
         }
+        
     }
 
-    override fun disable() { }
+    override fun disable() {
+        enabled = false
+    }
 }

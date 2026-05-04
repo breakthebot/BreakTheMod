@@ -39,26 +39,27 @@ object AutoHUD : Module() {
         description = "Enables the hud of choice of the user in login."
     }
 
-    override fun disable() {}
+    override fun disable() {
+        enabled = false
+    }
 
     override fun enable() {
         ClientPlayConnectionEvents.JOIN.register(ClientPlayConnectionEvents.Join { _: ClientPlayNetworkHandler?, _: PacketSender?, client: MinecraftClient ->
-            Scheduler.schedule( {
-                if (!ServerUtils.isEarthMc()) { return@schedule }
-
-                val hud = Config.getHud()
-
-                if (hud == AutoHudType.None) { return@schedule }
-
-                val command = when(hud) {
-                    AutoHudType.PermHud -> "plot perm hud"
-                    AutoHudType.MapHud -> "towny map hud"
-                    else -> ""
-                }
-
-                client.networkHandler?.sendChatCommand(command)
-            }, 6L, TimeUnit.SECONDS)
+            if (!ServerUtils.isEarthMc()) {
+                return@Join
+            }
+            val hud = Config.getHud()
+            if (hud == AutoHudType.None) {
+                return@Join
+            }
+            val command = when(hud) {
+                AutoHudType.PermHud -> "plot perm hud"
+                AutoHudType.MapHud -> "towny map hud"
+                else -> ""
+            }
+            client.networkHandler?.sendChatCommand(command)
         })
+        
     }
 
 }

@@ -5,7 +5,7 @@ import org.gradle.jvm.toolchain.JavaLanguageVersion
 
 plugins {
     kotlin("jvm") version "2.2.10"
-    kotlin("plugin.serialization") version "1.9.10"
+    kotlin("plugin.serialization") version "2.2.10"
 
     id("fabric-loom") version "1.15-SNAPSHOT"
     id("com.gradleup.shadow") version "9.2.0"
@@ -165,10 +165,11 @@ if (project.hasProperty("release")) {
     tasks.jar {
         enabled = false
     }
+
 }
 
 tasks.named<ShadowJar>("shadowJar") {
-    if (!debug) {
+    if (!debug || project.hasProperty("release")) {
         exclude("net/chariskar/breakthemod/debug/**")
     }
 }
