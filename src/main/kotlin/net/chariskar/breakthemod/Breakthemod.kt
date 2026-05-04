@@ -19,7 +19,6 @@ package net.chariskar.breakthemod
 import net.chariskar.breakthemod.client.api.BaseCommand
 import net.chariskar.breakthemod.client.api.Module
 import net.chariskar.breakthemod.client.modules.NearbyEngine
-import net.chariskar.breakthemod.client.commands.Debug
 import net.chariskar.breakthemod.client.commands.DiscordId
 import net.chariskar.breakthemod.client.commands.FindPlayer
 import net.chariskar.breakthemod.client.commands.goto
@@ -31,6 +30,11 @@ import net.chariskar.breakthemod.client.commands.OnlineStaff
 import net.chariskar.breakthemod.client.commands.Townless
 import net.chariskar.breakthemod.client.hooks.Hud
 import net.chariskar.breakthemod.client.utils.Config
+import net.chariskar.breakthemod.client.commands.Calculate
+import net.chariskar.breakthemod.client.modules.AutoHUD
+import net.chariskar.breakthemod.client.modules.Cache
+import net.chariskar.breakthemod.client.modules.ChatPreview
+
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
@@ -39,16 +43,14 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements
 import net.minecraft.command.CommandRegistryAccess
 import net.minecraft.util.Identifier
 import com.mojang.brigadier.CommandDispatcher
-import net.chariskar.breakthemod.client.commands.Calculate
-import net.chariskar.breakthemod.client.modules.AutoHUD
-import net.chariskar.breakthemod.client.modules.Cache
-import net.chariskar.breakthemod.client.modules.ChatPreview
 import net.minecraft.client.MinecraftClient
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
-
 
 class Breakthemod : ClientModInitializer {
     val nearbyLayer: Identifier = Identifier.of("breakthemod", "nearby_layer")
+    val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
     companion object {
         const val VERSION: String = "1.5.1-BETA"
@@ -61,6 +63,19 @@ class Breakthemod : ClientModInitializer {
     }
 
     private fun loadModules(modules: MutableList<Module>) { modules.forEach { it.launch() } }
+
+    private fun loadDebug() {
+        try {
+            val clazz = Class.forName("net.chariskar.breakthemod.debug.DebugLoader")
+            val instance = clazz.getDeclaredConstructor().newInstance()
+            val method = clazz.getMethod("loadDebugCommands")
+            method.invoke(instance)
+        } catch (e: ClassNotFoundException) {
+            logger.info("Debug module not present, skipping debug commands.")
+        } catch (e: Exception) {
+            logger.error("Unexpected error loading debug commands", e)
+        }
+    }
 
     override fun onInitializeClient() {
         Config.setFile(
@@ -81,12 +96,10 @@ class Breakthemod : ClientModInitializer {
             LastSeen(),
             DiscordId(),
             Locate(),
-            Debug(),
             Calculate(),
             helpCmd
         )
-        helpCmd.commands = commandList.filterNot { it is Debug }
-
+        helpCmd.commands = commandList
 
         val modules = mutableListOf(
             AutoHUD,
@@ -100,6 +113,7 @@ class Breakthemod : ClientModInitializer {
         loadModules(modules)
         loadCommands(commandList)
 
+        if (Config.getDbg()) { loadDebug() }
         HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, nearbyLayer) { context, _ -> Hud.render(context) }
     }
 }

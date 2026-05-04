@@ -56,6 +56,7 @@ repositories {
 }
 
 val shade by configurations.creating
+val debug = project.hasProperty("debug")
 
 val mcVer: String by project
 val mappings: String by project
@@ -166,6 +167,11 @@ if (project.hasProperty("release")) {
     }
 }
 
+tasks.named<ShadowJar>("shadowJar") {
+    if (!debug) {
+        exclude("net/chariskar/breakthemod/debug/**")
+    }
+}
 
 tasks.jar {
     from("LICENSE") {

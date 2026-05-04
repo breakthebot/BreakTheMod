@@ -140,6 +140,7 @@ abstract class BaseCommand {
 
     fun sendWarning(message: String) = sendMessage(Text.literal(message), Formatting.YELLOW)
 
-    protected fun logError(message: String, e: Exception) = logger.error("$message: ${e.message}", e)
+
+    fun logError(message: String, e: Exception) = logger.error("$message: ${e.message}", e)
 
 }
