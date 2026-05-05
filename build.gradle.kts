@@ -169,7 +169,7 @@ if (project.hasProperty("release")) {
 }
 
 tasks.named<ShadowJar>("shadowJar") {
-    if (!debug || project.hasProperty("release")) {
+        if (!debug) {
         exclude("net/chariskar/breakthemod/debug/**")
     }
 }

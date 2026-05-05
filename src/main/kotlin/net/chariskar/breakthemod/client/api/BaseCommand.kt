@@ -143,4 +143,10 @@ abstract class BaseCommand {
 
     fun logError(message: String, e: Exception) = logger.error("$message: ${e.message}", e)
 
+    fun logDebug(message: String) {
+        if (Config.getDbg()) {
+            logger.info("[DEBUG] $message")
+        }
+    }
+
 }

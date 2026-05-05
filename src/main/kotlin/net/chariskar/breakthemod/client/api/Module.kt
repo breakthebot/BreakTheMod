@@ -90,4 +90,9 @@ abstract class Module {
 
     fun sendWarning(message: String) = sendMessage(Text.literal(message), Formatting.YELLOW)
 
+    fun logDebug(message: String) {
+        if (Config.getDbg()) {
+            logger.info("[DEBUG] $message")
+        }
+    }
 }

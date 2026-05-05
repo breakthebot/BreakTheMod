@@ -18,9 +18,6 @@
 package net.chariskar.breakthemod.client.modules
 
 import net.chariskar.breakthemod.client.api.Module
-import net.chariskar.breakthemod.client.modules.Cache.cachedPlayers
-
-import net.chariskar.breakthemod.client.utils.ChatChannel
 import net.chariskar.breakthemod.client.utils.ServerUtils
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
@@ -29,7 +26,7 @@ import net.minecraft.client.network.ClientPlayNetworkHandler
 import net.minecraft.text.Text
 
 object ShopTracker : Module(){
-    val regex = Regex("""at\s+(-?\d+)\s+(-?\d+)\s+(-?\d+).*?run out of\s+([a-z_]+)""")
+    val regex = Regex("""at\s+(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+).*?run out of\s+(.+)$""")
     val emptyShops: MutableList<ShopObject> = mutableListOf()
 
     override fun disable() {
@@ -51,24 +48,33 @@ object ShopTracker : Module(){
     override fun enable() {
         ClientReceiveMessageEvents.GAME.register(ClientReceiveMessageEvents.Game { message: Text?, _: Boolean ->
             if (!ServerUtils.isEarthMc()) return@Game
+
             val string = message?.string ?: return@Game
 
             if (!string.contains("Your shop has run out of")) return@Game
 
-            val match = regex.find(string)
+            val shop = parseShopObject(string) ?: return@Game
 
-            if (match != null) {
-                val (x, y, z, item) = match.destructured
-                emptyShops.add(
-                    ShopObject(x.toFloat(), y.toFloat(), z.toFloat(), item)
-                )
-            }
+            emptyShops.add(shop)
+            logDebug("Shop has been added.")
         })
 
         ClientPlayConnectionEvents.DISCONNECT.register(ClientPlayConnectionEvents.Disconnect { _: ClientPlayNetworkHandler?, _: MinecraftClient? ->
             emptyShops.clear()
         })
-
         
     }
+
+    fun parseShopObject(message: String): ShopObject? {
+        val match = regex.find(message)
+        val (x, y, z, item) = match?.destructured ?: return null
+
+        return ShopObject(
+            x.toFloat(),
+            y.toFloat(),
+            z.toFloat(),
+            item
+        )
+    }
+
 }
