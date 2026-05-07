@@ -29,7 +29,7 @@ import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.Text
 
-class CacheDebug : BaseCommand() {
+object CacheDebug : BaseCommand() {
     init {
         name = "CacheDebug"
         description = "Gets the data of a user from the cache."

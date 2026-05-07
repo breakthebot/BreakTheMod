@@ -125,6 +125,7 @@ tasks.withType<KotlinCompile>().configureEach {
 val headerText = file("header.txt").takeIf { it.exists() }?.readText()
 
 val addHeader by tasks.registering {
+    description = "Adds a license header to every file."
     onlyIf { headerText != null }
 
     doLast {

@@ -30,8 +30,8 @@ import net.minecraft.command.CommandRegistryAccess
 class DebugLoader {
     fun loadDebugCommands() {
         val commands = listOf(
-            Debug(),
-            CacheDebug(),
+            Debug,
+            CacheDebug,
             LoadModule,
             UnloadModule
         )

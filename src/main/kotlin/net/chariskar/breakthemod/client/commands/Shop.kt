@@ -15,23 +15,6 @@
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*
- * This file is part of breakthemod.
- *
- * breakthemod is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * breakthemod is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
- */
-
 package net.chariskar.breakthemod.client.commands
 
 import com.mojang.brigadier.context.CommandContext
@@ -52,6 +35,8 @@ class Shop : BaseCommand() {
             sendMessage(Text.literal("You have no empty shops."))
             return 0;
         }
+
+        sendMessage(Text.literal("Your empty shops: "))
 
         for (shop in ShopTracker.emptyShops) {
             sendMessage(Text.literal(shop.toString()))

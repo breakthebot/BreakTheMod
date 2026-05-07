@@ -26,7 +26,14 @@ import net.minecraft.client.network.ClientPlayNetworkHandler
 import net.minecraft.text.Text
 
 object ShopTracker : Module(){
-    val regex = Regex("""at\s+(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+).*?run out of\s+(.+)$""")
+    init {
+        name = "ShopTracker"
+        description = "Tracks when one of your shops empties for the getShops command."
+    }
+
+    val regex = Regex(
+        """at\s+(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+).*?run out of\s+(.+?)!?$"""
+    )
     val emptyShops: MutableList<ShopObject> = mutableListOf()
 
     override fun disable() {
@@ -51,7 +58,7 @@ object ShopTracker : Module(){
 
             val string = message?.string ?: return@Game
 
-            if (!string.contains("Your shop has run out of")) return@Game
+            if (!string.contains("Your shop at")) return@Game
 
             val shop = parseShopObject(string) ?: return@Game
 

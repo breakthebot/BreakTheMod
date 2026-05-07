@@ -45,7 +45,7 @@ abstract class Module {
             enabled = true
         }
         catch (e: Exception) {
-            logger.error("Error encountered when enabling $name")
+            logger.error("Error encountered when enabling $name.")
             if (Config.getDevMode()) { logger.error("Error ${e.message}") }
             enabled = false
         }

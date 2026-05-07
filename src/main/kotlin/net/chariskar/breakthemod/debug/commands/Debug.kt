@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.client.MinecraftClient
 import net.minecraft.text.Text
 
-class Debug : BaseCommand() {
+object Debug : BaseCommand() {
     init {
         name = "btmdbg"
         description = "do NOT use on emc."

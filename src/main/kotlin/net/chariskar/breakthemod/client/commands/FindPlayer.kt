@@ -51,7 +51,7 @@ class FindPlayer : BaseCommand() {
             val players = LocationAPI.getVisiblePlayers()
 
             if (players.isNullOrEmpty()) {
-                sendMessage(Text.literal("No visible players at this moment."), Formatting.RED)
+                sendError("No visible players at this moment.")
                 return@launch
             }
             val playerData = PlayerLocationInfo(name, 0.0, 0.0, false, null, false)

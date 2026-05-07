@@ -52,15 +52,19 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 
-object Breakthemod : ClientModInitializer {
+class Breakthemod : ClientModInitializer {
 
     val nearbyLayer: Identifier = Identifier.of("breakthemod", "nearby_layer")
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
-    val modules: MutableList<Module> = mutableListOf()
-    val commands: MutableList<BaseCommand> = mutableListOf()
 
-    const val VERSION: String = "1.5.1-BETA"
+
+    companion object {
+        const val VERSION: String = "1.5.2"
+        val modules: MutableList<Module> = mutableListOf()
+        val commands: MutableList<BaseCommand> = mutableListOf()
+    }
+
 
     private fun loadCommands(commands: MutableList<BaseCommand>) {
         ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _: CommandRegistryAccess ->
@@ -73,16 +77,18 @@ object Breakthemod : ClientModInitializer {
     /**
      * Load debugging modules.
      * */
-    private fun loadDebug() {
+    private fun loadDebug(): Boolean {
         try {
             val clazz = Class.forName("net.chariskar.breakthemod.debug.DebugLoader")
             val instance = clazz.getDeclaredConstructor().newInstance()
             val method = clazz.getMethod("loadDebugCommands")
             method.invoke(instance)
             logger.info("Loaded debugging modules successfully.")
+            return true
         } catch (e: Exception) {
             logger.error("Unexpected error loading debug commands", e)
         }
+        return false
     }
 
     override fun onInitializeClient() {
@@ -128,7 +134,10 @@ object Breakthemod : ClientModInitializer {
         loadModules(modules)
         loadCommands(commands)
 
-        if (Config.getDbg()) { loadDebug() }
+        if (loadDebug()) {
+            Config.config.debug = true
+        }
+
         HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, nearbyLayer) { context, _ -> Hud.render(context) }
     }
 }
