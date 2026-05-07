@@ -36,8 +36,6 @@ class Shop : BaseCommand() {
             return 0;
         }
 
-        sendMessage(Text.literal("Your empty shops: "))
-
         for (shop in ShopTracker.emptyShops) {
             sendMessage(Text.literal(shop.toString()))
         }
