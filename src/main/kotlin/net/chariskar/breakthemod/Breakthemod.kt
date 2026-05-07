@@ -134,9 +134,7 @@ class Breakthemod : ClientModInitializer {
         loadModules(modules)
         loadCommands(commands)
 
-        if (loadDebug()) {
-            Config.config.debug = true
-        }
+        Config.config.debug = loadDebug()
 
         HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, nearbyLayer) { context, _ -> Hud.render(context) }
     }
