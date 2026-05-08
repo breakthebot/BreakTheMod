@@ -57,7 +57,6 @@ object Cache : Module() {
     }
 
     override fun enable() {
-
         ClientPlayConnectionEvents.JOIN.register { _: ClientPlayNetworkHandler?, _: PacketSender?, _: MinecraftClient? ->
             ServerUtils.replaceApiUrl()
             runTask()
@@ -65,11 +64,10 @@ object Cache : Module() {
                 runTask()
             }, 10L, TimeUnit.MINUTES)
         }
+
         ClientPlayConnectionEvents.DISCONNECT.register(ClientPlayConnectionEvents.Disconnect { _: ClientPlayNetworkHandler?, _: MinecraftClient? ->
             cachedPlayers.clear()
         })
-
-        
     }
 
     private fun updatePlayers() {

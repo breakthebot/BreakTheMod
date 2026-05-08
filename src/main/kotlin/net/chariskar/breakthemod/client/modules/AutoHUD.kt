@@ -46,19 +46,24 @@ object AutoHUD : Module() {
     override fun enable() {
         ClientPlayConnectionEvents.JOIN.register(ClientPlayConnectionEvents.Join { _: ClientPlayNetworkHandler?, _: PacketSender?, client: MinecraftClient ->
             Scheduler.schedule( {
-                if (!ServerUtils.isEarthMc()) { return@schedule }
+                try {
+                    if (!ServerUtils.isEarthMc()) { return@schedule }
 
-                val hud = Config.getHud()
+                    val hud = Config.getHud()
 
-                if (hud == AutoHudType.None) { return@schedule }
+                    if (hud == AutoHudType.None) { return@schedule }
 
-                val command = when(hud) {
-                    AutoHudType.PermHud -> "plot perm hud"
-                    AutoHudType.MapHud -> "towny map hud"
-                    else -> ""
+                    val command = when(hud) {
+                        AutoHudType.PermHud -> "plot perm hud"
+                        AutoHudType.MapHud -> "towny map hud"
+                        else -> ""
+                    }
+
+                    client.networkHandler?.sendChatCommand(command)
+                } catch (e: Exception) {
+
                 }
 
-                client.networkHandler?.sendChatCommand(command)
             }, 6L, TimeUnit.SECONDS)
         })
     }

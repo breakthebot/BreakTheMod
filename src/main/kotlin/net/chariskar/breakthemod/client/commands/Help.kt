@@ -37,11 +37,11 @@ class Help : BaseCommand() {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         if (commands == null || commands!!.isEmpty()) {
-            sendMessage(Text.literal("No commands available.").setStyle(Style.EMPTY.withColor(Formatting.RED)))
+            sendError("No commands available!.")
             return 1
         }
 
-        sendMessage(Text.literal("=== Available Commands ===").setStyle(Style.EMPTY.withColor(Formatting.GOLD)))
+        sendMessage(Text.literal("=== Available Commands ==="), Formatting.GOLD)
 
         for (cmd in commands) {
             sendMessage(
@@ -57,7 +57,7 @@ class Help : BaseCommand() {
             return 1
         }
 
-        sendMessage(Text.literal("=== Available Features ===").setStyle(Style.EMPTY.withColor(Formatting.GOLD)))
+        sendMessage(Text.literal("=== Available Features ==="), Formatting.GOLD)
 
         for (module in modules) {
             sendMessage(

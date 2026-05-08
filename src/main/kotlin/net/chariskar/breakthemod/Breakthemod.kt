@@ -57,8 +57,6 @@ class Breakthemod : ClientModInitializer {
     val nearbyLayer: Identifier = Identifier.of("breakthemod", "nearby_layer")
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
-
-
     companion object {
         const val VERSION: String = "1.5.2"
         val modules: MutableList<Module> = mutableListOf()

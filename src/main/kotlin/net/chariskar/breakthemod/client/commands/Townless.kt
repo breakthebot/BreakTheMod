@@ -50,7 +50,7 @@ class Townless : BaseCommand() {
         val onlinePlayers = client.networkHandler!!.playerUuids.toList()
         scope.launch {
             if (onlinePlayers.size <= 1) {
-                sendMessage(Text.literal("No online players found"))
+                sendMessage("No online players found")
                 return@launch
             }
 
@@ -58,7 +58,7 @@ class Townless : BaseCommand() {
             val townName = own?.town?.name
 
             if (townName.isNullOrEmpty()) {
-                sendMessage(Text.literal("You have to be in a town to access this command."))
+                sendMessage("You have to be in a town to access this command.")
                 return@launch
             }
 
@@ -82,7 +82,7 @@ class Townless : BaseCommand() {
                 .map { it.name }
 
             if (townless.isEmpty()) {
-                sendMessage(Text.literal("No townless players found"))
+                sendMessage("No townless players found")
                 return@launch
             }
 

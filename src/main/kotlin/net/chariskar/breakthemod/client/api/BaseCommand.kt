@@ -43,13 +43,8 @@ import org.slf4j.LoggerFactory
  * @property description The command description.
  * @property usageSuffix The args that must be passed to the commands in a readable format (e.g. <name>).
  *  */
-abstract class BaseCommand {
-    var name: String = ""
-    var description: String = ""
+abstract class BaseCommand : Base() {
     var usageSuffix: String = ""
-
-    val logger: Logger = LoggerFactory.getLogger("breakthemod")
-    val client: MinecraftClient = MinecraftClient.getInstance()
 
     private val handler = CoroutineExceptionHandler { _, e ->
         sendError()
@@ -104,49 +99,6 @@ abstract class BaseCommand {
                     )
                 })
         )
-    }
-
-    /**
-     * Helper utility for sending messages.
-     *
-     * @param message The message to be sent
-     */
-    fun sendMessage(message: Text)  {
-        client.execute {
-            client.player?.sendMessage(Prefix.prefix.copy().append(message), false)
-        }
-    }
-
-
-    /**
-     * Helper utility for sending messages.
-     *
-     * @param message The message to be sent
-     * @param colour The color to attach to the message
-     */
-    fun sendMessage(
-        message: Text,
-        colour: Formatting
-    ) {
-        val chatMessage = Text.of(message).apply {
-            Style.EMPTY.withColor(colour)
-        }
-        sendMessage(chatMessage)
-    }
-
-    fun sendError() = sendMessage(Text.literal("Command has exited with an exception"))
-
-    fun sendError(message: String) = sendMessage(Text.literal(message), Formatting.RED)
-
-    fun sendWarning(message: String) = sendMessage(Text.literal(message), Formatting.YELLOW)
-
-
-    fun logError(message: String, e: Exception) = logger.error("$message: ${e.message}", e)
-
-    fun logDebug(message: String) {
-        if (Config.getDbg()) {
-            logger.info("[DEBUG] $message")
-        }
     }
 
 }

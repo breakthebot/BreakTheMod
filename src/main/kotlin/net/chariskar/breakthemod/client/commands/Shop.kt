@@ -32,7 +32,7 @@ class Shop : BaseCommand() {
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
 
         if (ShopTracker.emptyShops.isEmpty()) {
-            sendMessage(Text.literal("You have no empty shops."))
+            sendMessage("You have no empty shops.")
             return 0;
         }
 

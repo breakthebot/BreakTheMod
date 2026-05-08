@@ -44,7 +44,7 @@ class LastSeen : BaseCommand() {
         scope.launch {
             val player = PlayerAPI.getPlayer(name)
             if (player == null) {
-                sendMessage(Text.literal("Unable to find $name"), Formatting.RED)
+                sendError("Unable to find player $name.")
                 return@launch
             }
             val timestamps: List<Long> = Timestamps.parseTimestamp(player.timestamps?.lastOnline!!)
