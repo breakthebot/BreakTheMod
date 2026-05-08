@@ -50,58 +50,44 @@ class Locate : BaseCommand() {
         description = "Gives you the coordinates of a town/nation."
         usageSuffix = "<type> <name>"
     }
-    /**
-     * trying a more object-oriented style.
-     * */
-    data class LocationRequest(
-        val type: String,
-        val name: String
-    ) {
-        suspend fun get(): Text {
-            return when (type) {
-                "town" ->  {
-                    val town = TownAPI.getTown(name) ?: return Text.of("No town with $name found.")
-                    val coords = town.coordinates?.spawn!!
-                    Text.literal("$name is located at x: ${coords.x}, z: ${coords.z} ").append(getMapText(
-                        coords.x!!,
-                        coords.z!!
-                    ))
-                }
-                "nation" -> {
-                    val nation = NationAPI.getNation(name) ?:  return Text.of("No nation with $name found.")
-                    val coords = nation.coordinates?.spawn!!
-                    Text.literal("$name is located at x: ${coords.x}, z: ${coords.z} ").append(getMapText(
-                        coords.x!!,
-                        coords.z!!
-                    ))
-                }
-                else -> Text.literal("$type isn't town or nation.").styled {
-                    Style.EMPTY.withColor(Formatting.RED)
-                }
-            }
-        }
-
-        private fun getMapText(x: Float, z: Float): Text {
-            val mapUrl = "${Config.getMapUrl()}?world=minecraft_overworld&zoom=5&x=$x&z=$z"
-            return Text.literal("Click here").styled {
-                Style.EMPTY
-                    .withColor(Formatting.BLUE)
-                    .withClickEvent (
-                        ClickEvent.OpenUrl(URI.create(mapUrl))
-                    )
-            }
-        }
-    }
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val type: String = ctx.getArgument("type", String::class.java)
         val name: String = ctx.getArgument("name", String::class.java)
 
         scope.launch {
-            sendMessage(LocationRequest(type, name).get())
+            val coords = when (type) {
+                "town" -> {
+                    val town = TownAPI.getTown(name)
+                    town?.coordinates?.spawn
+                }
+                "nation" -> {
+                    val nation = NationAPI.getNation(name)
+                    nation?.coordinates?.spawn
+                }
+                else -> null
+            }
+            if (coords == null) {
+                sendError("No $type named $name found.")
+            }
+            sendMessage(Text.literal("$name is located at x: ${coords?.x}, z: ${coords?.z} ").append(getMapText(
+                coords?.x!!,
+                coords.z!!
+            )))
         }
-
         return 0
+    }
+
+
+    private fun getMapText(x: Float, z: Float): Text {
+        val mapUrl = "${Config.getMapUrl()}?world=minecraft_overworld&zoom=5&x=$x&z=$z"
+        return Text.literal("Click here").styled {
+            Style.EMPTY
+                .withColor(Formatting.BLUE)
+                .withClickEvent (
+                    ClickEvent.OpenUrl(URI.create(mapUrl))
+                )
+        }
     }
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
