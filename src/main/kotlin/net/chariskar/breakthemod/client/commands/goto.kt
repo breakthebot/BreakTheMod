@@ -48,15 +48,18 @@ class goto: BaseCommand() {
         scope.launch {
             val reqTown = TownAPI.getTown(townName)
             if (reqTown == null) {
-                sendError("$townName isnt a real town.")
+                sendError("$townName does not exist.")
                 return@launch
             }
+
             if (reqTown.status?.isPublic == true && reqTown.status?.canOutsidersSpawn == true) {
                 sendMessage(Text.literal("You can do /t spawn ${reqTown.name}"), Formatting.AQUA)
                 return@launch
             }
+
             if (reqTown.status?.isCapital == true) {
                 val nation = NationAPI.getNation(reqTown.nation?.name!!)
+
                 if (nation?.status?.isPublic == true) {
                     sendMessage(Text.literal("Found suitable spawn in:\n ${reqTown.name} (${nation.name})"), Formatting.AQUA)
                     return@launch
@@ -74,20 +77,25 @@ class goto: BaseCommand() {
                     NearbyType.TOWN,
                     radius
                 ))
+
                 val names: List<String> = resp?.mapNotNull { it.name } ?: emptyList()
                 if (names.isEmpty()) {
                     radius += 500
                     continue
                 }
+
                 val townDetails = TownAPI.getTowns(names)
                 if (townDetails.isNullOrEmpty()) {
                     radius += 500
                     continue
                 }
+
                 for (town in townDetails) {
                     val status = town.status
+
                     if (status?.isPublic == true && status.canOutsidersSpawn == true) {
                         validTowns.add(town.name)
+
                     } else if (status?.isCapital == true) {
                         val nation = NationAPI.getNation(town.nation?.name!!)
                         if (nation?.status?.isPublic == true) {
@@ -104,11 +112,11 @@ class goto: BaseCommand() {
                 radius += 500
             }
 
-            sendMessage(Text.literal("No suitable spawns found near $townName."), Formatting.RED)
+            sendError("Found no suitable spawn near $townName.")
 
         }
 
-        return 1
+        return 0
     }
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
