@@ -40,7 +40,7 @@ import org.breakthebot.breakthelibrary.api.TownAPI
 import java.net.URI
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import com.mojang.brigadier.Command as command
+import com.mojang.brigadier.Command
 
 
 class Locate : BaseCommand() {
@@ -98,9 +98,9 @@ class Locate : BaseCommand() {
                     .suggests(LocateSuggestion())
                     .then(
                             RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("name", StringArgumentType.string())
-                                .executes(command { context: CommandContext<FabricClientCommandSource> ->
-                                    if (!getEnabled()) return@command 0
-                                    return@command run(context)
+                                .executes(Command { context: CommandContext<FabricClientCommandSource> ->
+                                    if (!getEnabled()) return@Command 0
+                                    return@Command run(context)
                                 })
                         )
 

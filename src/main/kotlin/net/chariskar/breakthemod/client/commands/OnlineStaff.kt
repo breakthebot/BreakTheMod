@@ -32,10 +32,10 @@ import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import org.breakthebot.breakthelibrary.api.PlayerAPI
 import org.breakthebot.breakthelibrary.api.StaffAPI
-import net.chariskar.breakthemod.client.api.BaseCommand as command
+import net.chariskar.breakthemod.client.api.BaseCommand
 
 
-class OnlineStaff : command() {
+class OnlineStaff : BaseCommand() {
     init {
         name = "onlinestaff"
         description = "Shows online staff"

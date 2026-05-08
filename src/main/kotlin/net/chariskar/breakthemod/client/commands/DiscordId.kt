@@ -16,7 +16,7 @@
  */
 package net.chariskar.breakthemod.client.commands
 
-import com.mojang.brigadier.Command as command
+import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
@@ -68,9 +68,9 @@ class DiscordId : BaseCommand() {
             LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)
                 .then(
                     RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("name", StringArgumentType.string())
-                        .executes(command { context: CommandContext<FabricClientCommandSource> ->
-                            if (!getEnabled()) return@command 0
-                            return@command run(context)
+                        .executes(Command { context: CommandContext<FabricClientCommandSource> ->
+                            if (!getEnabled()) return@Command 0
+                            return@Command run(context)
                         })
                 )
         )
