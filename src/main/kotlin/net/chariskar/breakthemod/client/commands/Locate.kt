@@ -69,9 +69,10 @@ class Locate : BaseCommand() {
             }
             if (coords == null) {
                 sendError("No $type named $name found.")
+                return@launch
             }
-            sendMessage(Text.literal("$name is located at x: ${coords?.x}, z: ${coords?.z} ").append(getMapText(
-                coords?.x!!,
+            sendMessage(Text.literal("$name is located at x: ${coords.x}, z: ${coords.z} ").append(getMapText(
+                coords.x!!,
                 coords.z!!
             )))
         }
