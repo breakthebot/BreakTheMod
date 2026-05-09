@@ -31,7 +31,11 @@ data class ConfigData(
     var features: Features = Features(),
     @Contextual
     var urls: Urls = Urls()
-)
+) {
+    override fun toString(): String {
+        return Config.json.encodeToString(this)
+    }
+}
 
 @Serializable
 enum class AutoHudType {

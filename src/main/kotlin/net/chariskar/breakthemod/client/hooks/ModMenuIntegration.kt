@@ -57,7 +57,7 @@ class ModMenuIntegration : ModMenuApi {
                         Config.config.enabledOnOtherServers = enabled
                         saveConfig()
                     }
-                    .setDefaultValue { Config.config.enabledOnOtherServers }
+                    .setDefaultValue { config.enabledOnOtherServers }
                     .build()
             )
 

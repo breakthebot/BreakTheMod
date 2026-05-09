@@ -20,6 +20,7 @@ package net.chariskar.breakthemod.debug
 import com.mojang.brigadier.CommandDispatcher
 import net.chariskar.breakthemod.debug.commands.CacheDebug
 import net.chariskar.breakthemod.debug.commands.Debug
+import net.chariskar.breakthemod.debug.commands.GetConfig
 import net.chariskar.breakthemod.debug.commands.LoadModule
 import net.chariskar.breakthemod.debug.commands.UnloadModule
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
@@ -33,10 +34,15 @@ class DebugLoader {
             Debug,
             CacheDebug,
             LoadModule,
-            UnloadModule
+            UnloadModule,
+            GetConfig
         )
         ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _: CommandRegistryAccess ->
             commands.forEach { it.register(dispatcher) }
         })
+    }
+
+    fun loadDebug() {
+        loadDebugCommands()
     }
 }

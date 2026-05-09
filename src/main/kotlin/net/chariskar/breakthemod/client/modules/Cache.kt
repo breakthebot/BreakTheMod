@@ -75,7 +75,7 @@ object Cache : Module() {
         cachedPlayers.clear()
 
         val players = client.networkHandler!!.playerUuids.toList().chunked(100)
-        
+
         scope.launch {
             for (players in players) {
                 val apiPlayers = PlayerAPI.getPlayers(players.map { it.toString() })
@@ -83,7 +83,6 @@ object Cache : Module() {
                 cachedPlayers.addAll(apiPlayers)
             }
         }
-
     }
 
     fun runTask() {

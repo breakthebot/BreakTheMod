@@ -79,12 +79,13 @@ class Breakthemod : ClientModInitializer {
         try {
             val clazz = Class.forName("net.chariskar.breakthemod.debug.DebugLoader")
             val instance = clazz.getDeclaredConstructor().newInstance()
-            val method = clazz.getMethod("loadDebugCommands")
+            val method = clazz.getMethod("loadDebug")
             method.invoke(instance)
             logger.info("Loaded debugging modules successfully.")
             return true
         } catch (e: Exception) {
             logger.error("Unexpected error loading debug commands", e)
+            logger.info("Debugging module not present.")
         }
         return false
     }

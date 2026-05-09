@@ -28,7 +28,7 @@ import org.breakthebot.breakthelibrary.utils.Urls
  * Config handler.
  * */
 object Config {
-    private val json = Json { prettyPrint = true; ignoreUnknownKeys = true }
+    val json = Json { prettyPrint = true; ignoreUnknownKeys = true }
 
     var config: ConfigData = ConfigData()
     lateinit var configFile: File

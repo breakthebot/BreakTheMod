@@ -26,6 +26,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.mojang.brigadier.suggestion.SuggestionProvider
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
+import com.mojang.brigadier.Command
+
 import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.client.api.BaseCommand
 import net.chariskar.breakthemod.client.utils.Config
@@ -40,8 +42,6 @@ import org.breakthebot.breakthelibrary.api.TownAPI
 import java.net.URI
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import com.mojang.brigadier.Command
-
 
 class Locate : BaseCommand() {
 
