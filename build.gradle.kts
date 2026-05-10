@@ -133,6 +133,9 @@ val addHeader by tasks.registering {
             include("**/*.kt", "**/*.java")
         }.forEach { file ->
             val content = file.readText()
+            if (content.startsWith("///")) {
+                return@forEach
+            }
             if (!content.startsWith(headerText!!)) {
                 file.writeText("$headerText\n$content")
             }

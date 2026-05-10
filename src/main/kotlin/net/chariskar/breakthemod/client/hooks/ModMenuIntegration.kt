@@ -54,7 +54,7 @@ class ModMenuIntegration : ModMenuApi {
                     Config.getEnabledServers()
                 )
                     .setSaveConsumer { enabled: Boolean ->
-                        Config.config.enabledOnOtherServers = enabled
+                        config.enabledOnOtherServers = enabled
                         saveConfig()
                     }
                     .setDefaultValue { config.enabledOnOtherServers }
@@ -81,6 +81,16 @@ class ModMenuIntegration : ModMenuApi {
                     Config.config.features.hudType = hudType
                     saveConfig()
                 }.setDefaultValue { AutoHudType.None }.build()
+            )
+
+            general.addEntry(
+                entryBuilder.startBooleanToggle(
+                    Text.literal("Experience text overlay."),
+                    Config.getExperienceText()
+                ).setSaveConsumer { enabled: Boolean ->
+                    Config.config.features.experienceText = enabled
+                    saveConfig()
+                }.setDefaultValue( Config.getExperienceText() ).build()
             )
 
             general.addEntry(

@@ -60,9 +60,11 @@ object Cache : Module() {
         ClientPlayConnectionEvents.JOIN.register { _: ClientPlayNetworkHandler?, _: PacketSender?, _: MinecraftClient? ->
             ServerUtils.replaceApiUrl()
             runTask()
-            Scheduler.schedule({
-                runTask()
-            }, 10L, TimeUnit.MINUTES)
+            Scheduler.schedule(
+                { runTask() },
+                10L,
+                TimeUnit.MINUTES
+            )
         }
 
         ClientPlayConnectionEvents.DISCONNECT.register(ClientPlayConnectionEvents.Disconnect { _: ClientPlayNetworkHandler?, _: MinecraftClient? ->

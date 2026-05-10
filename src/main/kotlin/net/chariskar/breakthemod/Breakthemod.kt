@@ -91,13 +91,17 @@ class Breakthemod : ClientModInitializer {
     }
 
     override fun onInitializeClient() {
+        val file = File(
+            MinecraftClient.getInstance()?.runDirectory,
+            "config/breakthemod_config.json"
+        ).apply {
+            parentFile?.mkdirs()
+            if (!exists()) {
+                writeText("{}")
+            }
+        }
+        Config.setFile(file)
 
-        Config.setFile(
-            File(
-                MinecraftClient.getInstance()?.runDirectory,
-                "config/breakthemod_config.json"
-            )
-        )
         Config.loadConfig()
 
         val helpCmd = Help()

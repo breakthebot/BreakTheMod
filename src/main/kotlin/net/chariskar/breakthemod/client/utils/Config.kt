@@ -78,6 +78,8 @@ object Config {
 
     fun getRadar() = config.features.radarEnabled
 
+    fun getExperienceText() = config.features.experienceText
+
     fun getWidget() = config.features.widget
 
     fun getEnabledServers() = config.enabledOnOtherServers
