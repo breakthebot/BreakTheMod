@@ -85,7 +85,7 @@ class ModMenuIntegration : ModMenuApi {
 
             general.addEntry(
                 entryBuilder.startBooleanToggle(
-                    Text.literal("Experience text overlay."),
+                    Text.literal("Experience text overlay"),
                     Config.getExperienceText()
                 ).setSaveConsumer { enabled: Boolean ->
                     Config.config.features.experienceText = enabled
