@@ -61,7 +61,7 @@ object AutoHUD : Module() {
 
                     client.networkHandler?.sendChatCommand(command)
                 } catch (e: Exception) {
-
+                    // dont do anything.
                 }
 
             }, 6L, TimeUnit.SECONDS)
