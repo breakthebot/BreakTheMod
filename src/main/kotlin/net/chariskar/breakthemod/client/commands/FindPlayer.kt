@@ -16,11 +16,8 @@
  */
 package net.chariskar.breakthemod.client.commands
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
-import com.mojang.brigadier.builder.LiteralArgumentBuilder
-import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.mojang.brigadier.suggestion.SuggestionProvider
@@ -28,14 +25,13 @@ import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.client.api.BaseCommand
-import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.client.MinecraftClient
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import org.breakthebot.breakthelibrary.api.LocationAPI
 import org.breakthebot.breakthelibrary.models.PlayerLocationInfo
-import java.util.Locale
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 class FindPlayer : BaseCommand() {
@@ -80,17 +76,7 @@ class FindPlayer : BaseCommand() {
     }
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
-        dispatcher.register(
-            LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)
-                .then(
-                    RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("name", StringArgumentType.string())
-                        .suggests(FindPlayerSuggestion())
-                        .executes(Command { context: CommandContext<FabricClientCommandSource> ->
-                            if (!getEnabled()) return@Command 0
-                            return@Command run(context)
-                        })
-                )
-        )
+        super.register<String>(dispatcher, "name", StringArgumentType.string(), null)
     }
 
     class FindPlayerSuggestion : SuggestionProvider<FabricClientCommandSource?> {

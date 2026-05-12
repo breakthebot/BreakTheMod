@@ -58,7 +58,7 @@ class Breakthemod : ClientModInitializer {
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
     companion object {
-        const val VERSION: String = "1.5.1"
+        const val VERSION: String = "1.5.2-BETA"
         val modules: MutableList<Module> = mutableListOf()
         val commands: MutableList<BaseCommand> = mutableListOf()
     }

@@ -19,23 +19,19 @@ package net.chariskar.breakthemod.client.api
 
 import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
+import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
+import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.CommandSyntaxException
+import com.mojang.brigadier.suggestion.SuggestionProvider
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import net.chariskar.breakthemod.client.utils.Config
-import net.chariskar.breakthemod.client.utils.Prefix
 import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.client.MinecraftClient
-import net.minecraft.text.Style
-import net.minecraft.text.Text
-import net.minecraft.util.Formatting
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 /**
  * Base for commands.
@@ -98,6 +94,35 @@ abstract class BaseCommand : Base() {
                         context
                     )
                 })
+        )
+    }
+
+    /**
+     * Command register function.
+     * @param T the type parameter for the command.
+     * @param dispatcher Command registration dispatcher.
+     * @param argName The name of the argument to register.
+     * @param argType The type of the argument to register.
+     * @param suggestions The suggestions the command provide.
+     * */
+    open fun <T> register(
+        dispatcher: CommandDispatcher<FabricClientCommandSource>,
+        argName: String,
+        argType: ArgumentType<T>,
+        suggestions: SuggestionProvider<FabricClientCommandSource?>? = null
+    ) {
+        dispatcher.register(
+            LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)
+                .then(
+                    RequiredArgumentBuilder.argument<FabricClientCommandSource?, T>(argName, argType)
+                        .apply {
+                            if (suggestions != null) suggests(suggestions)
+                        }
+                        .executes(Command { context: CommandContext<FabricClientCommandSource> ->
+                            if (!getEnabled()) return@Command 0
+                            return@Command run(context)
+                        })
+                )
         )
     }
 

@@ -16,15 +16,11 @@
  */
 package net.chariskar.breakthemod.client.commands
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
-import com.mojang.brigadier.builder.LiteralArgumentBuilder
-import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.client.api.BaseCommand
-import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
 import net.chariskar.breakthemod.client.utils.Timestamps
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.Style
@@ -70,15 +66,6 @@ class LastSeen : BaseCommand() {
     }
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
-        dispatcher.register(
-            LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)
-                .then(
-                    RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("name", StringArgumentType.string())
-                        .executes(Command { context: CommandContext<FabricClientCommandSource> ->
-                            if (!getEnabled()) return@Command 0
-                            return@Command run(context)
-                        })
-                )
-        )
+        super.register<String>(dispatcher, "name", StringArgumentType.string(), null)
     }
 }
