@@ -28,10 +28,8 @@ import java.util.concurrent.CopyOnWriteArraySet
 
 object NearbyEngine : Module() {
 
-    init {
-        name = "Nearby Engine"
-        description = "Gets nearby players automatically."
-    }
+    override val name = "Nearby Engine"
+    override val description = "Gets nearby players automatically."
 
     private const val DISTANCE_THRESHOLD: Double = 200.0
 

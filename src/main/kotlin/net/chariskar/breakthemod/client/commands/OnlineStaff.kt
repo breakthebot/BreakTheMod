@@ -35,12 +35,10 @@ import org.breakthebot.breakthelibrary.api.StaffAPI
 import net.chariskar.breakthemod.client.api.BaseCommand
 
 
-class OnlineStaff : BaseCommand() {
-    init {
-        name = "onlinestaff"
-        description = "Shows online staff"
-        usageSuffix = "[api]"
-    }
+object OnlineStaff : BaseCommand() {
+    override val name = "onlinestaff"
+    override val description = "Shows online staff"
+    override val usageSuffix = "[api]"
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         dispatcher.register(

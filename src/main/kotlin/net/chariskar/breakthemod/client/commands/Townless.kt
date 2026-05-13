@@ -32,19 +32,14 @@ import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import org.breakthebot.breakthelibrary.api.PlayerAPI
-import org.breakthebot.breakthelibrary.models.Resident
-import java.util.UUID
 
-
-class Townless : BaseCommand() {
-    val batchSize: Int = 100
+object Townless : BaseCommand() {
+    const val BATCH_SIZE: Int = 100
     val username: String = client.session.username
 
-    init {
-        name = "townless"
-        description = "Shows all townless player"
-        usageSuffix = ""
-    }
+    override val name = "townless"
+    override val description = "Shows all townless player"
+    override val usageSuffix = ""
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val onlinePlayers = client.networkHandler!!.playerUuids.toList()
@@ -62,7 +57,7 @@ class Townless : BaseCommand() {
                 return@launch
             }
 
-            val batches = onlinePlayers.chunked(batchSize)
+            val batches = onlinePlayers.chunked(BATCH_SIZE)
             val semaphore = Semaphore(3)
 
             val results = coroutineScope {

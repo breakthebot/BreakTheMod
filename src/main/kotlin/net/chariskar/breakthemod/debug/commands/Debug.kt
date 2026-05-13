@@ -29,10 +29,9 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.text.Text
 
 object Debug : BaseCommand() {
-    init {
-        name = "btmdbg"
-        description = "do NOT use on emc."
-    }
+    override val name = "btmdbg"
+    override val description = "do NOT use on emc."
+    override val usageSuffix = ""
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         if (!Config.getDbg()) return 1

@@ -104,23 +104,22 @@ class Breakthemod : ClientModInitializer {
 
         Config.loadConfig()
 
-        val helpCmd = Help()
         commands.addAll(
             listOf(
-                Nearby(),
-                OnlineStaff(),
-                Townless(),
-                goto(),
-                FindPlayer(),
-                LastSeen(),
-                DiscordId(),
-                Locate(),
-                Calculate(),
-                Shop(),
-                helpCmd
+                Nearby,
+                OnlineStaff,
+                Townless,
+                goto,
+                FindPlayer,
+                LastSeen,
+                DiscordId,
+                Locate,
+                Calculate,
+                Shop,
+                Help
             )
         )
-        helpCmd.commands = commands
+        Help.commands = commands
 
         modules.addAll(
             listOf(
@@ -132,7 +131,7 @@ class Breakthemod : ClientModInitializer {
             )
         )
 
-        helpCmd.modules = modules
+        Help.modules = modules
 
         loadModules(modules)
         loadCommands(commands)

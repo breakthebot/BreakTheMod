@@ -36,10 +36,8 @@ import java.util.regex.Pattern
  * @property chatChannel The current channel the player is in.
  * */
 object ChatPreview : Module() {
-    init {
-        name = "ChatPreview"
-        description = "Chat preview logic handler."
-    }
+    override val name = "ChatPreview"
+    override val description = "Chat preview logic handler."
 
     var inPartyChat: Boolean = false
     var chatChannel: ChatChannel? = null

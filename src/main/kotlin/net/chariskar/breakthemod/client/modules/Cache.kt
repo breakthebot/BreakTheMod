@@ -44,10 +44,8 @@ import java.util.concurrent.TimeUnit
  * */
 object Cache : Module() {
 
-    init {
-        name = "Cache"
-        description = "Cache handler for the PlayerNametagInfo feature."
-    }
+    override val name = "Cache"
+    override val description = "Cache handler for the PlayerNametagInfo feature."
 
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     val cachedPlayers: MutableList<Resident> = CopyOnWriteArrayList()

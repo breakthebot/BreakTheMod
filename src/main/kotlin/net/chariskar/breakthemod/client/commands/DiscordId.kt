@@ -30,13 +30,12 @@ import org.breakthebot.breakthelibrary.api.DiscordAPI
 import java.net.URI
 
 
-class DiscordId : BaseCommand() {
+object DiscordId : BaseCommand() {
 
-    init {
-        name = "discordLinked"
-        description = "It tells you the discord username of a linked player."
-        usageSuffix = "<name>"
-    }
+    override val name: String = "discordLinked"
+    override val description: String = "Tells you the discord username of a linked player."
+    override val usageSuffix = "<name>"
+
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val name: String = ctx.getArgument("name", String::class.java)

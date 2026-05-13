@@ -26,10 +26,8 @@ import net.minecraft.client.network.ClientPlayNetworkHandler
 import net.minecraft.text.Text
 
 object ShopTracker : Module(){
-    init {
-        name = "ShopTracker"
-        description = "Tracks when one of your shops empties for the getShops command."
-    }
+    override val name = "ShopTracker"
+    override val description = "Tracks when one of your shops empties for the getShops command."
 
     val regex = Regex(
         """at\s+(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+).*?run out of\s+(.+?)!?$"""

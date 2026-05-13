@@ -34,12 +34,11 @@ import org.breakthebot.breakthelibrary.models.PlayerLocationInfo
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
-class FindPlayer : BaseCommand() {
-    init {
-        name = "findPlayer"
-        description = "Tells you where a player is based on the map api."
-        usageSuffix = "<name>"
-    }
+object FindPlayer : BaseCommand() {
+
+    override val name: String = "findPlayer"
+    override val description: String = "Tells you where a player is based on the map api."
+    override val usageSuffix = "<name>"
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val name: String = ctx.getArgument("name", String::class.java)
@@ -76,8 +75,9 @@ class FindPlayer : BaseCommand() {
     }
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
-        super.register<String>(dispatcher, "name", StringArgumentType.string(), null)
+        super.register<String>(dispatcher, "name", StringArgumentType.string(), FindPlayerSuggestion())
     }
+
 
     class FindPlayerSuggestion : SuggestionProvider<FabricClientCommandSource?> {
 

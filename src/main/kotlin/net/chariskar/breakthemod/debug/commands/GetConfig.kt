@@ -21,15 +21,17 @@ import com.mojang.brigadier.context.CommandContext
 import net.chariskar.breakthemod.client.api.BaseCommand
 import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
+import net.minecraft.text.Text
+import net.minecraft.util.Formatting
 
 object GetConfig : BaseCommand() {
-    init {
-        name = "getConfig"
-        description = "Displays the config"
-    }
+    override val name = "getConfig"
+    override val description = "Displays the config"
+    override val usageSuffix = ""
+
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
-        sendMessage("Config: ${Config.config.toString()}")
+        sendMessage(Text.literal("Config: ${Config.config}"), Formatting.RED)
         return 0
     }
 }

@@ -36,12 +36,11 @@ import net.minecraft.util.Formatting
 import java.util.Locale
 import java.util.concurrent.CompletableFuture
 
-class Calculate : BaseCommand() {
-    init {
-        name = "calculate"
-        description = "Helps with the conversions of blocks & stacks."
-        usageSuffix = "<type> <amount>"
-    }
+object Calculate : BaseCommand() {
+
+    override val name = "calculate"
+    override val description = "Helps with the conversions of blocks & stacks."
+    override val usageSuffix = "<type> <amount>"
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val type = ctx.getArgument("type", String::class.java)

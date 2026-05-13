@@ -4,4 +4,3 @@
 * ~~Improve performance~~ ~~and try to decrease jar size~~.
 * ~~Improve testing.~~
 * ~~Make a proper breakthemod api other mods can use.~~
-* 

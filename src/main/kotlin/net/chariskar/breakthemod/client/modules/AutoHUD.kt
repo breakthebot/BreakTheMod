@@ -34,10 +34,8 @@ import java.util.concurrent.TimeUnit
  * AutoHUD on login module.
  * */
 object AutoHUD : Module() {
-    init {
-        name = "AutoHUD"
-        description = "Enables the hud of choice of the user in login."
-    }
+    override val name = "AutoHUD"
+    override val description = "Enables the hud of choice of the user in login."
 
     override fun disable() {
         enabled = false

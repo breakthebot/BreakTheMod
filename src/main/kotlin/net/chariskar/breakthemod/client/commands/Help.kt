@@ -25,15 +25,13 @@ import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-class Help : BaseCommand() {
+object Help : BaseCommand() {
     var commands: List<BaseCommand>? = null
     var modules: List<Module>? = null
 
-    init {
-        name = "commands"
-        description = "This very command."
-        usageSuffix = ""
-    }
+    override val name = "commands"
+    override val description = "This very command."
+    override val usageSuffix = ""
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         if (commands == null || commands!!.isEmpty()) {

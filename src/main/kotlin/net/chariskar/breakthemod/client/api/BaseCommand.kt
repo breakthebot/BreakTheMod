@@ -40,7 +40,7 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
  * @property usageSuffix The args that must be passed to the commands in a readable format (e.g. <name>).
  *  */
 abstract class BaseCommand : Base() {
-    var usageSuffix: String = ""
+    abstract val usageSuffix: String
 
     private val handler = CoroutineExceptionHandler { _, e ->
         sendError()

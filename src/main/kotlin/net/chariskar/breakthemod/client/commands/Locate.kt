@@ -43,13 +43,11 @@ import java.net.URI
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
-class Locate : BaseCommand() {
+object Locate : BaseCommand() {
 
-    init {
-        name = "locate"
-        description = "Gives you the coordinates of a town/nation."
-        usageSuffix = "<type> <name>"
-    }
+    override val name = "locate"
+    override val description = "Gives you the coordinates of a town/nation."
+    override val usageSuffix = "<type> <name>"
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val type: String = ctx.getArgument("type", String::class.java)

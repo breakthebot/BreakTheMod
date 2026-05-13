@@ -37,10 +37,9 @@ import java.util.Locale
 import java.util.concurrent.CompletableFuture
 
 object LoadModule : BaseCommand() {
-    init {
-        name = "loadModule"
-        description = "Load any disabled module at will."
-    }
+    override val name = "loadModule"
+    override val description = "Load any disabled module at will."
+    override val usageSuffix = "<name>"
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         dispatcher.register(
@@ -55,6 +54,7 @@ object LoadModule : BaseCommand() {
                 )
         )
     }
+
 
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {

@@ -31,12 +31,11 @@ import org.breakthebot.breakthelibrary.api.TownAPI
 import org.breakthebot.breakthelibrary.models.NearbyItem
 import org.breakthebot.breakthelibrary.models.NearbyType
 
-class goto: BaseCommand() {
+object goto : BaseCommand() {
     
-    init {
-        name = "goto"
-        description = "Shows you the nearest spawnable town of the town you selected."
-    }
+    override val name: String = "goto"
+    override val usageSuffix: String = "Shows you the nearest spawnable town of the town you selected."
+    override val description: String = ""
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val townName = ctx.getArgument("name", String::class.java)

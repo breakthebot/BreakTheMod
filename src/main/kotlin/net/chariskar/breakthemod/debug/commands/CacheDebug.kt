@@ -32,10 +32,9 @@ import java.util.*
 import java.util.concurrent.CompletableFuture
 
 object CacheDebug : BaseCommand() {
-    init {
-        name = "CacheDebug"
-        description = "Gets the data of a user from the cache."
-    }
+    override val name = "CacheDebug"
+    override val description = "Gets the data of a user from the cache."
+    override val usageSuffix = "<name>"
 
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {

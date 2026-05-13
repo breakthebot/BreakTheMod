@@ -36,11 +36,9 @@ import java.util.Locale
 import java.util.concurrent.CompletableFuture
 
 object UnloadModule : BaseCommand() {
-    init {
-        name = "unloadModule"
-        description = "Unload a module at will"
-        usageSuffix = "<name>"
-    }
+    override val name = "unLoadModule"
+    override val description = "Unload any enabled module at will."
+    override val usageSuffix = "<name>"
 
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {

@@ -23,11 +23,10 @@ import net.chariskar.breakthemod.client.modules.ShopTracker
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.Text
 
-class Shop : BaseCommand() {
-    init {
-        name = "getshops"
-        description = "Checks if any of your shops have run out."
-    }
+object Shop : BaseCommand() {
+    override val name = "getshops"
+    override val description = "Checks if any of your shops have run out."
+    override val usageSuffix = ""
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
 

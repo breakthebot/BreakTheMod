@@ -31,8 +31,8 @@ import org.slf4j.LoggerFactory
  * Base for all breakthemod features.
  * */
 abstract class Base {
-    var name: String = ""
-    var description: String = ""
+    abstract val name: String
+    abstract val description: String
 
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
     val client: MinecraftClient = MinecraftClient.getInstance()
@@ -58,8 +58,9 @@ abstract class Base {
         message: Text,
         colour: Formatting
     ) {
-        val chatMessage = Text.of(message).apply {
-            Style.EMPTY.withColor(colour)
+        val chatMessage = Text.empty().apply {
+            append(message)
+            style = Style.EMPTY.withColor(colour)
         }
         sendMessage(chatMessage)
     }
