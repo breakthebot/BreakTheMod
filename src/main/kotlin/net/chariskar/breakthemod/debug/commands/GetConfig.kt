@@ -31,7 +31,7 @@ object GetConfig : BaseCommand() {
 
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
-        sendMessage(Text.literal("Config: ${Config.config}"), Formatting.RED)
+        sendMessage(Text.literal("Config: ${Config.config}"))
         return 0
     }
 }
