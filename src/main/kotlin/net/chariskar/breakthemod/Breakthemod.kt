@@ -38,6 +38,7 @@ import net.chariskar.breakthemod.client.modules.AutoHUD
 import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.modules.ChatPreview
 import net.chariskar.breakthemod.client.modules.ShopTracker
+import net.chariskar.breakthemod.client.modules.AfkTrack
 
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
@@ -58,7 +59,8 @@ class Breakthemod : ClientModInitializer {
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
     companion object {
-        const val VERSION: String = "1.5.2-BETA"
+        val VERSION: String
+            get() = "1.5.2-BETA-${Config.getDbg()}"
         val modules: MutableList<Module> = mutableListOf()
         val commands: MutableList<BaseCommand> = mutableListOf()
     }
@@ -127,7 +129,8 @@ class Breakthemod : ClientModInitializer {
                 ChatPreview,
                 Cache,
                 NearbyEngine,
-                ShopTracker
+                ShopTracker,
+                AfkTrack
             )
         )
 
@@ -137,6 +140,10 @@ class Breakthemod : ClientModInitializer {
         loadCommands(commands)
 
         Config.config.debug = loadDebug()
+
+        if (VERSION.contains("BETA")) {
+            logger.warn("You are running a beta version of breakthemod, unexpected behaviour and glitches may occur")
+        }
 
         HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, nearbyLayer) { context, _ -> Hud.render(context) }
     }

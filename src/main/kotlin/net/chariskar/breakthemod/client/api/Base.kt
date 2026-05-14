@@ -34,13 +34,13 @@ abstract class Base {
     abstract val name: String
     abstract val description: String
 
-    val logger: Logger = LoggerFactory.getLogger("breakthemod")
-    val client: MinecraftClient = MinecraftClient.getInstance()
+    protected val logger: Logger = LoggerFactory.getLogger("breakthemod")
+    protected val client: MinecraftClient = MinecraftClient.getInstance()
 
     /**
      * Helper utility for sending messages.
      *
-     * @param message The message to be sent
+     * @param message The message to be sent.
      */
     fun sendMessage(message: Text)  {
         client.execute {
@@ -51,8 +51,8 @@ abstract class Base {
     /**
      * Helper utility for sending messages.
      *
-     * @param message The message to be sent
-     * @param colour The color to attach to the message
+     * @param message The message to be sent.
+     * @param colour The color to attach to the message.
      */
     fun sendMessage(
         message: Text,

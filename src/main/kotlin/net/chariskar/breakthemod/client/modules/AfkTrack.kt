@@ -25,62 +25,33 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayNetworkHandler
 import net.minecraft.text.Text
 
-object ShopTracker : Module(){
-    override val name = "ShopTracker"
-    override val description = "Tracks when one of your shops empties for the getShops command."
+object AfkTrack : Module() {
 
-    private val shopRegex = Regex(
-        """at\s+(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+).*?run out of\s+(.+?)!?$"""
-    )
-
-    val emptyShops: MutableList<ShopObject> = mutableListOf()
+    override val name = "AfkTrack"
+    override val description: String = "Utility module for tracking afk status."
+    var isAfk: Boolean = false
 
     override fun disable() {
-        emptyShops.clear()
         enabled = false
-    }
-    
-    data class ShopObject(
-        val x: Float,
-        val y: Float,
-        val z: Float,
-        val item: String      
-    ) {
-        override fun toString(): String {
-            return "-Shop at $x $y $z ($item)"
-        }
     }
 
     override fun enable() {
         ClientReceiveMessageEvents.GAME.register(ClientReceiveMessageEvents.Game { message: Text?, _: Boolean ->
             if (!ServerUtils.isEarthMc()) return@Game
-
-            val string = message?.string ?: return@Game
-
-            if (!string.contains("Your shop at")) return@Game
-
-            val shop = parseShopObject(string) ?: return@Game
-
-            emptyShops.add(shop)
-            logDebug("Shop has been added.")
+            val messageText = message?.string ?: return@Game
+            if (messageText.equals("You are now AFK.", ignoreCase = true)) {
+                isAfk = true
+            }
+            if (messageText.equals("You are no longer afk.", ignoreCase = true)) {
+                isAfk = false
+                sendMessage("The following shops run out of stock whilst you were afk:")
+                ShopTracker.emptyShops.forEach { sendMessage(it.toString()) }
+            }
         })
 
         ClientPlayConnectionEvents.DISCONNECT.register(ClientPlayConnectionEvents.Disconnect { _: ClientPlayNetworkHandler?, _: MinecraftClient? ->
-            emptyShops.clear()
+            isAfk = false
         })
-        
-    }
-
-    fun parseShopObject(message: String): ShopObject? {
-        val match = shopRegex.find(message)
-        val (x, y, z, item) = match?.destructured ?: return null
-
-        return ShopObject(
-            x.toFloat(),
-            y.toFloat(),
-            z.toFloat(),
-            item
-        )
     }
 
 }

@@ -55,7 +55,6 @@ object Calculate : BaseCommand() {
             "stacks" -> {
                 val fullStacks = amount / 64
                 val remainder = amount % 64
-
                 sendMessage("$amount blocks are $fullStacks stacks and $remainder blocks")
                 0
             }

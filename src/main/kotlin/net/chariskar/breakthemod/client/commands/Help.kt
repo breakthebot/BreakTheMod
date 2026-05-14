@@ -21,7 +21,6 @@ import com.mojang.brigadier.context.CommandContext
 import net.chariskar.breakthemod.client.api.BaseCommand
 import net.chariskar.breakthemod.client.api.Module
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 

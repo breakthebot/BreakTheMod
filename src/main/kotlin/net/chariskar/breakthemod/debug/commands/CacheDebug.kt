@@ -46,24 +46,13 @@ object CacheDebug : BaseCommand() {
     }
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
-        super.register<String>(dispatcher, "name", StringArgumentType.string(), CacheSuggestions())
-    }
-
-    class CacheSuggestions : SuggestionProvider<FabricClientCommandSource?> {
-
-        @Throws(CommandSyntaxException::class)
-        override fun getSuggestions(
-            context: CommandContext<FabricClientCommandSource?>?,
-            builder: SuggestionsBuilder
-        ): CompletableFuture<Suggestions> {
-            val input = builder.remaining.lowercase(Locale.getDefault())
-
-            Cache.cachedPlayers.stream()
-                .filter { s -> s?.name?.startsWith(input) == true }
-                .map { it.name }
-                .forEach(builder::suggest)
-
-            return builder.buildFuture()
-        }
+        super.register<String>(
+            dispatcher,
+            "name",
+            StringArgumentType.string(),
+            CommandSuggestions(
+                Cache.cachedPlayers.map { it.name }.toMutableList()
+            )
+        )
     }
 }

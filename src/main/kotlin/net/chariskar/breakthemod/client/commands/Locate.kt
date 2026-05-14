@@ -17,17 +17,12 @@
 
 package net.chariskar.breakthemod.client.commands
 
+import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
-import com.mojang.brigadier.exceptions.CommandSyntaxException
-import com.mojang.brigadier.suggestion.SuggestionProvider
-import com.mojang.brigadier.suggestion.Suggestions
-import com.mojang.brigadier.suggestion.SuggestionsBuilder
-import com.mojang.brigadier.Command
-
 import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.client.api.BaseCommand
 import net.chariskar.breakthemod.client.utils.Config
@@ -40,8 +35,6 @@ import net.minecraft.util.Formatting
 import org.breakthebot.breakthelibrary.api.NationAPI
 import org.breakthebot.breakthelibrary.api.TownAPI
 import java.net.URI
-import java.util.*
-import java.util.concurrent.CompletableFuture
 
 object Locate : BaseCommand() {
 
@@ -91,36 +84,17 @@ object Locate : BaseCommand() {
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         dispatcher.register(
-            LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)
-                .then(RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("type", StringArgumentType.string())
-                    .suggests(LocateSuggestion())
-                    .then(
-                            RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("name", StringArgumentType.string())
-                                .executes(Command { context: CommandContext<FabricClientCommandSource> ->
-                                    if (!getEnabled()) return@Command 0
-                                    return@Command run(context)
-                                })
-                        )
-
+            LiteralArgumentBuilder.literal<FabricClientCommandSource>(name).apply {
+                then(RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("type", StringArgumentType.string())
+                    .suggests(CommandSuggestions(mutableListOf("town", "nation")))
                 )
+                then(RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("name", StringArgumentType.string())
+                    .executes(Command { context: CommandContext<FabricClientCommandSource> ->
+                        if (!getEnabled()) return@Command 0
+                        return@Command run(context)
+                    })
+                )
+            }
         )
-    }
-
-    class LocateSuggestion : SuggestionProvider<FabricClientCommandSource?> {
-        val allSuggestions: MutableList<String> = mutableListOf("town", "nation")
-
-        @Throws(CommandSyntaxException::class)
-        override fun getSuggestions(
-            context: CommandContext<FabricClientCommandSource?>?,
-            builder: SuggestionsBuilder
-        ): CompletableFuture<Suggestions> {
-            val input = builder.remaining.lowercase(Locale.getDefault())
-
-            allSuggestions.stream()
-                .filter { s -> s?.startsWith(input) == true }
-                .forEach(builder::suggest)
-
-            return builder.buildFuture()
-        }
     }
 }

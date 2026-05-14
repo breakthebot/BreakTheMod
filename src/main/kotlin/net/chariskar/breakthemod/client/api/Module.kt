@@ -34,9 +34,10 @@ abstract class Module : Base() {
     var enabled: Boolean = false
 
     fun launch() {
+        if (enabled) return
         try {
-            enable()
             enabled = true
+            enable()
         }
         catch (e: Exception) {
             logger.error("Error encountered when enabling $name.")
@@ -47,7 +48,7 @@ abstract class Module : Base() {
 
     abstract fun disable()
 
-    abstract fun enable()
+    protected abstract fun enable()
 
     open fun getModuleDescription(): String = "$name: $description"
 }

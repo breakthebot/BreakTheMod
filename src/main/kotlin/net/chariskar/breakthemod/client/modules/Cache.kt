@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit
  *
  * @property scope The execution scope.
  * @property cachedPlayers The player currently cached in memory.
- * */
+ *  */
 object Cache : Module() {
 
     override val name = "Cache"

@@ -19,20 +19,14 @@ package net.chariskar.breakthemod.client.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
-import com.mojang.brigadier.exceptions.CommandSyntaxException
-import com.mojang.brigadier.suggestion.SuggestionProvider
-import com.mojang.brigadier.suggestion.Suggestions
-import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.client.api.BaseCommand
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.client.MinecraftClient
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import org.breakthebot.breakthelibrary.api.LocationAPI
 import org.breakthebot.breakthelibrary.models.PlayerLocationInfo
-import java.util.*
-import java.util.concurrent.CompletableFuture
+
 
 object FindPlayer : BaseCommand() {
 
@@ -75,25 +69,13 @@ object FindPlayer : BaseCommand() {
     }
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
-        super.register<String>(dispatcher, "name", StringArgumentType.string(), FindPlayerSuggestion())
-    }
-
-
-    class FindPlayerSuggestion : SuggestionProvider<FabricClientCommandSource?> {
-
-        @Throws(CommandSyntaxException::class)
-        override fun getSuggestions(
-            context: CommandContext<FabricClientCommandSource?>?,
-            builder: SuggestionsBuilder
-        ): CompletableFuture<Suggestions> {
-            val input = builder.remaining.lowercase(Locale.getDefault())
-
-            val players = MinecraftClient.getInstance().world?.players?.map { it.gameProfile.name }
-            players?.stream()
-                ?.filter { s -> s?.startsWith(input) == true }
-                ?.forEach(builder::suggest)
-
-            return builder.buildFuture()
-        }
+        super.register<String>(
+            dispatcher,
+            "name",
+            StringArgumentType.string(),
+            CommandSuggestions(
+                client.networkHandler!!.playerUuids.map { it.toString() }.toMutableList()
+            )
+        )
     }
 }

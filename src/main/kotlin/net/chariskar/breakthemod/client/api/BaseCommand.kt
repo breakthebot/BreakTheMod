@@ -25,6 +25,8 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.mojang.brigadier.suggestion.SuggestionProvider
+import com.mojang.brigadier.suggestion.Suggestions
+import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +34,8 @@ import kotlinx.coroutines.SupervisorJob
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
+import java.util.*
+import java.util.concurrent.CompletableFuture
 
 /**
  * Base for commands.
@@ -51,7 +55,7 @@ abstract class BaseCommand : Base() {
 
     protected val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default + handler)
 
-    fun getUsage(): String { return "/$name $usageSuffix" }
+    fun getUsage() = "/$name $usageSuffix"
 
     /**
      * @param ctx the command context.
@@ -63,7 +67,7 @@ abstract class BaseCommand : Base() {
     /**
      * Internal method, executes command code.
      * @param ctx The Command context.
-     * @return 0 if success, 1 if error.
+     * @return 1 if success 0 if error.
      * @throws CommandSyntaxException If invalid syntax.
      */
     @Throws(CommandSyntaxException::class)
@@ -77,7 +81,7 @@ abstract class BaseCommand : Base() {
         } catch (e: Exception) {
             sendError()
             logError("Unexpected error has occurred while running $name", e)
-            return 0
+            return 1
         }
     }
 
@@ -89,21 +93,18 @@ abstract class BaseCommand : Base() {
         dispatcher.register(
             LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)
                 .executes(Command { context: CommandContext<FabricClientCommandSource> ->
-                    if (!getEnabled()) { return@Command 0 }
-                    return@Command run(
-                        context
-                    )
+                    return@Command if(!getEnabled()) 0 else run(context)
                 })
         )
     }
 
     /**
      * Command register function.
-     * @param T the type parameter for the command.
+     * @param T The type of the argument.
      * @param dispatcher Command registration dispatcher.
      * @param argName The name of the argument to register.
      * @param argType The type of the argument to register.
-     * @param suggestions The suggestions the command provide.
+     * @param suggestions The suggestions the argument provides.
      * */
     open fun <T> register(
         dispatcher: CommandDispatcher<FabricClientCommandSource>,
@@ -117,13 +118,31 @@ abstract class BaseCommand : Base() {
                     RequiredArgumentBuilder.argument<FabricClientCommandSource?, T>(argName, argType)
                         .apply {
                             if (suggestions != null) suggests(suggestions)
+                            executes(Command { context: CommandContext<FabricClientCommandSource> ->
+                                return@Command if(!getEnabled()) 0 else run(context)
+                            })
                         }
-                        .executes(Command { context: CommandContext<FabricClientCommandSource> ->
-                            if (!getEnabled()) return@Command 0
-                            return@Command run(context)
-                        })
                 )
         )
+    }
+
+    class CommandSuggestions(
+        val allSuggestions: MutableList<String>
+    ) : SuggestionProvider<FabricClientCommandSource?> {
+
+        @Throws(CommandSyntaxException::class)
+        override fun getSuggestions(
+            context: CommandContext<FabricClientCommandSource?>?,
+            builder: SuggestionsBuilder
+        ): CompletableFuture<Suggestions> {
+            val input = builder.remaining.lowercase(Locale.getDefault())
+
+            allSuggestions.stream()
+                .filter { s -> s?.startsWith(input) == true }
+                .forEach(builder::suggest)
+
+            return builder.buildFuture()
+        }
     }
 
 }

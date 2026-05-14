@@ -42,16 +42,11 @@ object LoadModule : BaseCommand() {
     override val usageSuffix = "<name>"
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
-        dispatcher.register(
-            LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)
-                .then(
-                    RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("name", StringArgumentType.string())
-                        .suggests(ModuleSuggestions())
-                        .executes(Command { context: CommandContext<FabricClientCommandSource> ->
-                            if (!getEnabled()) return@Command 0
-                            return@Command run(context)
-                        })
-                )
+        super.register<String>(
+            dispatcher,
+            "name",
+            StringArgumentType.string(),
+            ModuleSuggestions()
         )
     }
 

@@ -28,10 +28,11 @@ import org.breakthebot.breakthelibrary.utils.Urls
  * Config handler.
  * */
 object Config {
+    lateinit var configFile: File
+
     val json = Json { prettyPrint = true; ignoreUnknownKeys = true }
 
     var config: ConfigData = ConfigData()
-    lateinit var configFile: File
 
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
 

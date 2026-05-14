@@ -64,7 +64,9 @@ object LastSeen : BaseCommand() {
         return 0
     }
 
-    override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
+    override fun register(
+        dispatcher: CommandDispatcher<FabricClientCommandSource>
+    ) {
         super.register<String>(dispatcher, "name", StringArgumentType.string(), null)
     }
 }
