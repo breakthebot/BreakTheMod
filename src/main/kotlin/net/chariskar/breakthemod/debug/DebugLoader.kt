@@ -26,9 +26,13 @@ import net.chariskar.breakthemod.debug.commands.UnloadModule
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.command.CommandRegistryAccess
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 
 class DebugLoader {
+    val logger: Logger = LoggerFactory.getLogger("breakthemod")
+
     fun loadDebugCommands() {
         val commands = listOf(
             Debug,
@@ -40,6 +44,7 @@ class DebugLoader {
         ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _: CommandRegistryAccess ->
             commands.forEach { it.register(dispatcher) }
         })
+        logger.warn("Debugging tools active be warned.")
     }
 
     fun loadDebug() {

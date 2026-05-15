@@ -90,7 +90,6 @@ object goto : BaseCommand() {
 
                     if (status?.isPublic == true && status.canOutsidersSpawn == true) {
                         validTowns.add(town.name)
-
                     } else if (status?.isCapital == true) {
                         val nation = NationAPI.getNation(town.nation?.name!!)
                         if (nation?.status?.isPublic == true) {

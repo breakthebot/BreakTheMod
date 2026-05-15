@@ -20,16 +20,10 @@ package net.chariskar.breakthemod.debug.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
-import com.mojang.brigadier.exceptions.CommandSyntaxException
-import com.mojang.brigadier.suggestion.SuggestionProvider
-import com.mojang.brigadier.suggestion.Suggestions
-import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.chariskar.breakthemod.client.api.BaseCommand
 import net.chariskar.breakthemod.client.modules.Cache
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.Text
-import java.util.*
-import java.util.concurrent.CompletableFuture
 
 object CacheDebug : BaseCommand() {
     override val name = "CacheDebug"
@@ -51,7 +45,7 @@ object CacheDebug : BaseCommand() {
             "name",
             StringArgumentType.string(),
             CommandSuggestions(
-                Cache.cachedPlayers.map { it.name }.toMutableList()
+                Cache.playerCache.map { it.name }.toMutableList()
             )
         )
     }

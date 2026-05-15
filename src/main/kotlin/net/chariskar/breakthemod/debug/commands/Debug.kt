@@ -48,7 +48,7 @@ object Debug : BaseCommand() {
             Text.literal("Server status: isEmc(${ServerUtils.isEarthMc()}), enabled(${ServerUtils.getEnabled()})")
         )
         sendMessage(
-            Text.literal("Cache size: ${Cache.cachedPlayers.size}")
+            Text.literal("Cache size: ${Cache.playerCache.size}")
         )
         return 0
     }

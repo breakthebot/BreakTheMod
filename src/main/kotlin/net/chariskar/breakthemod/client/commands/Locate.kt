@@ -17,14 +17,18 @@
 
 package net.chariskar.breakthemod.client.commands
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
+import com.mojang.brigadier.exceptions.CommandSyntaxException
+import com.mojang.brigadier.suggestion.SuggestionProvider
+import com.mojang.brigadier.suggestion.Suggestions
+import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.client.api.BaseCommand
+import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
@@ -35,6 +39,8 @@ import net.minecraft.util.Formatting
 import org.breakthebot.breakthelibrary.api.NationAPI
 import org.breakthebot.breakthelibrary.api.TownAPI
 import java.net.URI
+import java.util.Locale
+import java.util.concurrent.CompletableFuture
 
 object Locate : BaseCommand() {
 
@@ -84,17 +90,56 @@ object Locate : BaseCommand() {
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         dispatcher.register(
-            LiteralArgumentBuilder.literal<FabricClientCommandSource>(name).apply {
-                then(RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("type", StringArgumentType.string())
-                    .suggests(CommandSuggestions(mutableListOf("town", "nation")))
+            LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)
+                .then(
+                    RequiredArgumentBuilder.argument<FabricClientCommandSource, String>(
+                        "type",
+                        StringArgumentType.word()
+                    )
+                        .suggests { _, builder ->
+                            builder.suggest("town")
+                            builder.suggest("nation")
+                            builder.buildFuture()
+                        }
+                        .then(
+                            RequiredArgumentBuilder.argument<FabricClientCommandSource, String>(
+                                "name",
+                                StringArgumentType.string()
+                            )
+                                .suggests(NameSuggestions())
+                                .executes { context ->
+                                    if (!getEnabled()) return@executes 0
+                                    run(context)
+                                }
+                        )
                 )
-                then(RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("name", StringArgumentType.string())
-                    .executes(Command { context: CommandContext<FabricClientCommandSource> ->
-                        if (!getEnabled()) return@Command 0
-                        return@Command run(context)
-                    })
-                )
-            }
         )
+    }
+
+
+    class NameSuggestions : SuggestionProvider<FabricClientCommandSource> {
+
+        @Throws(CommandSyntaxException::class)
+        override fun getSuggestions(
+            context: CommandContext<FabricClientCommandSource>,
+            builder: SuggestionsBuilder
+        ): CompletableFuture<Suggestions> {
+
+            val type = StringArgumentType.getString(context, "type")
+
+            val input = builder.remaining.lowercase(Locale.getDefault())
+
+            val allSuggestions = when (type) {
+                "town" -> Cache.townCache
+                "nation" -> Cache.nationCache
+                else -> emptyList()
+            }.map { it.name }
+
+            allSuggestions
+                .filter { it?.lowercase(Locale.getDefault())?.startsWith(input) == true }
+                .forEach(builder::suggest)
+
+            return builder.buildFuture()
+        }
     }
 }

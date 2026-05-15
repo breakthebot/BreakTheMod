@@ -39,9 +39,11 @@ object AfkTrack : Module() {
         ClientReceiveMessageEvents.GAME.register(ClientReceiveMessageEvents.Game { message: Text?, _: Boolean ->
             if (!ServerUtils.isEarthMc()) return@Game
             val messageText = message?.string ?: return@Game
+
             if (messageText.equals("You are now AFK.", ignoreCase = true)) {
                 isAfk = true
             }
+
             if (messageText.equals("You are no longer afk.", ignoreCase = true)) {
                 isAfk = false
                 sendMessage("The following shops run out of stock whilst you were afk:")

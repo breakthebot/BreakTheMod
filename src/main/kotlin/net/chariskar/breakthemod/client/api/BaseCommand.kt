@@ -137,8 +137,8 @@ abstract class BaseCommand : Base() {
         ): CompletableFuture<Suggestions> {
             val input = builder.remaining.lowercase(Locale.getDefault())
 
-            allSuggestions.stream()
-                .filter { s -> s?.startsWith(input) == true }
+            allSuggestions
+                .filter { s -> s.startsWith(input) }
                 .forEach(builder::suggest)
 
             return builder.buildFuture()

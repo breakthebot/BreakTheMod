@@ -29,7 +29,10 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.PacketSender
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayNetworkHandler
+import org.breakthebot.breakthelibrary.api.NationAPI
 import org.breakthebot.breakthelibrary.api.PlayerAPI
+import org.breakthebot.breakthelibrary.api.TownAPI
+import org.breakthebot.breakthelibrary.models.Reference
 import org.breakthebot.breakthelibrary.models.Resident
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.TimeUnit
@@ -40,7 +43,9 @@ import java.util.concurrent.TimeUnit
  * Cache update handler for PlayerNametagInfo feature.
  *
  * @property scope The execution scope.
- * @property cachedPlayers The player currently cached in memory.
+ * @property playerCache The player currently cached in memory.
+ * @property townCache A list of every town from /towns.
+ * @property nationCache A list of every nation from /nations.
  *  */
 object Cache : Module() {
 
@@ -48,7 +53,11 @@ object Cache : Module() {
     override val description = "Cache handler for the PlayerNametagInfo feature."
 
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-    val cachedPlayers: MutableList<Resident> = CopyOnWriteArrayList()
+
+    val playerCache: MutableList<Resident> = CopyOnWriteArrayList()
+    // keep a cache of all towns and nations for /locate, a full object cache is not needed yet.
+    val townCache: MutableList<Reference> = mutableListOf()
+    val nationCache: MutableList<Reference> = mutableListOf()
 
     override fun disable() {
         enabled = false
@@ -66,13 +75,15 @@ object Cache : Module() {
         }
 
         ClientPlayConnectionEvents.DISCONNECT.register(ClientPlayConnectionEvents.Disconnect { _: ClientPlayNetworkHandler?, _: MinecraftClient? ->
-            cachedPlayers.clear()
+            playerCache.clear()
         })
     }
 
     private fun updatePlayers() {
         if (!ServerUtils.isEarthMc() || !Config.getNameTag()) return
-        cachedPlayers.clear()
+        playerCache.clear()
+        townCache.clear()
+        nationCache.clear()
 
         val players = client.networkHandler!!.playerUuids.toList().chunked(100)
 
@@ -80,8 +91,10 @@ object Cache : Module() {
             for (players in players) {
                 val apiPlayers = PlayerAPI.getPlayers(players.map { it.toString() })
                 if (apiPlayers.isNullOrEmpty()) { return@launch }
-                cachedPlayers.addAll(apiPlayers)
+                playerCache.addAll(apiPlayers)
             }
+            TownAPI.getAllTowns()?.let { townCache.addAll(it) }
+            NationAPI.getAllTowns()?.let { nationCache.addAll(it) }
         }
     }
 
@@ -92,5 +105,5 @@ object Cache : Module() {
 
     fun getPlayer(
         name: String
-    ): Resident?  = cachedPlayers.firstOrNull { it.name.equals(name, true) }
+    ): Resident?  = playerCache.firstOrNull { it.name.equals(name, true) }
 }
