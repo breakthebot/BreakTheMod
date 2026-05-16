@@ -61,7 +61,7 @@ object NearbyEngine : Module() {
                 DISTANCE_THRESHOLD * DISTANCE_THRESHOLD
             ) continue
 
-            if (info.shouldSkip(other, world).or(Config.getDbg())) continue
+            if (info.shouldSkip(other, world)) continue
             players.add(info)
         }
 

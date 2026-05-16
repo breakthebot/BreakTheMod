@@ -24,6 +24,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayNetworkHandler
 import net.minecraft.text.Text
+import net.minecraft.util.math.Vec3d
 
 object ShopTracker : Module(){
     override val name = "ShopTracker"
@@ -41,13 +42,11 @@ object ShopTracker : Module(){
     }
     
     data class ShopObject(
-        val x: Float,
-        val y: Float,
-        val z: Float,
+        val coords: Vec3d,
         val item: String      
     ) {
         override fun toString(): String {
-            return "-Shop at $x $y $z ($item)"
+            return "-Shop at ${coords.x} ${coords.y} ${coords.z} ($item)"
         }
     }
 
@@ -76,9 +75,11 @@ object ShopTracker : Module(){
         val (x, y, z, item) = match?.destructured ?: return null
 
         return ShopObject(
-            x.toFloat(),
-            y.toFloat(),
-            z.toFloat(),
+            Vec3d(
+                x.toDouble(),
+                y.toDouble(),
+                z.toDouble()
+            ),
             item
         )
     }
