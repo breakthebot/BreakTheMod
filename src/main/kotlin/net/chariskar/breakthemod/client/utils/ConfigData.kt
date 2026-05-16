@@ -19,7 +19,7 @@ package net.chariskar.breakthemod.client.utils
 
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import org.breakthebot.breakthelibrary.utils.Urls
+import org.breakthebot.breakthelibrary.utils.Config as LConfig
 
 @Serializable
 data class ConfigData(
@@ -30,7 +30,7 @@ data class ConfigData(
     var options: Boolean = false,
     var features: Features = Features(),
     @Contextual
-    var urls: Urls = Urls()
+    var libraryConfig: LConfig = LConfig()
 ) {
     override fun toString(): String {
         return Config.json.encodeToString(this)

@@ -42,8 +42,6 @@ object ChatPreview : Module() {
     var inPartyChat: Boolean = false
     var chatChannel: ChatChannel? = null
 
-    override fun disable() {}
-
     override fun enable() {
         ClientReceiveMessageEvents.GAME.register(ClientReceiveMessageEvents.Game { message: Text?, _: Boolean ->
             if (!ServerUtils.isEarthMc()) return@Game

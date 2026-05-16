@@ -60,7 +60,8 @@ class Breakthemod : ClientModInitializer {
 
     companion object {
         val VERSION: String
-            get() = "1.5.2-BETA-${Config.getDbg()}"
+            get() = "1.5.2-BETA-${if (Config.getDbg()) "DEBUG" else ""}"
+
         val modules: MutableList<Module> = mutableListOf()
         val commands: MutableList<BaseCommand> = mutableListOf()
     }
@@ -87,7 +88,7 @@ class Breakthemod : ClientModInitializer {
             return true
         } catch (e: Exception) {
             logger.error("Unexpected error loading debug commands", e)
-            logger.info("Debugging module not present.")
+            logger.info("Not loading debugging module.")
         }
         return false
     }

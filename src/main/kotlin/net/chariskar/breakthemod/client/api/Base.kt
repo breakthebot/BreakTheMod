@@ -60,7 +60,7 @@ abstract class Base {
     ) {
         val chatMessage = Text.empty().apply {
             append(message)
-            style = Style.EMPTY.withColor(colour)
+            styled { Style.EMPTY.withColor(colour) }
         }
         sendMessage(chatMessage)
     }

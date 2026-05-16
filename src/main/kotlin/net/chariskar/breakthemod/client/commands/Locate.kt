@@ -36,8 +36,8 @@ import net.minecraft.text.ClickEvent
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
-import org.breakthebot.breakthelibrary.api.NationAPI
-import org.breakthebot.breakthelibrary.api.TownAPI
+import org.breakthebot.breakthelibrary.api.TownyAPI
+import org.breakthebot.breakthelibrary.network.getOrNull
 import java.net.URI
 import java.util.Locale
 import java.util.concurrent.CompletableFuture
@@ -55,11 +55,11 @@ object Locate : BaseCommand() {
         scope.launch {
             val coords = when (type) {
                 "town" -> {
-                    val town = TownAPI.getTown(name)
+                    val town = TownyAPI.getTown(name).getOrNull()
                     town?.coordinates?.spawn
                 }
                 "nation" -> {
-                    val nation = NationAPI.getNation(name)
+                    val nation = TownyAPI.getNation(name).getOrNull()
                     nation?.coordinates?.spawn
                 }
                 else -> null

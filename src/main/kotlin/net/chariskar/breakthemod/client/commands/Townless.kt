@@ -31,7 +31,8 @@ import net.minecraft.text.HoverEvent
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
-import org.breakthebot.breakthelibrary.api.PlayerAPI
+import org.breakthebot.breakthelibrary.api.TownyAPI
+import org.breakthebot.breakthelibrary.network.getOrNull
 
 object Townless : BaseCommand() {
     const val BATCH_SIZE: Int = 100
@@ -45,11 +46,11 @@ object Townless : BaseCommand() {
         val onlinePlayers = client.networkHandler!!.playerUuids.toList()
         scope.launch {
             if (onlinePlayers.size <= 1) {
-                sendMessage("No online players found")
+                sendMessage("No online players found.")
                 return@launch
             }
 
-            val own = PlayerAPI.getPlayer(username)
+            val own = TownyAPI.getPlayer(username).getOrNull()
             val townName = own?.town?.name
 
             if (townName.isNullOrEmpty()) {
@@ -64,17 +65,15 @@ object Townless : BaseCommand() {
                 batches.map { batch ->
                     async {
                         semaphore.withPermit {
-                            PlayerAPI.getPlayers(batch.map { it.toString() })
+                            TownyAPI.getPlayers(batch.map { it.toString() })
                         }
                     }
                 }.awaitAll()
-            }
+            }.flatten()
 
             val townless = results
                 .filterNotNull()
-                .flatten()
-                .filter { it.status?.hasTown == false }
-                .map { it.name }
+                .flatMap { it.getOrNull().orEmpty() }
 
             if (townless.isEmpty()) {
                 sendMessage("No townless players found")
@@ -86,7 +85,7 @@ object Townless : BaseCommand() {
 
             for (user in townless) {
                 val inviteMessage = "/msg $user " + Config.getTownlessMessage(townName)
-                val userText = Text.literal(user).styled {
+                val userText = Text.literal(user.name).styled {
                     Style.EMPTY
                         .withColor(Formatting.AQUA)
                         .withClickEvent(ClickEvent.CopyToClipboard(inviteMessage))

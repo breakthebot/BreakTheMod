@@ -41,7 +41,7 @@ import java.util.concurrent.CompletableFuture
  * Base for commands.
  * @property name The command name.
  * @property description The command description.
- * @property usageSuffix The args that must be passed to the commands in a readable format (e.g. <name>).
+ * @property usageSuffix The args that must be passed to the commands in a readable format (e.g. `<name>` ).
  *  */
 abstract class BaseCommand : Base() {
     abstract val usageSuffix: String
@@ -67,7 +67,7 @@ abstract class BaseCommand : Base() {
     /**
      * Internal method, executes command code.
      * @param ctx The Command context.
-     * @return 1 if success 0 if error.
+     * @return 1 if success else 0.
      * @throws CommandSyntaxException If invalid syntax.
      */
     @Throws(CommandSyntaxException::class)
@@ -91,10 +91,11 @@ abstract class BaseCommand : Base() {
      * */
     open fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         dispatcher.register(
-            LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)
-                .executes(Command { context: CommandContext<FabricClientCommandSource> ->
+            LiteralArgumentBuilder.literal<FabricClientCommandSource>(name).executes(
+                Command { context: CommandContext<FabricClientCommandSource> ->
                     return@Command if(!getEnabled()) 0 else run(context)
-                })
+                }
+            )
         )
     }
 
@@ -115,7 +116,7 @@ abstract class BaseCommand : Base() {
         dispatcher.register(
             LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)
                 .then(
-                    RequiredArgumentBuilder.argument<FabricClientCommandSource?, T>(argName, argType)
+                    RequiredArgumentBuilder.argument<FabricClientCommandSource, T>(argName, argType)
                         .apply {
                             if (suggestions != null) suggests(suggestions)
                             executes(Command { context: CommandContext<FabricClientCommandSource> ->

@@ -29,15 +29,14 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.PacketSender
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayNetworkHandler
-import org.breakthebot.breakthelibrary.api.NationAPI
-import org.breakthebot.breakthelibrary.api.PlayerAPI
-import org.breakthebot.breakthelibrary.api.TownAPI
+import org.breakthebot.breakthelibrary.api.TownyAPI
 import org.breakthebot.breakthelibrary.models.Reference
 import org.breakthebot.breakthelibrary.models.Resident
+import org.breakthebot.breakthelibrary.models.Town
+import org.breakthebot.breakthelibrary.network.getOrNull
+
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.TimeUnit
-
-/// Credit to https://github.com/Veyronity/Earthy/blob/master/client/fabric/src/main/java/au/lupine/earthy/fabric/module/Cache.java
 
 /**
  * Cache update handler for PlayerNametagInfo feature.
@@ -56,6 +55,7 @@ object Cache : Module() {
 
     val playerCache: MutableList<Resident> = CopyOnWriteArrayList()
     // keep a cache of all towns and nations for /locate, a full object cache is not needed yet.
+    // spare some ram.
     val townCache: MutableList<Reference> = mutableListOf()
     val nationCache: MutableList<Reference> = mutableListOf()
 
@@ -82,24 +82,37 @@ object Cache : Module() {
     private fun updatePlayers() {
         if (!ServerUtils.isEarthMc() || !Config.getNameTag()) return
         playerCache.clear()
+
+        val players = client.networkHandler!!.playerUuids.toList().map { it.toString() }
+
+        scope.launch {
+            val apiPlayers = TownyAPI.getPlayers(players).flatMap { it?.getOrNull().orEmpty() }
+            playerCache.addAll(apiPlayers)
+        }
+
+    }
+
+    fun updateCache() {
         townCache.clear()
         nationCache.clear()
 
-        val players = client.networkHandler!!.playerUuids.toList().chunked(100)
-
         scope.launch {
-            for (players in players) {
-                val apiPlayers = PlayerAPI.getPlayers(players.map { it.toString() })
-                if (apiPlayers.isNullOrEmpty()) { return@launch }
-                playerCache.addAll(apiPlayers)
+            TownyAPI.getAllTowns().getOrNull().let {
+                if (it != null) {
+                    townCache.addAll(it)
+                }
             }
-            TownAPI.getAllTowns()?.let { townCache.addAll(it) }
-            NationAPI.getAllTowns()?.let { nationCache.addAll(it) }
+            TownyAPI.getAllNations().getOrNull().let {
+                if (it != null) {
+                    nationCache.addAll(it)
+                }
+            }
         }
     }
 
     fun runTask() {
-        if (!ServerUtils.isEarthMc() || !Config.getNameTag()) return
+        if (!ServerUtils.isEarthMc()) return
+        updateCache()
         updatePlayers()
     }
 

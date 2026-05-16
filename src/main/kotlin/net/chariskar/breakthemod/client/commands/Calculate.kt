@@ -69,7 +69,7 @@ object Calculate : BaseCommand() {
         dispatcher.register(
             LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)
                 .then(RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("type", StringArgumentType.string())
-                    .suggests(CalculateSuggestion())
+                    .suggests(CommandSuggestions(mutableListOf("blocks", "stacks")))
                     .then(
                         RequiredArgumentBuilder.argument<FabricClientCommandSource?, Int>("amount", IntegerArgumentType.integer())
                             .executes(Command { context: CommandContext<FabricClientCommandSource> ->
@@ -80,23 +80,5 @@ object Calculate : BaseCommand() {
 
                 )
         )
-    }
-
-    class CalculateSuggestion : SuggestionProvider<FabricClientCommandSource?> {
-        val allSuggestions: MutableList<String> = mutableListOf("blocks", "stacks")
-
-        @Throws(CommandSyntaxException::class)
-        override fun getSuggestions(
-            context: CommandContext<FabricClientCommandSource?>?,
-            builder: SuggestionsBuilder
-        ): CompletableFuture<Suggestions> {
-            val input = builder.remaining.lowercase(Locale.getDefault())
-
-            allSuggestions.stream()
-                .filter { s -> s?.startsWith(input) == true }
-                .forEach(builder::suggest)
-
-            return builder.buildFuture()
-        }
     }
 }

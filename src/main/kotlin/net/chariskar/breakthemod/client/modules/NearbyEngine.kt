@@ -82,8 +82,4 @@ object NearbyEngine : Module() {
         }
         
     }
-
-    override fun disable() {
-        enabled = false
-    }
 }

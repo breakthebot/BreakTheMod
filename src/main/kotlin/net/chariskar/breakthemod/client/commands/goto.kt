@@ -25,11 +25,15 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
-import org.breakthebot.breakthelibrary.api.NationAPI
-import org.breakthebot.breakthelibrary.api.NearbyAPI
-import org.breakthebot.breakthelibrary.api.TownAPI
+import org.breakthebot.breakthelibrary.api.MapApi
+import org.breakthebot.breakthelibrary.api.TownyAPI
+import org.breakthebot.breakthelibrary.models.Nation
 import org.breakthebot.breakthelibrary.models.NearbyItem
 import org.breakthebot.breakthelibrary.models.NearbyType
+import org.breakthebot.breakthelibrary.models.Reference
+import org.breakthebot.breakthelibrary.models.Town
+import org.breakthebot.breakthelibrary.network.ApiResult
+import org.breakthebot.breakthelibrary.network.getOrNull
 
 object goto : BaseCommand() {
     
@@ -41,11 +45,18 @@ object goto : BaseCommand() {
         val townName = ctx.getArgument("name", String::class.java)
 
         scope.launch {
-            val reqTown = TownAPI.getTown(townName)
-            if (reqTown == null) {
-                sendError("$townName does not exist.")
-                return@launch
+            val reqTown = when ( val reqTown = TownyAPI.getTown(townName) ) {
+                is ApiResult.Success<Town> -> reqTown.data
+                is ApiResult.Error -> {
+                    val message = when (reqTown.statusCode) {
+                        404 -> "$name does not exist."
+                        else -> "Api returned unexpected message ${reqTown.message}"
+                    }
+                    sendError(message)
+                    return@launch
+                }
             }
+
 
             if (reqTown.status?.isPublic == true && reqTown.status?.canOutsidersSpawn == true) {
                 sendMessage(Text.literal("You can do /t spawn ${reqTown.name}"), Formatting.AQUA)
@@ -53,9 +64,19 @@ object goto : BaseCommand() {
             }
 
             if (reqTown.status?.isCapital == true) {
-                val nation = NationAPI.getNation(reqTown.nation?.name!!)
+                val nation = when (val nation = TownyAPI.getNation(reqTown.nation?.name!!)) {
+                    is ApiResult.Success<Nation> -> nation.data
+                    is ApiResult.Error -> {
+                        val message = when (nation.statusCode) {
+                            404 -> "$name does not exist."
+                            else -> "Api returned unexpected message ${nation.message}"
+                        }
+                        sendError(message)
+                        return@launch
+                    }
+                }
 
-                if (nation?.status?.isPublic == true) {
+                if (nation.status?.isPublic == true) {
                     sendMessage(Text.literal("Found suitable spawn in:\n ${reqTown.name} (${nation.name})"), Formatting.AQUA)
                     return@launch
                 }
@@ -66,12 +87,24 @@ object goto : BaseCommand() {
             val validTowns: MutableList<String> = mutableListOf()
 
             while (attempts-- > 0) {
-                val resp = NearbyAPI.get(NearbyItem(
-                    NearbyType.TOWN,
-                    townName,
-                    NearbyType.TOWN,
-                    radius
-                ))
+                val resp = when (
+                    val resp = MapApi.getNearby(listOf(NearbyItem(
+                        NearbyType.TOWN,
+                        townName,
+                        NearbyType.TOWN,
+                        radius)
+                    ))
+                ) {
+                    is ApiResult.Success<List<List<Reference>?>?> -> { resp.data }
+                    is ApiResult.Error -> {
+                        val message = when (resp.statusCode) {
+                            404 -> "$name does not exist."
+                            else -> "Api returned unexpected message ${resp.message}"
+                        }
+                        sendError(message)
+                        return@launch
+                    }
+                }?.first()
 
                 val names: List<String> = resp?.mapNotNull { it.name } ?: emptyList()
                 if (names.isEmpty()) {
@@ -79,10 +112,14 @@ object goto : BaseCommand() {
                     continue
                 }
 
-                val townDetails = TownAPI.getTowns(names)
-                if (townDetails.isNullOrEmpty()) {
-                    radius += 500
-                    continue
+                val townDetails = when (val townDetails = TownyAPI.getTowns(names).first()) {
+                    is ApiResult.Success<List<Town>> -> {
+                        townDetails.data
+                    }
+                    else -> {
+                        radius += 500
+                        continue
+                    }
                 }
 
                 for (town in townDetails) {
@@ -91,7 +128,7 @@ object goto : BaseCommand() {
                     if (status?.isPublic == true && status.canOutsidersSpawn == true) {
                         validTowns.add(town.name)
                     } else if (status?.isCapital == true) {
-                        val nation = NationAPI.getNation(town.nation?.name!!)
+                        val nation = TownyAPI.getNation(town.nation?.name!!).getOrNull()
                         if (nation?.status?.isPublic == true) {
                             validTowns.add(town.name)
                         }

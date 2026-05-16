@@ -220,36 +220,36 @@ class ModMenuIntegration : ModMenuApi {
             options?.addEntry(
                 entryBuilder.startStrField(
                     Text.literal("API url"),
-                    Config.config.urls.apiUrl
+                    Config.config.libraryConfig.apiUrl
                 )
                     .setSaveConsumer { url: String ->
                         Config.setApiUrl(url)
                         saveConfig()
-                    }.setDefaultValue { config.urls.apiUrl }
+                    }.setDefaultValue { config.libraryConfig.apiUrl }
                     .build()
             )
 
             options?.addEntry(
                 entryBuilder.startStrField(
                     Text.literal("Map url"),
-                    Config.config.urls.mapUrl
+                    Config.config.libraryConfig.mapUrl
                 )
                     .setSaveConsumer { url: String ->
                         Config.setMapUrl(url)
                         saveConfig()
-                    }.setDefaultValue { Config.config.urls.mapUrl }
+                    }.setDefaultValue { Config.config.libraryConfig.mapUrl }
                     .build()
             )
 
             options?.addEntry(
                 entryBuilder.startStrField(
                     Text.literal("Staff url"),
-                    Config.config.urls.staffUrl
+                    Config.config.libraryConfig.staffUrl
                 )
                     .setSaveConsumer { url: String ->
                         Config.setStaffUrl(url)
                         saveConfig()
-                    }.setDefaultValue { Config.config.urls.staffUrl }
+                    }.setDefaultValue { Config.config.libraryConfig.staffUrl }
                     .build()
             )
 

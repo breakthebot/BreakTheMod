@@ -33,7 +33,7 @@ object Nearby : BaseCommand() {
 
     override val name = "nearby"
     override val description = "Shows nearby people"
-    override val usageSuffix: String = ""
+    override val usageSuffix = ""
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         scope.launch {

@@ -35,7 +35,7 @@ object ServerUtils {
         if (
             splitAddress(serverInfo).contains("earthmc")
             &&
-            Config.config.urls.apiUrl.contains("aurora")
+            Config.config.libraryConfig.apiUrl.contains("aurora")
         ) {
             Config.setApiUrl(
                 "https://api.earthmc.net/v4"

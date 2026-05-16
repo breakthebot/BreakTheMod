@@ -26,7 +26,7 @@ import net.minecraft.text.ClickEvent
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
-import org.breakthebot.breakthelibrary.api.DiscordAPI
+import org.breakthebot.breakthelibrary.api.TownyAPI
 import java.net.URI
 
 
@@ -40,7 +40,7 @@ object DiscordId : BaseCommand() {
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val name: String = ctx.getArgument("name", String::class.java)
         scope.launch {
-            val discord = DiscordAPI.getDiscord(listOf(name))?.first()
+            val discord = TownyAPI.getPlayerDiscord(listOf(name)).first()
             val result: Text = if (discord != null) {
                 Text.literal("Click Here")
                     .styled {

@@ -30,9 +30,9 @@ import net.minecraft.text.MutableText
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
-import org.breakthebot.breakthelibrary.api.PlayerAPI
-import org.breakthebot.breakthelibrary.api.StaffAPI
 import net.chariskar.breakthemod.client.api.BaseCommand
+import org.breakthebot.breakthelibrary.api.TownyAPI
+import org.breakthebot.breakthelibrary.network.getOrNull
 
 
 object OnlineStaff : BaseCommand() {
@@ -58,16 +58,18 @@ object OnlineStaff : BaseCommand() {
 
 
     suspend fun onlineStaff(api: Boolean): Text {
-        val staff = StaffAPI.get()
+        val staff = TownyAPI.getStaff()
 
         if (staff.isNullOrEmpty()) return Text.literal("Received invalid staff list.").setStyle(Style.EMPTY.withColor(Formatting.RED))
 
         var onlineStaffText: MutableText = Text.empty()
 
         val staffNames: List<String> = if (api) {
-            PlayerAPI.getPlayers( staff.map { v->v.toString() } )!!
-                .filter { r -> r.status!!.isOnline == true }
-                .map { r -> r.name }
+            TownyAPI.getPlayers( staff.map { v->v.toString() } )
+                .first()
+                ?.getOrNull()
+                ?.filter { r -> r.status!!.isOnline == true }
+                ?.map { r -> r.name }!!
         } else {
             staff.mapNotNull { uuid ->
                 client.networkHandler!!.playerList.firstOrNull {

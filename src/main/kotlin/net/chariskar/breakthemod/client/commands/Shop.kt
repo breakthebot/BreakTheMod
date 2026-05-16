@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.Text
 
 object Shop : BaseCommand() {
-    override val name = "getshops"
+    override val name = "shopSummary"
     override val description = "Checks if any of your shops have run out."
     override val usageSuffix = ""
 

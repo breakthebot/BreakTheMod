@@ -22,8 +22,7 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import kotlinx.serialization.json.Json
 import org.breakthebot.breakthelibrary.utils.ConfigHandler
-import org.breakthebot.breakthelibrary.utils.Urls
-
+import org.breakthebot.breakthelibrary.utils.Config as LConfig
 /**
  * Config handler.
  * */
@@ -47,7 +46,7 @@ object Config {
         }
         try {
             config = json.decodeFromString<ConfigData>(fileContent)
-            ConfigHandler.setup(config.urls)
+            ConfigHandler.setup(config.libraryConfig)
         } catch (e: Exception) {
             logger.error("Encountered an exception when trying to parse the config: ${e.message}")
             logger.warn("Regenerating config.")
@@ -73,7 +72,7 @@ object Config {
         return if (!withProtocol.endsWith("/")) "$withProtocol/" else withProtocol
     }
 
-    fun getMapUrl() = formatURL(config.urls.mapUrl)
+    fun getMapUrl() = formatURL(config.libraryConfig.mapUrl)
 
     fun getDevMode() = config.dev
 
@@ -103,32 +102,32 @@ object Config {
     }
 
     fun setApiUrl(apiUrl: String) {
-        val oldUrls = config.urls
-        config.urls = Urls(
+        val oldUrls = config.libraryConfig
+        config.libraryConfig = LConfig(
             apiUrl,
             oldUrls.mapUrl,
             oldUrls.staffUrl
         )
-        ConfigHandler.setup(config.urls)
+        ConfigHandler.setup(config.libraryConfig)
     }
 
     fun setMapUrl(mapUrl: String) {
-        val oldUrls = config.urls
-        config.urls = Urls(
+        val oldUrls = config.libraryConfig
+        config.libraryConfig = LConfig(
             oldUrls.apiUrl,
             mapUrl,
             oldUrls.staffUrl
         )
-        ConfigHandler.setup(config.urls)
+        ConfigHandler.setup(config.libraryConfig)
     }
 
     fun setStaffUrl(staffUrl: String) {
-        val oldUrls = config.urls
-        config.urls = Urls(
+        val oldUrls = config.libraryConfig
+        config.libraryConfig = LConfig(
             oldUrls.apiUrl,
             oldUrls.mapUrl,
             staffUrl
         )
-        ConfigHandler.setup(config.urls)
+        ConfigHandler.setup(config.libraryConfig)
     }
 }

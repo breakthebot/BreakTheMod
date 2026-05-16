@@ -37,10 +37,6 @@ object AutoHUD : Module() {
     override val name = "AutoHUD"
     override val description = "Enables the hud of choice of the user in login."
 
-    override fun disable() {
-        enabled = false
-    }
-
     override fun enable() {
         ClientPlayConnectionEvents.JOIN.register(ClientPlayConnectionEvents.Join { _: ClientPlayNetworkHandler?, _: PacketSender?, client: MinecraftClient ->
             Scheduler.schedule( {

@@ -18,13 +18,6 @@
 package net.chariskar.breakthemod.client.api
 
 import net.chariskar.breakthemod.client.utils.Config
-import net.chariskar.breakthemod.client.utils.Prefix
-import net.minecraft.client.MinecraftClient
-import net.minecraft.text.Style
-import net.minecraft.text.Text
-import net.minecraft.util.Formatting
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 /**
  * @property name Module name.
@@ -36,19 +29,20 @@ abstract class Module : Base() {
     fun launch() {
         if (enabled) return
         try {
-            enabled = true
             enable()
-        }
-        catch (e: Exception) {
+            enabled = true
+        } catch (e: Exception) {
             logger.error("Error encountered when enabling $name.")
             if (Config.getDevMode()) { logger.error("Error ${e.message}") }
             enabled = false
         }
     }
 
-    abstract fun disable()
+    open fun disable() {
+        enabled = false
+    }
 
     protected abstract fun enable()
 
-    open fun getModuleDescription(): String = "$name: $description"
+    open fun getModuleDescription() = "$name: $description"
 }
