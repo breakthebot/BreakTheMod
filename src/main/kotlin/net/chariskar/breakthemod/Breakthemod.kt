@@ -17,7 +17,7 @@
 package net.chariskar.breakthemod
 
 import net.chariskar.breakthemod.client.api.BaseCommand
-import net.chariskar.breakthemod.client.api.Module
+import net.chariskar.breakthemod.client.api.BaseModule
 import net.chariskar.breakthemod.client.modules.NearbyEngine
 import net.chariskar.breakthemod.client.commands.DiscordId
 import net.chariskar.breakthemod.client.commands.FindPlayer
@@ -62,7 +62,7 @@ class Breakthemod : ClientModInitializer {
         val VERSION: String
             get() = "1.5.2-BETA-${if (Config.getDbg()) "DEBUG" else ""}"
 
-        val modules: MutableList<Module> = mutableListOf()
+        val modules: MutableList<BaseModule> = mutableListOf()
         val commands: MutableList<BaseCommand> = mutableListOf()
     }
 
@@ -73,7 +73,7 @@ class Breakthemod : ClientModInitializer {
         })
     }
 
-    private fun loadModules(modules: MutableList<Module>) { modules.forEach { it.launch() } }
+    private fun loadModules(baseModules: MutableList<BaseModule>) { baseModules.forEach { it.launch() } }
 
     /**
      * Load debugging modules.
@@ -135,7 +135,7 @@ class Breakthemod : ClientModInitializer {
             )
         )
 
-        Help.modules = modules
+        Help.baseModules = modules
 
         loadModules(modules)
         loadCommands(commands)

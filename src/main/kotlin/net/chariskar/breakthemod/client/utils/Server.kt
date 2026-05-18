@@ -24,11 +24,10 @@ object ServerUtils {
     /** is this emc. */
     fun isEarthMc(): Boolean {
         val serverInfo = MinecraftClient.getInstance().currentServerEntry ?: return Config.getDbg()
-        return splitAddress(serverInfo.address).contains("earthmc").or(Config.getDbg())
+        return splitAddress(serverInfo.address).contains("earthmc")
     }
 
-    fun getEnabled(): Boolean = isEarthMc().or(Config.getEnabledServers())
-
+    fun getEnabled(): Boolean = isEarthMc().or(Config.config.enabledOnOtherServers)
 
     fun replaceApiUrl() {
         val serverInfo = MinecraftClient.getInstance().currentServerEntry?.address ?: return

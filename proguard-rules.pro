@@ -1,34 +1,40 @@
--dontwarn
--dontnote
--dontoptimize
+# proguard-rules.pro (UPDATED)
+-verbose
 
--injars build/libs/breakthemod-1.4.5-shadowed.jar
--outjars build/libs/btm-obf.jar
+# ✅ Enable optimization
+-optimizationpasses 5
+-optimizations !code/simplification/arithmetic,!code/simplification/cast,!field/*,!class/merging/*
 
--libraryjars <java.home>/jmods/
+# ✅ Enable aggressive obfuscation
+-obfuscationdictionary obfuscation-dict.txt
+-classobfuscationdictionary obfuscation-dict.txt
+
+-dontwarn kotlin.**
+-dontwarn org.jetbrains.**
+-dontwarn kotlinx.**
 
 -keepclassmembers class * {
     @net.fabricmc.api.** *;
 }
--keep interface net.fabricmc.api.ClientModInitializer { *; }
+-keep interface net.fabricmc.api.** { *; }
+-keep class net.fabricmc.** { *; }
 
 -keep public class net.chariskar.breakthemod.Breakthemod { *; }
+-keep public class net.chariskar.breakthemod.client.** { *; }
 
--keep class net.chariskar.breakthemod.client.commands.** implements net.chariskar.breakthemod.client.api.BaseCommand { *; }
+-keepclassmembers class * extends net.chariskar.breakthemod.client.api.BaseCommand {
+    public static *** INSTANCE;
+}
+-keepclassmembers class * extends net.chariskar.breakthemod.client.api.Module {
+    public static *** INSTANCE;
+}
 
-# -keep public class net.chariskar.breakthemod.Breakthemod implements net.fabricmc.api.ClientModInitializer { *; }
-
--keep public class net.chariskar.breakthebot.breakthelibrary.models.** { *; }
-
--keep public class net.chariskar.breakthemod.mixins.** { *; }
+-keep public class org.breakthebot.breakthelibrary.** { *; }
+-keep public class org.breakthebot.breakthelibrary.models.** { *; }
 
 -keepclassmembers class kotlin.Metadata { *; }
--keepattributes RuntimeVisibleAnnotations,
-                RuntimeInvisibleAnnotations,
-                Signature,
-                InnerClasses,
-                EnclosingMethod,
-                Exceptions
+-keepattributes RuntimeVisibleAnnotations,RuntimeInvisibleAnnotations,Signature,InnerClasses,EnclosingMethod
+
+-keepclassmembers class **$Serializer { *; }
 
 -keepdirectories META-INF/**
--keepdirectories resources/**

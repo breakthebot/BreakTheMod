@@ -65,7 +65,7 @@ object UnloadModule : BaseCommand() {
             return 0
         }
 
-        val clazz = Class.forName("net.chariskar.breakthemod.client.modules.$name")
+        val clazz = Class.forName("net.chariskar.breakthemod.client.modules.${module.javaClass.name}")
 
         val instance = clazz.getField("INSTANCE").get(null)
         val method = clazz.getMethod("disable")
@@ -84,8 +84,8 @@ object UnloadModule : BaseCommand() {
         ): CompletableFuture<Suggestions> {
             val input = builder.remaining.lowercase(Locale.getDefault())
 
-            Breakthemod.modules.stream()
-                .filter { s -> s?.name?.startsWith(input) == true && s.enabled }
+            Breakthemod.modules
+                .filter { s -> s.name.startsWith(input) && s.enabled }
                 .map { it.name }
                 .forEach(builder::suggest)
 

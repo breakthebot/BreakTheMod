@@ -44,11 +44,13 @@ import java.util.concurrent.CompletableFuture
  * @property usageSuffix The args that must be passed to the commands in a readable format (e.g. `<name>` ).
  *  */
 abstract class BaseCommand : Base() {
+    abstract val name: String
+    abstract val description: String
     abstract val usageSuffix: String
 
     private val handler = CoroutineExceptionHandler { _, e ->
         sendError()
-        if (Config.getDevMode()) {
+        if (Config.config.dev) {
             logError("Unexpected error occurred while running $name", e as Exception)
         }
     }
@@ -56,6 +58,8 @@ abstract class BaseCommand : Base() {
     protected val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default + handler)
 
     fun getUsage() = "/$name $usageSuffix"
+
+    fun getCommandDescription() = "$name $usageSuffix: $description"
 
     /**
      * @param ctx the command context.
@@ -133,7 +137,7 @@ abstract class BaseCommand : Base() {
 
         @Throws(CommandSyntaxException::class)
         override fun getSuggestions(
-            context: CommandContext<FabricClientCommandSource?>?,
+             context: CommandContext<FabricClientCommandSource?>?,
             builder: SuggestionsBuilder
         ): CompletableFuture<Suggestions> {
             val input = builder.remaining.lowercase(Locale.getDefault())
@@ -145,5 +149,4 @@ abstract class BaseCommand : Base() {
             return builder.buildFuture()
         }
     }
-
 }

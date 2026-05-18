@@ -19,12 +19,13 @@ package net.chariskar.breakthemod.client.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
-import kotlinx.coroutines.launch
-import net.chariskar.breakthemod.client.api.BaseCommand
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
+import kotlinx.coroutines.launch
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
+
+import net.chariskar.breakthemod.client.api.BaseCommand
 import org.breakthebot.breakthelibrary.api.MapApi
 import org.breakthebot.breakthelibrary.api.TownyAPI
 import org.breakthebot.breakthelibrary.models.Nation
@@ -45,11 +46,13 @@ object goto : BaseCommand() {
         val townName = ctx.getArgument("name", String::class.java)
 
         scope.launch {
-            val reqTown = when ( val reqTown = TownyAPI.getTown(townName) ) {
+            val reqTown = when (
+                val reqTown = TownyAPI.getTown(townName)
+            ) {
                 is ApiResult.Success<Town> -> reqTown.data
                 is ApiResult.Error -> {
                     val message = when (reqTown.statusCode) {
-                        404 -> "$name does not exist."
+                        404 -> "$townName does not exist."
                         else -> "Api returned unexpected message ${reqTown.message}"
                     }
                     sendError(message)
@@ -57,19 +60,23 @@ object goto : BaseCommand() {
                 }
             }
 
-
-            if (reqTown.status?.isPublic == true && reqTown.status?.canOutsidersSpawn == true) {
+            if (
+                reqTown.status?.isPublic == true &&
+                reqTown.status?.canOutsidersSpawn == true
+            ) {
                 sendMessage(Text.literal("You can do /t spawn ${reqTown.name}"), Formatting.AQUA)
                 return@launch
             }
 
             if (reqTown.status?.isCapital == true) {
-                val nation = when (val nation = TownyAPI.getNation(reqTown.nation?.name!!)) {
+                val nation = when (
+                    val nation = TownyAPI.getNation(reqTown.nation?.name!!)
+                ) {
                     is ApiResult.Success<Nation> -> nation.data
                     is ApiResult.Error -> {
                         val message = when (nation.statusCode) {
-                            404 -> "$name does not exist."
-                            else -> "Api returned unexpected message ${nation.message}"
+                            503 -> "Earthmc APIw is unavailable."
+                            else -> "API says this town is the capital of a nation that does not exist."
                         }
                         sendError(message)
                         return@launch
@@ -98,7 +105,7 @@ object goto : BaseCommand() {
                     is ApiResult.Success<List<List<Reference>?>?> -> { resp.data }
                     is ApiResult.Error -> {
                         val message = when (resp.statusCode) {
-                            404 -> "$name does not exist."
+                            404 -> "$townName does not exist."
                             else -> "Api returned unexpected message ${resp.message}"
                         }
                         sendError(message)
@@ -106,7 +113,7 @@ object goto : BaseCommand() {
                     }
                 }?.first()
 
-                val names: List<String> = resp?.mapNotNull { it.name } ?: emptyList()
+                val names = resp?.mapNotNull { it.name } ?: emptyList()
                 if (names.isEmpty()) {
                     radius += 500
                     continue
@@ -134,17 +141,19 @@ object goto : BaseCommand() {
                         }
                     }
                 }
-                if (validTowns.isNotEmpty()) {
-                    val townText: MutableText = Text.empty()
-                    validTowns.forEach { t -> townText.append(Text.literal("$t\n")) }
-                    sendMessage(Text.literal("Found suitable spawn in:\n").append(townText), Formatting.AQUA)
-                    return@launch
+
+                if (validTowns.isEmpty()) {
+                    radius += 500
+                    continue
                 }
-                radius += 500
+
+                val townText: MutableText = Text.empty()
+                validTowns.forEach { t -> townText.append(Text.literal("$t\n")) }
+                sendMessage(Text.literal("Found suitable spawn in:\n").append(townText), Formatting.AQUA)
+                return@launch
             }
 
             sendError("Found no suitable spawn near $townName.")
-
         }
 
         return 0

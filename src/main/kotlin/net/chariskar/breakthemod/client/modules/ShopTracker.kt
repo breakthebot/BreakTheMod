@@ -17,16 +17,17 @@
 
 package net.chariskar.breakthemod.client.modules
 
-import net.chariskar.breakthemod.client.api.Module
+import net.chariskar.breakthemod.client.api.BaseModule
 import net.chariskar.breakthemod.client.utils.ServerUtils
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
+import net.fabricmc.loader.impl.lib.sat4j.core.Vec
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayNetworkHandler
 import net.minecraft.text.Text
 import net.minecraft.util.math.Vec3d
 
-object ShopTracker : Module(){
+object ShopTracker : BaseModule(){
     override val name = "ShopTracker"
     override val description = "Tracks when one of your shops empties for the getShops command."
 
@@ -46,7 +47,7 @@ object ShopTracker : Module(){
         val item: String      
     ) {
         override fun toString(): String {
-            return "-Shop at ${coords.x} ${coords.y} ${coords.z} ($item)"
+            return "-Shop at ${coords.x}, ${coords.y}, ${coords.z} ($item)"
         }
     }
 

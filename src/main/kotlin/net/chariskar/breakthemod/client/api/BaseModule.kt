@@ -17,14 +17,16 @@
 
 package net.chariskar.breakthemod.client.api
 
-import net.chariskar.breakthemod.client.utils.Config
-
 /**
  * @property name Module name.
  * @property description Description.
+ * @property enabled The status of the module.
  * */
-abstract class Module : Base() {
+abstract class BaseModule : Base() {
+    abstract val name: String
+    abstract val description: String
     var enabled: Boolean = false
+        protected set
 
     fun launch() {
         if (enabled) return
@@ -32,17 +34,14 @@ abstract class Module : Base() {
             enable()
             enabled = true
         } catch (e: Exception) {
-            logger.error("Error encountered when enabling $name.")
-            if (Config.getDevMode()) { logger.error("Error ${e.message}") }
+            logError("Unexpected exception occurred", e)
             enabled = false
         }
     }
 
-    open fun disable() {
-        enabled = false
-    }
+    fun getModuleDescription() = "$name: $description"
+
+    open fun disable() { enabled = false }
 
     protected abstract fun enable()
-
-    open fun getModuleDescription() = "$name: $description"
 }

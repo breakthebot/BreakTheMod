@@ -34,7 +34,6 @@ import net.chariskar.breakthemod.client.api.BaseCommand
 import org.breakthebot.breakthelibrary.api.TownyAPI
 import org.breakthebot.breakthelibrary.network.getOrNull
 
-
 object OnlineStaff : BaseCommand() {
     override val name = "onlinestaff"
     override val description = "Shows online staff"
@@ -90,7 +89,7 @@ object OnlineStaff : BaseCommand() {
             }
         }
 
-       return Text.empty().apply {
+        return Text.empty().apply {
            if (staffNames.isNotEmpty()) {
                 append(onlineStaffText)
                 append(Text.literal(" [").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
@@ -102,7 +101,7 @@ object OnlineStaff : BaseCommand() {
            } else {
                append("No online staff").style = Style.EMPTY.withColor(Formatting.AQUA)
            }
-       }
+        }
     }
 
     fun exec(api: Boolean?): Int {

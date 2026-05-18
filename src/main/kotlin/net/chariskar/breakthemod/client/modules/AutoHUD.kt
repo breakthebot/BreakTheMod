@@ -19,7 +19,7 @@
 
 package net.chariskar.breakthemod.client.modules
 
-import net.chariskar.breakthemod.client.api.Module
+import net.chariskar.breakthemod.client.api.BaseModule
 import net.chariskar.breakthemod.client.utils.AutoHudType
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.Scheduler
@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit
 /**
  * AutoHUD on login module.
  * */
-object AutoHUD : Module() {
+object AutoHUD : BaseModule() {
     override val name = "AutoHUD"
     override val description = "Enables the hud of choice of the user in login."
 
@@ -43,7 +43,7 @@ object AutoHUD : Module() {
                 try {
                     if (!ServerUtils.isEarthMc()) { return@schedule }
 
-                    val hud = Config.getHud()
+                    val hud = Config.features.hudType
 
                     if (hud == AutoHudType.None) { return@schedule }
 

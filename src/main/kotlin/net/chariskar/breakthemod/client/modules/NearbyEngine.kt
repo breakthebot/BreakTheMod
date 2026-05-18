@@ -18,7 +18,7 @@
 package net.chariskar.breakthemod.client.modules
 
 import net.chariskar.breakthemod.client.api.PlayerInfo
-import net.chariskar.breakthemod.client.api.Module
+import net.chariskar.breakthemod.client.api.BaseModule
 import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.entity.player.PlayerEntity
@@ -26,23 +26,31 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
 import java.util.concurrent.CopyOnWriteArraySet
 
-object NearbyEngine : Module() {
+/**
+ * Module managing the nearby engine.
+ * @property playerInfoList A MutableSet with all the most recent information about players.
+ * @property DISTANCE_THRESHOLD A constant threshold of the distance that the player should be within to be displayed.
+ */
+object NearbyEngine : BaseModule() {
 
     override val name = "Nearby Engine"
     override val description = "Gets nearby players automatically."
 
-    private const val DISTANCE_THRESHOLD: Double = 200.0
+    const val DISTANCE_THRESHOLD: Double = 200.0
 
     private val playerInfoList: MutableSet<PlayerInfo> = CopyOnWriteArraySet()
 
+    /**
+     * @return A [HashSet] of PlayerInfo from playerInfoList.
+     * */
     fun getPlayers(): Set<PlayerInfo> = HashSet(playerInfoList)
 
     /**
-     * Checks if there are any players nearby.
+     * Checks if there are entities nearby using [PlayerInfo.shouldSkip] and returns a Set of [PlayerInfo]
      * @param self The player entity
      * @param world The client world
      * */
-    fun updateNearbyPlayers(
+    private fun updateNearbyPlayers(
         self: PlayerEntity,
         world: World
     ): Set<PlayerInfo> {

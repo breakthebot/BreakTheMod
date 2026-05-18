@@ -21,7 +21,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import net.chariskar.breakthemod.client.api.Module
+import net.chariskar.breakthemod.client.api.BaseModule
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.Scheduler
 import net.chariskar.breakthemod.client.utils.ServerUtils
@@ -32,7 +32,6 @@ import net.minecraft.client.network.ClientPlayNetworkHandler
 import org.breakthebot.breakthelibrary.api.TownyAPI
 import org.breakthebot.breakthelibrary.models.Reference
 import org.breakthebot.breakthelibrary.models.Resident
-import org.breakthebot.breakthelibrary.models.Town
 import org.breakthebot.breakthelibrary.network.getOrNull
 
 import java.util.concurrent.CopyOnWriteArrayList
@@ -46,7 +45,7 @@ import java.util.concurrent.TimeUnit
  * @property townCache A list of every town from /towns.
  * @property nationCache A list of every nation from /nations.
  *  */
-object Cache : Module() {
+object Cache : BaseModule() {
 
     override val name = "Cache"
     override val description = "Cache handler for the PlayerNametagInfo feature."
@@ -58,10 +57,6 @@ object Cache : Module() {
     // spare some ram.
     val townCache: MutableList<Reference> = mutableListOf()
     val nationCache: MutableList<Reference> = mutableListOf()
-
-    override fun disable() {
-        enabled = false
-    }
 
     override fun enable() {
         ClientPlayConnectionEvents.JOIN.register { _: ClientPlayNetworkHandler?, _: PacketSender?, _: MinecraftClient? ->
@@ -89,7 +84,6 @@ object Cache : Module() {
             val apiPlayers = TownyAPI.getPlayers(players).flatMap { it?.getOrNull().orEmpty() }
             playerCache.addAll(apiPlayers)
         }
-
     }
 
     fun updateCache() {

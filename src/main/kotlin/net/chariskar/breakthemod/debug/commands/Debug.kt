@@ -42,8 +42,10 @@ object Debug : BaseCommand() {
             Text.literal("players" + MinecraftClient.getInstance().world?.players)
         )
         sendMessage(
-            Text.literal("Nearby engine state: Running(${Config.getRadar()}), Players(${NearbyEngine.getPlayers()})")
+            Text.literal("Nearby engine state: Running(${Config.features.radarEnabled}), Players(${NearbyEngine.getPlayers()})")
         )
+        sendMessage("Loaded commands: ${Breakthemod.commands.size}.")
+        sendMessage("Load modules: ${Breakthemod.modules.size}.")
         sendMessage(
             Text.literal("Server status: isEmc(${ServerUtils.isEarthMc()}), enabled(${ServerUtils.getEnabled()})")
         )

@@ -39,7 +39,7 @@ object Townless : BaseCommand() {
     val username: String = client.session.username
 
     override val name = "townless"
-    override val description = "Shows all townless player"
+    override val description = "Shows all townless players."
     override val usageSuffix = ""
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {

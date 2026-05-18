@@ -30,10 +30,14 @@ import kotlin.math.sqrt
  * @param name The name of the player.
  * @param position The position of the player.
  * */
-data class PlayerInfo(val name: String, var position: Vec3d) {
+data class PlayerInfo(
+    val name: String,
+    var position: Vec3d
+) {
     val directions = arrayOf("S", "SW", "W", "NW", "N", "NE", "E", "SE")
     val client: MinecraftClient = MinecraftClient.getInstance()
 
+    /** Calculates the distance between the player and the location provided */
     fun calculateDistance(other: Vec3d): Double {
         val dx = position.x - other.x
         val dy = position.y - other.y
@@ -41,6 +45,7 @@ data class PlayerInfo(val name: String, var position: Vec3d) {
         return dx * dx + dy * dy + dz * dz
     }
 
+    /** Climbs from the current pos until world max Y to check if there are any blocks above.*/
     fun isUnderBlock(world: World, pos: BlockPos): Boolean {
         val topY = world.dimension.logicalHeight
         for (y in pos.y + 1..topY) {
@@ -51,6 +56,7 @@ data class PlayerInfo(val name: String, var position: Vec3d) {
         return false
     }
 
+    /** Checks if the player is in any state that would prevent him from being visible. */
     fun shouldSkipSpecial(player: PlayerEntity): Boolean {
         val isInVehicle = player.hasVehicle()
         val isSneaking = player.isSneaking
@@ -61,11 +67,13 @@ data class PlayerInfo(val name: String, var position: Vec3d) {
         return isInVehicle || isSneaking || inRiptide || isInNether || isInvisible
     }
 
+    /** Combination of [shouldSkipSpecial] and [isUnderBlock] to return a final result.*/
     fun shouldSkip(
         player: PlayerEntity,
         world: World
     ): Boolean = shouldSkipSpecial(player) || isUnderBlock(world, player.blockPos)
 
+    /** Calculates the direction to a player. */
     fun directionFrom(player: PlayerEntity): String {
         val dx = position.x - player.x
         val dz = position.z - player.z

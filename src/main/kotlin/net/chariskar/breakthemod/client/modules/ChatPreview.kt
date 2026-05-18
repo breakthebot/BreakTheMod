@@ -19,7 +19,7 @@
 
 package net.chariskar.breakthemod.client.modules
 
-import net.chariskar.breakthemod.client.api.Module
+import net.chariskar.breakthemod.client.api.BaseModule
 import net.chariskar.breakthemod.client.utils.ChatChannel
 import net.chariskar.breakthemod.client.utils.ServerUtils
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
@@ -35,7 +35,7 @@ import java.util.regex.Pattern
  * @property inPartyChat Party chat flag.
  * @property chatChannel The current channel the player is in.
  * */
-object ChatPreview : Module() {
+object ChatPreview : BaseModule() {
     override val name = "ChatPreview"
     override val description = "Chat preview logic handler."
 

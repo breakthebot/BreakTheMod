@@ -44,6 +44,7 @@ repositories {
     maven("https://maven.shedaniel.me/")
     maven("https://maven.isxander.dev/releases")
     maven("https://jitpack.io")
+    google()
 
     exclusiveContent {
         forRepository {
@@ -56,6 +57,7 @@ repositories {
 }
 
 val shade by configurations.creating
+val r8 by configurations.creating
 val debug = project.hasProperty("debug")
 
 val mcVer: String by project
@@ -70,6 +72,7 @@ val placeholderVersion: String by project
 val breakTheLibrary: String by project
 
 dependencies {
+    r8("com.android.tools:r8:8.3.37")
     minecraft("com.mojang:minecraft:$mcVer")
     mappings("net.fabricmc:yarn:$mappings:v2")
 
@@ -142,7 +145,6 @@ val addHeader by tasks.registering {
         }
     }
 }
-
 val shadowJarTask = tasks.named<ShadowJar>("shadowJar") {
     archiveClassifier.set("dev-shadow")
     configurations = listOf(shade)
@@ -173,7 +175,7 @@ if (project.hasProperty("release")) {
 }
 
 tasks.named<ShadowJar>("shadowJar") {
-        if (!debug) {
+    if (!debug) {
         exclude("net/chariskar/breakthemod/debug/**")
     }
 }

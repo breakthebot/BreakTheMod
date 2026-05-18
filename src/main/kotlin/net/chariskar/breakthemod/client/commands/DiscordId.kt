@@ -36,7 +36,6 @@ object DiscordId : BaseCommand() {
     override val description: String = "Tells you the discord username of a linked player."
     override val usageSuffix = "<name>"
 
-
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val name: String = ctx.getArgument("name", String::class.java)
         scope.launch {
@@ -59,6 +58,11 @@ object DiscordId : BaseCommand() {
     }
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
-        super.register<String>(dispatcher, "name", StringArgumentType.string(), null)
+        super.register<String>(
+            dispatcher,
+            "name",
+            StringArgumentType.string(),
+            null
+        )
     }
 }

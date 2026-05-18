@@ -17,11 +17,8 @@
 
 package net.chariskar.breakthemod.debug.commands
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
-import com.mojang.brigadier.builder.LiteralArgumentBuilder
-import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.mojang.brigadier.suggestion.SuggestionProvider
@@ -29,8 +26,6 @@ import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.BaseCommand
-import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
-import net.chariskar.breakthemod.debug.commands.UnloadModule.ModuleSuggestions
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.Text
 import java.util.Locale
@@ -50,19 +45,17 @@ object LoadModule : BaseCommand() {
         )
     }
 
-
-
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val name = ctx.getArgument("name", String::class.java)
 
-        val module = Breakthemod.modules.firstOrNull() { it.name == name }
+        val module = Breakthemod.modules.firstOrNull { it.name == name }
 
         if (module?.enabled == true) {
             sendMessage(Text.literal("Module $name already enabled."))
             return 0
         }
 
-        val clazz = Class.forName("net.chariskar.breakthemod.client.modules.$name")
+        val clazz = Class.forName("net.chariskar.breakthemod.client.modules.${module?.javaClass?.name}")
 
         val instance = clazz.getField("INSTANCE").get(null)
         val method = clazz.getMethod("launch")
@@ -81,8 +74,8 @@ object LoadModule : BaseCommand() {
         ): CompletableFuture<Suggestions> {
             val input = builder.remaining.lowercase(Locale.getDefault())
 
-            Breakthemod.modules.stream()
-                .filter { s -> s?.name?.startsWith(input) == true && !s.enabled }
+            Breakthemod.modules
+                .filter { s -> s.name.startsWith(input) && !s.enabled }
                 .map { it.name }
                 .forEach(builder::suggest)
 

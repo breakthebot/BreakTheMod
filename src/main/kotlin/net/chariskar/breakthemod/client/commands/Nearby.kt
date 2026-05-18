@@ -37,7 +37,7 @@ object Nearby : BaseCommand() {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         scope.launch {
-            val players: Set<PlayerInfo> = NearbyEngine.updateNearbyPlayers(client.player!!, client.world!!)
+            val players = NearbyEngine.getPlayers()
 
             val header = if (players.isEmpty()) {
                 Text.literal("No players nearby").setStyle(

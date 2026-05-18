@@ -33,6 +33,9 @@ object Config {
 
     var config: ConfigData = ConfigData()
 
+    val features by lazy { config.features }
+    val widget by lazy { config.features.widget }
+
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
     fun setFile(file: File) { configFile = file }
@@ -74,26 +77,11 @@ object Config {
 
     fun getMapUrl() = formatURL(config.libraryConfig.mapUrl)
 
-    fun getDevMode() = config.dev
-
-    fun getRadar() = config.features.radarEnabled
-
-    fun getExperienceText() = config.features.experienceText
-
-    fun getWidget() = config.features.widget
-
-    fun getEnabledServers() = config.enabledOnOtherServers
-
     fun getTownlessMessage(townName: String) = config.townlessMessage.replace("TOWN", townName)
 
     fun getDbg() = config.debug && config.dev
 
-    fun getHud() = config.features.hudType
-
     fun getNameTag() = config.features.nameTagInfo && config.features.cacheEnabled
-
-    fun getCache() = config.features.cacheEnabled
-
 
     fun setTownlessMessage(message: String): Boolean {
         if (!message.contains("TOWN")) return false

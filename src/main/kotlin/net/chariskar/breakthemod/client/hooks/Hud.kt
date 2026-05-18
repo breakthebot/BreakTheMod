@@ -28,7 +28,7 @@ import net.minecraft.client.gui.DrawContext
 
 object Hud {
     private val client = MinecraftClient.getInstance()
-    var widgetPosition: Widget = Config.getWidget()
+    var widgetPosition: Widget = Config.config.features.widget
 
     private var x: Int = 0
     private var y: Int = 0
@@ -36,15 +36,15 @@ object Hud {
     @Synchronized
     fun render(drawContext: DrawContext) {
         if (client.options.hudHidden || client.world == null || client.player == null) return
-        if (!Config.getRadar() || !ServerUtils.getEnabled()) return
+        if (!Config.config.features.radarEnabled || !ServerUtils.getEnabled()) return
         val players = NearbyEngine.getPlayers()
 
         val playerList = if (players.isEmpty()) {
             listOf("No players nearby")
         } else players.map { it.toString() }
 
-        val margin = Config.getWidget().margin
-        val entryHeight = Config.getWidget().entryHeight
+        val margin = Config.config.features.widget.margin
+        val entryHeight = Config.widget.entryHeight
 
         val textRender: TextRenderer = client.textRenderer
 
@@ -53,7 +53,7 @@ object Hud {
         val height = (20 + playerList.size * entryHeight).coerceAtLeast(40)
 
         when (
-            Config.getWidget().widgetPosition
+            Config.widget.widgetPosition
         ) {
             WidgetPosition.TOP_LEFT -> {
                 x = margin

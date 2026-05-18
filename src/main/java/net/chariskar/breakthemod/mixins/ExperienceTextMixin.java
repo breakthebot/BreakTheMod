@@ -53,7 +53,7 @@ public interface ExperienceTextMixin {
             int color,
             boolean shadow
     ) {
-        if (!Config.INSTANCE.getExperienceText()) {
+        if (!Config.INSTANCE.getFeatures().getExperienceText()) {
             context.drawText(renderer, text, x, y, color, shadow);
             return;
         }
@@ -84,7 +84,7 @@ public interface ExperienceTextMixin {
     ) {
         Objects.requireNonNull(MinecraftClient.getInstance().player);
         int level = (int) args[0];
-        if (!Config.INSTANCE.getExperienceText()) return Text.translatable("gui.experience.level", level);
+        if (!Config.INSTANCE.getFeatures().getExperienceText()) return Text.translatable("gui.experience.level", level);
         return Text.literal(level + "(" +  ExperienceUtils.INSTANCE.experience(MinecraftClient.getInstance().player) + ")");
     }
 

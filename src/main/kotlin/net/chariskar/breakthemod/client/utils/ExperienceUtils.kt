@@ -7,7 +7,9 @@ import kotlin.math.round
 
 object ExperienceUtils {
 
-    fun experience(player: ClientPlayerEntity): Int {
+    fun experience(
+        player: ClientPlayerEntity
+    ): Int {
         return (
                 experience(player.experienceLevel) +
                 round(required(player.experienceLevel) * player.experienceProgress)

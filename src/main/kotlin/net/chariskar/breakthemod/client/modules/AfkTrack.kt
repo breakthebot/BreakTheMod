@@ -17,7 +17,7 @@
 
 package net.chariskar.breakthemod.client.modules
 
-import net.chariskar.breakthemod.client.api.Module
+import net.chariskar.breakthemod.client.api.BaseModule
 import net.chariskar.breakthemod.client.utils.ServerUtils
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
@@ -25,15 +25,10 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayNetworkHandler
 import net.minecraft.text.Text
 
-object AfkTrack : Module() {
-
+object AfkTrack : BaseModule() {
     override val name = "AfkTrack"
     override val description: String = "Utility module for tracking afk status."
     var isAfk: Boolean = false
-
-    override fun disable() {
-        enabled = false
-    }
 
     override fun enable() {
         ClientReceiveMessageEvents.GAME.register(ClientReceiveMessageEvents.Game { message: Text?, _: Boolean ->
@@ -46,8 +41,6 @@ object AfkTrack : Module() {
 
             if (messageText.equals("You are no longer afk.", ignoreCase = true)) {
                 isAfk = false
-                if (ShopTracker.emptyShops.isEmpty()) return@Game
-
                 sendMessage("The following shops run out of stock whilst you were afk:")
                 ShopTracker.emptyShops.forEach { sendMessage(it.toString()) }
             }

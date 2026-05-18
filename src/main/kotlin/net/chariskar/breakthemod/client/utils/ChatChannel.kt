@@ -20,7 +20,7 @@
 
 package net.chariskar.breakthemod.client.utils
 
-class ChatChannel(val name: String?, val colour: Int) {
+class ChatChannel(val name: String, val colour: Int) {
     companion object {
         val GLOBAL: ChatChannel = ChatChannel("global", -0x555556)
         val TOWN: ChatChannel = ChatChannel("town", -0xaa0001)
@@ -51,7 +51,7 @@ class ChatChannel(val name: String?, val colour: Int) {
             SPANISH, DUTCH, JAPANESE
         )
 
-        fun getOrDefault(name: String?): ChatChannel {
+        fun getOrDefault(name: String): ChatChannel {
             for (channel in CHANNELS) {
                 if (channel.name == name) return channel
             }

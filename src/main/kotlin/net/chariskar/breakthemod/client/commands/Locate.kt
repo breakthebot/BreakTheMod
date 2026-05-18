@@ -62,7 +62,10 @@ object Locate : BaseCommand() {
                     val nation = TownyAPI.getNation(name).getOrNull()
                     nation?.coordinates?.spawn
                 }
-                else -> null
+                else -> {
+                    sendError("$type is not town or nation")
+                    return@launch
+                }
             }
             if (coords == null) {
                 sendError("No $type named $name found.")
@@ -75,7 +78,6 @@ object Locate : BaseCommand() {
         }
         return 0
     }
-
 
     private fun getMapText(x: Float, z: Float): Text {
         val mapUrl = "${Config.getMapUrl()}?world=minecraft_overworld&zoom=5&x=$x&z=$z"

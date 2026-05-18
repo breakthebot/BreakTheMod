@@ -20,10 +20,8 @@ package net.chariskar.breakthemod.client.hooks
 import com.terraformersmc.modmenu.api.ConfigScreenFactory
 import com.terraformersmc.modmenu.api.ModMenuApi
 import me.shedaniel.clothconfig2.api.ConfigBuilder
-import me.shedaniel.clothconfig2.api.ConfigCategory
 import net.chariskar.breakthemod.client.utils.AutoHudType
 import net.chariskar.breakthemod.client.utils.Config
-import net.chariskar.breakthemod.client.utils.Config.config
 import net.chariskar.breakthemod.client.utils.WidgetPosition
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.Screen
@@ -40,24 +38,24 @@ class ModMenuIntegration : ModMenuApi {
             val entryBuilder = builder.entryBuilder()
             val general = builder.getOrCreateCategory(Text.literal("BreakTheMod config"))
 
-            val options: ConfigCategory? = if ( config.options ) {
+            val options = if ( Config.config.options ) {
                 builder.getOrCreateCategory(Text.literal("Options"))
             } else null
 
-            val devOptions: ConfigCategory? = if ( Config.getDevMode() ) {
+            val devOptions = if ( Config.config.dev ) {
                 builder.getOrCreateCategory(Text.literal("Developer Settings"))
             } else null
 
             general.addEntry(
                 entryBuilder.startBooleanToggle(
                     Text.literal("Enable BreakTheMod on other servers"),
-                    Config.getEnabledServers()
+                    Config.config.enabledOnOtherServers
                 )
                     .setSaveConsumer { enabled: Boolean ->
-                        config.enabledOnOtherServers = enabled
+                        Config.config.enabledOnOtherServers = enabled
                         saveConfig()
                     }
-                    .setDefaultValue { config.enabledOnOtherServers }
+                    .setDefaultValue { Config.config.enabledOnOtherServers }
                     .build()
             )
 
@@ -65,7 +63,7 @@ class ModMenuIntegration : ModMenuApi {
                 entryBuilder.startEnumSelector(
                     Text.literal("Widget Position"),
                     WidgetPosition::class.java,
-                    Config.getWidget().widgetPosition
+                    Config.widget.widgetPosition
                 ).setSaveConsumer { position: WidgetPosition ->
                     Config.config.features.widget.widgetPosition = position
                     saveConfig()
@@ -76,7 +74,7 @@ class ModMenuIntegration : ModMenuApi {
                 entryBuilder.startEnumSelector(
                     Text.literal("AutoHUD type"),
                     AutoHudType::class.java,
-                    Config.getHud()
+                    Config.features.hudType
                 ).setSaveConsumer { hudType: AutoHudType ->
                     Config.config.features.hudType = hudType
                     saveConfig()
@@ -86,11 +84,11 @@ class ModMenuIntegration : ModMenuApi {
             general.addEntry(
                 entryBuilder.startBooleanToggle(
                     Text.literal("Experience text overlay"),
-                    Config.getExperienceText()
+                    Config.features.experienceText
                 ).setSaveConsumer { enabled: Boolean ->
                     Config.config.features.experienceText = enabled
                     saveConfig()
-                }.setDefaultValue( Config.getExperienceText() ).build()
+                }.setDefaultValue( Config.features.experienceText ).build()
             )
 
             general.addEntry(
@@ -106,7 +104,7 @@ class ModMenuIntegration : ModMenuApi {
             general.addEntry(
                 entryBuilder.startBooleanToggle(
                     Text.literal("Player radar"),
-                    Config.getRadar()
+                    Config.features.radarEnabled
                 )
                     .setSaveConsumer { enabled: Boolean ->
                         Config.config.features.radarEnabled = enabled
@@ -130,7 +128,7 @@ class ModMenuIntegration : ModMenuApi {
             general.addEntry(
                 entryBuilder.startBooleanToggle(
                     Text.literal("dev"),
-                    Config.getDevMode()
+                    Config.config.dev
                 )
                     .setSaveConsumer { enabled: Boolean ->
                         Config.config.dev = enabled
@@ -154,7 +152,7 @@ class ModMenuIntegration : ModMenuApi {
             devOptions?.addEntry(
                 entryBuilder.startIntField(
                     Text.literal("Nearby entry height"),
-                    Config.getWidget().entryHeight
+                    Config.widget.entryHeight
                 )
                     .setSaveConsumer { height: Int ->
                         Config.config.features.widget.entryHeight = height
@@ -166,7 +164,7 @@ class ModMenuIntegration : ModMenuApi {
             devOptions?.addEntry(
                 entryBuilder.startIntField(
                     Text.literal("Nearby entry margin"),
-                    Config.getWidget().margin
+                    Config.widget.margin
                 )
                     .setSaveConsumer { margin: Int ->
                         Config.config.features.widget.margin = margin
@@ -178,7 +176,7 @@ class ModMenuIntegration : ModMenuApi {
             devOptions?.addEntry(
                 entryBuilder.startBooleanToggle(
                     Text.literal("Cache"),
-                    Config.getCache(),
+                    Config.features.cacheEnabled,
                 )
                     .setSaveConsumer { enabled: Boolean ->
                         Config.config.features.cacheEnabled = enabled
@@ -190,7 +188,7 @@ class ModMenuIntegration : ModMenuApi {
             options?.addEntry(
                 entryBuilder.startIntField(
                     Text.literal("Custom X Position"),
-                    Config.getWidget().customX
+                    Config.widget.customX
                 )
                     .setSaveConsumer { x: Int ->
                         Config.config.features.widget.customX = x
@@ -205,7 +203,7 @@ class ModMenuIntegration : ModMenuApi {
             options?.addEntry(
                 entryBuilder.startIntField(
                     Text.literal("Custom Y Position"),
-                    Config.getWidget().customY
+                    Config.widget.customY
                 )
                     .setSaveConsumer { y: Int ->
                         Config.config.features.widget.customY = y
@@ -225,7 +223,7 @@ class ModMenuIntegration : ModMenuApi {
                     .setSaveConsumer { url: String ->
                         Config.setApiUrl(url)
                         saveConfig()
-                    }.setDefaultValue { config.libraryConfig.apiUrl }
+                    }.setDefaultValue { Config.config.libraryConfig.apiUrl }
                     .build()
             )
 
