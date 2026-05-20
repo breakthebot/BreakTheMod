@@ -40,6 +40,7 @@ object AfkTrack : BaseModule() {
             }
 
             if (messageText.equals("You are no longer afk.", ignoreCase = true)) {
+                if (ShopTracker.emptyShops.isEmpty()) {return@Game}
                 isAfk = false
                 sendMessage("The following shops run out of stock whilst you were afk:")
                 ShopTracker.emptyShops.forEach { sendMessage(it.toString()) }
