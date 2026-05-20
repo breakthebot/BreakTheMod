@@ -122,7 +122,6 @@ class Breakthemod : ClientModInitializer {
                 Help
             )
         )
-        Help.commands = commands
 
         modules.addAll(
             listOf(
@@ -134,8 +133,6 @@ class Breakthemod : ClientModInitializer {
                 AfkTrack
             )
         )
-
-        Help.baseModules = modules
 
         loadModules(modules)
         loadCommands(commands)

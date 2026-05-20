@@ -34,15 +34,15 @@ import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
 object Help : BaseCommand() {
-    var commands: List<BaseCommand>? = null
-    var baseModules: List<BaseModule>? = null
-
     override val name = "commands"
     override val description = "This very command."
     override val usageSuffix = "[name]"
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
-        if (commands == null || commands!!.isEmpty()) {
+        val commands = Breakthemod.commands
+        val modules = Breakthemod.modules
+
+        if (commands.isEmpty()) {
             sendError("No commands available!.")
             return 1
         }
@@ -65,14 +65,14 @@ object Help : BaseCommand() {
             )
         }
 
-        if (baseModules == null || baseModules!!.isEmpty()) {
+        if (modules.isEmpty()) {
             sendMessage(Text.literal("No features available."))
             return 1
         }
 
         sendMessage(Text.literal("=== Available Features ==="), Formatting.GOLD)
 
-        for (module in baseModules) {
+        for (module in modules) {
             sendMessage(
                 Text.literal(
                     module.getModuleDescription()
@@ -91,7 +91,6 @@ object Help : BaseCommand() {
                 .then(RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("name", StringArgumentType.string())
                 .suggests(CommandSuggestions(Breakthemod.commands.map { it.name }.toMutableList()))
                 .executes(Command { context: CommandContext<FabricClientCommandSource> ->
-                    if (!getEnabled()) {return@Command 0}
                     val name = context.getArgument("name", String::class.java)
                     val command = Breakthemod.commands.firstOrNull {
                         it.name == name
@@ -104,7 +103,6 @@ object Help : BaseCommand() {
                     return@Command 1
                 }))
                 .executes(Command { ctx: CommandContext<FabricClientCommandSource> ->
-                    if (!getEnabled()) {return@Command 0}
                     return@Command execute(ctx)
                 })
         )

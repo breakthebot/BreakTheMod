@@ -110,7 +110,7 @@ tasks.processResources {
                 "kotlin_loader_version" to kotlinLoader,
                 "cloth_config" to clothVersion,
                 "placeholder_api" to placeholderVersion,
-                "modmenu" to modmenu
+                "modmenu" to modmenu,
             )
         )
     }
@@ -161,7 +161,6 @@ tasks.remapJar {
     inputFile.set(shadowJarTask.flatMap { it.archiveFile })
     archiveClassifier.set(null as String?)
 }
-
 
 tasks.build {
     dependsOn(addHeader)
