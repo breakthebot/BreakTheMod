@@ -135,10 +135,10 @@ object Locate : BaseCommand() {
                 "town" -> Cache.townCache
                 "nation" -> Cache.nationCache
                 else -> emptyList()
-            }.map { it.name }
+            }
 
             allSuggestions
-                .filter { it?.lowercase(Locale.getDefault())?.startsWith(input) == true }
+                .filter { it.lowercase(Locale.getDefault()).startsWith(input) }
                 .forEach(builder::suggest)
 
             return builder.buildFuture()

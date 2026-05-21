@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Cache update handler for PlayerNametagInfo feature.
  *
- * @property scope The execution scope.
+ * @property scope The execution scope for the cache update..
  * @property playerCache The player currently cached in memory.
  * @property townCache A list of every town from /towns.
  * @property nationCache A list of every nation from /nations.
@@ -55,8 +55,8 @@ object Cache : BaseModule() {
     val playerCache: MutableList<Resident> = CopyOnWriteArrayList()
     // keep a cache of all towns and nations for /locate, a full object cache is not needed yet.
     // spare some ram.
-    val townCache: MutableList<Reference> = mutableListOf()
-    val nationCache: MutableList<Reference> = mutableListOf()
+    val townCache: MutableList<String> = mutableListOf()
+    val nationCache: MutableList<String> = mutableListOf()
 
     override fun enable() {
         ClientPlayConnectionEvents.JOIN.register { _: ClientPlayNetworkHandler?, _: PacketSender?, _: MinecraftClient? ->
@@ -93,12 +93,12 @@ object Cache : BaseModule() {
         scope.launch {
             TownyAPI.getAllTowns().getOrNull().let {
                 if (it != null) {
-                    townCache.addAll(it)
+                    townCache.addAll(it.map { name })
                 }
             }
             TownyAPI.getAllNations().getOrNull().let {
                 if (it != null) {
-                    nationCache.addAll(it)
+                    nationCache.addAll(it.map { name })
                 }
             }
         }

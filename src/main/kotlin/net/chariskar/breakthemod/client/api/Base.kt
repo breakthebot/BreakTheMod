@@ -20,7 +20,6 @@ package net.chariskar.breakthemod.client.api
 
 import net.chariskar.breakthemod.client.utils.Config
 import net.minecraft.client.MinecraftClient
-import net.minecraft.text.MutableText
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.text.TextColor
@@ -30,41 +29,32 @@ import org.slf4j.LoggerFactory
 
 /**
  * Base for all breakthemod features.
+ * @property prefix The prefix that should be shown in all interactions with the user.
  * */
 abstract class Base {
 
     protected val logger: Logger = LoggerFactory.getLogger("breakthemod")
     protected val client: MinecraftClient = MinecraftClient.getInstance()
 
-    private fun getColorFromHex(hex: String): TextColor {
-        try {
-            require(hex.startsWith("#")) { "Invalid hex color format. Must start with #." }
-            val color = hex.substring(1).toInt(16)
-            return TextColor.fromRgb(color)
-        } catch (e: NumberFormatException) {
-            throw IllegalArgumentException("Invalid hex color format. Ensure it is in #RRGGBB format.", e)
-        }
-    }
-
-    fun getPrefix(): MutableText {
-        val segments = arrayOf(
-            arrayOf("Break", "#EAEAEA"),
-            arrayOf("The", "#4B56FF"),
-            arrayOf("Mod", "#FF8C1A"),
-            arrayOf(">> ", "#FFFFFF")
+    val prefix: Text by lazy {
+        val segments = listOf(
+            "Break" to "#EAEAEA",
+            "The" to "#4B56FF",
+            "Mod"  to "#FF8C1A",
+            ">> " to "#FFFFFF"
         )
 
         val prefix = Text.empty()
+
         for (segment in segments) {
-            val text: String = segment[0]
-            val color = getColorFromHex(segment[1]).rgb
+            val text: String = segment.first
+            val color = TextColor.fromRgb(segment.second.substring(1).toInt(16))
 
             for (c in text.toCharArray()) {
                 prefix.append(Text.literal(c.toString()).setStyle(Style.EMPTY.withColor(color)))
             }
         }
-
-        return prefix
+        prefix
     }
 
     /**
@@ -74,7 +64,7 @@ abstract class Base {
      */
     fun sendMessage(message: Text)  {
         client.execute {
-            client.player?.sendMessage(getPrefix().append(message), false)
+            client.player?.sendMessage(prefix.copy().append(message), false)
         }
     }
 

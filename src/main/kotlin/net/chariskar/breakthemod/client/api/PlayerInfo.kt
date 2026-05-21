@@ -35,7 +35,7 @@ data class PlayerInfo(
     var position: Vec3d
 ) {
     val directions = arrayOf("S", "SW", "W", "NW", "N", "NE", "E", "SE")
-    val client: MinecraftClient = MinecraftClient.getInstance()
+    private val client: MinecraftClient = MinecraftClient.getInstance()
 
     /** Calculates the distance between the player and the location provided */
     fun calculateDistance(other: Vec3d): Double {
