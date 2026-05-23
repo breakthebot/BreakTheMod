@@ -18,7 +18,7 @@
 package net.chariskar.breakthemod.client.commands
 
 import com.mojang.brigadier.context.CommandContext
-import net.chariskar.breakthemod.client.api.BaseCommand
+import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.modules.ShopTracker
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.Text

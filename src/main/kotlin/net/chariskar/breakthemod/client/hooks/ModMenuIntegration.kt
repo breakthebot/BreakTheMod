@@ -22,8 +22,6 @@ import com.terraformersmc.modmenu.api.ModMenuApi
 import me.shedaniel.clothconfig2.api.ConfigBuilder
 import net.chariskar.breakthemod.client.utils.AutoHudType
 import net.chariskar.breakthemod.client.utils.Config
-import net.chariskar.breakthemod.client.utils.WidgetPosition
-import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.text.Text
 
@@ -57,17 +55,6 @@ class ModMenuIntegration : ModMenuApi {
                     }
                     .setDefaultValue { Config.config.enabledOnOtherServers }
                     .build()
-            )
-
-            general.addEntry(
-                entryBuilder.startEnumSelector(
-                    Text.literal("Widget Position"),
-                    WidgetPosition::class.java,
-                    Config.widget.widgetPosition
-                ).setSaveConsumer { position: WidgetPosition ->
-                    Config.config.features.widget.widgetPosition = position
-                    saveConfig()
-                }.setDefaultValue { WidgetPosition.TOP_LEFT }.build()
             )
 
             general.addEntry(
@@ -150,30 +137,6 @@ class ModMenuIntegration : ModMenuApi {
             )
 
             devOptions?.addEntry(
-                entryBuilder.startIntField(
-                    Text.literal("Nearby entry height"),
-                    Config.widget.entryHeight
-                )
-                    .setSaveConsumer { height: Int ->
-                        Config.config.features.widget.entryHeight = height
-                        saveConfig()
-                    }.setDefaultValue { 15 }
-                    .build()
-            )
-
-            devOptions?.addEntry(
-                entryBuilder.startIntField(
-                    Text.literal("Nearby entry margin"),
-                    Config.widget.margin
-                )
-                    .setSaveConsumer { margin: Int ->
-                        Config.config.features.widget.margin = margin
-                        saveConfig()
-                    }.setDefaultValue { 10 }
-                    .build()
-            )
-
-            devOptions?.addEntry(
                 entryBuilder.startBooleanToggle(
                     Text.literal("Cache"),
                     Config.features.cacheEnabled,
@@ -182,36 +145,6 @@ class ModMenuIntegration : ModMenuApi {
                         Config.config.features.cacheEnabled = enabled
                         saveConfig()
                     }.setDefaultValue { true }
-                    .build()
-            )
-
-            options?.addEntry(
-                entryBuilder.startIntField(
-                    Text.literal("Custom X Position"),
-                    Config.widget.customX
-                )
-                    .setSaveConsumer { x: Int ->
-                        Config.config.features.widget.customX = x
-                        saveConfig()
-                    }
-                    .setMin(0)
-                    .setMax(MinecraftClient.getInstance().currentScreen!!.width)
-                    .setDefaultValue { Config.config.features.widget.customX }
-                    .build()
-            )
-
-            options?.addEntry(
-                entryBuilder.startIntField(
-                    Text.literal("Custom Y Position"),
-                    Config.widget.customY
-                )
-                    .setSaveConsumer { y: Int ->
-                        Config.config.features.widget.customY = y
-                        saveConfig()
-                    }
-                    .setMin(0)
-                    .setMax(MinecraftClient.getInstance().currentScreen!!.height)
-                    .setDefaultValue { Config.config.features.widget.customY }
                     .build()
             )
 

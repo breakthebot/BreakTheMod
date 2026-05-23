@@ -15,33 +15,27 @@
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.chariskar.breakthemod.client.api
+package net.chariskar.breakthemod.client.modules
+
+import net.chariskar.breakthemod.Breakthemod
+import net.chariskar.breakthemod.client.api.module.BaseModule
 
 /**
- * @property name Module name.
- * @property description Description.
- * @property enabled The status of the module.
+ * Manages the widgets.
+ *
  * */
-abstract class BaseModule : Base() {
-    abstract val name: String
-    abstract val description: String
-    var enabled: Boolean = false
-        protected set
+object WidgetManager : BaseModule() {
+    override val name: String = "WidgetManager"
+    override val description: String = "Background manager for all of the widgets."
+    override val hidden: Boolean = true
 
-    fun launch() {
-        if (enabled) return
-        try {
-            enable()
-            enabled = true
-        } catch (e: Exception) {
-            logError("Unexpected exception occurred", e)
-            enabled = false
+    override fun enable() {
+        for (widget in Breakthemod.widgets) {
+            try {
+                widget.register()
+            } catch (e: Exception) {
+                logError("Unexpected error occurred while registering widget $name.", e)
+            }
         }
     }
-
-    fun getModuleDescription() = "$name: $description"
-
-    open fun disable() { enabled = false }
-
-    protected abstract fun enable()
 }

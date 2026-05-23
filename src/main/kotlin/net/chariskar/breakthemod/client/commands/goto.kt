@@ -24,8 +24,7 @@ import kotlinx.coroutines.launch
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
-
-import net.chariskar.breakthemod.client.api.BaseCommand
+import net.chariskar.breakthemod.client.api.command.BaseCommand
 import org.breakthebot.breakthelibrary.api.MapApi
 import org.breakthebot.breakthelibrary.api.TownyAPI
 import org.breakthebot.breakthelibrary.models.Nation
@@ -35,6 +34,8 @@ import org.breakthebot.breakthelibrary.models.Reference
 import org.breakthebot.breakthelibrary.models.Town
 import org.breakthebot.breakthelibrary.network.ApiResult
 import org.breakthebot.breakthelibrary.network.getOrNull
+import org.breakthebot.breakthelibrary.network.mapSuccess
+import org.breakthebot.breakthelibrary.network.onError
 
 object goto : BaseCommand() {
     
@@ -75,7 +76,7 @@ object goto : BaseCommand() {
                     is ApiResult.Success<Nation> -> nation.data
                     is ApiResult.Error -> {
                         val message = when (nation.statusCode) {
-                            503 -> "Earthmc APIw is unavailable."
+                            503 -> "Earthmc API is unavailable."
                             else -> "API says this town is the capital of a nation that does not exist."
                         }
                         sendError(message)
@@ -93,41 +94,32 @@ object goto : BaseCommand() {
             var attempts = 3
             val validTowns: MutableList<String> = mutableListOf()
 
-            while (attempts-- > 0) {
-                val resp = when (
-                    val resp = MapApi.getNearby(listOf(NearbyItem(
-                        NearbyType.TOWN,
-                        townName,
-                        NearbyType.TOWN,
-                        radius)
-                    ))
-                ) {
-                    is ApiResult.Success<List<List<Reference>?>?> -> { resp.data }
-                    is ApiResult.Error -> {
-                        val message = when (resp.statusCode) {
-                            404 -> "$townName does not exist."
-                            else -> "Api returned unexpected message ${resp.message}"
-                        }
-                        sendError(message)
-                        return@launch
+            loop@ while (attempts-- > 0) {
+                val resp = MapApi.getNearby(listOf(NearbyItem(
+                    NearbyType.TOWN,
+                    townName,
+                    NearbyType.TOWN,
+                    radius)
+                )).onError { e ->
+                    val message = when (e.statusCode) {
+                        404 -> "$townName does not exist."
+                        else -> "Api returned unexpected message ${e.message}"
                     }
-                }?.first()
+                    sendError(message)
+                    return@launch
+                }.mapSuccess { it?.map { name } }.getOrNull()
 
-                val names = resp?.mapNotNull { it.name } ?: emptyList()
-                if (names.isEmpty()) {
+                if (resp.isNullOrEmpty()) {
                     radius += 500
                     continue
                 }
 
-                val townDetails = when (val townDetails = TownyAPI.getTowns(names).first()) {
-                    is ApiResult.Success<List<Town>> -> {
-                        townDetails.data
-                    }
-                    else -> {
-                        radius += 500
-                        continue
-                    }
-                }
+                // Non-null assertion cause being null would be an error by design and handled by onError
+                val townDetails = TownyAPI.getTowns(resp).first()
+                .onError {
+                    radius += 500
+                    continue@loop
+                }.getOrNull()!!
 
                 for (town in townDetails) {
                     val status = town.status

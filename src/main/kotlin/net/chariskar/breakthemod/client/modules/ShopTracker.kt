@@ -17,11 +17,10 @@
 
 package net.chariskar.breakthemod.client.modules
 
-import net.chariskar.breakthemod.client.api.BaseModule
-import net.chariskar.breakthemod.client.utils.ServerUtils
+import net.chariskar.breakthemod.client.api.module.BaseModule
+import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
-import net.fabricmc.loader.impl.lib.sat4j.core.Vec
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayNetworkHandler
 import net.minecraft.text.Text
@@ -30,6 +29,8 @@ import net.minecraft.util.math.Vec3d
 object ShopTracker : BaseModule(){
     override val name = "ShopTracker"
     override val description = "Tracks when one of your shops empties for the getShops command."
+    override val hidden: Boolean = false
+
 
     private val shopRegex = Regex(
         """at\s+(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+).*?run out of\s+(.+?)!?$"""
@@ -53,7 +54,7 @@ object ShopTracker : BaseModule(){
 
     override fun enable() {
         ClientReceiveMessageEvents.GAME.register(ClientReceiveMessageEvents.Game { message: Text?, _: Boolean ->
-            if (!ServerUtils.isEarthMc()) return@Game
+            if (!isEarthMc()) return@Game
 
             val string = message?.string ?: return@Game
 

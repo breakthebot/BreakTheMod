@@ -15,7 +15,7 @@
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.chariskar.breakthemod.client.api
+package net.chariskar.breakthemod.client.api.command
 
 import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
@@ -31,10 +31,13 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import net.chariskar.breakthemod.client.api.providers.LoggingProvider
+import net.chariskar.breakthemod.client.api.providers.MessageProvider
 import net.chariskar.breakthemod.client.utils.Config
-import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
+import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import java.util.*
+import net.minecraft.client.MinecraftClient
+import java.util.Locale
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -43,7 +46,7 @@ import java.util.concurrent.CompletableFuture
  * @property description The command description.
  * @property usageSuffix The args that must be passed to the commands in a readable format (e.g. `<name>` ).
  *  */
-abstract class BaseCommand : Base() {
+abstract class BaseCommand : MessageProvider, ServerUtilsProvider, LoggingProvider {
     abstract val name: String
     abstract val description: String
     abstract val usageSuffix: String
@@ -56,6 +59,8 @@ abstract class BaseCommand : Base() {
     }
 
     protected val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default + handler)
+
+    protected val client: MinecraftClient = MinecraftClient.getInstance()
 
     fun getUsage() = "/$name $usageSuffix"
 
@@ -97,7 +102,7 @@ abstract class BaseCommand : Base() {
         dispatcher.register(
             LiteralArgumentBuilder.literal<FabricClientCommandSource>(name).executes(
                 Command { context: CommandContext<FabricClientCommandSource> ->
-                    return@Command if(!getEnabled()) 0 else run(context)
+                    return@Command if (!getModEnabled()) 0 else run(context)
                 }
             )
         )
@@ -124,7 +129,7 @@ abstract class BaseCommand : Base() {
                         .apply {
                             if (suggestions != null) suggests(suggestions)
                             executes(Command { context: CommandContext<FabricClientCommandSource> ->
-                                return@Command if(!getEnabled()) 0 else run(context)
+                                return@Command if (!getModEnabled()) 0 else run(context)
                             })
                         }
                 )
@@ -137,7 +142,7 @@ abstract class BaseCommand : Base() {
 
         @Throws(CommandSyntaxException::class)
         override fun getSuggestions(
-             context: CommandContext<FabricClientCommandSource?>?,
+            context: CommandContext<FabricClientCommandSource?>?,
             builder: SuggestionsBuilder
         ): CompletableFuture<Suggestions> {
             val input = builder.remaining.lowercase(Locale.getDefault())

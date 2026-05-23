@@ -19,7 +19,7 @@ package net.chariskar.breakthemod.mixins;
 
 import net.chariskar.breakthemod.client.modules.ChatPreview;
 import net.chariskar.breakthemod.client.utils.ChatChannel;
-import net.chariskar.breakthemod.client.utils.ServerUtils;
+import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ClickableWidget;
@@ -42,7 +42,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 ///  Credit to [...](https://github.com/Veyronity/Earthy/blob/master/client/fabric/src/main/java/au/lupine/earthy/fabric/mixin/EditBoxMixin.java)
 
 @Mixin(TextFieldWidget.class)
-public abstract class ChatPreviewOverlay extends ClickableWidget {
+public abstract class ChatPreviewOverlay extends ClickableWidget implements ServerUtilsProvider {
 
     @Shadow @Final private TextRenderer textRenderer;
     @Shadow @Nullable private String suggestion;
@@ -58,7 +58,7 @@ public abstract class ChatPreviewOverlay extends ClickableWidget {
     @Inject(method = "renderWidget", at = @At("TAIL"))
     private void inject(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         try {
-            if (!ServerUtils.INSTANCE.isEarthMc()) return;
+            if (!isEarthMc()) return;
             if (!getMessage().equals(Text.translatable("chat.editBox"))) return;
 
             if (this.suggestion != null || !this.text.isEmpty()) return;

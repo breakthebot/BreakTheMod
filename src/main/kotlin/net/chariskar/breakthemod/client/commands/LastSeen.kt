@@ -20,7 +20,8 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
-import net.chariskar.breakthemod.client.api.BaseCommand
+import net.chariskar.breakthemod.client.api.command.BaseCommand
+import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.utils.Timestamps
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.Style

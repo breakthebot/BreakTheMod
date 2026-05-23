@@ -17,8 +17,8 @@
 
 package net.chariskar.breakthemod.client.modules
 
-import net.chariskar.breakthemod.client.api.PlayerInfo
-import net.chariskar.breakthemod.client.api.BaseModule
+import net.chariskar.breakthemod.client.utils.PlayerInfo
+import net.chariskar.breakthemod.client.api.module.BaseModule
 import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.entity.player.PlayerEntity
@@ -35,6 +35,7 @@ object NearbyEngine : BaseModule() {
 
     override val name = "Nearby Engine"
     override val description = "Gets nearby players automatically."
+    override val hidden: Boolean = false
 
     const val DISTANCE_THRESHOLD: Double = 200.0
 

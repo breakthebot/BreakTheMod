@@ -20,7 +20,7 @@ package net.chariskar.breakthemod.debug.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
-import net.chariskar.breakthemod.client.api.BaseCommand
+import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.modules.Cache
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.Text
@@ -45,7 +45,7 @@ object CacheDebug : BaseCommand() {
             "name",
             StringArgumentType.string(),
             CommandSuggestions(
-                Cache.playerCache.map { it.name }.toMutableList()
+                Cache.playerCache.values.map { name }.toMutableList()
             )
         )
     }

@@ -25,7 +25,7 @@ import com.mojang.brigadier.suggestion.SuggestionProvider
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.chariskar.breakthemod.Breakthemod
-import net.chariskar.breakthemod.client.api.BaseCommand
+import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.Text
 import java.util.Locale

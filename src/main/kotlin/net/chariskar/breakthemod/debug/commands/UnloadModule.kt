@@ -28,8 +28,7 @@ import com.mojang.brigadier.suggestion.SuggestionProvider
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.chariskar.breakthemod.Breakthemod
-import net.chariskar.breakthemod.client.api.BaseCommand
-import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
+import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.Text
 import java.util.Locale
@@ -48,7 +47,7 @@ object UnloadModule : BaseCommand() {
                     RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("name", StringArgumentType.string())
                         .suggests(ModuleSuggestions())
                         .executes(Command { context: CommandContext<FabricClientCommandSource> ->
-                            if (!getEnabled()) return@Command 0
+                            if (!getModEnabled()) return@Command 0
                             return@Command run(context)
                         })
                 )

@@ -27,10 +27,9 @@ import com.mojang.brigadier.suggestion.SuggestionProvider
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import kotlinx.coroutines.launch
-import net.chariskar.breakthemod.client.api.BaseCommand
+import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.utils.Config
-import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.ClickEvent
 import net.minecraft.text.Style
@@ -110,7 +109,7 @@ object Locate : BaseCommand() {
                             )
                                 .suggests(NameSuggestions())
                                 .executes { context ->
-                                    if (!getEnabled()) return@executes 0
+                                    if (!getModEnabled()) return@executes 0
                                     run(context)
                                 }
                         )

@@ -21,6 +21,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 import kotlinx.serialization.json.Json
+import net.chariskar.breakthemod.client.api.widget.WidgetConfig
 import org.breakthebot.breakthelibrary.utils.ConfigHandler
 import org.breakthebot.breakthelibrary.utils.Config as LConfig
 /**
@@ -29,12 +30,17 @@ import org.breakthebot.breakthelibrary.utils.Config as LConfig
 object Config {
     lateinit var configFile: File
 
-    val json = Json { prettyPrint = true; ignoreUnknownKeys = true }
+    val json = Json {
+        prettyPrint = true
+        ignoreUnknownKeys = true
+        classDiscriminator = "category"
+    }
 
     var config: ConfigData = ConfigData()
 
     val features by lazy { config.features }
-    val widget by lazy { config.features.widget }
+    val libraryConfig by lazy { config.libraryConfig }
+    val widgets by lazy { config.widgets }
 
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
@@ -49,7 +55,7 @@ object Config {
         }
         try {
             config = json.decodeFromString<ConfigData>(fileContent)
-            ConfigHandler.setup(config.libraryConfig)
+            ConfigHandler.setup(libraryConfig)
         } catch (e: Exception) {
             logger.error("Encountered an exception when trying to parse the config: ${e.message}")
             logger.warn("Regenerating config.")
@@ -82,6 +88,12 @@ object Config {
     fun getDbg() = config.debug && config.dev
 
     fun getNameTag() = config.features.nameTagInfo && config.features.cacheEnabled
+
+    fun addWidgetConfiguration(widget: WidgetConfig) {
+        widgets.removeIf { it::class == widget::class }
+        widgets.add(widget)
+        saveConfig(config)
+    }
 
     fun setTownlessMessage(message: String): Boolean {
         if (!message.contains("TOWN")) return false

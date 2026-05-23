@@ -19,11 +19,10 @@ package net.chariskar.breakthemod.debug.commands
 
 import com.mojang.brigadier.context.CommandContext
 import net.chariskar.breakthemod.Breakthemod
-import net.chariskar.breakthemod.client.api.BaseCommand
+import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.modules.NearbyEngine
 import net.chariskar.breakthemod.client.utils.Config
-import net.chariskar.breakthemod.client.utils.ServerUtils
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.client.MinecraftClient
 import net.minecraft.text.Text
@@ -47,7 +46,7 @@ object Debug : BaseCommand() {
         sendMessage("Loaded commands: ${Breakthemod.commands.size}.")
         sendMessage("Load modules: ${Breakthemod.modules.size}.")
         sendMessage(
-            Text.literal("Server status: isEmc(${ServerUtils.isEarthMc()}), enabled(${ServerUtils.getEnabled()})")
+            Text.literal("Server status: isEmc(${isEarthMc()}), enabled(${getModEnabled()})")
         )
         sendMessage(
             Text.literal("Cache size: ${Cache.playerCache.size}")
