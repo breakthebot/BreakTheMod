@@ -68,6 +68,11 @@ object LastSeen : BaseCommand() {
     override fun register(
         dispatcher: CommandDispatcher<FabricClientCommandSource>
     ) {
-        super.register<String>(dispatcher, "name", StringArgumentType.string(), null)
+        super.register<String>(
+            dispatcher,
+            "name",
+            StringArgumentType.string(),
+            CommandSuggestions(Cache.playerCache.map { name }.toMutableList())
+        )
     }
 }
