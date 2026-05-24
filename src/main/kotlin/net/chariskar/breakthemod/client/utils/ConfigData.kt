@@ -20,6 +20,7 @@ package net.chariskar.breakthemod.client.utils
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import net.chariskar.breakthemod.client.api.widget.WidgetConfig
+import net.minecraft.client.gui.widget.Widget
 import org.breakthebot.breakthelibrary.utils.Config as LConfig
 
 @Serializable

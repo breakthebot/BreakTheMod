@@ -21,7 +21,12 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.subclass
 import net.chariskar.breakthemod.client.api.widget.WidgetConfig
+import net.chariskar.breakthemod.client.widgets.NearbyWidget
+import net.chariskar.breakthemod.client.widgets.NearbyWidgetConfig
 import org.breakthebot.breakthelibrary.utils.ConfigHandler
 import org.breakthebot.breakthelibrary.utils.Config as LConfig
 /**
@@ -33,7 +38,13 @@ object Config {
     val json = Json {
         prettyPrint = true
         ignoreUnknownKeys = true
-        classDiscriminator = "category"
+        classDiscriminator = "type"
+
+        serializersModule = SerializersModule {
+            polymorphic(WidgetConfig::class) {
+                subclass(NearbyWidgetConfig::class)
+            }
+        }
     }
 
     var config: ConfigData = ConfigData()
@@ -89,10 +100,24 @@ object Config {
 
     fun getNameTag() = config.features.nameTagInfo && config.features.cacheEnabled
 
-    fun addWidgetConfiguration(widget: WidgetConfig) {
+    /** Adds the configuration of the widget to the config.
+     * @param T The type of the configuration of the widget.
+     * @param widget The actual widget config must be of type T.
+     * */
+    inline fun <reified T : WidgetConfig> addWidgetConfiguration(widget: T) {
         widgets.removeIf { it::class == widget::class }
         widgets.add(widget)
         saveConfig(config)
+    }
+
+    /** Retrieves the configuration of the widget from the config.
+     * @param T The type of the configuration of the widget.
+     * @param name The name of the widget.
+     * */
+    inline fun <reified T : WidgetConfig> getWidgetConfig(name: String): T? {
+        return config.widgets
+            .filterIsInstance<T>()
+            .firstOrNull { it.name == name }
     }
 
     fun setTownlessMessage(message: String): Boolean {

@@ -20,6 +20,7 @@ package net.chariskar.breakthemod.client.api.widget
 import kotlinx.serialization.Serializable
 import net.chariskar.breakthemod.client.api.providers.LoggingProvider
 import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider
+import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements
 import net.minecraft.client.MinecraftClient
@@ -56,19 +57,19 @@ data class Coords(
  * @property category The category of the widget.
  * @property enabled The configured status of the widget.
  *  */
-interface WidgetConfig {
-    val name: String
-    val category: WidgetCategories
-    var coords: Coords
-    var position: WidgetPosition
-    var enabled: Boolean
+@Serializable
+abstract class WidgetConfig {
+    abstract val name: String
+    abstract val category: WidgetCategories
+    abstract var enabled: Boolean
+    abstract var coords: Coords
+    abstract var position: WidgetPosition
 }
 
 /**
  * Represents one of the renderable widgets in breakthemod.
  * @param name The name of the widget.
  * @param identifier The identifier of the widget.
- * @property config The config of the widget, loaded on launch.
  * */
 abstract class BaseWidget(
     val name: String,
@@ -76,7 +77,7 @@ abstract class BaseWidget(
 ) : ServerUtilsProvider, LoggingProvider {
     protected val client: MinecraftClient = MinecraftClient.getInstance()
 
-    lateinit var config: WidgetConfig
+    inline fun <reified T : WidgetConfig> getConfig(): T? = Config.getWidgetConfig<T>(name)
 
     /** Registers the element after VanillaHudElements.CHAT.*/
     open fun register() {

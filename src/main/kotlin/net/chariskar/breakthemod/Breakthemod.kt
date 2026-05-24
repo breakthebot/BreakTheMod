@@ -45,6 +45,7 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.command.CommandRegistryAccess
 import com.mojang.brigadier.CommandDispatcher
 import net.chariskar.breakthemod.client.api.widget.BaseWidget
+import net.chariskar.breakthemod.client.widgets.NearbyWidget
 import net.minecraft.client.MinecraftClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -74,7 +75,9 @@ class Breakthemod : ClientModInitializer {
         })
     }
 
-    private fun loadModules(baseModules: MutableList<BaseModule>) { baseModules.forEach { it.launch() } }
+    private fun loadModules(modules: MutableList<BaseModule>) { modules.forEach { it.launch() } }
+
+    private fun registerWidgets(widgets: MutableList<BaseWidget>) { widgets.forEach { it.register() } }
 
     /**
      * Load debugging modules.
@@ -135,8 +138,15 @@ class Breakthemod : ClientModInitializer {
             )
         )
 
+        widgets.addAll(
+            listOf(
+                NearbyWidget
+            )
+        )
+
         loadModules(modules)
         loadCommands(commands)
+        registerWidgets(widgets)
 
         Config.config.debug = loadDebug()
 
