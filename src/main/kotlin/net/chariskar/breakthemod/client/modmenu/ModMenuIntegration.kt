@@ -15,13 +15,14 @@
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.chariskar.breakthemod.client.hooks
+package net.chariskar.breakthemod.client.modmenu
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory
 import com.terraformersmc.modmenu.api.ModMenuApi
 import me.shedaniel.clothconfig2.api.ConfigBuilder
 import net.chariskar.breakthemod.client.utils.AutoHudType
 import net.chariskar.breakthemod.client.utils.Config
+import net.chariskar.breakthemod.client.widgets.NearbyWidget
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.text.Text
 
@@ -68,6 +69,11 @@ class ModMenuIntegration : ModMenuApi {
                 }.setDefaultValue { AutoHudType.None }.build()
             )
 
+            NearbyWidget.getModmenuEntry(
+                general,
+                entryBuilder
+            )
+
             general.addEntry(
                 entryBuilder.startBooleanToggle(
                     Text.literal("Experience text overlay"),
@@ -86,18 +92,6 @@ class ModMenuIntegration : ModMenuApi {
                     Config.config.features.nameTagInfo = enabled
                     saveConfig()
                 }.setDefaultValue( Config.getNameTag() ).build()
-            )
-
-            general.addEntry(
-                entryBuilder.startBooleanToggle(
-                    Text.literal("Player radar"),
-                    Config.features.radarEnabled
-                )
-                    .setSaveConsumer { enabled: Boolean ->
-                        Config.config.features.radarEnabled = enabled
-                        saveConfig()
-                    }.setDefaultValue { Config.config.features.radarEnabled }
-                    .build()
             )
 
             general.addEntry(
@@ -188,6 +182,7 @@ class ModMenuIntegration : ModMenuApi {
         }
 
         fun saveConfig() = Config.saveConfig(Config.config)
+
     }
 
     override fun getModConfigScreenFactory(): ConfigScreenFactory<Screen> {

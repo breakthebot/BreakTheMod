@@ -43,12 +43,12 @@ object OnlineStaff : BaseCommand() {
             LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)
                 .then(RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("api", StringArgumentType.string())
                     .executes(Command { context: CommandContext<FabricClientCommandSource> ->
-                        if (!getModEnabled()) {return@Command 0}
+                        if (!isModEnabled()) {return@Command 0}
                         val arg: String = context.getArgument("api", String::class.java)
                         return@Command exec(arg == "api")
                     }))
                 .executes(Command { _: CommandContext<FabricClientCommandSource> ->
-                    if (!getModEnabled()) {return@Command 0}
+                    if (!isModEnabled()) {return@Command 0}
                     return@Command exec(null)
                 })
         )

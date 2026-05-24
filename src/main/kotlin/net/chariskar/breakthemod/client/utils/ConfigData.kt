@@ -31,7 +31,7 @@ data class ConfigData(
     var townlessMessage: String = "Hi! I see you're new here, wanna join my Town? I can help you out! Get Free enchanted Armor, Pickaxe, Diamonds, Iron, wood, food, stone, house, and ability to teleport! Type /t join TOWN",
     var options: Boolean = false,
     var features: Features = Features(),
-    var widgets: MutableList<WidgetConfig> = mutableListOf(),
+    var widgets: MutableMap<String, Boolean> = mutableMapOf(),
     @Contextual
     var libraryConfig: LConfig = LConfig()
 ) {
@@ -50,7 +50,6 @@ enum class AutoHudType {
 @Serializable
 data class Features(
     var hudType: AutoHudType = AutoHudType.None,
-    var radarEnabled: Boolean = true,
 
     var nameTagInfo: Boolean = true,
     var cacheEnabled: Boolean = true,

@@ -31,7 +31,7 @@ interface ServerUtilsProvider {
         return splitAddress(serverInfo.address).contains("earthmc")
     }
 
-    fun getModEnabled(): Boolean = isEarthMc().or(Config.config.enabledOnOtherServers)
+    fun isModEnabled(): Boolean = isEarthMc().or(Config.config.enabledOnOtherServers)
 
     fun replaceApiUrl() {
         val serverInfo = MinecraftClient.getInstance().currentServerEntry?.address ?: return

@@ -66,7 +66,7 @@ object Calculate : BaseCommand() {
                     .then(
                         RequiredArgumentBuilder.argument<FabricClientCommandSource?, Int>("amount", IntegerArgumentType.integer())
                             .executes(Command { context: CommandContext<FabricClientCommandSource> ->
-                                if (!getModEnabled()) return@Command 0
+                                if (!isModEnabled()) return@Command 0
                                 return@Command run(context)
                             })
                     )

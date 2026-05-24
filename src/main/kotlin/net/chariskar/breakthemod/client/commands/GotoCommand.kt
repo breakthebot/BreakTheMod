@@ -30,14 +30,13 @@ import org.breakthebot.breakthelibrary.api.TownyAPI
 import org.breakthebot.breakthelibrary.models.Nation
 import org.breakthebot.breakthelibrary.models.NearbyItem
 import org.breakthebot.breakthelibrary.models.NearbyType
-import org.breakthebot.breakthelibrary.models.Reference
 import org.breakthebot.breakthelibrary.models.Town
 import org.breakthebot.breakthelibrary.network.ApiResult
 import org.breakthebot.breakthelibrary.network.getOrNull
 import org.breakthebot.breakthelibrary.network.mapSuccess
 import org.breakthebot.breakthelibrary.network.onError
 
-object goto : BaseCommand() {
+object GotoCommand : BaseCommand() {
     
     override val name: String = "goto"
     override val usageSuffix: String = "Shows you the nearest spawnable town of the town you selected."
@@ -76,7 +75,7 @@ object goto : BaseCommand() {
                     is ApiResult.Success<Nation> -> nation.data
                     is ApiResult.Error -> {
                         val message = when (nation.statusCode) {
-                            503 -> "Earthmc API is unavailable."
+                            503 -> "EarthMc API is unavailable."
                             else -> "API says this town is the capital of a nation that does not exist."
                         }
                         sendError(message)

@@ -21,13 +21,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.module.BaseModule
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.Scheduler
-import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.PacketSender
 import net.minecraft.client.MinecraftClient
@@ -63,8 +60,6 @@ object Cache : BaseModule() {
     // spare some ram.
     val townCache: MutableList<String> = mutableListOf()
     val nationCache: MutableList<String> = mutableListOf()
-
-    lateinit var lastCacheUpdate: Instant
 
     override fun enable() {
         ClientPlayConnectionEvents.JOIN.register { _: ClientPlayNetworkHandler?, _: PacketSender?, _: MinecraftClient? ->
@@ -118,7 +113,6 @@ object Cache : BaseModule() {
                     handleCacheError("nationCache", it.message)
                 }
         }
-        lastCacheUpdate = Clock.System.now()
     }
 
     private fun handleCacheError(origin: String, message: String) {
@@ -126,7 +120,7 @@ object Cache : BaseModule() {
     }
 
     fun runTask() {
-        if (!isEarthMc()) return
+        if (!isEarthMc() || !isModEnabled()) return
         updateCache()
         updatePlayers()
     }

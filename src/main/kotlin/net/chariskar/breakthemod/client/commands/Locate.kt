@@ -109,7 +109,7 @@ object Locate : BaseCommand() {
                             )
                                 .suggests(NameSuggestions())
                                 .executes { context ->
-                                    if (!getModEnabled()) return@executes 0
+                                    if (!isModEnabled()) return@executes 0
                                     run(context)
                                 }
                         )

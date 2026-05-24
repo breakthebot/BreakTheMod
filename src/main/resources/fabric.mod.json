@@ -19,7 +19,7 @@
       "net.chariskar.breakthemod.Breakthemod"
     ],
     "modmenu": [
-      "net.chariskar.breakthemod.client.hooks.ModMenuIntegration"
+      "net.chariskar.breakthemod.client.modmenu.ModMenuIntegration"
     ]
   },
   "mixins": [

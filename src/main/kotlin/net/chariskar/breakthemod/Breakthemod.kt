@@ -21,7 +21,7 @@ import net.chariskar.breakthemod.client.api.module.BaseModule
 import net.chariskar.breakthemod.client.modules.NearbyEngine
 import net.chariskar.breakthemod.client.commands.DiscordId
 import net.chariskar.breakthemod.client.commands.FindPlayer
-import net.chariskar.breakthemod.client.commands.goto
+import net.chariskar.breakthemod.client.commands.GotoCommand
 import net.chariskar.breakthemod.client.commands.Help
 import net.chariskar.breakthemod.client.commands.LastSeen
 import net.chariskar.breakthemod.client.commands.Locate
@@ -60,7 +60,7 @@ class Breakthemod : ClientModInitializer {
      * @property widgets All the registered widgets.
      * */
     companion object {
-        val VERSION: String = "1.5.2-BETA-${if (Config.getDbg()) "DEBUG" else ""}"
+        val VERSION: String = "1.6.0-BETA-${if (Config.getDbg()) "DEBUG" else ""}"
         val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
         val modules: MutableList<BaseModule> = mutableListOf()
@@ -116,7 +116,7 @@ class Breakthemod : ClientModInitializer {
                 Nearby,
                 OnlineStaff,
                 Townless,
-                goto,
+                GotoCommand,
                 FindPlayer,
                 LastSeen,
                 DiscordId,

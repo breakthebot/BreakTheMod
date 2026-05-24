@@ -47,7 +47,7 @@ object UnloadModule : BaseCommand() {
                     RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("name", StringArgumentType.string())
                         .suggests(ModuleSuggestions())
                         .executes(Command { context: CommandContext<FabricClientCommandSource> ->
-                            if (!getModEnabled()) return@Command 0
+                            if (!isModEnabled()) return@Command 0
                             return@Command run(context)
                         })
                 )

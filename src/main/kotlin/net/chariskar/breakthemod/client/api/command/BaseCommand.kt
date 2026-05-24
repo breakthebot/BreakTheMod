@@ -102,7 +102,7 @@ abstract class BaseCommand : MessageProvider, ServerUtilsProvider, LoggingProvid
         dispatcher.register(
             LiteralArgumentBuilder.literal<FabricClientCommandSource>(name).executes(
                 Command { context: CommandContext<FabricClientCommandSource> ->
-                    return@Command if (!getModEnabled()) 0 else run(context)
+                    return@Command if (!isModEnabled()) 0 else run(context)
                 }
             )
         )
@@ -129,7 +129,7 @@ abstract class BaseCommand : MessageProvider, ServerUtilsProvider, LoggingProvid
                         .apply {
                             if (suggestions != null) suggests(suggestions)
                             executes(Command { context: CommandContext<FabricClientCommandSource> ->
-                                return@Command if (!getModEnabled()) 0 else run(context)
+                                return@Command if (!isModEnabled()) 0 else run(context)
                             })
                         }
                 )
