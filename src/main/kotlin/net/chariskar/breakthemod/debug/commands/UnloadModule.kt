@@ -34,11 +34,10 @@ import net.minecraft.text.Text
 import java.util.Locale
 import java.util.concurrent.CompletableFuture
 
-object UnloadModule : BaseCommand() {
-    override val name = "unLoadModule"
-    override val description = "Unload any enabled module at will."
-    override val usageSuffix = "<name>"
-
+object UnloadModule : BaseCommand(
+    "unloadModule",
+    ""
+) {
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         dispatcher.register(

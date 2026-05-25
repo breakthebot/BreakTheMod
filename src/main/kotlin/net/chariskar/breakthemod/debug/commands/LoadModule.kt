@@ -31,10 +31,10 @@ import net.minecraft.text.Text
 import java.util.Locale
 import java.util.concurrent.CompletableFuture
 
-object LoadModule : BaseCommand() {
-    override val name = "loadModule"
-    override val description = "Load any disabled module at will."
-    override val usageSuffix = "<name>"
+object LoadModule : BaseCommand(
+    "loadModule",
+    ""
+) {
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         super.register<String>(

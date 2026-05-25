@@ -23,11 +23,10 @@ import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.Text
 
-object GetConfig : BaseCommand() {
-    override val name = "getConfig"
-    override val description = "Displays the config"
-    override val usageSuffix = ""
-
+object GetConfig : BaseCommand(
+    "getConfig",
+    ""
+) {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         sendMessage(Text.literal("Config: ${Config.config}"))

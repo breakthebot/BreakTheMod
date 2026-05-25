@@ -25,11 +25,10 @@ import net.chariskar.breakthemod.client.modules.Cache
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.Text
 
-object CacheDebug : BaseCommand() {
-    override val name = "CacheDebug"
-    override val description = "Gets the data of a user from the cache."
-    override val usageSuffix = "<name>"
-
+object CacheDebug : BaseCommand(
+    "cacheDebug",
+    ""
+) {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val name: String = ctx.getArgument("name", String::class.java)
