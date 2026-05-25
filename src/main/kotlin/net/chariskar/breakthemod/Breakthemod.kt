@@ -53,14 +53,14 @@ import java.io.File
 
 class Breakthemod : ClientModInitializer {
 
-
     /**
+     * @property VERSION The version string.
      * @property commands All the registered breakthemod commands.
      * @property modules All registered breakthemod modules.
      * @property widgets All the registered widgets.
      * */
     companion object {
-        val VERSION: String = "1.6.0-BETA-${if (Config.getDbg()) "DEBUG" else ""}"
+        val VERSION: String = "1.2.0-BETA-${if (Config.getDbg()) "DEBUG" else ""}"
         val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
         val modules: MutableList<BaseModule> = mutableListOf()

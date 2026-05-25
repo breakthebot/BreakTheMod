@@ -42,9 +42,11 @@ import java.util.concurrent.CompletableFuture
 
 /**
  * Base for commands.
- * @property name The command name.
- * @property description The command description.
- * @property usageSuffix The args that must be passed to the commands in a readable format (e.g. `<name>` ).
+ * @param name The command name.
+ * @param description The command description.
+ * @param usageSuffix The args that must be passed to the commands in a readable format (e.g. `<name>` ).
+ * @property scope The async scope that the commands should use.
+ * @property client Centralized client access for commands.
  *  */
 abstract class BaseCommand(
     val name: String,

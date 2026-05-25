@@ -23,16 +23,17 @@ import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider
 import net.minecraft.client.MinecraftClient
 
 /**
- * @property name Module name.
- * @property description Description.
+ * @param name Module name.
+ * @param description Description.
+ * @param hidden Special property that makes the module not be shown to the user.
  * @property enabled The status of the module.
- * @property hidden Special property that makes the module not be shown to the user.
  *  */
 abstract class BaseModule(
     val name: String,
     val description: String,
     val hidden: Boolean = false
 ) : MessageProvider, LoggingProvider, ServerUtilsProvider {
+
     var enabled: Boolean = false
         protected set
 
