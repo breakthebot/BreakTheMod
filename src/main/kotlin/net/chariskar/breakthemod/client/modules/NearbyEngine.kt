@@ -32,11 +32,10 @@ import java.util.concurrent.CopyOnWriteArraySet
  * @property playerInfoList A MutableSet with all the most recent information about players.
  * @property DISTANCE_THRESHOLD A constant threshold of the distance that the player should be within to be displayed.
  */
-object NearbyEngine : BaseModule() {
-
-    override val name = "Nearby Engine"
-    override val description = "Gets nearby players automatically."
-    override val hidden: Boolean = false
+object NearbyEngine : BaseModule(
+    "Nearby Engine",
+    "Checks which of the nearby players would show up on the earthmc map."
+) {
 
     const val DISTANCE_THRESHOLD: Double = 200.0
 

@@ -39,12 +39,10 @@ import org.breakthebot.breakthelibrary.network.getOrNull
 import org.breakthebot.breakthelibrary.network.mapSuccess
 import java.time.Instant
 
-object Townless : BaseCommand() {
-
-    override val name = "townless"
-    override val description = "Shows all townless players."
-    override val usageSuffix = ""
-
+object Townless : BaseCommand(
+    "townless",
+    "Shows all of the online townless players"
+) {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val onlinePlayers = client.networkHandler!!.playerUuids.toList()

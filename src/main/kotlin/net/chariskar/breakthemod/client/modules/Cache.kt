@@ -46,12 +46,10 @@ import java.util.concurrent.TimeUnit
  * @property townCache A list of every town from /towns.
  * @property nationCache A list of every nation from /nations.
  *  */
-object Cache : BaseModule() {
-
-    override val name = "Cache"
-    override val description = "Cache handler for the PlayerNametagInfo feature."
-    override val hidden: Boolean = false
-
+object Cache : BaseModule(
+    "Cache",
+    "Cache handler for the mod."
+) {
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     val username: String = MinecraftClient.getInstance().session.username
 

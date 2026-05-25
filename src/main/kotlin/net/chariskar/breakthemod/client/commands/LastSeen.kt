@@ -30,11 +30,11 @@ import net.minecraft.util.Formatting
 import org.breakthebot.breakthelibrary.api.TownyAPI
 import org.breakthebot.breakthelibrary.network.getOrNull
 
-object LastSeen : BaseCommand() {
-
-    override val name = "lastSeen"
-    override val description = "Shows the last time a user was online"
-    override val usageSuffix = "<name>"
+object LastSeen : BaseCommand(
+    "lastSeen",
+    "Shows the last time a user was online",
+    "<name>"
+) {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val name: String = ctx.getArgument("name", String::class.java)

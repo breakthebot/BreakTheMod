@@ -36,11 +36,11 @@ import org.breakthebot.breakthelibrary.network.getOrNull
 import org.breakthebot.breakthelibrary.network.mapSuccess
 import org.breakthebot.breakthelibrary.network.onError
 
-object GotoCommand : BaseCommand() {
-    
-    override val name: String = "goto"
-    override val usageSuffix: String = "Shows you the nearest spawnable town of the town you selected."
-    override val description: String = ""
+object GotoCommand : BaseCommand(
+    "goto",
+    "Shows you the nearest spawnable town of the town you selected.",
+    "<name>"
+) {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val townName = ctx.getArgument("name", String::class.java)

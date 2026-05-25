@@ -41,7 +41,7 @@ object NearbyWidget : BaseWidget(
         WidgetCategories.General,
         WidgetPosition.TOP_LEFT
     )
-
+    
     override fun render(drawContext: DrawContext) {
         if (client.options.hudHidden || client.world == null || client.player == null) return
         if (!config.enabled || !isModEnabled()) return

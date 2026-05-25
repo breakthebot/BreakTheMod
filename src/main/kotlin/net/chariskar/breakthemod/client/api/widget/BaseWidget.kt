@@ -34,15 +34,10 @@
 
 package net.chariskar.breakthemod.client.api.widget
 
-import kotlinx.serialization.Serializable
 import me.shedaniel.clothconfig2.api.ConfigCategory
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
 import net.chariskar.breakthemod.client.api.providers.LoggingProvider
 import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider
-import net.chariskar.breakthemod.client.modmenu.ModMenuIntegration.Companion.saveConfig
-import net.chariskar.breakthemod.client.utils.AutoHudType
-import net.chariskar.breakthemod.client.utils.Config
-import net.chariskar.breakthemod.client.widgets.NearbyWidget.config
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements
 import net.minecraft.client.MinecraftClient
@@ -72,7 +67,6 @@ fun WidgetPosition.getPos(
 
     val screenWidth = client.window.scaledWidth
     val screenHeight = client.window.scaledHeight
-
     return when (this) {
         WidgetPosition.TOP_LEFT -> {
             Coords(margin, margin)
@@ -125,7 +119,8 @@ fun WidgetPosition.getPos(
 enum class WidgetCategories {
     General,
     Mining,
-    Fishing
+    Fishing,
+    None
 }
 
 data class Coords(
@@ -151,6 +146,7 @@ data class WidgetConfig (
  * Represents one of the renderable widgets in breakthemod.
  * @param name The name of the widget.
  * @param identifier The identifier of the widget.
+ * @property config The configuration of the widget, set by the config.
  * */
 abstract class BaseWidget(
     val name: String,
@@ -165,7 +161,7 @@ abstract class BaseWidget(
      * @param category The category to register the option in.
      * @param entryBuilder The entry builder.
      * */
-    open fun getModmenuEntry(
+    open fun getModMenuConfig(
         category: ConfigCategory,
         entryBuilder: ConfigEntryBuilder
     ) {

@@ -41,12 +41,11 @@ import java.net.URI
 import java.util.Locale
 import java.util.concurrent.CompletableFuture
 
-object Locate : BaseCommand() {
-
-    override val name = "locate"
-    override val description = "Gives you the coordinates of a town/nation."
-    override val usageSuffix = "<type> <name>"
-
+object Locate : BaseCommand(
+    "locate",
+    "Gives tou the coordinates of a town/nation",
+    "<type> <name>"
+) {
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val type: String = ctx.getArgument("type", String::class.java)
         val name: String = ctx.getArgument("name", String::class.java)

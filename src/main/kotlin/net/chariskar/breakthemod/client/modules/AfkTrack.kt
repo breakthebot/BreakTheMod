@@ -25,10 +25,11 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayNetworkHandler
 import net.minecraft.text.Text
 
-object AfkTrack : BaseModule() {
-    override val name = "AfkTrack"
-    override val description: String = "Utility module for tracking afk status."
-    override val hidden: Boolean = false
+object AfkTrack : BaseModule(
+    "AfkTrack",
+    "Utility module for tracking afk status",
+    false
+) {
     var isAfk: Boolean = false
 
     override fun enable() {

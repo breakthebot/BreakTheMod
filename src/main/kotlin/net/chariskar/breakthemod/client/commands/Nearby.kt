@@ -27,11 +27,10 @@ import net.minecraft.text.TextColor
 import net.minecraft.util.Formatting
 
 
-object Nearby : BaseCommand() {
-
-    override val name = "nearby"
-    override val description = "Shows nearby people"
-    override val usageSuffix = ""
+object Nearby : BaseCommand(
+    "nearby",
+    "Shows all of the nearby players (legal)."
+) {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         scope.launch {

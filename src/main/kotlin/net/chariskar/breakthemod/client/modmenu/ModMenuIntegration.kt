@@ -69,7 +69,7 @@ class ModMenuIntegration : ModMenuApi {
                 }.setDefaultValue { AutoHudType.None }.build()
             )
 
-            NearbyWidget.getModmenuEntry(
+            NearbyWidget.getModMenuConfig(
                 general,
                 entryBuilder
             )

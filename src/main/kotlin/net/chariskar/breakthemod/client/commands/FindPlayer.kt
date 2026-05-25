@@ -29,12 +29,11 @@ import org.breakthebot.breakthelibrary.models.PlayerLocationInfo
 import org.breakthebot.breakthelibrary.network.getOrNull
 
 
-object FindPlayer : BaseCommand() {
-
-    override val name = "findPlayer"
-    override val description = "Tells you where a player is based on the map api."
-    override val usageSuffix = "<name>"
-
+object FindPlayer : BaseCommand(
+    "findPlayer",
+    "Show where a player is based on the map api.",
+    "<name>"
+) {
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val name: String = ctx.getArgument("name", String::class.java)
         scope.launch {

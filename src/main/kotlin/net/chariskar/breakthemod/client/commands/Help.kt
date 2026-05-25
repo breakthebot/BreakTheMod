@@ -31,11 +31,11 @@ import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-object Help : BaseCommand() {
-    override val name = "commands"
-    override val description = "This very command."
-    override val usageSuffix = "[name]"
-
+object Help : BaseCommand(
+    "commands",
+    "This very command.",
+    "[name]"
+) {
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val commands = Breakthemod.commands
         val modules = Breakthemod.modules

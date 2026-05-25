@@ -35,13 +35,15 @@ import java.util.regex.Pattern
  * @property inPartyChat Party chat flag.
  * @property chatChannel The current channel the player is in.
  * */
-object ChatPreview : BaseModule() {
-    override val name = "ChatPreview"
-    override val description = "Chat preview logic handler."
-    override val hidden = false
+object ChatPreview : BaseModule(
+    "ChatPreview",
+    "Chat preview logic handler"
+) {
 
     var inPartyChat: Boolean = false
+        private set
     var chatChannel: ChatChannel? = null
+        private set
 
     override fun enable() {
         ClientReceiveMessageEvents.GAME.register(ClientReceiveMessageEvents.Game { message: Text?, _: Boolean ->

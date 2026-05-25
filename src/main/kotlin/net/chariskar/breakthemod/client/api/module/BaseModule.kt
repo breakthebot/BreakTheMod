@@ -28,10 +28,11 @@ import net.minecraft.client.MinecraftClient
  * @property enabled The status of the module.
  * @property hidden Special property that makes the module not be shown to the user.
  *  */
-abstract class BaseModule : MessageProvider, LoggingProvider, ServerUtilsProvider {
-    abstract val name: String
-    abstract val description: String
-    abstract val hidden: Boolean
+abstract class BaseModule(
+    val name: String,
+    val description: String,
+    val hidden: Boolean = false
+) : MessageProvider, LoggingProvider, ServerUtilsProvider {
     var enabled: Boolean = false
         protected set
 

@@ -33,10 +33,11 @@ import net.chariskar.breakthemod.client.api.command.BaseCommand
 import org.breakthebot.breakthelibrary.api.TownyAPI
 import org.breakthebot.breakthelibrary.network.getOrNull
 
-object OnlineStaff : BaseCommand() {
-    override val name = "onlinestaff"
-    override val description = "Shows online staff"
-    override val usageSuffix = "[api]"
+object OnlineStaff : BaseCommand(
+    "onlinestaff",
+    "Shows online staff",
+    "[api]"
+) {
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         dispatcher.register(

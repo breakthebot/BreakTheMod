@@ -46,10 +46,11 @@ import java.util.concurrent.CompletableFuture
  * @property description The command description.
  * @property usageSuffix The args that must be passed to the commands in a readable format (e.g. `<name>` ).
  *  */
-abstract class BaseCommand : MessageProvider, ServerUtilsProvider, LoggingProvider {
-    abstract val name: String
-    abstract val description: String
-    abstract val usageSuffix: String
+abstract class BaseCommand(
+    val name: String,
+    val description: String,
+    val usageSuffix: String = ""
+) : MessageProvider, ServerUtilsProvider, LoggingProvider {
 
     private val handler = CoroutineExceptionHandler { _, e ->
         sendError()

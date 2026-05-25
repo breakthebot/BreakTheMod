@@ -31,11 +31,11 @@ import org.breakthebot.breakthelibrary.network.getOrNull
 import java.net.URI
 
 
-object DiscordId : BaseCommand() {
-
-    override val name: String = "discordLinked"
-    override val description: String = "Tells you the discord username of a linked player."
-    override val usageSuffix = "<name>"
+object DiscordId : BaseCommand(
+    "discordLinked",
+    "Tells you the discord username of a player if they have linked their account",
+    "<name>"
+) {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val name: String = ctx.getArgument("name", String::class.java)

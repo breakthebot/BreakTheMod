@@ -26,11 +26,10 @@ import net.minecraft.client.network.ClientPlayNetworkHandler
 import net.minecraft.text.Text
 import net.minecraft.util.math.Vec3d
 
-object ShopTracker : BaseModule(){
-    override val name = "ShopTracker"
-    override val description = "Tracks when one of your shops empties for the getShops command."
-    override val hidden: Boolean = false
-
+object ShopTracker : BaseModule(
+    "ShopTracker",
+    "Tracks when one of your shops runs out of stock."
+){
 
     private val shopRegex = Regex(
         """at\s+(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+).*?run out of\s+(.+?)!?$"""

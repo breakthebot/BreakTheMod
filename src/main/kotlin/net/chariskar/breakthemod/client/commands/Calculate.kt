@@ -29,11 +29,11 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-object Calculate : BaseCommand() {
-
-    override val name = "calculate"
-    override val description = "Helps with the conversions of blocks & stacks."
-    override val usageSuffix = "<type> <amount>"
+object Calculate : BaseCommand(
+    "calculate",
+    "Helps with the conversions of blocks & stacks.",
+    "<type> <amount>"
+) {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val type = ctx.getArgument("type", String::class.java)
