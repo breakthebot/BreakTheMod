@@ -16,12 +16,12 @@
  */
 package net.chariskar.breakthemod
 
-import net.chariskar.breakthemod.client.api.BaseCommand
-import net.chariskar.breakthemod.client.api.BaseModule
+import net.chariskar.breakthemod.client.api.command.BaseCommand
+import net.chariskar.breakthemod.client.api.module.BaseModule
 import net.chariskar.breakthemod.client.modules.NearbyEngine
 import net.chariskar.breakthemod.client.commands.DiscordId
 import net.chariskar.breakthemod.client.commands.FindPlayer
-import net.chariskar.breakthemod.client.commands.goto
+import net.chariskar.breakthemod.client.commands.GotoCommand
 import net.chariskar.breakthemod.client.commands.Help
 import net.chariskar.breakthemod.client.commands.LastSeen
 import net.chariskar.breakthemod.client.commands.Locate
@@ -31,7 +31,6 @@ import net.chariskar.breakthemod.client.commands.Townless
 import net.chariskar.breakthemod.client.commands.Shop
 import net.chariskar.breakthemod.client.commands.Calculate
 
-import net.chariskar.breakthemod.client.hooks.Hud
 import net.chariskar.breakthemod.client.utils.Config
 
 import net.chariskar.breakthemod.client.modules.AutoHUD
@@ -43,11 +42,10 @@ import net.chariskar.breakthemod.client.modules.AfkTrack
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements
 import net.minecraft.command.CommandRegistryAccess
-import net.minecraft.util.Identifier
 import com.mojang.brigadier.CommandDispatcher
+import net.chariskar.breakthemod.client.api.widget.BaseWidget
+import net.chariskar.breakthemod.client.widgets.NearbyWidget
 import net.minecraft.client.MinecraftClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -55,15 +53,19 @@ import java.io.File
 
 class Breakthemod : ClientModInitializer {
 
-    val nearbyLayer: Identifier = Identifier.of("breakthemod", "nearby_layer")
-    val logger: Logger = LoggerFactory.getLogger("breakthemod")
-
+    /**
+     * @property VERSION The version string.
+     * @property commands All the registered breakthemod commands.
+     * @property modules All registered breakthemod modules.
+     * @property widgets All the registered widgets.
+     * */
     companion object {
-        val VERSION: String
-            get() = "1.5.2-BETA-${if (Config.getDbg()) "DEBUG" else ""}"
+        val VERSION: String = "1.2.0-BETA-${if (Config.getDbg()) "DEBUG" else ""}"
+        val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
         val modules: MutableList<BaseModule> = mutableListOf()
         val commands: MutableList<BaseCommand> = mutableListOf()
+        val widgets: MutableList<BaseWidget> = mutableListOf()
     }
 
 
@@ -73,7 +75,9 @@ class Breakthemod : ClientModInitializer {
         })
     }
 
-    private fun loadModules(baseModules: MutableList<BaseModule>) { baseModules.forEach { it.launch() } }
+    private fun loadModules(modules: MutableList<BaseModule>) { modules.forEach { it.launch() } }
+
+    private fun registerWidgets(widgets: MutableList<BaseWidget>) { widgets.forEach { it.register() } }
 
     /**
      * Load debugging modules.
@@ -112,7 +116,7 @@ class Breakthemod : ClientModInitializer {
                 Nearby,
                 OnlineStaff,
                 Townless,
-                goto,
+                GotoCommand,
                 FindPlayer,
                 LastSeen,
                 DiscordId,
@@ -134,8 +138,15 @@ class Breakthemod : ClientModInitializer {
             )
         )
 
+        widgets.addAll(
+            listOf(
+                NearbyWidget
+            )
+        )
+
         loadModules(modules)
         loadCommands(commands)
+        registerWidgets(widgets)
 
         Config.config.debug = loadDebug()
 
@@ -143,6 +154,5 @@ class Breakthemod : ClientModInitializer {
             logger.warn("You are running a beta version of breakthemod, unexpected behaviour and glitches may occur")
         }
 
-        HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, nearbyLayer) { context, _ -> Hud.render(context) }
     }
 }

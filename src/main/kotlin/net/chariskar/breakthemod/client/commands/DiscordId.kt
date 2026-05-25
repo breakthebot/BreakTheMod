@@ -20,26 +20,27 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
-import net.chariskar.breakthemod.client.api.BaseCommand
+import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.ClickEvent
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import org.breakthebot.breakthelibrary.api.TownyAPI
+import org.breakthebot.breakthelibrary.network.getOrNull
 import java.net.URI
 
 
-object DiscordId : BaseCommand() {
-
-    override val name: String = "discordLinked"
-    override val description: String = "Tells you the discord username of a linked player."
-    override val usageSuffix = "<name>"
+object DiscordId : BaseCommand(
+    "discordLinked",
+    "Tells you the discord username of a player if they have linked their account",
+    "<name>"
+) {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val name: String = ctx.getArgument("name", String::class.java)
         scope.launch {
-            val discord = TownyAPI.getPlayerDiscord(listOf(name)).first()
+            val discord = TownyAPI.getPlayerDiscord(name).getOrNull()
             val result: Text = if (discord != null) {
                 Text.literal("Click Here")
                     .styled {

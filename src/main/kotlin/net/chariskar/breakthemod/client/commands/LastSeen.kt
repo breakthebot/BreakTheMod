@@ -20,7 +20,8 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
-import net.chariskar.breakthemod.client.api.BaseCommand
+import net.chariskar.breakthemod.client.api.command.BaseCommand
+import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.utils.Timestamps
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.Style
@@ -29,11 +30,11 @@ import net.minecraft.util.Formatting
 import org.breakthebot.breakthelibrary.api.TownyAPI
 import org.breakthebot.breakthelibrary.network.getOrNull
 
-object LastSeen : BaseCommand() {
-
-    override val name = "lastSeen"
-    override val description = "Shows the last time a user was online"
-    override val usageSuffix = "<name>"
+object LastSeen : BaseCommand(
+    "lastSeen",
+    "Shows the last time a user was online",
+    "<name>"
+) {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val name: String = ctx.getArgument("name", String::class.java)
@@ -68,6 +69,11 @@ object LastSeen : BaseCommand() {
     override fun register(
         dispatcher: CommandDispatcher<FabricClientCommandSource>
     ) {
-        super.register<String>(dispatcher, "name", StringArgumentType.string(), null)
+        super.register<String>(
+            dispatcher,
+            "name",
+            StringArgumentType.string(),
+            CommandSuggestions(Cache.playerCache.map { name }.toMutableList())
+        )
     }
 }

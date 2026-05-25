@@ -25,16 +25,16 @@ import com.mojang.brigadier.suggestion.SuggestionProvider
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.chariskar.breakthemod.Breakthemod
-import net.chariskar.breakthemod.client.api.BaseCommand
+import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.Text
 import java.util.Locale
 import java.util.concurrent.CompletableFuture
 
-object LoadModule : BaseCommand() {
-    override val name = "loadModule"
-    override val description = "Load any disabled module at will."
-    override val usageSuffix = "<name>"
+object LoadModule : BaseCommand(
+    "loadModule",
+    ""
+) {
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         super.register<String>(

@@ -17,7 +17,7 @@
 
 package net.chariskar.breakthemod.mixins;
 
-import net.chariskar.breakthemod.client.utils.ServerUtils;
+import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -40,12 +40,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.awt.*;
-
 /// Credit to [...](https://github.com/Veyronity/Earthy/blob/master/client/fabric/src/main/java/au/lupine/earthy/fabric/mixin/PlayerRendererMixin.java)
 
 @Mixin(PlayerEntityRenderer.class)
-public abstract class PlayerInfoMixin extends LivingEntityRenderer<AbstractClientPlayerEntity, PlayerEntityRenderState, PlayerEntityModel> {
+public abstract class PlayerInfoMixin extends LivingEntityRenderer<AbstractClientPlayerEntity, PlayerEntityRenderState, PlayerEntityModel>  implements ServerUtilsProvider {
 
     public PlayerInfoMixin(EntityRendererFactory.Context context, PlayerEntityModel model, float shadowRadius) {
         super(context, model, shadowRadius);
@@ -62,7 +60,7 @@ public abstract class PlayerInfoMixin extends LivingEntityRenderer<AbstractClien
             CameraRenderState cameraRenderState,
             CallbackInfo ci
     ) {
-        if (!ServerUtils.INSTANCE.isEarthMc()) return;
+        if (!isEarthMc()) return;
 
         String nameString = state.displayName != null ? state.displayName.getString() : "";
 

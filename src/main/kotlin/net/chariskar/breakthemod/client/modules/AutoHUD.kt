@@ -19,11 +19,11 @@
 
 package net.chariskar.breakthemod.client.modules
 
-import net.chariskar.breakthemod.client.api.BaseModule
+import net.chariskar.breakthemod.client.api.module.BaseModule
 import net.chariskar.breakthemod.client.utils.AutoHudType
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.Scheduler
-import net.chariskar.breakthemod.client.utils.ServerUtils
+import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.PacketSender
 import net.minecraft.client.MinecraftClient
@@ -33,15 +33,16 @@ import java.util.concurrent.TimeUnit
 /**
  * AutoHUD on login module.
  * */
-object AutoHUD : BaseModule() {
-    override val name = "AutoHUD"
-    override val description = "Enables the hud of choice of the user in login."
+object AutoHUD : BaseModule(
+    "AutoHUD",
+    "Enables the hud of your choice on login.",
+) {
 
     override fun enable() {
         ClientPlayConnectionEvents.JOIN.register(ClientPlayConnectionEvents.Join { _: ClientPlayNetworkHandler?, _: PacketSender?, client: MinecraftClient ->
             Scheduler.schedule( {
                 try {
-                    if (!ServerUtils.isEarthMc()) { return@schedule }
+                    if (!isEarthMc()) { return@schedule }
 
                     val hud = Config.features.hudType
 

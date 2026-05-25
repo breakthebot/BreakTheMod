@@ -24,32 +24,32 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
-import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.MutableText
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
-import net.chariskar.breakthemod.client.api.BaseCommand
+import net.chariskar.breakthemod.client.api.command.BaseCommand
 import org.breakthebot.breakthelibrary.api.TownyAPI
 import org.breakthebot.breakthelibrary.network.getOrNull
 
-object OnlineStaff : BaseCommand() {
-    override val name = "onlinestaff"
-    override val description = "Shows online staff"
-    override val usageSuffix = "[api]"
+object OnlineStaff : BaseCommand(
+    "onlinestaff",
+    "Shows online staff",
+    "[api]"
+) {
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         dispatcher.register(
             LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)
                 .then(RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("api", StringArgumentType.string())
                     .executes(Command { context: CommandContext<FabricClientCommandSource> ->
-                        if (!getEnabled()) {return@Command 0}
+                        if (!isModEnabled()) {return@Command 0}
                         val arg: String = context.getArgument("api", String::class.java)
                         return@Command exec(arg == "api")
                     }))
                 .executes(Command { _: CommandContext<FabricClientCommandSource> ->
-                    if (!getEnabled()) {return@Command 0}
+                    if (!isModEnabled()) {return@Command 0}
                     return@Command exec(null)
                 })
         )
@@ -66,7 +66,7 @@ object OnlineStaff : BaseCommand() {
         val staffNames: List<String> = if (api) {
             TownyAPI.getPlayers( staff.map { v->v.toString() } )
                 .first()
-                ?.getOrNull()
+                .getOrNull()
                 ?.filter { r -> r.status!!.isOnline == true }
                 ?.map { r -> r.name }!!
         } else {

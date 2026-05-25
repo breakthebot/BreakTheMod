@@ -15,15 +15,14 @@
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.chariskar.breakthemod.client.hooks
+package net.chariskar.breakthemod.client.modmenu
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory
 import com.terraformersmc.modmenu.api.ModMenuApi
 import me.shedaniel.clothconfig2.api.ConfigBuilder
 import net.chariskar.breakthemod.client.utils.AutoHudType
 import net.chariskar.breakthemod.client.utils.Config
-import net.chariskar.breakthemod.client.utils.WidgetPosition
-import net.minecraft.client.MinecraftClient
+import net.chariskar.breakthemod.client.widgets.NearbyWidget
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.text.Text
 
@@ -61,17 +60,6 @@ class ModMenuIntegration : ModMenuApi {
 
             general.addEntry(
                 entryBuilder.startEnumSelector(
-                    Text.literal("Widget Position"),
-                    WidgetPosition::class.java,
-                    Config.widget.widgetPosition
-                ).setSaveConsumer { position: WidgetPosition ->
-                    Config.config.features.widget.widgetPosition = position
-                    saveConfig()
-                }.setDefaultValue { WidgetPosition.TOP_LEFT }.build()
-            )
-
-            general.addEntry(
-                entryBuilder.startEnumSelector(
                     Text.literal("AutoHUD type"),
                     AutoHudType::class.java,
                     Config.features.hudType
@@ -79,6 +67,11 @@ class ModMenuIntegration : ModMenuApi {
                     Config.config.features.hudType = hudType
                     saveConfig()
                 }.setDefaultValue { AutoHudType.None }.build()
+            )
+
+            NearbyWidget.getModMenuConfig(
+                general,
+                entryBuilder
             )
 
             general.addEntry(
@@ -99,18 +92,6 @@ class ModMenuIntegration : ModMenuApi {
                     Config.config.features.nameTagInfo = enabled
                     saveConfig()
                 }.setDefaultValue( Config.getNameTag() ).build()
-            )
-
-            general.addEntry(
-                entryBuilder.startBooleanToggle(
-                    Text.literal("Player radar"),
-                    Config.features.radarEnabled
-                )
-                    .setSaveConsumer { enabled: Boolean ->
-                        Config.config.features.radarEnabled = enabled
-                        saveConfig()
-                    }.setDefaultValue { Config.config.features.radarEnabled }
-                    .build()
             )
 
             general.addEntry(
@@ -150,30 +131,6 @@ class ModMenuIntegration : ModMenuApi {
             )
 
             devOptions?.addEntry(
-                entryBuilder.startIntField(
-                    Text.literal("Nearby entry height"),
-                    Config.widget.entryHeight
-                )
-                    .setSaveConsumer { height: Int ->
-                        Config.config.features.widget.entryHeight = height
-                        saveConfig()
-                    }.setDefaultValue { 15 }
-                    .build()
-            )
-
-            devOptions?.addEntry(
-                entryBuilder.startIntField(
-                    Text.literal("Nearby entry margin"),
-                    Config.widget.margin
-                )
-                    .setSaveConsumer { margin: Int ->
-                        Config.config.features.widget.margin = margin
-                        saveConfig()
-                    }.setDefaultValue { 10 }
-                    .build()
-            )
-
-            devOptions?.addEntry(
                 entryBuilder.startBooleanToggle(
                     Text.literal("Cache"),
                     Config.features.cacheEnabled,
@@ -182,36 +139,6 @@ class ModMenuIntegration : ModMenuApi {
                         Config.config.features.cacheEnabled = enabled
                         saveConfig()
                     }.setDefaultValue { true }
-                    .build()
-            )
-
-            options?.addEntry(
-                entryBuilder.startIntField(
-                    Text.literal("Custom X Position"),
-                    Config.widget.customX
-                )
-                    .setSaveConsumer { x: Int ->
-                        Config.config.features.widget.customX = x
-                        saveConfig()
-                    }
-                    .setMin(0)
-                    .setMax(MinecraftClient.getInstance().currentScreen!!.width)
-                    .setDefaultValue { Config.config.features.widget.customX }
-                    .build()
-            )
-
-            options?.addEntry(
-                entryBuilder.startIntField(
-                    Text.literal("Custom Y Position"),
-                    Config.widget.customY
-                )
-                    .setSaveConsumer { y: Int ->
-                        Config.config.features.widget.customY = y
-                        saveConfig()
-                    }
-                    .setMin(0)
-                    .setMax(MinecraftClient.getInstance().currentScreen!!.height)
-                    .setDefaultValue { Config.config.features.widget.customY }
                     .build()
             )
 
@@ -255,6 +182,7 @@ class ModMenuIntegration : ModMenuApi {
         }
 
         fun saveConfig() = Config.saveConfig(Config.config)
+
     }
 
     override fun getModConfigScreenFactory(): ConfigScreenFactory<Screen> {

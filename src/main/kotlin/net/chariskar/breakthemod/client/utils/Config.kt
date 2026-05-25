@@ -29,12 +29,16 @@ import org.breakthebot.breakthelibrary.utils.Config as LConfig
 object Config {
     lateinit var configFile: File
 
-    val json = Json { prettyPrint = true; ignoreUnknownKeys = true }
+    val json = Json {
+        prettyPrint = true
+        ignoreUnknownKeys = true
+    }
 
     var config: ConfigData = ConfigData()
 
     val features by lazy { config.features }
-    val widget by lazy { config.features.widget }
+    val libraryConfig by lazy { config.libraryConfig }
+    val widgets by lazy { config.widgets }
 
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
@@ -49,7 +53,7 @@ object Config {
         }
         try {
             config = json.decodeFromString<ConfigData>(fileContent)
-            ConfigHandler.setup(config.libraryConfig)
+            ConfigHandler.setup(libraryConfig)
         } catch (e: Exception) {
             logger.error("Encountered an exception when trying to parse the config: ${e.message}")
             logger.warn("Regenerating config.")

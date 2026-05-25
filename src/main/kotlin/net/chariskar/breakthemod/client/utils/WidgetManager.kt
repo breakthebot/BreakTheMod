@@ -15,21 +15,26 @@
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.chariskar.breakthemod.debug.commands
+package net.chariskar.breakthemod.client.utils
 
-import com.mojang.brigadier.context.CommandContext
-import net.chariskar.breakthemod.client.api.command.BaseCommand
-import net.chariskar.breakthemod.client.utils.Config
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.text.Text
+import net.chariskar.breakthemod.Breakthemod
+import net.chariskar.breakthemod.client.api.widget.WidgetCategories
 
-object GetConfig : BaseCommand(
-    "getConfig",
-    ""
-) {
+object WidgetManager {
+    var activeCategory = WidgetCategories.None
+        private set
 
-    override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
-        sendMessage(Text.literal("Config: ${Config.config}"))
-        return 0
+    fun changeMode(
+        category: WidgetCategories
+    ) {
+        Breakthemod.widgets
+            .filter { it.config.category == WidgetCategories.General }
+            .forEach { it.config.enabled = false }
+
+        Breakthemod.widgets
+            .filter { it.config.category == category }
+            .forEach { it.config.enabled = true }
+
+        activeCategory = category
     }
 }

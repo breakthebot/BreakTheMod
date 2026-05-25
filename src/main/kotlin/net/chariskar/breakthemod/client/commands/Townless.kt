@@ -23,7 +23,10 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
-import net.chariskar.breakthemod.client.api.BaseCommand
+import kotlinx.datetime.Clock
+import net.chariskar.breakthemod.Breakthemod
+import net.chariskar.breakthemod.client.api.command.BaseCommand
+import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.ClickEvent
@@ -33,14 +36,13 @@ import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import org.breakthebot.breakthelibrary.api.TownyAPI
 import org.breakthebot.breakthelibrary.network.getOrNull
+import org.breakthebot.breakthelibrary.network.mapSuccess
+import java.time.Instant
 
-object Townless : BaseCommand() {
-    const val BATCH_SIZE: Int = 100
-    val username: String = client.session.username
-
-    override val name = "townless"
-    override val description = "Shows all townless players."
-    override val usageSuffix = ""
+object Townless : BaseCommand(
+    "townless",
+    "Shows all of the online townless players"
+) {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val onlinePlayers = client.networkHandler!!.playerUuids.toList()
@@ -50,7 +52,7 @@ object Townless : BaseCommand() {
                 return@launch
             }
 
-            val own = TownyAPI.getPlayer(username).getOrNull()
+            val own = TownyAPI.getPlayer(Cache.username).getOrNull()
             val townName = own?.town?.name
 
             if (townName.isNullOrEmpty()) {
@@ -58,22 +60,9 @@ object Townless : BaseCommand() {
                 return@launch
             }
 
-            val batches = onlinePlayers.chunked(BATCH_SIZE)
-            val semaphore = Semaphore(3)
+            Cache.updateCache()
 
-            val results = coroutineScope {
-                batches.map { batch ->
-                    async {
-                        semaphore.withPermit {
-                            TownyAPI.getPlayers(batch.map { it.toString() })
-                        }
-                    }
-                }.awaitAll()
-            }.flatten()
-
-            val townless = results
-                .filterNotNull()
-                .flatMap { it.getOrNull().orEmpty() }
+            val townless = Cache.playerCache.values.filter { it.town == null }
 
             if (townless.isEmpty()) {
                 sendMessage("No townless players found")

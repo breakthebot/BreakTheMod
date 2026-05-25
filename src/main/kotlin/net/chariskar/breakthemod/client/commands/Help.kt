@@ -24,20 +24,18 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import net.chariskar.breakthemod.Breakthemod
-import net.chariskar.breakthemod.client.api.BaseCommand
-import net.chariskar.breakthemod.client.api.BaseModule
-import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
+import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.HoverEvent
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 
-object Help : BaseCommand() {
-    override val name = "commands"
-    override val description = "This very command."
-    override val usageSuffix = "[name]"
-
+object Help : BaseCommand(
+    "commands",
+    "This very command.",
+    "[name]"
+) {
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val commands = Breakthemod.commands
         val modules = Breakthemod.modules
@@ -73,6 +71,7 @@ object Help : BaseCommand() {
         sendMessage(Text.literal("=== Available Features ==="), Formatting.GOLD)
 
         for (module in modules) {
+            if (module.hidden) continue
             sendMessage(
                 Text.literal(
                     module.getModuleDescription()

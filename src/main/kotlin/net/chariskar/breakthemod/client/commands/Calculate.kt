@@ -24,23 +24,16 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
-import com.mojang.brigadier.exceptions.CommandSyntaxException
-import com.mojang.brigadier.suggestion.SuggestionProvider
-import com.mojang.brigadier.suggestion.Suggestions
-import com.mojang.brigadier.suggestion.SuggestionsBuilder
-import net.chariskar.breakthemod.client.api.BaseCommand
-import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
+import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
-import java.util.Locale
-import java.util.concurrent.CompletableFuture
 
-object Calculate : BaseCommand() {
-
-    override val name = "calculate"
-    override val description = "Helps with the conversions of blocks & stacks."
-    override val usageSuffix = "<type> <amount>"
+object Calculate : BaseCommand(
+    "calculate",
+    "Helps with the conversions of blocks & stacks.",
+    "<type> <amount>"
+) {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val type = ctx.getArgument("type", String::class.java)
@@ -73,7 +66,7 @@ object Calculate : BaseCommand() {
                     .then(
                         RequiredArgumentBuilder.argument<FabricClientCommandSource?, Int>("amount", IntegerArgumentType.integer())
                             .executes(Command { context: CommandContext<FabricClientCommandSource> ->
-                                if (!getEnabled()) return@Command 0
+                                if (!isModEnabled()) return@Command 0
                                 return@Command run(context)
                             })
                     )

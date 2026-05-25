@@ -27,10 +27,9 @@ import com.mojang.brigadier.suggestion.SuggestionProvider
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import kotlinx.coroutines.launch
-import net.chariskar.breakthemod.client.api.BaseCommand
+import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.utils.Config
-import net.chariskar.breakthemod.client.utils.ServerUtils.getEnabled
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.ClickEvent
 import net.minecraft.text.Style
@@ -42,12 +41,11 @@ import java.net.URI
 import java.util.Locale
 import java.util.concurrent.CompletableFuture
 
-object Locate : BaseCommand() {
-
-    override val name = "locate"
-    override val description = "Gives you the coordinates of a town/nation."
-    override val usageSuffix = "<type> <name>"
-
+object Locate : BaseCommand(
+    "locate",
+    "Gives tou the coordinates of a town/nation",
+    "<type> <name>"
+) {
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val type: String = ctx.getArgument("type", String::class.java)
         val name: String = ctx.getArgument("name", String::class.java)
@@ -110,7 +108,7 @@ object Locate : BaseCommand() {
                             )
                                 .suggests(NameSuggestions())
                                 .executes { context ->
-                                    if (!getEnabled()) return@executes 0
+                                    if (!isModEnabled()) return@executes 0
                                     run(context)
                                 }
                         )

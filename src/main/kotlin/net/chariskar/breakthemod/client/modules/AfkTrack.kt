@@ -17,22 +17,24 @@
 
 package net.chariskar.breakthemod.client.modules
 
-import net.chariskar.breakthemod.client.api.BaseModule
-import net.chariskar.breakthemod.client.utils.ServerUtils
+import net.chariskar.breakthemod.client.api.module.BaseModule
+import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayNetworkHandler
 import net.minecraft.text.Text
 
-object AfkTrack : BaseModule() {
-    override val name = "AfkTrack"
-    override val description: String = "Utility module for tracking afk status."
+object AfkTrack : BaseModule(
+    "AfkTrack",
+    "Utility module for tracking afk status",
+    false
+) {
     var isAfk: Boolean = false
 
     override fun enable() {
         ClientReceiveMessageEvents.GAME.register(ClientReceiveMessageEvents.Game { message: Text?, _: Boolean ->
-            if (!ServerUtils.isEarthMc()) return@Game
+            if (!isEarthMc()) return@Game
             val messageText = message?.string ?: return@Game
 
             if (messageText.equals("You are now AFK.", ignoreCase = true)) {

@@ -15,7 +15,7 @@
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.chariskar.breakthemod.client.api
+package net.chariskar.breakthemod.client.utils
 
 import net.minecraft.client.MinecraftClient
 import net.minecraft.entity.player.PlayerEntity

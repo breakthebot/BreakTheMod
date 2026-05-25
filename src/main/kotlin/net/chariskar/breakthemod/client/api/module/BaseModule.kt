@@ -15,18 +15,29 @@
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.chariskar.breakthemod.client.api
+package net.chariskar.breakthemod.client.api.module
+
+import net.chariskar.breakthemod.client.api.providers.LoggingProvider
+import net.chariskar.breakthemod.client.api.providers.MessageProvider
+import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider
+import net.minecraft.client.MinecraftClient
 
 /**
- * @property name Module name.
- * @property description Description.
+ * @param name Module name.
+ * @param description Description.
+ * @param hidden Special property that makes the module not be shown to the user.
  * @property enabled The status of the module.
- * */
-abstract class BaseModule : Base() {
-    abstract val name: String
-    abstract val description: String
+ *  */
+abstract class BaseModule(
+    val name: String,
+    val description: String,
+    val hidden: Boolean = false
+) : MessageProvider, LoggingProvider, ServerUtilsProvider {
+
     var enabled: Boolean = false
         protected set
+
+    protected val client: MinecraftClient = MinecraftClient.getInstance()
 
     fun launch() {
         if (enabled) return

@@ -18,22 +18,19 @@ package net.chariskar.breakthemod.client.commands
 
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
-import net.chariskar.breakthemod.client.api.BaseCommand
+import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.modules.NearbyEngine
-import net.chariskar.breakthemod.client.api.PlayerInfo
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.text.MutableText
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.text.TextColor
 import net.minecraft.util.Formatting
 
 
-object Nearby : BaseCommand() {
-
-    override val name = "nearby"
-    override val description = "Shows nearby people"
-    override val usageSuffix = ""
+object Nearby : BaseCommand(
+    "nearby",
+    "Shows all of the nearby players (legal)."
+) {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         scope.launch {

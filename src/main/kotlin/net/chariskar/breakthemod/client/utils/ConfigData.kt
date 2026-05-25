@@ -19,6 +19,8 @@ package net.chariskar.breakthemod.client.utils
 
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import net.chariskar.breakthemod.client.api.widget.WidgetConfig
+import net.minecraft.client.gui.widget.Widget
 import org.breakthebot.breakthelibrary.utils.Config as LConfig
 
 @Serializable
@@ -29,6 +31,7 @@ data class ConfigData(
     var townlessMessage: String = "Hi! I see you're new here, wanna join my Town? I can help you out! Get Free enchanted Armor, Pickaxe, Diamonds, Iron, wood, food, stone, house, and ability to teleport! Type /t join TOWN",
     var options: Boolean = false,
     var features: Features = Features(),
+    var widgets: MutableMap<String, Boolean> = mutableMapOf(),
     @Contextual
     var libraryConfig: LConfig = LConfig()
 ) {
@@ -45,30 +48,10 @@ enum class AutoHudType {
 }
 
 @Serializable
-data class Widget(
-    var customX: Int = 0,
-    var customY: Int = 0,
-    var entryHeight: Int = 15,
-    var margin: Int = 10,
-    var widgetPosition: WidgetPosition = WidgetPosition.TOP_LEFT
-)
-
-@Serializable
 data class Features(
     var hudType: AutoHudType = AutoHudType.None,
-    var radarEnabled: Boolean = true,
-    var widget: Widget = Widget(),
 
     var nameTagInfo: Boolean = true,
     var cacheEnabled: Boolean = true,
     var experienceText: Boolean = true
 )
-
-@Serializable
-enum class WidgetPosition {
-    TOP_LEFT,
-    TOP_RIGHT,
-    BOTTOM_RIGHT,
-    BOTTOM_LEFT,
-    CUSTOM
-}

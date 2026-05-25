@@ -15,48 +15,41 @@
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
+package net.chariskar.breakthemod.client.api.providers
 
-package net.chariskar.breakthemod.client.api
-
-import net.chariskar.breakthemod.client.utils.Config
 import net.minecraft.client.MinecraftClient
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.text.TextColor
 import net.minecraft.util.Formatting
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+
+private val client = MinecraftClient.getInstance()
+
+val prefix: Text by lazy {
+    val segments = listOf(
+        "Break" to "#EAEAEA",
+        "The" to "#4B56FF",
+        "Mod"  to "#FF8C1A",
+        ">> " to "#FFFFFF"
+    )
+
+    val prefix = Text.empty()
+
+    for (segment in segments) {
+        val text: String = segment.first
+        val color = TextColor.fromRgb(segment.second.substring(1).toInt(16))
+
+        for (c in text.toCharArray()) {
+            prefix.append(Text.literal(c.toString()).setStyle(Style.EMPTY.withColor(color)))
+        }
+    }
+    prefix
+}
 
 /**
- * Base for all breakthemod features.
- * @property prefix The prefix that should be shown in all interactions with the user.
+ * Provides functions for interacting with the user.
  * */
-abstract class Base {
-
-    protected val logger: Logger = LoggerFactory.getLogger("breakthemod")
-    protected val client: MinecraftClient = MinecraftClient.getInstance()
-
-    val prefix: Text by lazy {
-        val segments = listOf(
-            "Break" to "#EAEAEA",
-            "The" to "#4B56FF",
-            "Mod"  to "#FF8C1A",
-            ">> " to "#FFFFFF"
-        )
-
-        val prefix = Text.empty()
-
-        for (segment in segments) {
-            val text: String = segment.first
-            val color = TextColor.fromRgb(segment.second.substring(1).toInt(16))
-
-            for (c in text.toCharArray()) {
-                prefix.append(Text.literal(c.toString()).setStyle(Style.EMPTY.withColor(color)))
-            }
-        }
-        prefix
-    }
-
+interface MessageProvider {
     /**
      * Helper utility for sending messages.
      *
@@ -92,12 +85,4 @@ abstract class Base {
     fun sendError(message: String) = sendMessage(Text.literal(message), Formatting.RED)
 
     fun sendWarning(message: String) = sendMessage(Text.literal(message), Formatting.YELLOW)
-
-    fun logError(message: String, e: Exception) = logger.error("$message: ${e.message}", e)
-
-    fun logDebug(message: String) {
-        if (Config.getDbg()) {
-            logger.info("[DEBUG] $message")
-        }
-    }
 }
