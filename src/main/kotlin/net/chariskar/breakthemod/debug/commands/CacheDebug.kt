@@ -27,7 +27,7 @@ import net.minecraft.text.Text
 
 object CacheDebug : BaseCommand(
     "cacheDebug",
-    ""
+    "Retrieve users from the cache."
 ) {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {

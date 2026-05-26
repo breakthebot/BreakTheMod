@@ -25,7 +25,7 @@ import net.minecraft.text.Text
 
 object GetConfig : BaseCommand(
     "getConfig",
-    ""
+    "Retrieve the breakthemod configuration."
 ) {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {

@@ -36,7 +36,7 @@ import java.util.concurrent.CompletableFuture
 
 object UnloadModule : BaseCommand(
     "unloadModule",
-    ""
+    "Unload any module."
 ) {
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {

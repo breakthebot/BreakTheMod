@@ -33,7 +33,7 @@ import java.util.concurrent.CompletableFuture
 
 object LoadModule : BaseCommand(
     "loadModule",
-    ""
+    "Load any module."
 ) {
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {

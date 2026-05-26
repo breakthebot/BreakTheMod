@@ -30,7 +30,7 @@ import net.minecraft.text.Text
 
 object Debug : BaseCommand(
     "btmdbg",
-    ""
+    "Debug overview of breakthemod."
 ) {
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         if (!Config.getDbg()) return 1
