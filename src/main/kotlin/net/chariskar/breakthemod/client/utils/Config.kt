@@ -21,6 +21,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 import kotlinx.serialization.json.Json
+import net.chariskar.breakthemod.client.api.widget.WidgetConfig
 import org.breakthebot.breakthelibrary.utils.ConfigHandler
 import org.breakthebot.breakthelibrary.utils.Config as LConfig
 /**
@@ -70,6 +71,27 @@ object Config {
             logger.error("Unable to write new config, ${e.message}")
         }
     }
+
+    /**
+     * Update the config of the specified widget.
+     * @param name The name of the widget the config is being updated for.
+     * @param newConfig The updated widget config.s
+     * */
+    fun saveWidgetConfig(
+        name: String,
+        newConfig: WidgetConfig
+    ) {
+        widgets[name] = newConfig
+        saveConfig(config)
+    }
+
+    /**
+     * Get the config of a widget.
+     * @param name The name of the widget.
+     * */
+    fun getWidgetConfig(
+        name: String
+    ): WidgetConfig? = widgets[name]
 
     /**
      * Small function to have the proper URL.

@@ -17,13 +17,16 @@
 
 package net.chariskar.breakthemod.client.api.widget
 
+import kotlinx.serialization.Serializable
 import me.shedaniel.clothconfig2.api.ConfigCategory
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
 import net.chariskar.breakthemod.client.api.providers.LoggingProvider
 import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider
+import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
@@ -122,6 +125,7 @@ data class Coords(
  * @property position The position of the widget.
  * @property category The category of the widget.
  *  */
+@Serializable
 data class WidgetConfig (
     val name: String,
     var enabled: Boolean,
@@ -133,7 +137,7 @@ data class WidgetConfig (
  * Represents one of the renderable widgets in breakthemod.
  * @param name The name of the widget.
  * @param identifier The identifier of the widget.
- * @property config The configuration of the widget, set by the config.
+ * @property config The configuration of the widget, set by the widget.
  * */
 abstract class BaseWidget(
     val name: String,
@@ -159,17 +163,18 @@ abstract class BaseWidget(
                 config.position
             ).setSaveConsumer { position: WidgetPosition ->
                 config.position = position
+                Config.saveWidgetConfig(name, config)
             }.build()
         )
     }
 
     /** Registers the element after VanillaHudElements.CHAT.*/
     open fun register() {
-        HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, identifier) { context, _ -> render(context) }
+        HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, identifier) { context, _ -> render(context, client.textRenderer) }
     }
 
     /** Render entry point.
      * @param drawContext The draw context to use.
      * */
-    abstract fun render(drawContext: DrawContext)
+    abstract fun render(drawContext: DrawContext, textRender: TextRenderer)
 }

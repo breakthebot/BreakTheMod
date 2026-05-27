@@ -18,13 +18,13 @@
 package net.chariskar.breakthemod.client.widgets
 
 import net.chariskar.breakthemod.client.api.widget.BaseWidget
-import net.chariskar.breakthemod.client.api.widget.Coords
 import net.chariskar.breakthemod.client.api.widget.WidgetCategories
 import net.chariskar.breakthemod.client.api.widget.WidgetConfig
 import net.chariskar.breakthemod.client.api.widget.WidgetPosition
 import net.chariskar.breakthemod.client.api.widget.getPos
 import net.chariskar.breakthemod.client.modules.NearbyEngine
 import net.chariskar.breakthemod.client.utils.Config
+import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.util.Identifier
 
@@ -35,14 +35,14 @@ object NearbyWidget : BaseWidget(
     const val MARGIN: Int = 10
     const val ENTRY_HEIGHT: Int = 15
 
-    override val config = WidgetConfig(
+    override val config = Config.getWidgetConfig(name) ?: WidgetConfig(
         name,
         true,
         WidgetCategories.General,
         WidgetPosition.TOP_LEFT
     )
     
-    override fun render(drawContext: DrawContext) {
+    override fun render(drawContext: DrawContext, textRender: TextRenderer) {
         if (client.options.hudHidden || client.world == null || client.player == null) return
         if (!config.enabled || !isModEnabled()) return
 
@@ -50,8 +50,6 @@ object NearbyWidget : BaseWidget(
         val playerList = if (players.isEmpty()) {
             listOf("No players nearby")
         } else players.map { it.toString() }
-
-        val textRender = client.textRenderer
 
         val width = (playerList.maxOfOrNull { textRender.getWidth(it) } ?: 100) + 2 * MARGIN
 
