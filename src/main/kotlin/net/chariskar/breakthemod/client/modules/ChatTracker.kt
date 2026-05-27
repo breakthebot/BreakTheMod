@@ -54,7 +54,7 @@ object ChatTracker : BaseModule(
     var inPartyChat: Boolean = false
         private set
     var chatChannel: ChatChannel? = null
-        private set
+        private set 
 
     val shopRegex = Regex(
         """at\s+(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+).*?run out of\s+(.+?)!?$"""

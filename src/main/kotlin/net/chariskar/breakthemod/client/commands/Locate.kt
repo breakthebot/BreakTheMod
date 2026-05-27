@@ -69,17 +69,16 @@ object Locate : BaseCommand(
                 sendError("No $type named $name found.")
                 return@launch
             }
-            sendMessage(Text.literal("$name is located at x: ${coords.x}, z: ${coords.z} ").append(getMapText(
-                coords.x!!,
-                coords.z!!
-            )))
+            sendMessage(
+                Text.literal("$name is located ").append(getMapText(coords.x!!,coords.z!!)).append(" (x: ${coords.x?.toInt()}, z: ${coords.z?.toInt()})")
+            )
         }
         return 0
     }
 
     private fun getMapText(x: Float, z: Float): Text {
         val mapUrl = "${Config.getMapUrl()}?world=minecraft_overworld&zoom=5&x=$x&z=$z"
-        return Text.literal("Click here").styled {
+        return Text.literal("here").styled {
             Style.EMPTY
                 .withColor(Formatting.BLUE)
                 .withClickEvent (

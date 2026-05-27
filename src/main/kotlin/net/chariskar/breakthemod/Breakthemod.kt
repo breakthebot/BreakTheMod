@@ -63,6 +63,8 @@ class Breakthemod : ClientModInitializer {
         val modules: MutableList<BaseModule> = mutableListOf()
         val commands: MutableList<BaseCommand> = mutableListOf()
         val widgets: MutableList<BaseWidget> = mutableListOf()
+
+        val notifications: MutableList<String> = mutableListOf()
     }
 
 
@@ -145,11 +147,11 @@ class Breakthemod : ClientModInitializer {
         Config.config.debug = loadDebug()
 
         if (VERSION.contains("BETA")) {
-            logger.warn("You are running a beta version of breakthemod, unexpected behaviour and glitches may occur.")
+            notifications.add("You are running a beta version of breakthemod, unexpected behaviour and glitches may occur.")
         }
 
         if (VERSION.contains("ALPHA")) {
-            logger.warn("You are running a alpha version of breakthemod, how did you achieve this.")
+            notifications.add("You are running a alpha version of breakthemod, how did you achieve this.")
         }
 
     }

@@ -19,6 +19,7 @@
 
 package net.chariskar.breakthemod.client.modules
 
+import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.module.BaseModule
 import net.chariskar.breakthemod.client.utils.AutoHudType
 import net.chariskar.breakthemod.client.utils.Config
