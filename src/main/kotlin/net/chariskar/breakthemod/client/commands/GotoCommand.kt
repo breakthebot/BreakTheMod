@@ -27,14 +27,14 @@ import net.minecraft.util.Formatting
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import org.breakthebot.breakthelibrary.api.MapApi
 import org.breakthebot.breakthelibrary.api.TownyAPI
+import org.breakthebot.breakthelibrary.models.ApiResult
 import org.breakthebot.breakthelibrary.models.Nation
 import org.breakthebot.breakthelibrary.models.NearbyItem
 import org.breakthebot.breakthelibrary.models.NearbyType
 import org.breakthebot.breakthelibrary.models.Town
-import org.breakthebot.breakthelibrary.network.ApiResult
-import org.breakthebot.breakthelibrary.network.getOrNull
-import org.breakthebot.breakthelibrary.network.mapSuccess
-import org.breakthebot.breakthelibrary.network.onError
+import org.breakthebot.breakthelibrary.models.getOrNull
+import org.breakthebot.breakthelibrary.models.mapSuccess
+import org.breakthebot.breakthelibrary.models.onError
 
 object GotoCommand : BaseCommand(
     "goto",

@@ -31,7 +31,7 @@ import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import org.breakthebot.breakthelibrary.api.TownyAPI
-import org.breakthebot.breakthelibrary.network.getOrNull
+import org.breakthebot.breakthelibrary.models.getOrNull
 
 object OnlineStaff : BaseCommand(
     "onlinestaff",

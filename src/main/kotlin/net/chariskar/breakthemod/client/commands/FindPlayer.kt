@@ -26,8 +26,7 @@ import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import org.breakthebot.breakthelibrary.api.MapApi
 import org.breakthebot.breakthelibrary.models.PlayerLocationInfo
-import org.breakthebot.breakthelibrary.network.getOrNull
-
+import org.breakthebot.breakthelibrary.models.getOrNull
 
 object FindPlayer : BaseCommand(
     "findPlayer",

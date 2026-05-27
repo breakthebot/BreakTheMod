@@ -27,7 +27,7 @@ import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import org.breakthebot.breakthelibrary.api.TownyAPI
-import org.breakthebot.breakthelibrary.network.getOrNull
+import org.breakthebot.breakthelibrary.models.getOrNull
 import java.net.URI
 
 

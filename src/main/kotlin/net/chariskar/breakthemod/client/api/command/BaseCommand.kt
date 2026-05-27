@@ -139,6 +139,9 @@ abstract class BaseCommand(
         )
     }
 
+    /**
+     * Provides command suggestions with whatever list is passed to it.
+     * */
     class CommandSuggestions(
         val allSuggestions: MutableList<String>
     ) : SuggestionProvider<FabricClientCommandSource?> {

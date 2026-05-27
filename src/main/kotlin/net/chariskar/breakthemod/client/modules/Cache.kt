@@ -31,9 +31,9 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayNetworkHandler
 import org.breakthebot.breakthelibrary.api.TownyAPI
 import org.breakthebot.breakthelibrary.models.Resident
-import org.breakthebot.breakthelibrary.network.getOrNull
-import org.breakthebot.breakthelibrary.network.onError
-import org.breakthebot.breakthelibrary.network.onSuccess
+import org.breakthebot.breakthelibrary.models.getOrNull
+import org.breakthebot.breakthelibrary.models.onError
+import org.breakthebot.breakthelibrary.models.onSuccess
 import java.util.Hashtable
 
 import java.util.concurrent.TimeUnit
@@ -89,7 +89,7 @@ object Cache : BaseModule(
                     .orEmpty()
                 }
 
-            apiPlayers.forEach { it ->
+            apiPlayers.forEach {
                 playerCache[it.name] = it
             }
         }
