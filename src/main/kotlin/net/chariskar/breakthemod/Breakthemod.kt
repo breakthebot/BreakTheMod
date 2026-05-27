@@ -28,16 +28,13 @@ import net.chariskar.breakthemod.client.commands.Locate
 import net.chariskar.breakthemod.client.commands.Nearby
 import net.chariskar.breakthemod.client.commands.OnlineStaff
 import net.chariskar.breakthemod.client.commands.Townless
-import net.chariskar.breakthemod.client.commands.Shop
 import net.chariskar.breakthemod.client.commands.Calculate
 
 import net.chariskar.breakthemod.client.utils.Config
 
 import net.chariskar.breakthemod.client.modules.AutoHUD
 import net.chariskar.breakthemod.client.modules.Cache
-import net.chariskar.breakthemod.client.modules.ChatPreview
-import net.chariskar.breakthemod.client.modules.ShopTracker
-import net.chariskar.breakthemod.client.modules.AfkTrack
+import net.chariskar.breakthemod.client.modules.ChatTracker
 
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
@@ -60,7 +57,7 @@ class Breakthemod : ClientModInitializer {
      * @property widgets All the registered widgets.
      * */
     companion object {
-        val VERSION: String = "1.2.0-BETA-${if (Config.getDbg()) "DEBUG" else ""}"
+        val VERSION: String = "1.2.0-ALPHA-${if (Config.getDbg()) "DEBUG" else ""}"
         val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
         val modules: MutableList<BaseModule> = mutableListOf()
@@ -122,7 +119,6 @@ class Breakthemod : ClientModInitializer {
                 DiscordId,
                 Locate,
                 Calculate,
-                Shop,
                 Help
             )
         )
@@ -130,11 +126,9 @@ class Breakthemod : ClientModInitializer {
         modules.addAll(
             listOf(
                 AutoHUD,
-                ChatPreview,
                 Cache,
                 NearbyEngine,
-                ShopTracker,
-                AfkTrack
+                ChatTracker
             )
         )
 
@@ -151,7 +145,11 @@ class Breakthemod : ClientModInitializer {
         Config.config.debug = loadDebug()
 
         if (VERSION.contains("BETA")) {
-            logger.warn("You are running a beta version of breakthemod, unexpected behaviour and glitches may occur")
+            logger.warn("You are running a beta version of breakthemod, unexpected behaviour and glitches may occur.")
+        }
+
+        if (VERSION.contains("ALPHA")) {
+            logger.warn("You are running a alpha version of breakthemod, how did you achieve this.")
         }
 
     }

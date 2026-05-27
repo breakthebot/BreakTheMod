@@ -17,7 +17,7 @@
 
 package net.chariskar.breakthemod.mixins;
 
-import net.chariskar.breakthemod.client.modules.ChatPreview;
+import net.chariskar.breakthemod.client.modules.ChatTracker;
 import net.chariskar.breakthemod.client.utils.ChatChannel;
 import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider;
 import net.minecraft.client.font.TextRenderer;
@@ -63,10 +63,10 @@ public abstract class ChatPreviewOverlay extends ClickableWidget implements Serv
 
             if (this.suggestion != null || !this.text.isEmpty()) return;
 
-            ChatChannel current = ChatPreview.INSTANCE.getChatChannel();
+            ChatChannel current = ChatTracker.INSTANCE.getChatChannel();
             if (current == null) return;
 
-            boolean inParty = ChatPreview.INSTANCE.getInPartyChat();
+            boolean inParty = ChatTracker.INSTANCE.getInPartyChat();
             String label = inParty ? current.getName() + " (party)" : current.getName();
 
             int x = this.getX();
