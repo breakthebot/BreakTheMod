@@ -15,26 +15,26 @@
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.chariskar.breakthemod.client.utils
+package net.chariskar.breakthemod.debug.commands
 
+import com.mojang.brigadier.context.CommandContext
 import net.chariskar.breakthemod.Breakthemod
-import net.chariskar.breakthemod.client.api.widget.WidgetCategories
+import net.chariskar.breakthemod.client.api.command.BaseCommand
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 
-object WidgetManager {
-    var activeCategory = WidgetCategories.None
-        private set
+object GetNotifications : BaseCommand(
+    "getNotifications",
+    "Display the notifications"
+){
+    override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
+        if (Breakthemod.notifications.isEmpty()) {
+            sendMessage("No notifications.")
+            return 1
+        }
+        Breakthemod.notifications.forEach {
+            sendMessage(it)
+        }
 
-    fun changeMode(
-        category: WidgetCategories
-    ) {
-        Breakthemod.widgets
-            .filter { it.config.category == WidgetCategories.General }
-            .forEach { it.config.enabled = false }
-
-        Breakthemod.widgets
-            .filter { it.config.category == category }
-            .forEach { it.config.enabled = true }
-
-        activeCategory = category
+        return 1
     }
 }

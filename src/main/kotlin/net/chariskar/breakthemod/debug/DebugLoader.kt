@@ -18,9 +18,11 @@
 package net.chariskar.breakthemod.debug
 
 import com.mojang.brigadier.CommandDispatcher
+import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.debug.commands.CacheDebug
 import net.chariskar.breakthemod.debug.commands.Debug
 import net.chariskar.breakthemod.debug.commands.GetConfig
+import net.chariskar.breakthemod.debug.commands.GetNotifications
 import net.chariskar.breakthemod.debug.commands.LoadModule
 import net.chariskar.breakthemod.debug.commands.UnloadModule
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
@@ -38,11 +40,13 @@ class DebugLoader {
             CacheDebug,
             LoadModule,
             UnloadModule,
-            GetConfig
+            GetConfig,
+            GetNotifications
         )
         ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _: CommandRegistryAccess ->
             commands.forEach { it.register(dispatcher) }
         })
+        Breakthemod.notifications.add("Debug tools loaded.")
         logger.warn("Debugging tools active be warned.")
     }
 

@@ -20,9 +20,9 @@ package net.chariskar.breakthemod.client.modmenu
 import com.terraformersmc.modmenu.api.ConfigScreenFactory
 import com.terraformersmc.modmenu.api.ModMenuApi
 import me.shedaniel.clothconfig2.api.ConfigBuilder
-import net.chariskar.breakthemod.client.utils.AutoHudType
+import net.chariskar.breakthemod.client.models.AutoHudType
 import net.chariskar.breakthemod.client.utils.Config
-import net.chariskar.breakthemod.client.widgets.NearbyWidget
+import net.chariskar.breakthemod.client.api.widget.WidgetManager
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.text.Text
 
@@ -69,11 +69,6 @@ class ModMenuIntegration : ModMenuApi {
                 }.setDefaultValue { AutoHudType.None }.build()
             )
 
-            NearbyWidget.getModMenuConfig(
-                general,
-                entryBuilder
-            )
-
             general.addEntry(
                 entryBuilder.startBooleanToggle(
                     Text.literal("Experience text overlay"),
@@ -92,6 +87,11 @@ class ModMenuIntegration : ModMenuApi {
                     Config.config.features.nameTagInfo = enabled
                     saveConfig()
                 }.setDefaultValue( Config.getNameTag() ).build()
+            )
+
+            WidgetManager.registerWidgetIntegration(
+                general,
+                entryBuilder
             )
 
             general.addEntry(

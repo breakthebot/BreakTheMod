@@ -17,6 +17,7 @@
 
 package net.chariskar.breakthemod.client.api.providers
 
+import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.Breakthemod.Companion.logger
 import net.chariskar.breakthemod.client.utils.Config
 
@@ -25,7 +26,7 @@ interface LoggingProvider {
     fun logError(message: String, e: Exception) = logger.error("$message: ${e.message}", e)
 
     fun logDebug(message: String) {
-        if (Config.getDbg()) {
+        if (Breakthemod.debug) {
             logger.info("[DEBUG] $message")
         }
     }

@@ -18,7 +18,7 @@
 package net.chariskar.breakthemod.client.modules
 
 import net.chariskar.breakthemod.client.api.module.BaseModule
-import net.chariskar.breakthemod.client.utils.ChatChannel
+import net.chariskar.breakthemod.client.models.ChatChannel
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.minecraft.client.MinecraftClient
@@ -27,6 +27,10 @@ import net.minecraft.text.Text
 import net.minecraft.util.math.Vec3d
 import java.util.regex.Pattern
 
+/**
+ * @param coords The coords of the shop.
+ * @param item The name of the item the shop sells.
+ * */
 data class ShopObject(
     val coords: Vec3d,
     val item: String
@@ -35,6 +39,7 @@ data class ShopObject(
         return "-Shop at ${coords.x}, ${coords.y}, ${coords.z} ($item)"
     }
 }
+
 /**
  * Combined module that all message operations take place.
  * @property emptyShops The empty shops of the player.
@@ -78,7 +83,6 @@ object ChatTracker : BaseModule(
             emptyShops.clear()
         })
     }
-
 
     fun afkTrack(message: String) {
         if (message.equals("You are now AFK.", ignoreCase = true)) {

@@ -29,17 +29,15 @@ import net.minecraft.client.gui.DrawContext
 import net.minecraft.util.Identifier
 
 object NearbyWidget : BaseWidget(
-    "NearbyWidget",
-    Identifier.of("breakthemod", "nearby_layer")
+    "nearby_widget"
 ) {
     const val MARGIN: Int = 10
     const val ENTRY_HEIGHT: Int = 15
 
     override val config = Config.getWidgetConfig(name) ?: WidgetConfig(
-        name,
         true,
+        WidgetPosition.TOP_LEFT,
         WidgetCategories.General,
-        WidgetPosition.TOP_LEFT
     )
     
     override fun render(drawContext: DrawContext, textRender: TextRenderer) {

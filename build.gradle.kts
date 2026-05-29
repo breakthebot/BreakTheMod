@@ -89,6 +89,9 @@ dependencies {
     modApi("com.terraformersmc:modmenu:$modmenu")
 
     implementation("com.github.breakthebot:BreakTheLibrary:$breakTheLibrary")
+    compileOnly(
+        "com.github.breakthebot:BreakTheLibrary:$breakTheLibrary:sources"
+    )
     shade("com.github.breakthebot:BreakTheLibrary:$breakTheLibrary") {
         isTransitive = false
     }
@@ -155,6 +158,8 @@ val shadowJarTask = tasks.named<ShadowJar>("shadowJar") {
     )
 }
 
+val debugPackage = "net/chariskar/breakthemod/debug/**"
+
 tasks.remapJar {
     dependsOn(shadowJarTask)
 
@@ -175,7 +180,7 @@ if (project.hasProperty("release")) {
 
 tasks.named<ShadowJar>("shadowJar") {
     if (!debug) {
-        exclude("net/chariskar/breakthemod/debug/**")
+        exclude(debugPackage)
     }
 }
 

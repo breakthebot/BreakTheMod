@@ -72,9 +72,9 @@ abstract class BaseCommand(
     /**
      * @param ctx the command context.
      */
-    protected open fun execute(
+    protected abstract fun execute(
         ctx: CommandContext<FabricClientCommandSource>
-    ): Int = 0
+    ): Int
 
     /**
      * Internal method, executes command code.

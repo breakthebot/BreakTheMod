@@ -57,7 +57,10 @@ class Breakthemod : ClientModInitializer {
      * @property widgets All the registered widgets.
      * */
     companion object {
-        val VERSION: String = "1.2.0-ALPHA-${if (Config.getDbg()) "DEBUG" else ""}"
+        var debug: Boolean = false
+            private set
+
+        val VERSION: String by lazy { "1.6.0-ALPHA${if (debug) "-DEBUG" else ""}" }
         val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
         val modules: MutableList<BaseModule> = mutableListOf()
@@ -74,7 +77,7 @@ class Breakthemod : ClientModInitializer {
         })
     }
 
-    private fun loadModules(modules: MutableList<BaseModule>) { modules.forEach { it.launch() } }
+    private fun loadModules(modules: MutableList<BaseModule>) { modules.forEach { it.register() } }
 
     private fun registerWidgets(widgets: MutableList<BaseWidget>) { widgets.forEach { it.register() } }
 
@@ -89,9 +92,8 @@ class Breakthemod : ClientModInitializer {
             method.invoke(instance)
             logger.info("Loaded debugging modules successfully.")
             return true
-        } catch (e: Exception) {
-            logger.error("Unexpected error loading debug commands", e)
-            logger.info("Not loading debugging module.")
+        } catch (e: ClassNotFoundException) {
+            logger.info("Debug module not loaded.")
         }
         return false
     }
@@ -144,7 +146,7 @@ class Breakthemod : ClientModInitializer {
         loadCommands(commands)
         registerWidgets(widgets)
 
-        Config.config.debug = loadDebug()
+        debug = loadDebug()
 
         if (VERSION.contains("BETA")) {
             notifications.add("You are running a beta version of breakthemod, unexpected behaviour and glitches may occur.")

@@ -21,10 +21,9 @@ package net.chariskar.breakthemod.client.modules
 
 import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.module.BaseModule
-import net.chariskar.breakthemod.client.utils.AutoHudType
+import net.chariskar.breakthemod.client.models.AutoHudType
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.Scheduler
-import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.PacketSender
 import net.minecraft.client.MinecraftClient
@@ -56,11 +55,14 @@ object AutoHUD : BaseModule(
                     }
 
                     client.networkHandler?.sendChatCommand(command)
+                    if (Breakthemod.notifications.isEmpty()) return@schedule
+                    sendMessage("Notifications: ")
+                    Breakthemod.notifications.forEach { sendMessage(it) }
                 } catch (e: Exception) {
                     // dont do anything.
                 }
 
-            }, 6L, TimeUnit.SECONDS)
+            }, 10L, TimeUnit.SECONDS)
         })
     }
 

@@ -29,11 +29,11 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.text.Text
 
 object Debug : BaseCommand(
-    "btmdbg",
+    "debugInfo",
     "Debug overview of breakthemod."
 ) {
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
-        if (!Config.getDbg()) return 1
+        if (!Breakthemod.debug) return 0
         sendMessage(
             Text.literal("Version: ${Breakthemod.VERSION}")
         )

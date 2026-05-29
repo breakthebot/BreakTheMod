@@ -15,19 +15,18 @@
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.chariskar.breakthemod.client.utils
+package net.chariskar.breakthemod.client.models
 
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import net.chariskar.breakthemod.client.api.widget.WidgetConfig
-import net.minecraft.client.gui.widget.Widget
+import net.chariskar.breakthemod.client.utils.Config
 import org.breakthebot.breakthelibrary.utils.Config as LConfig
 
 @Serializable
 data class ConfigData(
     var dev: Boolean = false,
     var enabledOnOtherServers: Boolean = true,
-    var debug: Boolean = false,
     var townlessMessage: String = "Hi! I see you're new here, wanna join my Town? I can help you out! Get Free enchanted Armor, Pickaxe, Diamonds, Iron, wood, food, stone, house, and ability to teleport! Type /t join TOWN",
     var options: Boolean = false,
     var features: Features = Features(),

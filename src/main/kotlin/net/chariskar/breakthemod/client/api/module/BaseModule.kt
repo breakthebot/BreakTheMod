@@ -23,6 +23,7 @@ import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider
 import net.minecraft.client.MinecraftClient
 
 /**
+ * Base for modules.
  * @param name Module name.
  * @param description Description.
  * @param hidden Special property that makes the module not be shown to the user.
@@ -39,7 +40,7 @@ abstract class BaseModule(
 
     protected val client: MinecraftClient = MinecraftClient.getInstance()
 
-    fun launch() {
+    fun register() {
         if (enabled) return
         try {
             enable()

@@ -54,49 +54,42 @@ fun WidgetPosition.getPos(
     width: Int
 ): Coords {
     val client = MinecraftClient.getInstance()
-
     val screenWidth = client.window.scaledWidth
     val screenHeight = client.window.scaledHeight
     return when (this) {
         WidgetPosition.TOP_LEFT -> {
             Coords(margin, margin)
         }
-
         WidgetPosition.TOP_RIGHT -> {
             Coords(
                 screenWidth - width - margin,
                 margin
             )
         }
-
         WidgetPosition.TOP_MIDDLE -> {
             Coords(
                 (screenWidth - width) / 2,
                 margin
             )
         }
-
         WidgetPosition.BOTTOM_LEFT -> {
             Coords(
                 margin,
                 screenHeight - height - margin
             )
         }
-
         WidgetPosition.BOTTOM_RIGHT -> {
             Coords(
                 screenWidth - width - margin,
                 screenHeight - height - margin
             )
         }
-
         WidgetPosition.MIDDLE_LEFT -> {
             Coords(
                 margin,
                 (screenHeight - height) / 2
             )
         }
-
         WidgetPosition.MIDDLE_RIGHT -> {
             Coords(
                 screenWidth - width - margin,
@@ -120,28 +113,24 @@ data class Coords(
 
 /**
  * Data class for representing the configuration of a widget.
- * @property name The name of the widget.
  * @property enabled The status of the widget.
  * @property position The position of the widget.
  * @property category The category of the widget.
  *  */
 @Serializable
 data class WidgetConfig (
-    val name: String,
     var enabled: Boolean,
+    var position: WidgetPosition,
     val category: WidgetCategories,
-    var position: WidgetPosition
 )
 
 /**
  * Represents one of the renderable widgets in breakthemod.
- * @param name The name of the widget.
- * @param identifier The identifier of the widget.
+ * @param name The name of the widget, must be underscored.
  * @property config The configuration of the widget, set by the widget.
  * */
 abstract class BaseWidget(
     val name: String,
-    val identifier: Identifier,
 ) : ServerUtilsProvider, LoggingProvider {
     protected val client: MinecraftClient = MinecraftClient.getInstance()
 
@@ -170,7 +159,7 @@ abstract class BaseWidget(
 
     /** Registers the element after VanillaHudElements.CHAT.*/
     open fun register() {
-        HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, identifier) { context, _ -> render(context, client.textRenderer) }
+        HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, Identifier.of("breakthemod", name)) { context, _ -> render(context, client.textRenderer) }
     }
 
     /** Render entry point.

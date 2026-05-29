@@ -22,10 +22,18 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import kotlinx.serialization.json.Json
 import net.chariskar.breakthemod.client.api.widget.WidgetConfig
+import net.chariskar.breakthemod.client.models.ConfigData
 import org.breakthebot.breakthelibrary.utils.ConfigHandler
 import org.breakthebot.breakthelibrary.utils.Config as LConfig
+
 /**
  * Config handler.
+ *
+ * @property configFile The config file.
+ * @property json The JSON parser for the config.
+ * @property features Lazy access to config.features.
+ * @property libraryConfig Lazy access config.libraryConfig.
+ * @property widgets Lazy access to config.widgets
  * */
 object Config {
     lateinit var configFile: File
@@ -104,8 +112,6 @@ object Config {
     fun getMapUrl() = formatURL(config.libraryConfig.mapUrl)
 
     fun getTownlessMessage(townName: String) = config.townlessMessage.replace("TOWN", townName)
-
-    fun getDbg() = config.debug && config.dev
 
     fun getNameTag() = config.features.nameTagInfo && config.features.cacheEnabled
 

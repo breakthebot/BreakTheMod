@@ -18,7 +18,7 @@
 package net.chariskar.breakthemod.mixins;
 
 import net.chariskar.breakthemod.client.modules.ChatTracker;
-import net.chariskar.breakthemod.client.utils.ChatChannel;
+import net.chariskar.breakthemod.client.models.ChatChannel;
 import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;

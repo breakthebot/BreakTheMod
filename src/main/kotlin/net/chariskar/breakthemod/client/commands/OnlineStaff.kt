@@ -38,6 +38,7 @@ object OnlineStaff : BaseCommand(
     "Shows online staff",
     "[api]"
 ) {
+    override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int = 1
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         dispatcher.register(
@@ -54,7 +55,6 @@ object OnlineStaff : BaseCommand(
                 })
         )
     }
-
 
     suspend fun onlineStaff(api: Boolean): Text {
         val staff = TownyAPI.getStaff()

@@ -17,9 +17,8 @@
 
 package net.chariskar.breakthemod.client.modules
 
-import net.chariskar.breakthemod.client.utils.PlayerInfo
+import net.chariskar.breakthemod.client.models.PlayerInfo
 import net.chariskar.breakthemod.client.api.module.BaseModule
-import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.widgets.NearbyWidget
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.entity.player.PlayerEntity
@@ -44,7 +43,7 @@ object NearbyEngine : BaseModule(
     /**
      * @return A [HashSet] of PlayerInfo from playerInfoList.
      * */
-    fun getPlayers(): Set<PlayerInfo> = HashSet(playerInfoList)
+    fun getPlayers() = HashSet(playerInfoList)
 
     /**
      * Checks if there are entities nearby using [PlayerInfo.shouldSkip] and returns a Set of [PlayerInfo]
@@ -79,7 +78,7 @@ object NearbyEngine : BaseModule(
 
     override fun enable() {
         ClientTickEvents.END_CLIENT_TICK.register { client ->
-            if (!NearbyWidget.config.enabled.or(Config.getDbg())) return@register
+            if (!NearbyWidget.config.enabled) return@register
 
             val player = client.player ?: return@register
             val world = client.world ?: return@register
