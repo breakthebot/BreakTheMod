@@ -51,16 +51,20 @@ import java.io.File
 class Breakthemod : ClientModInitializer {
 
     /**
-     * @property VERSION The version string.
-     * @property commands All the registered breakthemod commands.
+     * All global variables in the mod.
+     * @property debug Mods debug parameter.
+     * @property version The version string.
+     * @property logger Centralized mod logger.
      * @property modules All registered breakthemod modules.
+     * @property commands All the registered breakthemod commands.
      * @property widgets All the registered widgets.
+     * @property notifications All notifications from the mod.
      * */
     companion object {
         var debug: Boolean = false
             private set
 
-        val VERSION: String by lazy { "1.6.0-ALPHA${if (debug) "-DEBUG" else ""}" }
+        val version: String by lazy { "1.6.0-ALPHA${if (debug) "-DEBUG" else ""}" }
         val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
         val modules: MutableList<BaseModule> = mutableListOf()
@@ -148,11 +152,11 @@ class Breakthemod : ClientModInitializer {
 
         debug = loadDebug()
 
-        if (VERSION.contains("BETA")) {
+        if (version.contains("BETA")) {
             notifications.add("You are running a beta version of breakthemod, unexpected behaviour and glitches may occur.")
         }
 
-        if (VERSION.contains("ALPHA")) {
+        if (version.contains("ALPHA")) {
             notifications.add("You are running a alpha version of breakthemod, how did you achieve this.")
         }
 

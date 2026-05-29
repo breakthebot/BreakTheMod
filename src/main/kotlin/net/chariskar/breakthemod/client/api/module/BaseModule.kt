@@ -25,7 +25,7 @@ import net.minecraft.client.MinecraftClient
 /**
  * Base for modules.
  * @param name Module name.
- * @param description Description.
+ * @param description Module description.
  * @param hidden Special property that makes the module not be shown to the user.
  * @property enabled The status of the module.
  *  */

@@ -89,9 +89,6 @@ dependencies {
     modApi("com.terraformersmc:modmenu:$modmenu")
 
     implementation("com.github.breakthebot:BreakTheLibrary:$breakTheLibrary")
-    compileOnly(
-        "com.github.breakthebot:BreakTheLibrary:$breakTheLibrary:sources"
-    )
     shade("com.github.breakthebot:BreakTheLibrary:$breakTheLibrary") {
         isTransitive = false
     }

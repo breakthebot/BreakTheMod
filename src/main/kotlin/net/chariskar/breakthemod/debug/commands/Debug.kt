@@ -22,7 +22,6 @@ import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.modules.NearbyEngine
-import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.widgets.NearbyWidget
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.client.MinecraftClient
@@ -35,7 +34,7 @@ object Debug : BaseCommand(
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         if (!Breakthemod.debug) return 0
         sendMessage(
-            Text.literal("Version: ${Breakthemod.VERSION}")
+            Text.literal("Version: ${Breakthemod.version}")
         )
         sendMessage(
             Text.literal("players" + MinecraftClient.getInstance().world?.players)

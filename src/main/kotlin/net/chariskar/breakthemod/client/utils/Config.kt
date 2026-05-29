@@ -33,7 +33,7 @@ import org.breakthebot.breakthelibrary.utils.Config as LConfig
  * @property json The JSON parser for the config.
  * @property features Lazy access to config.features.
  * @property libraryConfig Lazy access config.libraryConfig.
- * @property widgets Lazy access to config.widgets
+ * @property widgets Lazy access to config.widgets.
  * */
 object Config {
     lateinit var configFile: File

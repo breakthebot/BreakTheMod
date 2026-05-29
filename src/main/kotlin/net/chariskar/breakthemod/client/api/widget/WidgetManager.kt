@@ -33,7 +33,7 @@ object WidgetManager {
         category: WidgetCategories
     ) {
         Breakthemod.widgets
-            .filter { it.config.category == WidgetCategories.General }
+            .filterNot { it.config.category == WidgetCategories.General }
             .forEach { it.config.enabled = false }
 
         Breakthemod.widgets

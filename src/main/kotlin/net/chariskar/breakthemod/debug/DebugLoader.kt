@@ -46,6 +46,7 @@ class DebugLoader {
         ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _: CommandRegistryAccess ->
             commands.forEach { it.register(dispatcher) }
         })
+        Breakthemod.commands.addAll(commands)
         Breakthemod.notifications.add("Debug tools loaded.")
         logger.warn("Debugging tools active be warned.")
     }
