@@ -42,6 +42,7 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.command.CommandRegistryAccess
 import com.mojang.brigadier.CommandDispatcher
 import net.chariskar.breakthemod.client.api.widget.BaseWidget
+import net.chariskar.breakthemod.client.widgets.NearbyTowns
 import net.chariskar.breakthemod.client.widgets.NearbyWidget
 import net.minecraft.client.MinecraftClient
 import org.slf4j.Logger
@@ -67,23 +68,30 @@ class Breakthemod : ClientModInitializer {
         val version: String by lazy { "1.6.0-ALPHA${if (debug) "-DEBUG" else ""}" }
         val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
-        val modules: MutableList<BaseModule> = mutableListOf()
-        val commands: MutableList<BaseCommand> = mutableListOf()
-        val widgets: MutableList<BaseWidget> = mutableListOf()
+        private val _modules: MutableList<BaseModule> = mutableListOf()
+        private val _commands: MutableList<BaseCommand> = mutableListOf()
+        private val _widgets: MutableList<BaseWidget> = mutableListOf()
+
+        val modules: List<BaseModule>
+            get() = _modules
+        val commands: List<BaseCommand>
+            get() = _commands
+        val widgets: List<BaseWidget>
+            get() = _widgets
 
         val notifications: MutableList<String> = mutableListOf()
     }
 
 
-    private fun loadCommands(commands: MutableList<BaseCommand>) {
+    private fun loadCommands() {
         ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _: CommandRegistryAccess ->
             commands.forEach { it.register(dispatcher) }
         })
     }
 
-    private fun loadModules(modules: MutableList<BaseModule>) { modules.forEach { it.register() } }
+    private fun loadModules() { modules.forEach { it.register() } }
 
-    private fun registerWidgets(widgets: MutableList<BaseWidget>) { widgets.forEach { it.register() } }
+    private fun registerWidgets() { widgets.forEach { it.register() } }
 
     /**
      * Load debugging modules.
@@ -96,7 +104,7 @@ class Breakthemod : ClientModInitializer {
             method.invoke(instance)
             logger.info("Loaded debugging modules successfully.")
             return true
-        } catch (e: ClassNotFoundException) {
+        } catch (_: ClassNotFoundException) {
             logger.info("Debug module not loaded.")
         }
         return false
@@ -116,7 +124,7 @@ class Breakthemod : ClientModInitializer {
 
         Config.loadConfig()
 
-        commands.addAll(
+        _commands.addAll(
             listOf(
                 Nearby,
                 OnlineStaff,
@@ -131,7 +139,7 @@ class Breakthemod : ClientModInitializer {
             )
         )
 
-        modules.addAll(
+        _modules.addAll(
             listOf(
                 AutoHUD,
                 Cache,
@@ -140,15 +148,16 @@ class Breakthemod : ClientModInitializer {
             )
         )
 
-        widgets.addAll(
+        _widgets.addAll(
             listOf(
-                NearbyWidget
+                NearbyWidget,
+                NearbyTowns
             )
         )
 
-        loadModules(modules)
-        loadCommands(commands)
-        registerWidgets(widgets)
+        loadModules()
+        loadCommands()
+        registerWidgets()
 
         debug = loadDebug()
 
@@ -157,7 +166,7 @@ class Breakthemod : ClientModInitializer {
         }
 
         if (version.contains("ALPHA")) {
-            notifications.add("You are running a alpha version of breakthemod, how did you achieve this.")
+            notifications.add("You are running a alpha version of breakthemod, be careful.")
         }
 
     }

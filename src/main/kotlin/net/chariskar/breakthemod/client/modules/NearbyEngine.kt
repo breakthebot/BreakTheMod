@@ -21,6 +21,7 @@ import net.chariskar.breakthemod.client.models.PlayerInfo
 import net.chariskar.breakthemod.client.api.module.BaseModule
 import net.chariskar.breakthemod.client.widgets.NearbyWidget
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.minecraft.client.MinecraftClient
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
@@ -48,7 +49,7 @@ object NearbyEngine : BaseModule(
     /**
      * Checks if there are entities nearby using [PlayerInfo.shouldSkip] and returns a Set of [PlayerInfo]
      * @param self The player entity
-     * @param world The client world
+     * @param world The client world.
      * */
     private fun updateNearbyPlayers(
         self: PlayerEntity,
@@ -62,7 +63,8 @@ object NearbyEngine : BaseModule(
 
             val info = PlayerInfo(
                 other.gameProfile.name,
-                Vec3d(other.x, other.y, other.z)
+                MinecraftClient.getInstance(),
+                Vec3d(other.x, other.y, other.z),
             )
 
             if (info.calculateDistance(selfPos) >

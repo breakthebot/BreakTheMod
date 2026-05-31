@@ -83,7 +83,7 @@ object Config {
     /**
      * Update the config of the specified widget.
      * @param name The name of the widget the config is being updated for.
-     * @param newConfig The updated widget config.s
+     * @param newConfig The updated widget config.
      * */
     fun saveWidgetConfig(
         name: String,

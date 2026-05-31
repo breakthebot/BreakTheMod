@@ -28,16 +28,20 @@ import kotlin.math.sqrt
 /**
  * Helper class for the NearbyEngine.
  * @param name The name of the player.
+ * @param client The client instance.
  * @param position The position of the player.
  * */
 data class PlayerInfo(
     val name: String,
-    var position: Vec3d
+    val client: MinecraftClient,
+    var position: Vec3d,
 ) {
     val directions = arrayOf("S", "SW", "W", "NW", "N", "NE", "E", "SE")
-    private val client: MinecraftClient = MinecraftClient.getInstance()
 
-    /** Calculates the distance between the player and the location provided */
+    /**
+     *  Calculates the distance between the player and the location provided
+     *  @param other The position of the outer player.
+     *  */
     fun calculateDistance(other: Vec3d): Double {
         val dx = position.x - other.x
         val dy = position.y - other.y
@@ -45,7 +49,11 @@ data class PlayerInfo(
         return dx * dx + dy * dy + dz * dz
     }
 
-    /** Climbs from the current pos until world max Y to check if there are any blocks above.*/
+    /**
+     * Climbs from the current pos until world max Y to check if there are any blocks above.
+     * @param world The client world.
+     * @param pos The block the player is standing on.
+     * */
     fun isUnderBlock(world: World, pos: BlockPos): Boolean {
         val topY = world.dimension.logicalHeight
         for (y in pos.y + 1..topY) {
@@ -56,7 +64,10 @@ data class PlayerInfo(
         return false
     }
 
-    /** Checks if the player is in any state that would prevent him from being visible. */
+    /**
+     * Checks if the player is in any state that would prevent him from being visible.
+     * @param player The player entity.
+     *  */
     fun shouldSkipSpecial(player: PlayerEntity): Boolean {
         val isInVehicle = player.hasVehicle()
         val isSneaking = player.isSneaking
@@ -67,7 +78,11 @@ data class PlayerInfo(
         return isInVehicle || isSneaking || inRiptide || isInNether || isInvisible
     }
 
-    /** Combination of [shouldSkipSpecial] and [isUnderBlock] to return a final result.*/
+    /**
+     * Combination of [shouldSkipSpecial] and [isUnderBlock] to return a final result.
+     * @param player The player.
+     * @param world The client world.
+     * */
     fun shouldSkip(
         player: PlayerEntity,
         world: World

@@ -19,7 +19,6 @@ package net.chariskar.breakthemod.client.api.providers
 
 import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.Breakthemod.Companion.logger
-import net.chariskar.breakthemod.client.utils.Config
 
 interface LoggingProvider {
 

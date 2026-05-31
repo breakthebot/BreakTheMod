@@ -21,6 +21,7 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.JsonPrimitive
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
@@ -94,12 +95,12 @@ object GotoCommand : BaseCommand(
             val validTowns: MutableList<String> = mutableListOf()
 
             loop@ while (attempts-- > 0) {
-                val resp = MapApi.getNearby(listOf(NearbyItem(
+                val resp = MapApi.getNearby(NearbyItem(
+                    JsonPrimitive(townName),
                     NearbyType.TOWN,
-                    townName,
                     NearbyType.TOWN,
                     radius)
-                )).onError { e ->
+                ).onError { e ->
                     val message = when (e.statusCode) {
                         404 -> "$townName does not exist."
                         else -> "Api returned unexpected message ${e.message}"
