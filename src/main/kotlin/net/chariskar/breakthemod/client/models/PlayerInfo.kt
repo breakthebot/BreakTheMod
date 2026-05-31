@@ -90,13 +90,11 @@ data class PlayerInfo(
 
     /** Calculates the direction to a player. */
     fun directionFrom(player: PlayerEntity): String {
-        val dx = position.x - player.x
-        val dz = position.z - player.z
+        val dx = (position.x.toInt() - player.blockPos.x).toDouble()
+        val dz = (position.z.toInt() - player.blockPos.z).toDouble()
 
         val angle = Math.toDegrees(atan2(-dx, dz))
-
-        val normalized = (angle + 360) % 360
-        val index = ((normalized + 22.5) / 45.0).toInt() % 8
+        val index = (((angle + 360.0) % 360.0 + 22.5) / 45.0).toInt() % 8
 
         return directions[index]
     }

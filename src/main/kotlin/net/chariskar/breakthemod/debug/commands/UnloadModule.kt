@@ -63,7 +63,7 @@ object UnloadModule : BaseCommand(
             return 0
         }
 
-        val clazz = Class.forName("net.chariskar.breakthemod.client.modules.${module.javaClass.name}")
+        val clazz = Class.forName(module.javaClass.name)
 
         val instance = clazz.getField("INSTANCE").get(null)
         val method = clazz.getMethod("disable")
