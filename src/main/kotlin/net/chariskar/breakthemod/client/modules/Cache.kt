@@ -50,6 +50,7 @@ object Cache : BaseModule(
         get() = MinecraftClient.getInstance().session.username
 
     val playerCache: Hashtable<String, Resident> = Hashtable()
+
     // keep a cache of all towns and nations for /locate, a full object cache is not needed yet.
     // spare some ram.
     val townCache: MutableList<String> = mutableListOf()
@@ -121,9 +122,8 @@ object Cache : BaseModule(
             target = coords
         )
 
-        val resp = MapApi.getNearby(
-            body
-        ).getOrNull()
+        val resp = MapApi.getNearby(body)
+            .getOrNull()
             ?.take(3)
             ?.mapNotNull { it.name }
 
@@ -137,7 +137,6 @@ object Cache : BaseModule(
             .getOrNull() ?: listOf()
 
         nearbyTowns.addAll(towns)
-
     }
 
     /**

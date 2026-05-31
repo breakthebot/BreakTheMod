@@ -1,7 +1,5 @@
 # TODO 
 * Find a way to bypass the xaeros packets to enable entity radar.
-* ~~Make a proper emc api library.~~
-* ~~Improve performance~~ ~~and try to decrease jar size~~.
-* ~~Improve testing.~~
-* ~~Make a proper breakthemod api other mods can use.~~
 * Migrate to mojmap for 26.1.
+* Make the caches in Cache.kt return an immutable copy.
+* Make the keybind for changing widget modes.

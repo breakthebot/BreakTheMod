@@ -53,7 +53,7 @@ class Breakthemod : ClientModInitializer {
 
     /**
      * All global variables in the mod.
-     * @property debug Mods debug parameter.
+     * @property debug Mod debug parameter.
      * @property version The version string.
      * @property logger Centralized mod logger.
      * @property modules All registered breakthemod modules.
