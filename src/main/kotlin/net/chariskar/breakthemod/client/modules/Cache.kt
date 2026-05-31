@@ -17,108 +17,154 @@
 
 package net.chariskar.breakthemod.client.modules
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonArray
 import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.module.BaseModule
 import net.chariskar.breakthemod.client.utils.Config
-import net.chariskar.breakthemod.client.utils.Scheduler
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
-import net.fabricmc.fabric.api.networking.v1.PacketSender
+import net.chariskar.breakthemod.client.widgets.NearbyTowns
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.network.ClientPlayNetworkHandler
+import org.breakthebot.breakthelibrary.api.MapApi
 import org.breakthebot.breakthelibrary.api.TownyAPI
-import org.breakthebot.breakthelibrary.models.Resident
-import org.breakthebot.breakthelibrary.models.getOrNull
-import org.breakthebot.breakthelibrary.models.onError
-import org.breakthebot.breakthelibrary.models.onSuccess
-import java.util.Hashtable
-
-import java.util.concurrent.TimeUnit
+import org.breakthebot.breakthelibrary.models.*
+import java.util.*
+import kotlin.time.Duration.Companion.minutes
 
 /**
- * Cache update handler for PlayerNametagInfo feature.
+ * Cache update handler for the mod.
  *
- * @property scope The execution scope for the cache update..
+ * @property scope The execution scope for the cache update.
  * @property playerCache The player currently cached in memory.
  * @property townCache A list of every town from /towns.
  * @property nationCache A list of every nation from /nations.
  *  */
+// TODO: make caches return an immutable copy.
 object Cache : BaseModule(
     "Cache",
     "Cache handler for the mod."
 ) {
-    val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-    val username: String = MinecraftClient.getInstance().session.username
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+    val username: String
+        get() = MinecraftClient.getInstance().session.username
 
     val playerCache: Hashtable<String, Resident> = Hashtable()
     // keep a cache of all towns and nations for /locate, a full object cache is not needed yet.
     // spare some ram.
     val townCache: MutableList<String> = mutableListOf()
+
     val nationCache: MutableList<String> = mutableListOf()
 
+    val nearbyTowns: MutableList<Town> = mutableListOf()
+
+    var cacheRunning: Boolean = false
+        private set
+
     override fun enable() {
-        ClientPlayConnectionEvents.JOIN.register { _: ClientPlayNetworkHandler?, _: PacketSender?, _: MinecraftClient? ->
-            replaceApiUrl()
-            runTask()
-            Scheduler.schedule(
-                { runTask() },
-                10L,
-                TimeUnit.MINUTES
-            )
-        }
-
-        ClientPlayConnectionEvents.DISCONNECT.register(ClientPlayConnectionEvents.Disconnect { _: ClientPlayNetworkHandler?, _: MinecraftClient? ->
-            playerCache.clear()
-        })
-    }
-
-    private fun updatePlayers() {
-        if (!isEarthMc() || !Config.getNameTag()) return
-        playerCache.clear()
-
-        val players = client.networkHandler!!.playerUuids.toList().map { it.toString() }
+        if (cacheRunning) return
+        cacheRunning = true
 
         scope.launch {
-            val apiPlayers = TownyAPI.getPlayers(players)
-                .flatMap { it
-                    .onError { e-> handleCacheError("playerCache", e.message) }
-                    .getOrNull()
-                    .orEmpty()
-                }
+            while (true) {
+                delay(10.minutes)
+                runTask()
+            }
+        }
 
-            apiPlayers.forEach {
-                playerCache[it.name] = it
+        scope.launch {
+            while (true) {
+                delay(1.minutes)
+                updateNearbyTowns()
             }
         }
     }
 
-    fun updateCache() {
+    private suspend fun updatePlayers() {
+        playerCache.clear()
+
+        val players = client.networkHandler!!.playerUuids.toList().map { it.toString() }
+
+        val apiPlayers = TownyAPI.getPlayers(players)
+            .flatMap { it
+                .onError { e-> handleCacheError("playerCache", e.message) }
+                .getOrNull()
+                .orEmpty()
+            }
+
+        apiPlayers.forEach {
+            playerCache[it.name] = it
+        }
+
+    }
+
+    /**
+     * Updates [Cache.nearbyTowns].
+     *
+     * World loaded required.
+     * */
+    suspend fun updateNearbyTowns() {
+        if (!isEarthMc() || !Config.features.cacheEnabled || !NearbyTowns.config.enabled) return
+
+        nearbyTowns.clear()
+        val player = MinecraftClient.getInstance().player ?: return
+
+        val coords = buildJsonArray {
+            add(JsonPrimitive(player.x.toInt()))
+            add(JsonPrimitive(player.z.toInt()))
+        }
+
+        val body = NearbyItem(
+            targetType = NearbyType.COORDINATE,
+            searchType = NearbyType.TOWN,
+            radius = 500,
+            target = coords
+        )
+
+        val resp = MapApi.getNearby(
+            body
+        ).getOrNull()
+            ?.take(3)
+            ?.mapNotNull { it.name }
+
+        if (resp.isNullOrEmpty()) return
+
+        val towns = TownyAPI.getTowns(resp)
+            .first()
+            .onError {
+                handleCacheError("nearbyTownCache", it.message)
+            }
+            .getOrNull() ?: listOf()
+
+        nearbyTowns.addAll(towns)
+
+    }
+
+    /**
+     * Update town and nation caches.
+     * */
+    suspend fun updateCache() {
         townCache.clear()
         nationCache.clear()
 
-        scope.launch {
-            TownyAPI.getAllTowns()
-                .onSuccess { townCache.addAll(it.map { name }) }
-                .onError {
-                    handleCacheError("townCache", it.message)
-                }
-            TownyAPI.getAllNations()
-                .onSuccess { nationCache.addAll(it.map { name }) }
-                .onError {
-                    handleCacheError("nationCache", it.message)
-                }
-        }
+        TownyAPI.getAllTowns()
+            .onSuccess { townCache.addAll(it.map { name }) }
+            .onError {
+                handleCacheError("townCache", it.message)
+            }
+        TownyAPI.getAllNations()
+            .onSuccess { nationCache.addAll(it.map { name }) }
+            .onError {
+                handleCacheError("nationCache", it.message)
+            }
     }
 
     private fun handleCacheError(origin: String, message: String) {
         Breakthemod.logger.error("Unexpected error occurred while updating $origin cache.", message)
     }
 
-    fun runTask() {
-        if (!isEarthMc() || !isModEnabled()) return
+    suspend fun runTask() {
+        if (!isEarthMc() || !isModEnabled() || !Config.features.cacheEnabled) return
         updateCache()
         updatePlayers()
     }
