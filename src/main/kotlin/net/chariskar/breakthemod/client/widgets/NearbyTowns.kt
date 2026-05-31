@@ -23,15 +23,21 @@ import net.chariskar.breakthemod.client.api.widget.WidgetConfig
 import net.chariskar.breakthemod.client.api.widget.WidgetPosition
 import net.chariskar.breakthemod.client.api.widget.getPos
 import net.chariskar.breakthemod.client.modules.Cache
-import net.chariskar.breakthemod.client.modules.NearbyEngine
 import net.chariskar.breakthemod.client.widgets.NearbyWidget.ENTRY_HEIGHT
 import net.chariskar.breakthemod.client.widgets.NearbyWidget.MARGIN
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
+import net.minecraft.entity.player.PlayerEntity
+import org.breakthebot.breakthelibrary.models.Town
+import kotlin.math.atan2
+import kotlin.math.sqrt
+
+val directions = arrayOf("S", "SW", "W", "NW", "N", "NE", "E", "SE")
 
 object NearbyTowns : BaseWidget(
     "nearby_towns"
 ) {
+
     override val config: WidgetConfig = WidgetConfig(
         true,
         WidgetPosition.MIDDLE_LEFT,
@@ -49,7 +55,7 @@ object NearbyTowns : BaseWidget(
 
         val townList = if (towns.isEmpty()) {
             listOf("No towns nearby")
-        } else towns.map { it.name }
+        } else towns.map { formatTownEntry(it) }
 
         val width = (townList.maxOfOrNull { textRender.getWidth(it) } ?: 100) + 2 * MARGIN
 
@@ -64,4 +70,27 @@ object NearbyTowns : BaseWidget(
             renderCoords.y += ENTRY_HEIGHT
         }
     }
+
+    fun formatTownEntry(t: Town): String {
+        val player = client.player ?: return t.name
+        return "-${t.name} direction: ${t.getTownDirection(player)}, distance: ${t.calculateDistance(player)} blocks"
+    }
+
+}
+
+fun Town.getTownDirection(player: PlayerEntity): String {
+    val dx = (player.x.toInt() - coordinates!!.spawn!!.x!!.toInt()).toDouble()
+    val dz = (player.z.toInt() - coordinates!!.spawn!!.z!!.toInt()).toDouble()
+
+    val angle = Math.toDegrees(atan2(-dx, dz))
+    val index = (((angle + 360.0) % 360.0 + 22.5) / 45.0).toInt() % 8
+
+    return directions[index]
+}
+
+fun Town.calculateDistance(player: PlayerEntity): Int {
+    val dx = player.x - coordinates!!.spawn!!.x!!
+    val dy = player.y - coordinates!!.spawn!!.y!!
+    val dz = player.z - coordinates!!.spawn!!.z!!
+    return sqrt(dx * dx + dy * dy + dz * dz).toInt()
 }
