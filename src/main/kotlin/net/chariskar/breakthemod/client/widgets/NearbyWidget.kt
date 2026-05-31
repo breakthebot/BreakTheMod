@@ -17,6 +17,8 @@
 
 package net.chariskar.breakthemod.client.widgets
 
+import me.shedaniel.clothconfig2.api.ConfigCategory
+import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
 import net.chariskar.breakthemod.client.api.widget.BaseWidget
 import net.chariskar.breakthemod.client.api.widget.WidgetCategories
 import net.chariskar.breakthemod.client.api.widget.WidgetConfig
@@ -26,7 +28,7 @@ import net.chariskar.breakthemod.client.modules.NearbyEngine
 import net.chariskar.breakthemod.client.utils.Config
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
-import net.minecraft.util.Identifier
+import net.minecraft.text.Text
 
 object NearbyWidget : BaseWidget(
     "nearby_widget"
@@ -39,6 +41,28 @@ object NearbyWidget : BaseWidget(
         WidgetPosition.TOP_LEFT,
         WidgetCategories.General,
     )
+
+    override fun getModMenuConfig(category: ConfigCategory, entryBuilder: ConfigEntryBuilder) {
+        category.addEntry(
+            entryBuilder.startEnumSelector(
+                Text.literal("$name Position"),
+                WidgetPosition::class.java,
+                config.position
+            ).setSaveConsumer { position: WidgetPosition ->
+                config.position = position
+                Config.saveWidgetConfig(name, config)
+            }.build()
+        )
+        category.addEntry(
+            entryBuilder.startBooleanToggle(
+                Text.literal("Enable nearby player radar."),
+                config.enabled
+            ).setSaveConsumer { enabled: Boolean ->
+                config.enabled = enabled
+                Config.saveWidgetConfig(name, config)
+            }.build()
+        )
+    }
     
     override fun render(drawContext: DrawContext, textRender: TextRenderer) {
         if (client.options.hudHidden || client.world == null || client.player == null) return

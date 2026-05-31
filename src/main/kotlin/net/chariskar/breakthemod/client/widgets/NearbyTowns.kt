@@ -17,17 +17,21 @@
 
 package net.chariskar.breakthemod.client.widgets
 
+import me.shedaniel.clothconfig2.api.ConfigCategory
+import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
 import net.chariskar.breakthemod.client.api.widget.BaseWidget
 import net.chariskar.breakthemod.client.api.widget.WidgetCategories
 import net.chariskar.breakthemod.client.api.widget.WidgetConfig
 import net.chariskar.breakthemod.client.api.widget.WidgetPosition
 import net.chariskar.breakthemod.client.api.widget.getPos
 import net.chariskar.breakthemod.client.modules.Cache
+import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.widgets.NearbyWidget.ENTRY_HEIGHT
 import net.chariskar.breakthemod.client.widgets.NearbyWidget.MARGIN
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.text.Text
 import org.breakthebot.breakthelibrary.models.Town
 import kotlin.math.atan2
 import kotlin.math.sqrt
@@ -43,6 +47,28 @@ object NearbyTowns : BaseWidget(
         WidgetPosition.MIDDLE_LEFT,
         WidgetCategories.General
     )
+
+    override fun getModMenuConfig(category: ConfigCategory, entryBuilder: ConfigEntryBuilder) {
+        category.addEntry(
+            entryBuilder.startEnumSelector(
+                Text.literal("$name Position"),
+                WidgetPosition::class.java,
+                NearbyWidget.config.position
+            ).setSaveConsumer { position: WidgetPosition ->
+                NearbyWidget.config.position = position
+                Config.saveWidgetConfig(name, NearbyWidget.config)
+            }.build()
+        )
+        category.addEntry(
+            entryBuilder.startBooleanToggle(
+                Text.literal("Enable nearby towns radar."),
+                NearbyWidget.config.enabled
+            ).setSaveConsumer { enabled: Boolean ->
+                NearbyWidget.config.enabled = enabled
+                Config.saveWidgetConfig(name, NearbyWidget.config)
+            }.build()
+        )
+    }
 
     override fun render(
         drawContext: DrawContext,
