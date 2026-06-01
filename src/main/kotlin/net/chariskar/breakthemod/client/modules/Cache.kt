@@ -46,8 +46,6 @@ object Cache : BaseModule(
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    val username: String
-        get() = MinecraftClient.getInstance().session.username
 
     val playerCache: Hashtable<String, Resident> = Hashtable()
 

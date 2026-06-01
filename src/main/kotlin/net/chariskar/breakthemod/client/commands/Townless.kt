@@ -18,6 +18,7 @@ package net.chariskar.breakthemod.client.commands
 
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
+import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.utils.Config
@@ -43,7 +44,7 @@ object Townless : BaseCommand(
                 return@launch
             }
 
-            val own = TownyAPI.getPlayer(Cache.username).getOrNull()
+            val own = TownyAPI.getPlayer(Breakthemod.username).getOrNull()
             val townName = own?.town?.name
 
             if (townName.isNullOrEmpty()) {

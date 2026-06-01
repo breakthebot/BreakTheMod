@@ -88,7 +88,10 @@ data class PlayerInfo(
         world: World
     ): Boolean = shouldSkipSpecial(player) || isUnderBlock(world, player.blockPos)
 
-    /** Calculates the direction to a player. */
+    /**
+     *  Calculates the direction to a player.
+     *  @param player The player.
+     *  */
     fun directionFrom(player: PlayerEntity): String {
         val dx = (position.x.toInt() - player.blockPos.x).toDouble()
         val dz = (position.z.toInt() - player.blockPos.z).toDouble()

@@ -42,6 +42,7 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.command.CommandRegistryAccess
 import com.mojang.brigadier.CommandDispatcher
 import net.chariskar.breakthemod.client.api.widget.BaseWidget
+import net.chariskar.breakthemod.client.commands.OnlineFriends
 import net.chariskar.breakthemod.client.widgets.NearbyTowns
 import net.chariskar.breakthemod.client.widgets.NearbyWidget
 import net.minecraft.client.MinecraftClient
@@ -60,6 +61,7 @@ class Breakthemod : ClientModInitializer {
      * @property commands All the registered breakthemod commands.
      * @property widgets All the registered widgets.
      * @property notifications All notifications from the mod.
+     * @property username The username of the client.
      * */
     companion object {
         var debug: Boolean = false
@@ -80,6 +82,9 @@ class Breakthemod : ClientModInitializer {
             get() = _widgets
 
         val notifications: MutableList<String> = mutableListOf()
+
+        val username: String
+            get() = MinecraftClient.getInstance().session.username
     }
 
 
@@ -135,7 +140,8 @@ class Breakthemod : ClientModInitializer {
                 DiscordId,
                 Locate,
                 Calculate,
-                Help
+                Help,
+                OnlineFriends
             )
         )
 
