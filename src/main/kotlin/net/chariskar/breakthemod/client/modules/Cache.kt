@@ -22,9 +22,16 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonArray
 import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.module.BaseModule
+import net.chariskar.breakthemod.client.modules.Cache.nationCache
+import net.chariskar.breakthemod.client.modules.Cache.playerCache
+import net.chariskar.breakthemod.client.modules.Cache.scope
+import net.chariskar.breakthemod.client.modules.Cache.townCache
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.widgets.NearbyTowns
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
+import net.fabricmc.fabric.api.networking.v1.PacketSender
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.network.ClientPlayNetworkHandler
 import org.breakthebot.breakthelibrary.api.MapApi
 import org.breakthebot.breakthelibrary.api.TownyAPI
 import org.breakthebot.breakthelibrary.models.*
@@ -47,22 +54,43 @@ object Cache : BaseModule(
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
 
-    val playerCache: Hashtable<String, Resident> = Hashtable()
+    val _playerCache: Hashtable<String, Resident> = Hashtable()
+
+    val playerCache: Hashtable<String, Resident>
+        get() = _playerCache
 
     // keep a cache of all towns and nations for /locate, a full object cache is not needed yet.
     // spare some ram.
-    val townCache: MutableList<String> = mutableListOf()
+    private val _townCache: MutableList<String> = mutableListOf()
 
-    val nationCache: MutableList<String> = mutableListOf()
+    private val _nationCache: MutableList<String> = mutableListOf()
 
-    val nearbyTowns: MutableList<Town> = mutableListOf()
+    private val _nearbyTowns: MutableList<Town> = mutableListOf()
+
+    val townCache: List<String>
+        get() = _townCache
+
+    val nationCache: List<String>
+        get() = _nationCache
+
+    val nearbyTowns: List<Town>
+        get() = _nearbyTowns
+
 
     var cacheRunning: Boolean = false
         private set
 
     override fun enable() {
         if (cacheRunning) return
-        cacheRunning = true
+
+        ClientPlayConnectionEvents.JOIN.register(
+            ClientPlayConnectionEvents.Join { _: ClientPlayNetworkHandler?, _: PacketSender?, _: MinecraftClient ->
+            enabled = true
+        })
+
+        ClientPlayConnectionEvents.DISCONNECT.register(ClientPlayConnectionEvents.Disconnect { _: ClientPlayNetworkHandler?, _: MinecraftClient? ->
+            enabled = false
+        })
 
         scope.launch {
             while (true) {
@@ -105,7 +133,7 @@ object Cache : BaseModule(
     suspend fun updateNearbyTowns() {
         if (!isEarthMc() || !Config.features.cacheEnabled || !NearbyTowns.config.enabled) return
 
-        nearbyTowns.clear()
+        _nearbyTowns.clear()
         val player = MinecraftClient.getInstance().player ?: return
 
         val coords = buildJsonArray {
@@ -134,23 +162,23 @@ object Cache : BaseModule(
             }
             .getOrNull() ?: listOf()
 
-        nearbyTowns.addAll(towns)
+        _nearbyTowns.addAll(towns)
     }
 
     /**
      * Update town and nation caches.
      * */
     suspend fun updateCache() {
-        townCache.clear()
-        nationCache.clear()
+        _townCache.clear()
+        _nationCache.clear()
 
         TownyAPI.getAllTowns()
-            .onSuccess { townCache.addAll(it.map { name }) }
+            .onSuccess { _townCache.addAll(it.map { name }) }
             .onError {
                 handleCacheError("townCache", it.message)
             }
         TownyAPI.getAllNations()
-            .onSuccess { nationCache.addAll(it.map { name }) }
+            .onSuccess { _nationCache.addAll(it.map { name }) }
             .onError {
                 handleCacheError("nationCache", it.message)
             }
