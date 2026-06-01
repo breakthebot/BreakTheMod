@@ -46,7 +46,6 @@ import kotlin.time.Duration.Companion.minutes
  * @property townCache A list of every town from /towns.
  * @property nationCache A list of every nation from /nations.
  *  */
-// TODO: make caches return an immutable copy.
 object Cache : BaseModule(
     "Cache",
     "Cache handler for the mod."
@@ -54,7 +53,7 @@ object Cache : BaseModule(
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
 
-    val _playerCache: Hashtable<String, Resident> = Hashtable()
+    private val _playerCache: Hashtable<String, Resident> = Hashtable()
 
     val playerCache: Hashtable<String, Resident>
         get() = _playerCache
