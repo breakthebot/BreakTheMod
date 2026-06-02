@@ -42,7 +42,7 @@ object NearbyTowns : BaseWidget(
     "nearby_towns"
 ) {
 
-    override val config: WidgetConfig = WidgetConfig(
+    override val config: WidgetConfig = Config.getWidgetConfig(name) ?: WidgetConfig(
         true,
         WidgetPosition.MIDDLE_LEFT,
         WidgetCategories.General
@@ -53,20 +53,20 @@ object NearbyTowns : BaseWidget(
             entryBuilder.startEnumSelector(
                 Text.literal("$name Position"),
                 WidgetPosition::class.java,
-                NearbyWidget.config.position
+                config.position
             ).setSaveConsumer { position: WidgetPosition ->
-                NearbyWidget.config.position = position
+                config.position = position
                 Config.saveWidgetConfig(name, NearbyWidget.config)
-            }.build()
+            }.setDefaultValue { WidgetPosition.MIDDLE_LEFT }.build()
         )
         category.addEntry(
             entryBuilder.startBooleanToggle(
-                Text.literal("Enable nearby towns radar."),
-                NearbyWidget.config.enabled
+                Text.literal("Enable nearby towns radar"),
+                config.enabled
             ).setSaveConsumer { enabled: Boolean ->
-                NearbyWidget.config.enabled = enabled
-                Config.saveWidgetConfig(name, NearbyWidget.config)
-            }.build()
+                config.enabled = enabled
+                Config.saveWidgetConfig(name, config)
+            }.setDefaultValue { true }.build()
         )
     }
 

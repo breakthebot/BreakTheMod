@@ -16,39 +16,25 @@
  */
 package net.chariskar.breakthemod
 
+import com.mojang.brigadier.CommandDispatcher
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.api.module.BaseModule
-import net.chariskar.breakthemod.client.modules.NearbyEngine
-import net.chariskar.breakthemod.client.commands.DiscordId
-import net.chariskar.breakthemod.client.commands.FindPlayer
-import net.chariskar.breakthemod.client.commands.GotoCommand
-import net.chariskar.breakthemod.client.commands.Help
-import net.chariskar.breakthemod.client.commands.LastSeen
-import net.chariskar.breakthemod.client.commands.Locate
-import net.chariskar.breakthemod.client.commands.Nearby
-import net.chariskar.breakthemod.client.commands.OnlineStaff
-import net.chariskar.breakthemod.client.commands.Townless
-import net.chariskar.breakthemod.client.commands.Calculate
-
+import net.chariskar.breakthemod.client.api.widget.BaseWidget
+import net.chariskar.breakthemod.client.api.widget.WidgetManager
+import net.chariskar.breakthemod.client.commands.*
+import net.chariskar.breakthemod.client.modules.*
 import net.chariskar.breakthemod.client.utils.Config
-
-import net.chariskar.breakthemod.client.modules.AutoHUD
-import net.chariskar.breakthemod.client.modules.Cache
-import net.chariskar.breakthemod.client.modules.ChatTracker
-
+import net.chariskar.breakthemod.client.widgets.NearbyTowns
+import net.chariskar.breakthemod.client.widgets.NearbyWidget
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.command.CommandRegistryAccess
-import com.mojang.brigadier.CommandDispatcher
-import net.chariskar.breakthemod.client.api.widget.BaseWidget
-import net.chariskar.breakthemod.client.commands.OnlineFriends
-import net.chariskar.breakthemod.client.widgets.NearbyTowns
-import net.chariskar.breakthemod.client.widgets.NearbyWidget
 import net.minecraft.client.MinecraftClient
+import net.minecraft.command.CommandRegistryAccess
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
+
 
 class Breakthemod : ClientModInitializer {
 
@@ -141,7 +127,6 @@ class Breakthemod : ClientModInitializer {
                 Locate,
                 Calculate,
                 Help,
-                OnlineFriends
             )
         )
 
@@ -160,6 +145,8 @@ class Breakthemod : ClientModInitializer {
                 NearbyTowns
             )
         )
+
+        WidgetManager.registerKeyBind()
 
         loadModules()
         loadCommands()

@@ -26,6 +26,7 @@ import net.minecraft.text.MutableText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.chariskar.breakthemod.client.api.command.BaseCommand
+import net.chariskar.breakthemod.client.modules.Cache
 import org.breakthebot.breakthelibrary.api.MapApi
 import org.breakthebot.breakthelibrary.api.TownyAPI
 import org.breakthebot.breakthelibrary.models.ApiResult
@@ -33,6 +34,7 @@ import org.breakthebot.breakthelibrary.models.Nation
 import org.breakthebot.breakthelibrary.models.NearbyItem
 import org.breakthebot.breakthelibrary.models.NearbyType
 import org.breakthebot.breakthelibrary.models.Town
+import org.breakthebot.breakthelibrary.models.getOrElse
 import org.breakthebot.breakthelibrary.models.getOrNull
 import org.breakthebot.breakthelibrary.models.mapSuccess
 import org.breakthebot.breakthelibrary.models.onError
@@ -47,18 +49,14 @@ object GotoCommand : BaseCommand(
         val townName = ctx.getArgument("name", String::class.java)
 
         scope.launch {
-            val reqTown = when (
-                val reqTown = TownyAPI.getTown(townName)
-            ) {
-                is ApiResult.Success<Town> -> reqTown.data
-                is ApiResult.Error -> {
-                    val message = when (reqTown.statusCode) {
-                        404 -> "$townName does not exist."
-                        else -> "Api returned unexpected message ${reqTown.message}"
-                    }
-                    sendError(message)
-                    return@launch
+
+            val reqTown =  TownyAPI.getTown(townName).getOrElse {
+                val message = when (it.statusCode) {
+                    404 -> "$townName does not exist."
+                    else -> "API returned unexpected message ${it.message}"
                 }
+                sendError(message)
+                return@launch
             }
 
             if (
@@ -70,18 +68,13 @@ object GotoCommand : BaseCommand(
             }
 
             if (reqTown.status?.isCapital == true) {
-                val nation = when (
-                    val nation = TownyAPI.getNation(reqTown.nation?.name!!)
-                ) {
-                    is ApiResult.Success<Nation> -> nation.data
-                    is ApiResult.Error -> {
-                        val message = when (nation.statusCode) {
-                            503 -> "EarthMc API is unavailable."
-                            else -> "API says this town is the capital of a nation that does not exist."
-                        }
-                        sendError(message)
-                        return@launch
+                val nation = TownyAPI.getNation(reqTown.nation?.name!!).getOrElse {
+                    val message = when (it.statusCode) {
+                        503 -> "EarthMc API is unavailable."
+                        else -> "API says this town is the capital of a nation that does not exist."
                     }
+                    sendError(message)
+                    return@launch
                 }
 
                 if (nation.status?.isPublic == true) {
@@ -148,10 +141,10 @@ object GotoCommand : BaseCommand(
             sendError("Found no suitable spawn near $townName.")
         }
 
-        return 0
+        return 1
     }
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
-        super.register<String>(dispatcher, "name", StringArgumentType.string(), null)
+        super.register<String>(dispatcher, "name", StringArgumentType.string(), CommandSuggestions(Cache.townCache))
     }
 }

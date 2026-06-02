@@ -37,6 +37,7 @@ import org.breakthebot.breakthelibrary.api.TownyAPI
 import org.breakthebot.breakthelibrary.models.*
 import java.util.*
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * Cache update handler for the mod.
@@ -75,12 +76,8 @@ object Cache : BaseModule(
     val nearbyTowns: List<Town>
         get() = _nearbyTowns
 
-
-    var cacheRunning: Boolean = false
-        private set
-
     override fun enable() {
-        if (cacheRunning) return
+        if (enabled) return
 
         ClientPlayConnectionEvents.JOIN.register(
             ClientPlayConnectionEvents.Join { _: ClientPlayNetworkHandler?, _: PacketSender?, _: MinecraftClient ->
@@ -93,19 +90,21 @@ object Cache : BaseModule(
 
         scope.launch {
             while (true) {
-                delay(10.minutes)
+                if (!enabled) return@launch
+                 delay(10.minutes)
                 runTask()
             }
         }
 
         scope.launch {
             while (true) {
-                delay(1.minutes)
+                if (!enabled) return@launch
+                delay(30.seconds)
                 updateNearbyTowns()
             }
         }
     }
-
+    
     private suspend fun updatePlayers() {
         playerCache.clear()
 

@@ -39,12 +39,10 @@ object NearbyEngine : BaseModule(
 
     const val DISTANCE_THRESHOLD: Double = 200.0
 
-    private val playerInfoList: MutableSet<PlayerInfo> = CopyOnWriteArraySet()
+    private val _players: MutableSet<PlayerInfo> = CopyOnWriteArraySet()
 
-    /**
-     * @return A [HashSet] of PlayerInfo from playerInfoList.
-     * */
-    fun getPlayers() = HashSet(playerInfoList)
+    val players: HashSet<PlayerInfo>
+        get() = HashSet(_players)
 
     /**
      * Checks if there are entities nearby using [PlayerInfo.shouldSkip] and returns a Set of [PlayerInfo]
@@ -87,8 +85,8 @@ object NearbyEngine : BaseModule(
 
             val nearby = updateNearbyPlayers(player, world)
 
-            playerInfoList.clear()
-            playerInfoList.addAll(nearby)
+            _players.clear()
+            _players.addAll(nearby)
         }
         
     }

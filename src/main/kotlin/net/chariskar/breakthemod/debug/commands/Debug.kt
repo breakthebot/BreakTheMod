@@ -40,7 +40,7 @@ object Debug : BaseCommand(
             Text.literal("players" + MinecraftClient.getInstance().world?.players)
         )
         sendMessage(
-            Text.literal("Nearby engine state: Running(${NearbyWidget.config.enabled}), Players(${NearbyEngine.getPlayers()})")
+            Text.literal("Nearby engine state: Running(${NearbyWidget.config.enabled}), Players(${NearbyEngine.players})")
         )
         sendMessage("Loaded commands: ${Breakthemod.commands.size}.")
         sendMessage("Load modules: ${Breakthemod.modules.size}.")

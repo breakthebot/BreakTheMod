@@ -51,16 +51,16 @@ object NearbyWidget : BaseWidget(
             ).setSaveConsumer { position: WidgetPosition ->
                 config.position = position
                 Config.saveWidgetConfig(name, config)
-            }.build()
+            }.setDefaultValue { WidgetPosition.TOP_LEFT }.build()
         )
         category.addEntry(
             entryBuilder.startBooleanToggle(
-                Text.literal("Enable nearby player radar."),
+                Text.literal("Enable nearby player radar"),
                 config.enabled
             ).setSaveConsumer { enabled: Boolean ->
                 config.enabled = enabled
                 Config.saveWidgetConfig(name, config)
-            }.build()
+            }.setDefaultValue { true }.build()
         )
     }
     
@@ -68,7 +68,7 @@ object NearbyWidget : BaseWidget(
         if (client.options.hudHidden || client.world == null || client.player == null) return
         if (!config.enabled || !isModEnabled()) return
 
-        val players = NearbyEngine.getPlayers()
+        val players = NearbyEngine.players
         val playerList = if (players.isEmpty()) {
             listOf("No players nearby")
         } else players.map { it.toString() }

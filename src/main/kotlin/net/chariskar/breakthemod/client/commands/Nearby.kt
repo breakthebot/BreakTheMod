@@ -33,34 +33,30 @@ object Nearby : BaseCommand(
 ) {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
-        scope.launch {
-            val players = NearbyEngine.getPlayers()
+        val players = NearbyEngine.players
 
-            val header = if (players.isEmpty()) {
-                Text.literal("No players nearby").setStyle(
-                    Style.EMPTY.withColor(
-                        TextColor.fromFormatting(Formatting.RED)
-                    )
+        val header = if (players.isEmpty()) {
+            Text.literal("No players nearby").setStyle(
+                Style.EMPTY.withColor(
+                    TextColor.fromFormatting(Formatting.RED)
                 )
-            } else {
-                Text.literal("Players nearby:\n").setStyle(
-                    Style.EMPTY.withColor(
-                        TextColor.fromFormatting(Formatting.YELLOW)
-                    )
-                )
-            }
-
-            val playerText = Text.empty().setStyle(
-                Style.EMPTY.withColor(Formatting.AQUA)
             )
-
-            for (player in players) {
-                playerText.append(player.toString() + "\n")
-            }
-            header.append(playerText)
-
-            sendMessage(header)
+        } else {
+            Text.literal("Players nearby:\n").setStyle(
+                Style.EMPTY.withColor(
+                    TextColor.fromFormatting(Formatting.YELLOW)
+                )
+            )
         }
+        val playerText = Text.empty().setStyle(
+            Style.EMPTY.withColor(Formatting.AQUA)
+        )
+        for (player in players) {
+            playerText.append(player.toString() + "\n")
+        }
+        header.append(playerText)
+
+        sendMessage(header)
         return 0
     }
 }

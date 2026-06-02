@@ -22,13 +22,15 @@ import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.modules.Cache
-import net.chariskar.breakthemod.client.utils.Timestamps
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import org.breakthebot.breakthelibrary.api.TownyAPI
 import org.breakthebot.breakthelibrary.models.getOrNull
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
 
 object LastSeen : BaseCommand(
     "lastSeen",
@@ -44,16 +46,16 @@ object LastSeen : BaseCommand(
                 sendError("Unable to find player $name.")
                 return@launch
             }
-            val timestamps: List<Long> = Timestamps.parseTimestamp(player.timestamps?.lastOnline!!)
+            val timestamps = player.timestamps?.lastOnline!!
 
             val message = if (player.status?.isOnline == true) {
-                Text.literal("${player.name} has been online right now, for ${timestamps[0]} days, ${timestamps[1]} hours and ${timestamps[2]} minutes.").setStyle(
+                Text.literal("${player.name} has been online right now, for ${timestamps.days} days, ${timestamps.hours} hours and ${timestamps.minutes} minutes.").setStyle(
                     Style.EMPTY.withColor(
                         Formatting.AQUA
                     )
                 )
             } else {
-                Text.literal("${player.name} was last online ${timestamps[0]} days, ${timestamps[1]} hours and ${timestamps[2]} minutes.").setStyle(
+                Text.literal("${player.name} was last online ${timestamps.days} days, ${timestamps.hours} hours and ${timestamps.minutes} minutes.").setStyle(
                     Style.EMPTY.withColor(
                         Formatting.RED
                     )

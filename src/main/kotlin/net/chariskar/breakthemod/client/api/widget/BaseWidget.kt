@@ -103,7 +103,11 @@ enum class WidgetCategories {
     General,
     Mining,
     Fishing,
-    None
+}
+
+fun WidgetCategories.next(): WidgetCategories {
+    val entries = WidgetCategories.entries
+    return entries[(ordinal + 1) % entries.size]
 }
 
 data class Coords(
@@ -153,7 +157,7 @@ abstract class BaseWidget(
             ).setSaveConsumer { position: WidgetPosition ->
                 config.position = position
                 Config.saveWidgetConfig(name, config)
-            }.build()
+            }.setDefaultValue { config.position }.build()
         )
     }
 

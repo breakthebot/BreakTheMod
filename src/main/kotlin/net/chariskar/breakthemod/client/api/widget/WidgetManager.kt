@@ -20,13 +20,21 @@ package net.chariskar.breakthemod.client.api.widget
 import me.shedaniel.clothconfig2.api.ConfigCategory
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
 import net.chariskar.breakthemod.Breakthemod
+import net.chariskar.breakthemod.client.api.widget.WidgetManager.widgetMode
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
+import net.minecraft.client.MinecraftClient
+import net.minecraft.client.option.KeyBinding
+import net.minecraft.client.util.InputUtil
+import net.minecraft.text.Text
+import org.lwjgl.glfw.GLFW
 
 /**
  * Widget manager.
  * @property widgetMode The current widget mode.
  * */
 object WidgetManager {
-    var widgetMode = WidgetCategories.None
+    var widgetMode = WidgetCategories.General
         private set
 
     fun changeMode(
@@ -41,6 +49,37 @@ object WidgetManager {
             .forEach { it.config.enabled = true }
 
         widgetMode = category
+    }
+
+    fun registerKeyBind() {
+        val keyBinding = KeyBindingHelper.registerKeyBinding(
+            KeyBinding(
+                "Switch Modes",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_TAB,
+                KeyBinding.Category.MISC
+            )
+        )
+
+        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick { client: MinecraftClient? ->
+            while (keyBinding.wasPressed()) {
+                val handle = client!!.window
+
+                val shiftHeld =
+                    InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_SHIFT)
+                            || InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_RIGHT_SHIFT)
+
+                if (shiftHeld) {
+                    changeMode(
+                        widgetMode.next()
+                    )
+                    client.player?.sendMessage(
+                        Text.literal("Switched to $widgetMode"),
+                        true
+                    )
+                }
+            }
+        })
     }
 
     /**

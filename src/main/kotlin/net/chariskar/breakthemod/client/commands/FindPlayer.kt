@@ -42,6 +42,7 @@ object FindPlayer : BaseCommand(
                 sendError("No visible players at this moment.")
                 return@launch
             }
+
             val playerData = PlayerLocationInfo(name, 0.0, 0.0, false, null, false)
 
             for (player in players) {
