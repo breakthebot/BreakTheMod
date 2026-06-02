@@ -140,6 +140,11 @@ abstract class BaseWidget(
 
     abstract val config: WidgetConfig
 
+    open val margin: Int = 10
+    open val entryHeight: Int = 15
+
+    open val placeholder: String = ""
+
     /**
      * Generate the modmenu entry for the configs position.
      * @param category The category to register the option in.
@@ -170,4 +175,44 @@ abstract class BaseWidget(
      * @param drawContext The draw context to use.
      * */
     abstract fun render(drawContext: DrawContext, textRender: TextRenderer)
+
+
+    /**
+     * Widget render method.
+     *
+     * */
+    open fun renderListWidget(
+        drawContext: DrawContext,
+        textRender: TextRenderer,
+        itemList: List<String>
+    ) {
+        if (!isModEnabled() || !config.enabled || client.options.hudHidden) return
+
+        val width = (itemList.maxOfOrNull { textRender.getWidth(it) } ?: 100) + 2 * margin
+
+        val height = (20 + itemList.size * entryHeight).coerceAtLeast(40)
+
+        val renderCoords = config.position.getPos(margin, height, width).apply { y+=5 }
+
+        for (entry in itemList) {
+            val color = if (entry == placeholder) 0xFFFF6B6B else 0xFFFFFFFF
+
+            drawContext.drawText(textRender, entry, renderCoords.x + margin, renderCoords.y, color.toInt(), false)
+            renderCoords.y += entryHeight
+        }
+    }
+
+    open fun renderTextWidget(
+        drawContext: DrawContext,
+        textRender: TextRenderer,
+        text: String
+    ) {
+        if (!isModEnabled() || !config.enabled || client.options.hudHidden) return
+
+        val renderCoords = config.position.getPos(margin, 40, 100)
+
+        val color = if (text == placeholder)  0xFFFF6B6B else 0xFFFFFFFF
+
+        drawContext.drawText(textRender, text, renderCoords.x + margin, renderCoords.y, color.toInt(), false)
+    }
 }

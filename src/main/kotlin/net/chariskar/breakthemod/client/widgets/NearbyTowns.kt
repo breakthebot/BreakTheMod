@@ -19,7 +19,7 @@ package net.chariskar.breakthemod.client.widgets
 
 import me.shedaniel.clothconfig2.api.ConfigCategory
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
-import net.chariskar.breakthemod.client.api.widget.TextWidget
+import net.chariskar.breakthemod.client.api.widget.BaseWidget
 import net.chariskar.breakthemod.client.api.widget.WidgetCategories
 import net.chariskar.breakthemod.client.api.widget.WidgetConfig
 import net.chariskar.breakthemod.client.api.widget.WidgetPosition
@@ -35,7 +35,7 @@ import kotlin.math.sqrt
 
 val directions = arrayOf("S", "SW", "W", "NW", "N", "NE", "E", "SE")
 
-object NearbyTowns : TextWidget(
+object NearbyTowns : BaseWidget(
     "nearby_towns"
 ) {
 
@@ -79,7 +79,7 @@ object NearbyTowns : TextWidget(
             listOf(placeholder)
         } else towns.map { formatTownEntry(it) }
 
-        renderTextWidget(
+        renderListWidget(
             drawContext,
             textRender,
             townList

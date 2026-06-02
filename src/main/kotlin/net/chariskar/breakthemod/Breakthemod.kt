@@ -24,6 +24,7 @@ import net.chariskar.breakthemod.client.api.widget.WidgetManager
 import net.chariskar.breakthemod.client.commands.*
 import net.chariskar.breakthemod.client.modules.*
 import net.chariskar.breakthemod.client.utils.Config
+import net.chariskar.breakthemod.client.widgets.MiningWidget
 import net.chariskar.breakthemod.client.widgets.NearbyTowns
 import net.chariskar.breakthemod.client.widgets.NearbyWidget
 import net.fabricmc.api.ClientModInitializer
@@ -135,14 +136,16 @@ class Breakthemod : ClientModInitializer {
                 AutoHUD,
                 Cache,
                 NearbyEngine,
-                ChatTracker
+                ChatTracker,
+                ActionTracker
             )
         )
 
         _widgets.addAll(
             listOf(
                 NearbyWidget,
-                NearbyTowns
+                NearbyTowns,
+                MiningWidget
             )
         )
 

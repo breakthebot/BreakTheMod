@@ -19,7 +19,7 @@ package net.chariskar.breakthemod.client.widgets
 
 import me.shedaniel.clothconfig2.api.ConfigCategory
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
-import net.chariskar.breakthemod.client.api.widget.TextWidget
+import net.chariskar.breakthemod.client.api.widget.BaseWidget
 import net.chariskar.breakthemod.client.api.widget.WidgetCategories
 import net.chariskar.breakthemod.client.api.widget.WidgetConfig
 import net.chariskar.breakthemod.client.api.widget.WidgetPosition
@@ -29,7 +29,7 @@ import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.text.Text
 
-object NearbyWidget : TextWidget(
+object NearbyWidget : BaseWidget(
     "nearby_widget"
 ) {
 
@@ -70,7 +70,7 @@ object NearbyWidget : TextWidget(
             listOf(placeholder)
         } else players.map { it.toString() }
 
-        renderTextWidget(
+        renderListWidget(
             drawContext,
             textRender,
             playerList
