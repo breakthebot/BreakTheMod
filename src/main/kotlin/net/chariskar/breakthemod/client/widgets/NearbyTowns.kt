@@ -19,15 +19,12 @@ package net.chariskar.breakthemod.client.widgets
 
 import me.shedaniel.clothconfig2.api.ConfigCategory
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
-import net.chariskar.breakthemod.client.api.widget.BaseWidget
+import net.chariskar.breakthemod.client.api.widget.TextWidget
 import net.chariskar.breakthemod.client.api.widget.WidgetCategories
 import net.chariskar.breakthemod.client.api.widget.WidgetConfig
 import net.chariskar.breakthemod.client.api.widget.WidgetPosition
-import net.chariskar.breakthemod.client.api.widget.getPos
 import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.utils.Config
-import net.chariskar.breakthemod.client.widgets.NearbyWidget.ENTRY_HEIGHT
-import net.chariskar.breakthemod.client.widgets.NearbyWidget.MARGIN
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.entity.player.PlayerEntity
@@ -38,7 +35,7 @@ import kotlin.math.sqrt
 
 val directions = arrayOf("S", "SW", "W", "NW", "N", "NE", "E", "SE")
 
-object NearbyTowns : BaseWidget(
+object NearbyTowns : TextWidget(
     "nearby_towns"
 ) {
 
@@ -47,6 +44,8 @@ object NearbyTowns : BaseWidget(
         WidgetPosition.MIDDLE_LEFT,
         WidgetCategories.General
     )
+
+    override val placeholder: String = "No towns nearby"
 
     override fun getModMenuConfig(category: ConfigCategory, entryBuilder: ConfigEntryBuilder) {
         category.addEntry(
@@ -74,27 +73,17 @@ object NearbyTowns : BaseWidget(
         drawContext: DrawContext,
         textRender: TextRenderer
     ) {
-        if (client.options.hudHidden || client.world == null || client.player == null) return
-        if (!config.enabled || !isModEnabled()) return
-
         val towns = Cache.nearbyTowns
 
         val townList = if (towns.isEmpty()) {
-            listOf("No towns nearby")
+            listOf(placeholder)
         } else towns.map { formatTownEntry(it) }
 
-        val width = (townList.maxOfOrNull { textRender.getWidth(it) } ?: 100) + 2 * MARGIN
-
-        val height = (20 + townList.size * ENTRY_HEIGHT).coerceAtLeast(40)
-
-        val renderCoords = config.position.getPos(MARGIN, height, width).apply { y+=5 }
-
-        for (entry in townList) {
-            val color = if (entry == "No towns nearby") 0xFFFF6B6B else 0xFFFFFFFF
-
-            drawContext.drawText(textRender, entry, renderCoords.x + MARGIN, renderCoords.y, color.toInt(), false)
-            renderCoords.y += ENTRY_HEIGHT
-        }
+        renderTextWidget(
+            drawContext,
+            textRender,
+            townList
+        )
     }
 
     fun formatTownEntry(t: Town): String {
