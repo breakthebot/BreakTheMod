@@ -215,7 +215,9 @@ abstract class BaseWidget(
     ) {
         if (!isModEnabled() || !config.enabled || client.options.hudHidden) return
 
-        val renderCoords = config.position.getPos(margin, 40, 100)
+        val width = textRender.getWidth(text) + margin * 2
+
+        val renderCoords = config.position.getPos(margin, 40, width)
 
         val color = if (text == placeholder)  0xFFFF6B6B else 0xFFFFFFFF
 
