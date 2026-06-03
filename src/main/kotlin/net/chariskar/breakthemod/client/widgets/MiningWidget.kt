@@ -17,6 +17,8 @@
 
 package net.chariskar.breakthemod.client.widgets
 
+import me.shedaniel.clothconfig2.api.ConfigCategory
+import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
 import net.chariskar.breakthemod.client.api.widget.BaseWidget
 import net.chariskar.breakthemod.client.api.widget.WidgetCategories
 import net.chariskar.breakthemod.client.api.widget.WidgetConfig
@@ -25,21 +27,41 @@ import net.chariskar.breakthemod.client.modules.ActionTracker
 import net.chariskar.breakthemod.client.utils.Config
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
+import net.minecraft.text.Text
 
-object MiningWidget : BaseWidget("Mining_Widget"){
+object MiningWidget : BaseWidget("mining_widget") {
     override val placeholder: String = "You have not mined any gold."
 
     override val config: WidgetConfig = Config.getWidgetConfig(name) ?: WidgetConfig(
         false,
         WidgetPosition.MIDDLE_RIGHT,
+        null,
         WidgetCategories.Mining,
     )
+
+    override fun getModMenuConfig(
+        category: ConfigCategory,
+        entryBuilder: ConfigEntryBuilder
+    ) {
+        super.getModMenuConfig(category, entryBuilder)
+        category.addEntry(
+            entryBuilder.startStrField(
+                Text.literal("Mining widget text."),
+                config.text ?: "You have mined GOLD gold"
+            ).setSaveConsumer { str: String ->
+                config.text = str
+                Config.saveWidgetConfig(name, config)
+            }.setDefaultValue { "You have mined GOLD gold." }.build()
+        )
+    }
 
     override fun render(
         drawContext: DrawContext,
         textRender: TextRenderer
     ) {
-        val text = if (ActionTracker.goldMined == 0) placeholder else "You have mined ${ActionTracker.goldMined} gold."
+        val text = if (ActionTracker.goldMined == 0) {
+            placeholder
+        } else config.text?.replace("GOLD", ActionTracker.goldMined.toString()) ?: "You have mined ${ActionTracker.goldMined} gold."
 
         renderTextWidget(
             drawContext,

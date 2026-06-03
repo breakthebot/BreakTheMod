@@ -11,18 +11,31 @@ nearby.
 
 ---
 
-## **Features**
+# ***Features***
 
-- WhereIs: It tells you where a player is based on the map api.
-- Nearby: It tells you where players are in the rendered chunks, if they would be visible on the map ofcourse
-- Locate: It tells you where a town or nation is
-- GoTo: Tells you in which town to spawn in so you are the closest to the town you want to go to
-- onlineStaff: It tells you all online staff
-- townless: It gives you all online townless users
-- coords: It gives you information about coordinates
-- discordLinked: It tells you if a user has linked their discord account to their emc account and if yes gives you the
-  link to their discord account
-- Player Radar: shows players nearby, completely legal based on /nearby
+### Commands:
+  * Calculate: Helps with the conversions of blocks & stacks.
+  * DiscordId: Tells you the discord username of a player if they have linked their account
+  * FindPlayer: Show where a player is based on the map api.
+  * Goto: Shows you the nearest spawnable town of the town you selected.
+  * Help: Displays a help message.
+  * LastSeen: Displays the last time a user was online
+  * Locate: Gives you the coordinates of a town/nation
+  * Nearby: Shows all the nearby players (legal).
+  * OnlineStaff: Shows online staff.
+  * Townless: Shows all the online townless players.
+
+### Widgets:
+  * NearbyPlayers: A widget version of the nearby command.
+  * NearbyTowns: Displays the 3 closest towns  in a 500 block range.
+  * MiningWidget: Displays how much gold you have mined in this trip.
+
+### Features: 
+  * AutoHUD: Enables the hud of choice of the user.
+  * Player Affiliations: Displays the users town and nation under their name.
+  * Channel Preview: Displays the current channel the user is in, in the chat bar.
+  * Experience Text: Displays the amount of experience next to the users level.
+  * ShopTracker: Tracks which of your shops have run out and sends you a message when you are back.
 
 ---
 
@@ -70,6 +83,7 @@ nearby.
 ![DiscordLinked Command](screenshots/discordLinked.png)
 *Tells if a user’s Discord account is linked, with a link if available.*
 
+### ***calculate***
 ![Calculate Command](./screenshots/calculate.png)
 *Helps with the conversions of stacks & blocks.*
 
@@ -100,7 +114,7 @@ nearby.
 ---
 
 ### **How to build**
-1. Copy the repo by doing `git clone https://github.com/breakthebot/BreakTheBot.git`
+1. Copy the repo by doing `git clone https://github.com/breakthebot/BreakTheMod.git`
 2. Do `gradle build -Prelease`
 3. And you're done, select the breakthemod-ver.jar.
 ---
@@ -112,7 +126,7 @@ nearby.
 ---
 
 ## **Contributing**
-
+* If you plan to contribute please read TODO.md.
 > Contributions are welcome! Please follow these steps:
 > 1. Fork the repository.
 > 2. Make your changes in a feature branch.

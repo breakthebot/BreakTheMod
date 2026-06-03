@@ -45,6 +45,8 @@ class ModMenuIntegration : ModMenuApi {
                 builder.getOrCreateCategory(Text.literal("Developer Settings"))
             } else null
 
+            val widgetConfig = builder.getOrCreateCategory(Text.literal("Widget Configuration"))
+
             general.addEntry(
                 entryBuilder.startBooleanToggle(
                     Text.literal("Enable BreakTheMod on other servers"),
@@ -90,7 +92,7 @@ class ModMenuIntegration : ModMenuApi {
             )
 
             WidgetManager.registerWidgetIntegration(
-                general,
+                widgetConfig,
                 entryBuilder
             )
 

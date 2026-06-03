@@ -38,6 +38,7 @@ object NearbyWidget : BaseWidget(
     override val config = Config.getWidgetConfig(name) ?: WidgetConfig(
         true,
         WidgetPosition.TOP_LEFT,
+        null,
         WidgetCategories.General,
     )
 

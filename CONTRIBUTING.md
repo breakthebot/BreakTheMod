@@ -1,4 +1,4 @@
-# **Contributing to BreakTheMod**
+   # **Contributing to BreakTheMod**
 
 Thank you for your interest in contributing to *BreakTheMod*! Contributions help make this mod better for everyone. This
 guide outlines the steps and best practices for contributing.

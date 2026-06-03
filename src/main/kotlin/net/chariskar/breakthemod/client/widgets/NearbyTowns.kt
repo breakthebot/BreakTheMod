@@ -42,7 +42,8 @@ object NearbyTowns : BaseWidget(
     override val config: WidgetConfig = Config.getWidgetConfig(name) ?: WidgetConfig(
         true,
         WidgetPosition.MIDDLE_LEFT,
-        WidgetCategories.General
+        null,
+        WidgetCategories.General,
     )
 
     override val placeholder: String = "No towns nearby"

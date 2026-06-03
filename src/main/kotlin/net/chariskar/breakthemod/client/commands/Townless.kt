@@ -33,7 +33,7 @@ import org.breakthebot.breakthelibrary.models.getOrNull
 
 object Townless : BaseCommand(
     "townless",
-    "Shows all of the online townless players"
+    "Shows all the online townless players"
 ) {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {

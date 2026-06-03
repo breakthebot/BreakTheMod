@@ -123,7 +123,7 @@ object ChatTracker : BaseModule(
         }
     }
 
-    private fun parseCurrentChatChannel(message: String?): ChatChannel {
+    private fun parseCurrentChatChannel(message: String): ChatChannel {
         val pattern = Pattern.compile("(\\w+) \\(write\\)")
         val matcher = pattern.matcher(message)
 

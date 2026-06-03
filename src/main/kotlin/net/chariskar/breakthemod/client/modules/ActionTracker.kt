@@ -34,7 +34,6 @@ object ActionTracker : BaseModule(
     true
 ){
     var goldMined = 0
-        private set
 
     // var fishFished = 0
        // private set

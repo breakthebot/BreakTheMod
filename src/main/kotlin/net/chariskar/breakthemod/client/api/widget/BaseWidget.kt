@@ -125,6 +125,7 @@ data class Coords(
 data class WidgetConfig (
     var enabled: Boolean,
     var position: WidgetPosition,
+    var text: String? = null,
     val category: WidgetCategories,
 )
 
@@ -168,7 +169,9 @@ abstract class BaseWidget(
 
     /** Registers the element after VanillaHudElements.CHAT.*/
     open fun register() {
-        HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, Identifier.of("breakthemod", name)) { context, _ -> render(context, client.textRenderer) }
+        HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, Identifier.of("breakthemod", name)) {
+            context, _ -> render(context, client.textRenderer)
+        }
     }
 
     /** Render entry point.
@@ -176,10 +179,9 @@ abstract class BaseWidget(
      * */
     abstract fun render(drawContext: DrawContext, textRender: TextRenderer)
 
-
     /**
-     * Widget render method.
-     *
+     * Renders a list of strings.
+     * @param itemList The list of items to display.
      * */
     open fun renderListWidget(
         drawContext: DrawContext,
@@ -202,6 +204,10 @@ abstract class BaseWidget(
         }
     }
 
+    /**
+     * Renders a string widget.
+     * @param text The text to render.
+     * */
     open fun renderTextWidget(
         drawContext: DrawContext,
         textRender: TextRenderer,

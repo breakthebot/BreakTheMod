@@ -21,6 +21,7 @@ import me.shedaniel.clothconfig2.api.ConfigCategory
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
 import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.widget.WidgetManager.widgetMode
+import net.chariskar.breakthemod.client.modules.ActionTracker
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.minecraft.client.MinecraftClient

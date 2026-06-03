@@ -29,7 +29,7 @@ import java.util.concurrent.CopyOnWriteArraySet
 
 /**
  * Module managing the nearby engine.
- * @property playerInfoList A MutableSet with all the most recent information about players.
+ * @property players A HashSet of all the players.
  * @property DISTANCE_THRESHOLD A constant threshold of the distance that the player should be within to be displayed.
  */
 object NearbyEngine : BaseModule(
