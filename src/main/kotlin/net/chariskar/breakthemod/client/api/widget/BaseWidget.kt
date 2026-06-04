@@ -40,22 +40,25 @@ enum class WidgetPosition {
     MIDDLE_LEFT,
     MIDDLE_RIGHT
 }
+private val client = MinecraftClient.getInstance()
 
 /**
- * Return a [Coords] object with the coords that match each position.
+ * Calculate the position of the widget.
  *
  * @param height The height of the widget.
  * @param width The width of the widget.
  * @param margin The margin that should be kept from the widget to the screen.
+ * @param screenWidth The scaled width of the screen.
+ * @param screenHeight The scaled height of the screen.
+ * @return A [Coords] object that the widget should be drawn to.
  */
 fun WidgetPosition.getPos(
     margin: Int,
     height: Int,
-    width: Int
+    width: Int,
+    screenWidth: Int = client.window.scaledWidth,
+    screenHeight: Int = client.window.scaledHeight
 ): Coords {
-    val client = MinecraftClient.getInstance()
-    val screenWidth = client.window.scaledWidth
-    val screenHeight = client.window.scaledHeight
     return when (this) {
         WidgetPosition.TOP_LEFT -> {
             Coords(margin, margin)
@@ -110,6 +113,11 @@ fun WidgetCategories.next(): WidgetCategories {
     return entries[(ordinal + 1) % entries.size]
 }
 
+/**
+ * Represents the coordinates of a widget on the screen.
+ * @param x The x coordinate of the widget.
+ * @param y The y coordinate of the widget.
+ * */
 data class Coords(
     var x: Int,
     var y: Int
@@ -120,19 +128,28 @@ data class Coords(
  * @property enabled The status of the widget.
  * @property position The position of the widget.
  * @property category The category of the widget.
- *  */
+ * @property text The text to draw.
+ * @property placeHolderText The placeholder text.
+ * @property textColor The color of the text to draw.
+ * @property placeHolderColor The color of the placeholder.
+ * */
 @Serializable
 data class WidgetConfig (
     var enabled: Boolean,
     var position: WidgetPosition,
-    var text: String? = null,
     val category: WidgetCategories,
+    var text: String,
+    var placeHolderText: String,
+    var textColor: String = "0xFFFFFFFF",
+    var placeHolderColor: String = "0xFFFF6B6B"
 )
 
 /**
  * Represents one of the renderable widgets in breakthemod.
  * @param name The name of the widget, must be underscored.
  * @property config The configuration of the widget, set by the widget.
+ * @property margin The margin of the widget.
+ * @property entryHeight The height of each entry on list widgets.
  * */
 abstract class BaseWidget(
     val name: String,
@@ -144,10 +161,8 @@ abstract class BaseWidget(
     open val margin: Int = 10
     open val entryHeight: Int = 15
 
-    open val placeholder: String = ""
-
     /**
-     * Generate the modmenu entry for the configs position.
+     * Generate the ModMenu entry for the configs position.
      * @param category The category to register the option in.
      * @param entryBuilder The entry builder.
      * */
@@ -176,12 +191,12 @@ abstract class BaseWidget(
 
     /** Render entry point.
      * @param drawContext The draw context to use.
+     * @param textRender The textRender to use.
      * */
     abstract fun render(drawContext: DrawContext, textRender: TextRenderer)
 
     /**
-     * Renders a list of strings.
-     * @param itemList The list of items to display.
+     *  @param itemList The list of items to display.
      * */
     open fun renderListWidget(
         drawContext: DrawContext,
@@ -197,9 +212,10 @@ abstract class BaseWidget(
         val renderCoords = config.position.getPos(margin, height, width).apply { y+=5 }
 
         for (entry in itemList) {
-            val color = if (entry == placeholder) 0xFFFF6B6B else 0xFFFFFFFF
+            val color = if (entry == config.placeHolderText) config.placeHolderColor.hexToInt() else config.textColor.hexToInt()
 
-            drawContext.drawText(textRender, entry, renderCoords.x + margin, renderCoords.y, color.toInt(), false)
+            drawContext.drawText(textRender, entry, renderCoords.x + margin, renderCoords.y, color, false)
+
             renderCoords.y += entryHeight
         }
     }
@@ -219,8 +235,8 @@ abstract class BaseWidget(
 
         val renderCoords = config.position.getPos(margin, 40, width)
 
-        val color = if (text == placeholder)  0xFFFF6B6B else 0xFFFFFFFF
+        val color = if (text == config.placeHolderText) config.placeHolderColor.hexToInt() else config.textColor.hexToInt()
 
-        drawContext.drawText(textRender, text, renderCoords.x + margin, renderCoords.y, color.toInt(), false)
+        drawContext.drawText(textRender, text, renderCoords.x + margin, renderCoords.y, color, false)
     }
 }

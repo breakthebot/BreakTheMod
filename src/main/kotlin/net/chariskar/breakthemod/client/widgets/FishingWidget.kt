@@ -29,14 +29,15 @@ import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.text.Text
 
-object MiningWidget : BaseWidget("mining_widget") {
-
+object FishingWidget : BaseWidget(
+    "fishing_widget"
+){
     override val config: WidgetConfig = Config.getWidgetConfig(name) ?: WidgetConfig(
         false,
         WidgetPosition.MIDDLE_RIGHT,
-        WidgetCategories.Mining,
-        "You have mined GOLD gold",
-        placeHolderText = "You have not mined any gold.",
+        WidgetCategories.Fishing,
+        "You have fished FISHED items",
+        placeHolderText = "You have not fished anything.",
     )
 
     override fun getModMenuConfig(
@@ -46,12 +47,12 @@ object MiningWidget : BaseWidget("mining_widget") {
         super.getModMenuConfig(category, entryBuilder)
         category.addEntry(
             entryBuilder.startStrField(
-                Text.literal("Mining widget text."),
-                config.text ?: "You have mined GOLD gold"
+                Text.literal("Fishing widget text."),
+                config.text ?: "You have fished FISHED items."
             ).setSaveConsumer { str: String ->
                 config.text = str
                 Config.saveWidgetConfig(name, config)
-            }.setDefaultValue { "You have mined GOLD gold." }.build()
+            }.setDefaultValue { "You have fished FISHED items." }.build()
         )
     }
 
@@ -59,9 +60,9 @@ object MiningWidget : BaseWidget("mining_widget") {
         drawContext: DrawContext,
         textRender: TextRenderer
     ) {
-        val text = if (ActionTracker.goldMined == 0) {
+        val text = if (ActionTracker.fishFished == 0) {
             config.placeHolderText
-        } else config.text.replace("GOLD", ActionTracker.goldMined.toString())
+        } else config.text.replace("FISHED", ActionTracker.fishFished.toString())
 
         renderTextWidget(
             drawContext,

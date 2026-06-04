@@ -29,30 +29,20 @@ import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.text.Text
 
-object NearbyWidget : BaseWidget(
-    "nearby_widget"
+object NearbyPlayers : BaseWidget(
+    "nearby_players"
 ) {
-
-    override val placeholder: String = "No players nearby."
 
     override val config = Config.getWidgetConfig(name) ?: WidgetConfig(
         true,
         WidgetPosition.TOP_LEFT,
-        null,
         WidgetCategories.General,
+        "",
+        "There are no players nearby"
     )
 
     override fun getModMenuConfig(category: ConfigCategory, entryBuilder: ConfigEntryBuilder) {
-        category.addEntry(
-            entryBuilder.startEnumSelector(
-                Text.literal("$name Position"),
-                WidgetPosition::class.java,
-                config.position
-            ).setSaveConsumer { position: WidgetPosition ->
-                config.position = position
-                Config.saveWidgetConfig(name, config)
-            }.setDefaultValue { WidgetPosition.TOP_LEFT }.build()
-        )
+        super.getModMenuConfig(category, entryBuilder)
         category.addEntry(
             entryBuilder.startBooleanToggle(
                 Text.literal("Enable nearby player radar"),
@@ -68,7 +58,7 @@ object NearbyWidget : BaseWidget(
         val players = NearbyEngine.players
 
         val playerList = if (players.isEmpty()) {
-            listOf(placeholder)
+            listOf(config.placeHolderText)
         } else players.map { it.toString() }
 
         renderListWidget(

@@ -19,7 +19,7 @@ package net.chariskar.breakthemod.client.modules
 
 import net.chariskar.breakthemod.client.models.PlayerInfo
 import net.chariskar.breakthemod.client.api.module.BaseModule
-import net.chariskar.breakthemod.client.widgets.NearbyWidget
+import net.chariskar.breakthemod.client.widgets.NearbyPlayers
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.client.MinecraftClient
 import net.minecraft.entity.player.PlayerEntity
@@ -29,14 +29,13 @@ import java.util.concurrent.CopyOnWriteArraySet
 
 /**
  * Module managing the nearby engine.
- * @property players A HashSet of all the players.
+ * @property players A HashSet of all the players visible.
  * @property DISTANCE_THRESHOLD A constant threshold of the distance that the player should be within to be displayed.
  */
 object NearbyEngine : BaseModule(
     "Nearby Engine",
-    "Checks which of the nearby players would show up on the earthmc map."
+    "Checks which of the nearby players would show up on the EarthMc map."
 ) {
-
     const val DISTANCE_THRESHOLD: Double = 200.0
 
     private val _players: MutableSet<PlayerInfo> = CopyOnWriteArraySet()
@@ -78,7 +77,7 @@ object NearbyEngine : BaseModule(
 
     override fun enable() {
         ClientTickEvents.END_CLIENT_TICK.register { client ->
-            if (!NearbyWidget.config.enabled) return@register
+            if (!NearbyPlayers.config.enabled) return@register
 
             val player = client.player ?: return@register
             val world = client.world ?: return@register

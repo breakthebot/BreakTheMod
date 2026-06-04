@@ -42,23 +42,14 @@ object NearbyTowns : BaseWidget(
     override val config: WidgetConfig = Config.getWidgetConfig(name) ?: WidgetConfig(
         true,
         WidgetPosition.MIDDLE_LEFT,
-        null,
         WidgetCategories.General,
+        "",
+        "There are no towns nearby"
     )
 
-    override val placeholder: String = "No towns nearby"
 
     override fun getModMenuConfig(category: ConfigCategory, entryBuilder: ConfigEntryBuilder) {
-        category.addEntry(
-            entryBuilder.startEnumSelector(
-                Text.literal("$name Position"),
-                WidgetPosition::class.java,
-                config.position
-            ).setSaveConsumer { position: WidgetPosition ->
-                config.position = position
-                Config.saveWidgetConfig(name, NearbyWidget.config)
-            }.setDefaultValue { WidgetPosition.MIDDLE_LEFT }.build()
-        )
+        super.getModMenuConfig(category, entryBuilder)
         category.addEntry(
             entryBuilder.startBooleanToggle(
                 Text.literal("Enable nearby towns radar"),
@@ -77,7 +68,7 @@ object NearbyTowns : BaseWidget(
         val towns = Cache.nearbyTowns
 
         val townList = if (towns.isEmpty()) {
-            listOf(placeholder)
+            listOf(config.placeHolderText)
         } else towns.map { formatTownEntry(it) }
 
         renderListWidget(

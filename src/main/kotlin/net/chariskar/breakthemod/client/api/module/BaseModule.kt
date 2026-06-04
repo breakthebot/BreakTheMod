@@ -17,9 +17,7 @@
 
 package net.chariskar.breakthemod.client.api.module
 
-import net.chariskar.breakthemod.client.api.providers.LoggingProvider
-import net.chariskar.breakthemod.client.api.providers.MessageProvider
-import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider
+import net.chariskar.breakthemod.client.api.providers.*
 import net.minecraft.client.MinecraftClient
 
 /**

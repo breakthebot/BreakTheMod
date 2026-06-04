@@ -6,3 +6,4 @@
 * Implement some way to track items fished.
 * Make the text customizable.
 * Make the notifications only show up once.
+* Implement the further customization of widgets.

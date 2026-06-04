@@ -34,11 +34,12 @@ object ActionTracker : BaseModule(
     true
 ){
     var goldMined = 0
+        private set
 
-    // var fishFished = 0
-       // private set
+    var fishFished = 0
 
     override fun enable() {
+        if (!isModEnabled()) return
         ClientPlayerBlockBreakEvents.AFTER.register(
             ClientPlayerBlockBreakEvents.After { _: ClientWorld?, _: ClientPlayerEntity?, _: BlockPos?, state: BlockState? ->
             if (state!!.isOf(Blocks.GOLD_BLOCK) && WidgetManager.widgetMode == WidgetCategories.Mining) {

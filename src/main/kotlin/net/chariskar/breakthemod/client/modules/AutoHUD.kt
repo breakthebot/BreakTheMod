@@ -43,6 +43,7 @@ object AutoHUD : BaseModule(
             Scheduler.schedule( {
                 try {
                     if (!isEarthMc()) { return@schedule }
+                    replaceApiUrl()
 
                     val hud = Config.features.hudType
 

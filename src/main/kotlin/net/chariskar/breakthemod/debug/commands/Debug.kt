@@ -22,9 +22,8 @@ import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.modules.NearbyEngine
-import net.chariskar.breakthemod.client.widgets.NearbyWidget
+import net.chariskar.breakthemod.client.widgets.NearbyPlayers
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.client.MinecraftClient
 import net.minecraft.text.Text
 
 object Debug : BaseCommand(
@@ -37,13 +36,10 @@ object Debug : BaseCommand(
             Text.literal("Version: ${Breakthemod.version}")
         )
         sendMessage(
-            Text.literal("players" + MinecraftClient.getInstance().world?.players)
+            Text.literal("Nearby engine state: Running(${NearbyPlayers.config.enabled}), Players(${NearbyEngine.players})")
         )
-        sendMessage(
-            Text.literal("Nearby engine state: Running(${NearbyWidget.config.enabled}), Players(${NearbyEngine.players})")
-        )
-        sendMessage("Loaded commands: ${Breakthemod.commands.size}.")
-        sendMessage("Load modules: ${Breakthemod.modules.size}.")
+        sendMessage("Loaded commands: ${Breakthemod.commands.map { it.name }}.")
+        sendMessage("Loaded modules: ${Breakthemod.modules.map { it.name }}.")
         sendMessage(
             Text.literal("Server status: isEmc(${isEarthMc()}), enabled(${isModEnabled()})")
         )
