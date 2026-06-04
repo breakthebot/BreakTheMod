@@ -21,8 +21,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 import kotlinx.serialization.json.Json
-import net.chariskar.breakthemod.client.api.widget.WidgetConfig
 import net.chariskar.breakthemod.client.models.ConfigData
+import net.chariskar.breakthemod.client.models.WidgetConfig
 import org.breakthebot.breakthelibrary.utils.ConfigHandler
 import org.breakthebot.breakthelibrary.utils.Config as LConfig
 
@@ -99,7 +99,7 @@ object Config {
      * */
     fun getWidgetConfig(
         name: String
-    ): WidgetConfig? = widgets[name]
+    ):  WidgetConfig? = widgets[name]
 
     /**
      * Small function to have the proper URL.

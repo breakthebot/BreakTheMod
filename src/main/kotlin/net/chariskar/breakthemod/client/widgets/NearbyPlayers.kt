@@ -21,8 +21,11 @@ import me.shedaniel.clothconfig2.api.ConfigCategory
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
 import net.chariskar.breakthemod.client.api.widget.BaseWidget
 import net.chariskar.breakthemod.client.api.widget.WidgetCategories
-import net.chariskar.breakthemod.client.api.widget.WidgetConfig
 import net.chariskar.breakthemod.client.api.widget.WidgetPosition
+import net.chariskar.breakthemod.client.models.WidgetConfig
+import net.chariskar.breakthemod.client.models.getPositionConfig
+import net.chariskar.breakthemod.client.models.getTextColorConfig
+import net.chariskar.breakthemod.client.models.getTextConfig
 import net.chariskar.breakthemod.client.modules.NearbyEngine
 import net.chariskar.breakthemod.client.utils.Config
 import net.minecraft.client.font.TextRenderer
@@ -33,16 +36,15 @@ object NearbyPlayers : BaseWidget(
     "nearby_players"
 ) {
 
-    override val config = Config.getWidgetConfig(name) ?: WidgetConfig(
-        true,
-        WidgetPosition.TOP_LEFT,
-        WidgetCategories.General,
-        "",
-        "There are no players nearby"
+    override val config: WidgetConfig = Config.getWidgetConfig(name) ?: WidgetConfig(
+        name = "NearbyPlayers",
+        enabled = true,
+        position = WidgetPosition.TOP_LEFT,
+        category = WidgetCategories.General,
+        placeHolderText = "There are no players nearby",
     )
 
     override fun getModMenuConfig(category: ConfigCategory, entryBuilder: ConfigEntryBuilder) {
-        super.getModMenuConfig(category, entryBuilder)
         category.addEntry(
             entryBuilder.startBooleanToggle(
                 Text.literal("Enable nearby player radar"),
@@ -52,6 +54,9 @@ object NearbyPlayers : BaseWidget(
                 Config.saveWidgetConfig(name, config)
             }.setDefaultValue { true }.build()
         )
+        config.getPositionConfig(category, entryBuilder)
+        config.getTextConfig(category, entryBuilder, "", "There are no players nearby.")
+        config.getTextColorConfig(category, entryBuilder)
     }
     
     override fun render(drawContext: DrawContext, textRender: TextRenderer) {

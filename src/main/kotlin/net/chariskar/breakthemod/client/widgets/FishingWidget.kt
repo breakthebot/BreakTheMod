@@ -21,39 +21,36 @@ import me.shedaniel.clothconfig2.api.ConfigCategory
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
 import net.chariskar.breakthemod.client.api.widget.BaseWidget
 import net.chariskar.breakthemod.client.api.widget.WidgetCategories
-import net.chariskar.breakthemod.client.api.widget.WidgetConfig
 import net.chariskar.breakthemod.client.api.widget.WidgetPosition
+import net.chariskar.breakthemod.client.models.WidgetConfig
+import net.chariskar.breakthemod.client.models.getPositionConfig
+import net.chariskar.breakthemod.client.models.getTextColorConfig
+import net.chariskar.breakthemod.client.models.getTextConfig
 import net.chariskar.breakthemod.client.modules.ActionTracker
 import net.chariskar.breakthemod.client.utils.Config
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
-import net.minecraft.text.Text
 
 object FishingWidget : BaseWidget(
     "fishing_widget"
 ){
     override val config: WidgetConfig = Config.getWidgetConfig(name) ?: WidgetConfig(
-        false,
-        WidgetPosition.MIDDLE_RIGHT,
-        WidgetCategories.Fishing,
-        "You have fished FISHED items",
-        placeHolderText = "You have not fished anything.",
+        name = "FishingWidget",
+        enabled = true,
+        position = WidgetPosition.MIDDLE_RIGHT,
+        category = WidgetCategories.Fishing,
+        placeHolderText = "You have not fished any items.",
+        text = "You have FISHED items.",
+        textPlaceholder = "FISHED",
     )
 
     override fun getModMenuConfig(
         category: ConfigCategory,
         entryBuilder: ConfigEntryBuilder
     ) {
-        super.getModMenuConfig(category, entryBuilder)
-        category.addEntry(
-            entryBuilder.startStrField(
-                Text.literal("Fishing widget text."),
-                config.text ?: "You have fished FISHED items."
-            ).setSaveConsumer { str: String ->
-                config.text = str
-                Config.saveWidgetConfig(name, config)
-            }.setDefaultValue { "You have fished FISHED items." }.build()
-        )
+        config.getPositionConfig(category, entryBuilder)
+        config.getTextConfig(category, entryBuilder, "You have FISHED items.", "You have not fished any items.")
+        config.getTextColorConfig(category, entryBuilder)
     }
 
     override fun render(
@@ -62,7 +59,7 @@ object FishingWidget : BaseWidget(
     ) {
         val text = if (ActionTracker.fishFished == 0) {
             config.placeHolderText
-        } else config.text.replace("FISHED", ActionTracker.fishFished.toString())
+        } else config.text.replace(config.textPlaceholder, ActionTracker.fishFished.toString())
 
         renderTextWidget(
             drawContext,

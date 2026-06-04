@@ -17,18 +17,16 @@
 
 package net.chariskar.breakthemod.client.api.widget
 
-import kotlinx.serialization.Serializable
 import me.shedaniel.clothconfig2.api.ConfigCategory
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
 import net.chariskar.breakthemod.client.api.providers.LoggingProvider
 import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider
-import net.chariskar.breakthemod.client.utils.Config
+import net.chariskar.breakthemod.client.models.WidgetConfig
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
-import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 
 enum class WidgetPosition {
@@ -124,27 +122,6 @@ data class Coords(
 )
 
 /**
- * Data class for representing the configuration of a widget.
- * @property enabled The status of the widget.
- * @property position The position of the widget.
- * @property category The category of the widget.
- * @property text The text to draw.
- * @property placeHolderText The placeholder text.
- * @property textColor The color of the text to draw.
- * @property placeHolderColor The color of the placeholder.
- * */
-@Serializable
-data class WidgetConfig (
-    var enabled: Boolean,
-    var position: WidgetPosition,
-    val category: WidgetCategories,
-    var text: String,
-    var placeHolderText: String,
-    var textColor: String = "0xFFFFFFFF",
-    var placeHolderColor: String = "0xFFFF6B6B"
-)
-
-/**
  * Represents one of the renderable widgets in breakthemod.
  * @param name The name of the widget, must be underscored.
  * @property config The configuration of the widget, set by the widget.
@@ -166,21 +143,10 @@ abstract class BaseWidget(
      * @param category The category to register the option in.
      * @param entryBuilder The entry builder.
      * */
-    open fun getModMenuConfig(
+    abstract fun getModMenuConfig(
         category: ConfigCategory,
         entryBuilder: ConfigEntryBuilder
-    ) {
-        category.addEntry(
-            entryBuilder.startEnumSelector(
-                Text.literal("$name Position"),
-                WidgetPosition::class.java,
-                config.position
-            ).setSaveConsumer { position: WidgetPosition ->
-                config.position = position
-                Config.saveWidgetConfig(name, config)
-            }.setDefaultValue { config.position }.build()
-        )
-    }
+    )
 
     /** Registers the element after VanillaHudElements.CHAT.*/
     open fun register() {

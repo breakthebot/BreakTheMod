@@ -159,12 +159,14 @@ class Breakthemod : ClientModInitializer {
 
         debug = loadDebug()
 
-        if (version.contains("BETA")) {
+        if (version.contains("BETA") && !Config.config.betaNotified) {
             notifications.add("You are running a beta version of breakthemod, unexpected behaviour and glitches may occur.")
+            Config.config.betaNotified = true
         }
 
-        if (version.contains("ALPHA")) {
+        if (version.contains("ALPHA") && !Config.config.alphaNotified) {
             notifications.add("You are running a alpha version of breakthemod, be careful.")
+            Config.config.alphaNotified = true
         }
 
     }

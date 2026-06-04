@@ -21,8 +21,11 @@ import me.shedaniel.clothconfig2.api.ConfigCategory
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
 import net.chariskar.breakthemod.client.api.widget.BaseWidget
 import net.chariskar.breakthemod.client.api.widget.WidgetCategories
-import net.chariskar.breakthemod.client.api.widget.WidgetConfig
 import net.chariskar.breakthemod.client.api.widget.WidgetPosition
+import net.chariskar.breakthemod.client.models.WidgetConfig
+import net.chariskar.breakthemod.client.models.getPositionConfig
+import net.chariskar.breakthemod.client.models.getTextColorConfig
+import net.chariskar.breakthemod.client.models.getTextConfig
 import net.chariskar.breakthemod.client.modules.ActionTracker
 import net.chariskar.breakthemod.client.utils.Config
 import net.minecraft.client.font.TextRenderer
@@ -32,27 +35,22 @@ import net.minecraft.text.Text
 object MiningWidget : BaseWidget("mining_widget") {
 
     override val config: WidgetConfig = Config.getWidgetConfig(name) ?: WidgetConfig(
-        false,
-        WidgetPosition.MIDDLE_RIGHT,
-        WidgetCategories.Mining,
-        "You have mined GOLD gold",
+        name = "MiningWidget",
+        enabled = true,
+        position = WidgetPosition.MIDDLE_RIGHT,
+        category = WidgetCategories.Mining,
         placeHolderText = "You have not mined any gold.",
+        text = "You have mined GOLD gold.",
+        textPlaceholder = "GOLD",
     )
 
     override fun getModMenuConfig(
         category: ConfigCategory,
         entryBuilder: ConfigEntryBuilder
     ) {
-        super.getModMenuConfig(category, entryBuilder)
-        category.addEntry(
-            entryBuilder.startStrField(
-                Text.literal("Mining widget text."),
-                config.text ?: "You have mined GOLD gold"
-            ).setSaveConsumer { str: String ->
-                config.text = str
-                Config.saveWidgetConfig(name, config)
-            }.setDefaultValue { "You have mined GOLD gold." }.build()
-        )
+        config.getPositionConfig(category, entryBuilder)
+        config.getTextConfig(category, entryBuilder, "You have mined GOLD gold.", "You have not mined any gold.")
+        config.getTextColorConfig(category, entryBuilder)
     }
 
     override fun render(
@@ -61,7 +59,7 @@ object MiningWidget : BaseWidget("mining_widget") {
     ) {
         val text = if (ActionTracker.goldMined == 0) {
             config.placeHolderText
-        } else config.text.replace("GOLD", ActionTracker.goldMined.toString())
+        } else config.text.replace(config.textPlaceholder, ActionTracker.goldMined.toString())
 
         renderTextWidget(
             drawContext,

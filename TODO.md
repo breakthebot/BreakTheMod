@@ -3,7 +3,8 @@
 * Migrate to mojmap for 26.1.
 * ~~Make the caches in Cache.kt return an immutable copy.~~
 * ~~Make the keybind for changing widget modes.~~
-* Implement some way to track items fished.
+~~* Implement some way to track items fished.~~
 * Make the text customizable.
-* Make the notifications only show up once.
-* Implement the further customization of widgets.
+* ~~Make the notifications only show up once.~~
+* ~~Implement the further customization of widgets.~~
+* Make widget data have a ttl if not in use.
