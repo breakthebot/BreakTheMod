@@ -17,10 +17,10 @@
 
 package net.chariskar.breakthemod.client.widgets
 
-import me.shedaniel.clothconfig2.api.ConfigCategory
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
+import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder
 import net.chariskar.breakthemod.client.api.widget.BaseWidget
-import net.chariskar.breakthemod.client.api.widget.WidgetCategories
+import net.chariskar.breakthemod.client.api.widget.WidgetModes
 import net.chariskar.breakthemod.client.api.widget.WidgetPosition
 import net.chariskar.breakthemod.client.models.WidgetConfig
 import net.chariskar.breakthemod.client.models.getPositionConfig
@@ -36,16 +36,16 @@ object FishingWidget : BaseWidget(
 ){
     override val config: WidgetConfig = Config.getWidgetConfig(name) ?: WidgetConfig(
         name = "FishingWidget",
-        enabled = true,
+        enabled = false,
         position = WidgetPosition.MIDDLE_RIGHT,
-        category = WidgetCategories.Fishing,
+        category = WidgetModes.Fishing,
         placeHolderText = "You have not fished any items.",
         text = "You have FISHED items.",
         textPlaceholder = "FISHED",
     )
 
     override fun getModMenuConfig(
-        category: ConfigCategory,
+        category: SubCategoryBuilder,
         entryBuilder: ConfigEntryBuilder
     ) {
         config.getPositionConfig(category, entryBuilder)

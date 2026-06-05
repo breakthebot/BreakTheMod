@@ -6,8 +6,7 @@
   "client": [
     "ChatPreviewOverlay",
     "ExperienceTextMixin",
-    "PlayerInfoMixin",
-    "FishingEvent"
+    "PlayerInfoMixin"
   ],
   "injectors": {
     "defaultRequire": 1

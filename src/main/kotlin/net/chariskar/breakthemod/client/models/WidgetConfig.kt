@@ -20,7 +20,8 @@ package net.chariskar.breakthemod.client.models
 import kotlinx.serialization.Serializable
 import me.shedaniel.clothconfig2.api.ConfigCategory
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
-import net.chariskar.breakthemod.client.api.widget.WidgetCategories
+import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder
+import net.chariskar.breakthemod.client.api.widget.WidgetModes
 import net.chariskar.breakthemod.client.api.widget.WidgetPosition
 import net.chariskar.breakthemod.client.utils.Config
 import net.minecraft.text.Text
@@ -41,7 +42,7 @@ data class WidgetConfig (
     val name: String,
     var enabled: Boolean,
     var position: WidgetPosition,
-    val category: WidgetCategories,
+    val category: WidgetModes,
     var text: String = "",
     var textPlaceholder: String = "",
     var placeHolderText: String,
@@ -50,10 +51,10 @@ data class WidgetConfig (
 )
 
 fun WidgetConfig.getPositionConfig(
-    category: ConfigCategory,
+    category: SubCategoryBuilder,
     entryBuilder: ConfigEntryBuilder,
 ) {
-    category.addEntry(
+    category.add(
         entryBuilder.startEnumSelector(
             Text.literal("$name Position"),
             WidgetPosition::class.java,
@@ -66,12 +67,12 @@ fun WidgetConfig.getPositionConfig(
 }
 
 fun WidgetConfig.getTextConfig(
-    category: ConfigCategory,
+    category: SubCategoryBuilder,
     entryBuilder: ConfigEntryBuilder,
     defaultText: String,
     defaultPlaceHolderText: String
 ) {
-    category.addEntry(
+    category.add(
         entryBuilder.startStrField(
             Text.literal("$name text"),
             text
@@ -81,7 +82,7 @@ fun WidgetConfig.getTextConfig(
         }.setDefaultValue { defaultText }.build()
     )
 
-    category.addEntry(
+    category.add(
         entryBuilder.startStrField(
             Text.literal("$name placeholder text"),
             textPlaceholder
@@ -92,13 +93,13 @@ fun WidgetConfig.getTextConfig(
 }
 
 fun WidgetConfig.getTextColorConfig(
-    category: ConfigCategory,
+    category: SubCategoryBuilder,
     entryBuilder: ConfigEntryBuilder,
 ) {
-    category.addEntry(
+    category.add(
         entryBuilder.startStrField(
             Text.literal("$name text color"),
-            textColor.toString()
+            textColor.toHexString()
         ).setSaveConsumer { str: String ->
             try {
                 textColor = str.hexToInt()
@@ -108,10 +109,10 @@ fun WidgetConfig.getTextColorConfig(
         }.setDefaultValue { "0xFFFFFFFF" }.build()
     )
 
-    category.addEntry(
+    category.add(
         entryBuilder.startStrField(
             Text.literal("$name placeholder text color"),
-            placeHolderColor.toString()
+            placeHolderColor.toHexString()
         ).setSaveConsumer { str: String ->
             try {
                 placeHolderColor = str.hexToInt()

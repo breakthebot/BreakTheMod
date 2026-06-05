@@ -58,7 +58,7 @@ object AutoHUD : BaseModule(
                     client.networkHandler?.sendChatCommand(command)
                     if (Breakthemod.notifications.isEmpty()) return@schedule
                     sendMessage("Notifications: ")
-                    Breakthemod.notifications.forEach { sendMessage(it) }
+                    Breakthemod.notifications.forEach { sendMessage(it.toString()) }
                 } catch (e: Exception) {
                     // dont do anything.
                 }

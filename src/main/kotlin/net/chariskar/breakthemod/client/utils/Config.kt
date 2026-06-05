@@ -48,6 +48,7 @@ object Config {
     val features by lazy { config.features }
     val libraryConfig by lazy { config.libraryConfig }
     val widgets by lazy { config.widgets }
+    val notifications by lazy  { config.notifications }
 
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
@@ -100,6 +101,13 @@ object Config {
     fun getWidgetConfig(
         name: String
     ):  WidgetConfig? = widgets[name]
+
+    fun saveNotificationDisplayed(
+        name: String
+    ) {
+        notifications[name] = true
+        saveConfig(config)
+    }
 
     /**
      * Small function to have the proper URL.

@@ -17,6 +17,8 @@
 package net.chariskar.breakthemod
 
 import com.mojang.brigadier.CommandDispatcher
+import net.chariskar.breakthemod.client.api.Notification
+import net.chariskar.breakthemod.client.api.NotificationTypes
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.api.module.BaseModule
 import net.chariskar.breakthemod.client.api.widget.BaseWidget
@@ -24,6 +26,7 @@ import net.chariskar.breakthemod.client.api.widget.WidgetManager
 import net.chariskar.breakthemod.client.commands.*
 import net.chariskar.breakthemod.client.modules.*
 import net.chariskar.breakthemod.client.utils.Config
+import net.chariskar.breakthemod.client.widgets.FishingTimeWidget
 import net.chariskar.breakthemod.client.widgets.FishingWidget
 import net.chariskar.breakthemod.client.widgets.MiningWidget
 import net.chariskar.breakthemod.client.widgets.NearbyTowns
@@ -41,7 +44,7 @@ import java.io.File
 class Breakthemod : ClientModInitializer {
 
     /**
-     * All global variables in the mod.
+     * Global mod registry.
      * @property debug Mod debug parameter.
      * @property version The version string.
      * @property logger Centralized mod logger.
@@ -69,7 +72,7 @@ class Breakthemod : ClientModInitializer {
         val widgets: List<BaseWidget>
             get() = _widgets
 
-        val notifications: MutableList<String> = mutableListOf()
+        val notifications: MutableList<Notification> = mutableListOf()
 
         val username: String
             get() = MinecraftClient.getInstance().session.username
@@ -117,6 +120,8 @@ class Breakthemod : ClientModInitializer {
 
         Config.loadConfig()
 
+        WidgetManager.changeMode(Config.config.widgetMode)
+
         _commands.addAll(
             listOf(
                 Nearby,
@@ -147,7 +152,8 @@ class Breakthemod : ClientModInitializer {
                 NearbyPlayers,
                 NearbyTowns,
                 MiningWidget,
-                FishingWidget
+                FishingWidget,
+                FishingTimeWidget
             )
         )
 
@@ -159,15 +165,24 @@ class Breakthemod : ClientModInitializer {
 
         debug = loadDebug()
 
-        if (version.contains("BETA") && !Config.config.betaNotified) {
-            notifications.add("You are running a beta version of breakthemod, unexpected behaviour and glitches may occur.")
-            Config.config.betaNotified = true
+        if (version.contains("ALPHA") && !Config.notifications.contains("Alpha")) {
+            val alphaNotification = Notification(
+                "Alpha",
+                "You are running a alpha version of breakthemod, this is not a finished build, so expect glitches and instability.",
+                NotificationTypes.UsingAlpha
+            )
+            notifications.add(alphaNotification)
         }
 
-        if (version.contains("ALPHA") && !Config.config.alphaNotified) {
-            notifications.add("You are running a alpha version of breakthemod, be careful.")
-            Config.config.alphaNotified = true
+        if (version.contains("BETA") && !Config.notifications.contains("Beta")) {
+            val betaNotification = Notification(
+                "Beta",
+                "You are running a beta version of breakthemod, unexpected behaviour and glitches may occur, please report any issues.",
+                NotificationTypes.UsingBeta
+            )
+            notifications.add(betaNotification)
         }
 
+        notifications.forEach { Config.saveNotificationDisplayed(it.name) }
     }
 }

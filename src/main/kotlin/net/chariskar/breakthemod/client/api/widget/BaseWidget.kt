@@ -17,8 +17,8 @@
 
 package net.chariskar.breakthemod.client.api.widget
 
-import me.shedaniel.clothconfig2.api.ConfigCategory
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
+import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder
 import net.chariskar.breakthemod.client.api.providers.LoggingProvider
 import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider
 import net.chariskar.breakthemod.client.models.WidgetConfig
@@ -100,14 +100,15 @@ fun WidgetPosition.getPos(
     }
 }
 
-enum class WidgetCategories {
+enum class WidgetModes {
     General,
     Mining,
     Fishing,
+    Off
 }
 
-fun WidgetCategories.next(): WidgetCategories {
-    val entries = WidgetCategories.entries
+fun WidgetModes.next(): WidgetModes {
+    val entries = WidgetModes.entries
     return entries[(ordinal + 1) % entries.size]
 }
 
@@ -139,12 +140,19 @@ abstract class BaseWidget(
     open val entryHeight: Int = 15
 
     /**
+     * Checks if the widget should be rendered.
+     * */
+    open fun shouldNotRender(): Boolean {
+        return !isModEnabled() || !config.enabled || client.options.hudHidden
+    }
+
+    /**
      * Generate the ModMenu entry for the configs position.
      * @param category The category to register the option in.
      * @param entryBuilder The entry builder.
      * */
     abstract fun getModMenuConfig(
-        category: ConfigCategory,
+        category: SubCategoryBuilder,
         entryBuilder: ConfigEntryBuilder
     )
 
@@ -169,7 +177,7 @@ abstract class BaseWidget(
         textRender: TextRenderer,
         itemList: List<String>
     ) {
-        if (!isModEnabled() || !config.enabled || client.options.hudHidden) return
+        if (shouldNotRender()) return
 
         val width = (itemList.maxOfOrNull { textRender.getWidth(it) } ?: 100) + 2 * margin
 
@@ -195,7 +203,7 @@ abstract class BaseWidget(
         textRender: TextRenderer,
         text: String
     ) {
-        if (!isModEnabled() || !config.enabled || client.options.hudHidden) return
+        if (shouldNotRender()) return
 
         val width = textRender.getWidth(text) + margin * 2
 

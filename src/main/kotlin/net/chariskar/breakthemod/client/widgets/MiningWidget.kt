@@ -17,10 +17,10 @@
 
 package net.chariskar.breakthemod.client.widgets
 
-import me.shedaniel.clothconfig2.api.ConfigCategory
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
+import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder
 import net.chariskar.breakthemod.client.api.widget.BaseWidget
-import net.chariskar.breakthemod.client.api.widget.WidgetCategories
+import net.chariskar.breakthemod.client.api.widget.WidgetModes
 import net.chariskar.breakthemod.client.api.widget.WidgetPosition
 import net.chariskar.breakthemod.client.models.WidgetConfig
 import net.chariskar.breakthemod.client.models.getPositionConfig
@@ -30,22 +30,21 @@ import net.chariskar.breakthemod.client.modules.ActionTracker
 import net.chariskar.breakthemod.client.utils.Config
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
-import net.minecraft.text.Text
 
 object MiningWidget : BaseWidget("mining_widget") {
 
     override val config: WidgetConfig = Config.getWidgetConfig(name) ?: WidgetConfig(
         name = "MiningWidget",
-        enabled = true,
+        enabled = false,
         position = WidgetPosition.MIDDLE_RIGHT,
-        category = WidgetCategories.Mining,
+        category = WidgetModes.Mining,
         placeHolderText = "You have not mined any gold.",
         text = "You have mined GOLD gold.",
         textPlaceholder = "GOLD",
     )
 
     override fun getModMenuConfig(
-        category: ConfigCategory,
+        category: SubCategoryBuilder,
         entryBuilder: ConfigEntryBuilder
     ) {
         config.getPositionConfig(category, entryBuilder)

@@ -22,6 +22,7 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
 import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.widget.WidgetManager.widgetMode
 import net.chariskar.breakthemod.client.modules.ActionTracker
+import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.minecraft.client.MinecraftClient
@@ -29,20 +30,28 @@ import net.minecraft.client.option.KeyBinding
 import net.minecraft.client.util.InputUtil
 import net.minecraft.text.Text
 import org.lwjgl.glfw.GLFW
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 /**
  * Widget manager.
  * @property widgetMode The current widget mode.
  * */
 object WidgetManager {
-    var widgetMode = WidgetCategories.General
+    var widgetMode = WidgetModes.General
         private set
 
+    @OptIn(ExperimentalTime::class)
     fun changeMode(
-        category: WidgetCategories
+        category: WidgetModes
     ) {
+        if (category == WidgetModes.Off) {
+            Breakthemod.widgets.forEach { it.config.enabled = false }
+            widgetMode = category
+            return
+        }
+
         Breakthemod.widgets
-            .filterNot { it.config.category == WidgetCategories.General }
             .forEach { it.config.enabled = false }
 
         Breakthemod.widgets
@@ -50,6 +59,11 @@ object WidgetManager {
             .forEach { it.config.enabled = true }
 
         widgetMode = category
+        if (category == WidgetModes.Fishing) {
+            ActionTracker.fishingModeActivated = Clock.System.now()
+        }
+        Config.config.widgetMode = widgetMode
+        Config.saveConfig(Config.config)
     }
 
     fun registerKeyBind() {
@@ -90,6 +104,10 @@ object WidgetManager {
         category: ConfigCategory,
         entryBuilder: ConfigEntryBuilder
     ) {
-        Breakthemod.widgets.forEach { it.getModMenuConfig(category, entryBuilder) }
+        Breakthemod.widgets.forEach {
+            val subCategory = entryBuilder.startSubCategory(Text.literal("${it.config.name} configuration"))
+            it.getModMenuConfig(subCategory, entryBuilder)
+            category.addEntry(subCategory.build())
+        }
     }
 }

@@ -19,6 +19,7 @@ package net.chariskar.breakthemod.client.models
 
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import net.chariskar.breakthemod.client.api.widget.WidgetModes
 import net.chariskar.breakthemod.client.utils.Config
 import org.breakthebot.breakthelibrary.utils.Config as LConfig
 
@@ -32,8 +33,8 @@ data class ConfigData(
     var widgets: MutableMap<String, WidgetConfig> = mutableMapOf(),
     @Contextual
     var libraryConfig: LConfig = LConfig(),
-    var betaNotified: Boolean = false,
-    var alphaNotified: Boolean = false
+    var widgetMode: WidgetModes = WidgetModes.General,
+    val notifications: MutableMap<String, Boolean> = mutableMapOf()
 ) {
     override fun toString(): String {
         return Config.json.encodeToString(this)

@@ -17,7 +17,6 @@
 
 package net.chariskar.breakthemod.client.widgets
 
-import me.shedaniel.clothconfig2.api.ConfigCategory
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
 import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder
 import net.chariskar.breakthemod.client.api.widget.BaseWidget
@@ -25,52 +24,42 @@ import net.chariskar.breakthemod.client.api.widget.WidgetModes
 import net.chariskar.breakthemod.client.api.widget.WidgetPosition
 import net.chariskar.breakthemod.client.models.WidgetConfig
 import net.chariskar.breakthemod.client.models.getPositionConfig
-import net.chariskar.breakthemod.client.models.getTextColorConfig
 import net.chariskar.breakthemod.client.models.getTextConfig
-import net.chariskar.breakthemod.client.modules.NearbyEngine
+import net.chariskar.breakthemod.client.modules.ActionTracker
 import net.chariskar.breakthemod.client.utils.Config
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
-import net.minecraft.text.Text
 
-object NearbyPlayers : BaseWidget(
-    "nearby_players"
-) {
-
+object FishingTimeWidget : BaseWidget(
+    "fishing_time_widget"
+){
     override val config: WidgetConfig = Config.getWidgetConfig(name) ?: WidgetConfig(
-        name = "NearbyPlayers",
-        enabled = true,
-        position = WidgetPosition.TOP_LEFT,
-        category = WidgetModes.General,
-        placeHolderText = "There are no players nearby",
+        name = "FishingTime",
+        enabled = false,
+        position = WidgetPosition.TOP_MIDDLE,
+        category = WidgetModes.Fishing,
+        text = "You have been fishing for TIME minutes.",
+        textPlaceholder = "TIME",
+        placeHolderText = "",
     )
 
-    override fun getModMenuConfig(category: SubCategoryBuilder, entryBuilder: ConfigEntryBuilder) {
-        category.add(
-            entryBuilder.startBooleanToggle(
-                Text.literal("Enable nearby player radar"),
-                config.enabled
-            ).setSaveConsumer { enabled: Boolean ->
-                config.enabled = enabled
-                Config.saveWidgetConfig(name, config)
-            }.setDefaultValue { true }.build()
-        )
+    override fun getModMenuConfig(
+        category: SubCategoryBuilder,
+        entryBuilder: ConfigEntryBuilder
+    ) {
         config.getPositionConfig(category, entryBuilder)
-        config.getTextConfig(category, entryBuilder, "", "There are no players nearby.")
-        config.getTextColorConfig(category, entryBuilder)
+        config.getTextConfig(category, entryBuilder, "You have been fishing for TIME minutes.", "")
     }
-    
-    override fun render(drawContext: DrawContext, textRender: TextRenderer) {
-        val players = NearbyEngine.players
 
-        val playerList = if (players.isEmpty()) {
-            listOf(config.placeHolderText)
-        } else players.map { it.toString() }
-
-        renderListWidget(
+    override fun render(
+        drawContext: DrawContext,
+        textRender: TextRenderer
+    ) {
+        renderTextWidget(
             drawContext,
             textRender,
-            playerList
+            text = config.text.replace("TIME", ActionTracker.timeFishing.toString()),
         )
     }
+
 }

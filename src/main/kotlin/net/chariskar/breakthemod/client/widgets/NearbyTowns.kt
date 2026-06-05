@@ -19,8 +19,9 @@ package net.chariskar.breakthemod.client.widgets
 
 import me.shedaniel.clothconfig2.api.ConfigCategory
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
+import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder
 import net.chariskar.breakthemod.client.api.widget.BaseWidget
-import net.chariskar.breakthemod.client.api.widget.WidgetCategories
+import net.chariskar.breakthemod.client.api.widget.WidgetModes
 import net.chariskar.breakthemod.client.api.widget.WidgetPosition
 import net.chariskar.breakthemod.client.models.WidgetConfig
 import net.chariskar.breakthemod.client.models.getPositionConfig
@@ -46,12 +47,12 @@ object NearbyTowns : BaseWidget(
         name = "NearbyTowns",
         enabled = true,
         position = WidgetPosition.MIDDLE_LEFT,
-        category = WidgetCategories.General,
+        category = WidgetModes.General,
         placeHolderText = "There are no towns nearby",
     )
 
-    override fun getModMenuConfig(category: ConfigCategory, entryBuilder: ConfigEntryBuilder) {
-        category.addEntry(
+    override fun getModMenuConfig(category: SubCategoryBuilder, entryBuilder: ConfigEntryBuilder) {
+        category.add(
             entryBuilder.startBooleanToggle(
                 Text.literal("Enable nearby towns radar"),
                 config.enabled
@@ -60,9 +61,9 @@ object NearbyTowns : BaseWidget(
                 Config.saveWidgetConfig(name, config)
             }.setDefaultValue { true }.build()
         )
-        MiningWidget.config.getPositionConfig(category, entryBuilder)
-        MiningWidget.config.getTextConfig(category, entryBuilder, "", "There are no towns nearby.")
-        MiningWidget.config.getTextColorConfig(category, entryBuilder)
+        config.getPositionConfig(category, entryBuilder)
+        config.getTextConfig(category, entryBuilder, "", "There are no towns nearby.")
+        config.getTextColorConfig(category, entryBuilder)
     }
 
     override fun render(

@@ -32,7 +32,7 @@ object GetNotifications : BaseCommand(
             return 1
         }
         Breakthemod.notifications.forEach {
-            sendMessage(it)
+            sendMessage(it.toString())
         }
 
         return 1
