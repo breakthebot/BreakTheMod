@@ -45,8 +45,8 @@ data class WidgetConfig (
     var text: String = "",
     var textPlaceholder: String = "",
     var placeHolderText: String,
-    var textColor: String = "0xFFFFFFFF",
-    var placeHolderColor: String = "0xFFFF6B6B"
+    var textColor: Int = 0xFFFFFFFF.toInt(),
+    var placeHolderColor: Int = 0xFFFF6B6B.toInt()
 )
 
 fun WidgetConfig.getPositionConfig(
@@ -98,10 +98,10 @@ fun WidgetConfig.getTextColorConfig(
     category.addEntry(
         entryBuilder.startStrField(
             Text.literal("$name text color"),
-            textColor
+            textColor.toString()
         ).setSaveConsumer { str: String ->
             try {
-                textColor = str
+                textColor = str.hexToInt()
             } catch (e: Exception) {
                 return@setSaveConsumer
             }
@@ -110,11 +110,11 @@ fun WidgetConfig.getTextColorConfig(
 
     category.addEntry(
         entryBuilder.startStrField(
-            Text.literal("$name placeholder text"),
-            textColor
+            Text.literal("$name placeholder text color"),
+            placeHolderColor.toString()
         ).setSaveConsumer { str: String ->
             try {
-                placeHolderText = str
+                placeHolderColor = str.hexToInt()
             } catch (e: Exception) {
                 return@setSaveConsumer
             }

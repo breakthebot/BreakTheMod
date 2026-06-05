@@ -178,7 +178,7 @@ abstract class BaseWidget(
         val renderCoords = config.position.getPos(margin, height, width).apply { y+=5 }
 
         for (entry in itemList) {
-            val color = if (entry == config.placeHolderText) config.placeHolderColor.hexToInt() else config.textColor.hexToInt()
+            val color = if (entry == config.placeHolderText) config.placeHolderColor else config.textColor
 
             drawContext.drawText(textRender, entry, renderCoords.x + margin, renderCoords.y, color, false)
 
@@ -201,7 +201,7 @@ abstract class BaseWidget(
 
         val renderCoords = config.position.getPos(margin, 40, width)
 
-        val color = if (text == config.placeHolderText) config.placeHolderColor.hexToInt() else config.textColor.hexToInt()
+        val color = if (text == config.placeHolderText) config.placeHolderColor else config.textColor
 
         drawContext.drawText(textRender, text, renderCoords.x + margin, renderCoords.y, color, false)
     }
