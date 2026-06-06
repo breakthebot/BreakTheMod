@@ -107,6 +107,7 @@ enum class WidgetModes {
     Off
 }
 
+/** Iterate over the widget modes. */
 fun WidgetModes.next(): WidgetModes {
     val entries = WidgetModes.entries
     return entries[(ordinal + 1) % entries.size]
@@ -128,7 +129,8 @@ data class Coords(
  * @property config The configuration of the widget, set by the widget.
  * @property margin The margin of the widget.
  * @property entryHeight The height of each entry on list widgets.
- * */
+ * @property client Client access for the widgets.
+ *  */
 abstract class BaseWidget(
     val name: String,
 ) : ServerUtilsProvider, LoggingProvider {
@@ -147,8 +149,8 @@ abstract class BaseWidget(
     }
 
     /**
-     * Generate the ModMenu entry for the configs position.
-     * @param category The category to register the option in.
+     * Generate the ModMenu config for the widget.
+     * @param category The sub-category the widget configuration will be generated in.
      * @param entryBuilder The entry builder.
      * */
     abstract fun getModMenuConfig(
@@ -157,7 +159,7 @@ abstract class BaseWidget(
     )
 
     /** Registers the element after VanillaHudElements.CHAT.*/
-    open fun register() {
+    fun register() {
         HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, Identifier.of("breakthemod", name)) {
             context, _ -> render(context, client.textRenderer)
         }
@@ -170,9 +172,10 @@ abstract class BaseWidget(
     abstract fun render(drawContext: DrawContext, textRender: TextRenderer)
 
     /**
+     * Renders a list of strings.
      *  @param itemList The list of items to display.
      * */
-    open fun renderListWidget(
+    fun renderListWidget(
         drawContext: DrawContext,
         textRender: TextRenderer,
         itemList: List<String>
@@ -198,7 +201,7 @@ abstract class BaseWidget(
      * Renders a string widget.
      * @param text The text to render.
      * */
-    open fun renderTextWidget(
+    fun renderTextWidget(
         drawContext: DrawContext,
         textRender: TextRenderer,
         text: String

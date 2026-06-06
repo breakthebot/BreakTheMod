@@ -61,9 +61,9 @@ object NearbyTowns : BaseWidget(
                 Config.saveWidgetConfig(name, config)
             }.setDefaultValue { true }.build()
         )
-        config.getPositionConfig(category, entryBuilder)
-        config.getTextConfig(category, entryBuilder, "", "There are no towns nearby.")
-        config.getTextColorConfig(category, entryBuilder)
+        config.getPositionConfig(category, entryBuilder, name)
+        config.getTextConfig(category, entryBuilder, "", "There are no towns nearby.", "", name)
+        config.getTextColorConfig(category, entryBuilder, name)
     }
 
     override fun render(

@@ -40,7 +40,7 @@ object ActionTracker : BaseModule(
         private set
 
     @OptIn(ExperimentalTime::class)
-    lateinit var fishingModeActivated: Instant
+    var fishingModeActivated: Instant = Clock.System.now()
 
     @OptIn(ExperimentalTime::class)
     val timeFishing: Long
@@ -55,7 +55,10 @@ object ActionTracker : BaseModule(
         if (!isModEnabled()) return
         ClientPlayerBlockBreakEvents.AFTER.register(
             ClientPlayerBlockBreakEvents.After { _: ClientWorld?, _: ClientPlayerEntity?, _: BlockPos?, state: BlockState? ->
-            if ((state!!.isOf(Blocks.GOLD_BLOCK) || state.isOf(Blocks.GOLD_ORE) || state.isOf(Blocks.RAW_GOLD_BLOCK)) && WidgetManager.widgetMode == WidgetModes.Mining) {
+            if (
+                (state!!.isOf(Blocks.GOLD_BLOCK) || state.isOf(Blocks.GOLD_ORE) || state.isOf(Blocks.RAW_GOLD_BLOCK)) &&
+                WidgetManager.widgetMode == WidgetModes.Mining
+            ) {
                 goldMined++
             }
         })

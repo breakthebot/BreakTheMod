@@ -96,6 +96,7 @@ dependencies {
     compileOnly(kotlin("stdlib"))
     compileOnly(kotlin("reflect"))
     compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:$ktSere")
+
 }
 
 tasks.processResources {

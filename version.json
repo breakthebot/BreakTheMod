@@ -1,0 +1,10 @@
+{
+  "versions": [
+    {
+      "version": "1.6.0",
+      "latest": true,
+      "release": false,
+      "mcVer": "1.21.11"
+    }
+  ]
+}

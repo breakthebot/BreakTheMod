@@ -41,14 +41,22 @@ object Config {
     val json = Json {
         prettyPrint = true
         ignoreUnknownKeys = true
+        encodeDefaults = false
     }
 
     var config: ConfigData = ConfigData()
 
-    val features by lazy { config.features }
-    val libraryConfig by lazy { config.libraryConfig }
-    val widgets by lazy { config.widgets }
-    val notifications by lazy  { config.notifications }
+    val widgets
+        get() = config.widgets
+
+    val features
+        get() = config.features
+
+    val notifications
+        get() = config.notifications
+
+    val libraryConfig
+        get() = config.libraryConfig
 
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
@@ -102,13 +110,6 @@ object Config {
         name: String
     ):  WidgetConfig? = widgets[name]
 
-    fun saveNotificationDisplayed(
-        name: String
-    ) {
-        notifications[name] = true
-        saveConfig(config)
-    }
-
     /**
      * Small function to have the proper URL.
      */
@@ -158,4 +159,8 @@ object Config {
         )
         ConfigHandler.setup(config.libraryConfig)
     }
+}
+
+fun Config.save() {
+    Config.saveConfig(this.config)
 }

@@ -19,11 +19,22 @@ package net.chariskar.breakthemod.client.utils
 
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import kotlin.time.Duration
+
+data class Schedule(
+    val name: String,
+    val task: () -> Unit,
+    val delay: Duration,
+)
 
 object Scheduler {
-    private val scheduler = Executors.newScheduledThreadPool(1)
+    private val scheduler = Executors.newScheduledThreadPool(2)
 
-    fun schedule(task: () -> Unit, delay: Long, unit: TimeUnit) {
-        scheduler.schedule(task, delay, unit)
+    fun schedule(schedule: Schedule) {
+        scheduler.schedule(
+            schedule.task,
+            schedule.delay.inWholeSeconds,
+            TimeUnit.SECONDS
+        )
     }
 }

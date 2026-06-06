@@ -25,12 +25,8 @@ import net.chariskar.breakthemod.client.api.widget.BaseWidget
 import net.chariskar.breakthemod.client.api.widget.WidgetManager
 import net.chariskar.breakthemod.client.commands.*
 import net.chariskar.breakthemod.client.modules.*
+import net.chariskar.breakthemod.client.widgets.*
 import net.chariskar.breakthemod.client.utils.Config
-import net.chariskar.breakthemod.client.widgets.FishingTimeWidget
-import net.chariskar.breakthemod.client.widgets.FishingWidget
-import net.chariskar.breakthemod.client.widgets.MiningWidget
-import net.chariskar.breakthemod.client.widgets.NearbyTowns
-import net.chariskar.breakthemod.client.widgets.NearbyPlayers
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
@@ -39,7 +35,6 @@ import net.minecraft.command.CommandRegistryAccess
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
-
 
 class Breakthemod : ClientModInitializer {
 
@@ -78,7 +73,6 @@ class Breakthemod : ClientModInitializer {
             get() = MinecraftClient.getInstance().session.username
     }
 
-
     private fun loadCommands() {
         ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _: CommandRegistryAccess ->
             commands.forEach { it.register(dispatcher) }
@@ -91,6 +85,7 @@ class Breakthemod : ClientModInitializer {
 
     /**
      * Load debugging modules.
+     * @return Returns true if debug module is loaded, false if not found.
      * */
     private fun loadDebug(): Boolean {
         try {
@@ -139,7 +134,7 @@ class Breakthemod : ClientModInitializer {
 
         _modules.addAll(
             listOf(
-                AutoHUD,
+                LoginActions,
                 Cache,
                 NearbyEngine,
                 ChatTracker,
@@ -165,7 +160,7 @@ class Breakthemod : ClientModInitializer {
 
         debug = loadDebug()
 
-        if (version.contains("ALPHA") && !Config.notifications.contains("Alpha")) {
+        if (version.contains("ALPHA")) {
             val alphaNotification = Notification(
                 "Alpha",
                 "You are running a alpha version of breakthemod, this is not a finished build, so expect glitches and instability.",
@@ -174,7 +169,7 @@ class Breakthemod : ClientModInitializer {
             notifications.add(alphaNotification)
         }
 
-        if (version.contains("BETA") && !Config.notifications.contains("Beta")) {
+        if (version.contains("BETA")) {
             val betaNotification = Notification(
                 "Beta",
                 "You are running a beta version of breakthemod, unexpected behaviour and glitches may occur, please report any issues.",
@@ -183,6 +178,5 @@ class Breakthemod : ClientModInitializer {
             notifications.add(betaNotification)
         }
 
-        notifications.forEach { Config.saveNotificationDisplayed(it.name) }
     }
 }

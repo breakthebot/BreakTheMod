@@ -48,9 +48,9 @@ object FishingWidget : BaseWidget(
         category: SubCategoryBuilder,
         entryBuilder: ConfigEntryBuilder
     ) {
-        config.getPositionConfig(category, entryBuilder)
-        config.getTextConfig(category, entryBuilder, "You have FISHED items.", "You have not fished any items.")
-        config.getTextColorConfig(category, entryBuilder)
+        config.getPositionConfig(category, entryBuilder, name)
+        config.getTextConfig(category, entryBuilder, "You have FISHED items.", "You have not fished any items.", "FISHED", name)
+        config.getTextColorConfig(category, entryBuilder, name)
     }
 
     override fun render(

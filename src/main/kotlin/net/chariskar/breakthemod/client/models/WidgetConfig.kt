@@ -24,6 +24,7 @@ import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder
 import net.chariskar.breakthemod.client.api.widget.WidgetModes
 import net.chariskar.breakthemod.client.api.widget.WidgetPosition
 import net.chariskar.breakthemod.client.utils.Config
+import net.chariskar.breakthemod.client.utils.save
 import net.minecraft.text.Text
 
 /**
@@ -53,6 +54,7 @@ data class WidgetConfig (
 fun WidgetConfig.getPositionConfig(
     category: SubCategoryBuilder,
     entryBuilder: ConfigEntryBuilder,
+    widgetName: String
 ) {
     category.add(
         entryBuilder.startEnumSelector(
@@ -61,51 +63,79 @@ fun WidgetConfig.getPositionConfig(
             position
         ).setSaveConsumer { pos: WidgetPosition ->
             position = pos
-            Config.saveWidgetConfig(name, this)
+            Config.saveWidgetConfig(widgetName, this)
         }.setDefaultValue { position }.build()
     )
 }
 
+/**
+ * Generate the text config for widgets.
+ * @param category The subcategory.
+ * @param entryBuilder The entry builder.
+ * @param defaultText The default widget text.
+ * @param defaultPlaceHolderText The default placeholder text.
+ * @param defaultTextPlaceHolder The default text placeholder.
+ * */
 fun WidgetConfig.getTextConfig(
     category: SubCategoryBuilder,
     entryBuilder: ConfigEntryBuilder,
     defaultText: String,
-    defaultPlaceHolderText: String
+    defaultPlaceHolderText: String,
+    defaultTextPlaceHolder: String,
+    widgetName: String,
 ) {
     category.add(
         entryBuilder.startStrField(
             Text.literal("$name text"),
             text
         ).setSaveConsumer { str: String ->
+            if (text == str || str.isEmpty()) return@setSaveConsumer
             if (!str.contains(textPlaceholder)) return@setSaveConsumer
             text = str
+            Config.saveWidgetConfig(widgetName, this)
         }.setDefaultValue { defaultText }.build()
     )
 
     category.add(
         entryBuilder.startStrField(
             Text.literal("$name placeholder text"),
+            placeHolderText
+        ).setSaveConsumer { str: String ->
+            if (placeHolderText == str || str.isEmpty()) return@setSaveConsumer
+            placeHolderText = str
+            Config.saveWidgetConfig(widgetName, this)
+        }.setDefaultValue { defaultPlaceHolderText }.build()
+    )
+
+    category.add(
+        entryBuilder.startStrField(
+            Text.literal("$name text placeholder"),
             textPlaceholder
         ).setSaveConsumer { str: String ->
+            if (textPlaceholder == str || str.isEmpty()) return@setSaveConsumer
             textPlaceholder = str
-        }.setDefaultValue { defaultPlaceHolderText }.build()
+            Config.saveWidgetConfig(widgetName, this)
+        }.setDefaultValue { defaultTextPlaceHolder }.build()
     )
 }
 
 fun WidgetConfig.getTextColorConfig(
     category: SubCategoryBuilder,
     entryBuilder: ConfigEntryBuilder,
+    widgetName: String
 ) {
     category.add(
         entryBuilder.startStrField(
             Text.literal("$name text color"),
             textColor.toHexString()
         ).setSaveConsumer { str: String ->
+            if (textColor == str.hexToInt() || str.isEmpty()) return@setSaveConsumer
             try {
                 textColor = str.hexToInt()
             } catch (e: Exception) {
                 return@setSaveConsumer
             }
+            Config.saveWidgetConfig(widgetName, this)
         }.setDefaultValue { "0xFFFFFFFF" }.build()
     )
 
@@ -114,11 +144,13 @@ fun WidgetConfig.getTextColorConfig(
             Text.literal("$name placeholder text color"),
             placeHolderColor.toHexString()
         ).setSaveConsumer { str: String ->
+            if (placeHolderColor == str.hexToInt() || str.isEmpty()) return@setSaveConsumer
             try {
                 placeHolderColor = str.hexToInt()
             } catch (e: Exception) {
                 return@setSaveConsumer
             }
+            Config.saveWidgetConfig(widgetName, this)
         }.setDefaultValue { "0xFFFF6B6B" }.build()
     )
 }

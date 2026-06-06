@@ -47,8 +47,8 @@ object FishingTimeWidget : BaseWidget(
         category: SubCategoryBuilder,
         entryBuilder: ConfigEntryBuilder
     ) {
-        config.getPositionConfig(category, entryBuilder)
-        config.getTextConfig(category, entryBuilder, "You have been fishing for TIME minutes.", "")
+        config.getPositionConfig(category, entryBuilder, name)
+        config.getTextConfig(category, entryBuilder, "You have been fishing for TIME minutes.", "", "TIME", name)
     }
 
     override fun render(

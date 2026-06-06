@@ -47,9 +47,9 @@ object MiningWidget : BaseWidget("mining_widget") {
         category: SubCategoryBuilder,
         entryBuilder: ConfigEntryBuilder
     ) {
-        config.getPositionConfig(category, entryBuilder)
-        config.getTextConfig(category, entryBuilder, "You have mined GOLD gold.", "You have not mined any gold.")
-        config.getTextColorConfig(category, entryBuilder)
+        config.getPositionConfig(category, entryBuilder, name)
+        config.getTextConfig(category, entryBuilder, "You have mined GOLD gold.", "You have not mined any gold.", "GOLD", name)
+        config.getTextColorConfig(category, entryBuilder, name)
     }
 
     override fun render(
