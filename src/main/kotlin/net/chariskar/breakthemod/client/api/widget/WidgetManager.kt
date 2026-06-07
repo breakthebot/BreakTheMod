@@ -20,9 +20,10 @@ package net.chariskar.breakthemod.client.api.widget
 import me.shedaniel.clothconfig2.api.ConfigCategory
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
 import net.chariskar.breakthemod.Breakthemod
-import net.chariskar.breakthemod.client.api.widget.WidgetManager.widgetMode
 import net.chariskar.breakthemod.client.modules.ActionTracker
 import net.chariskar.breakthemod.client.utils.Config
+import net.chariskar.breakthemod.client.utils.Schedule
+import net.chariskar.breakthemod.client.utils.Scheduler
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.minecraft.client.MinecraftClient
@@ -31,6 +32,7 @@ import net.minecraft.client.util.InputUtil
 import net.minecraft.text.Text
 import org.lwjgl.glfw.GLFW
 import kotlin.time.Clock
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.ExperimentalTime
 
 /**
@@ -50,6 +52,20 @@ object WidgetManager {
             widgetMode = category
             return
         }
+        if (category == WidgetModes.Mining) {
+            Scheduler.cancel(widgetMode.name)
+        } else {
+            if (Scheduler.tasks.containsKey(category.name)) return
+            val task = Schedule(
+                widgetMode.name,
+                {
+                    ActionTracker.goldMined = 0
+                },
+                Config.features.widgetDataLife.minutes
+            )
+
+            Scheduler.schedule(task)
+        }
 
         Breakthemod.widgets
             .forEach { it.config.enabled = false }
@@ -62,7 +78,9 @@ object WidgetManager {
         if (category == WidgetModes.Fishing) {
             ActionTracker.fishingModeActivated = Clock.System.now()
         }
+
         Config.config.widgetMode = widgetMode
+
         Config.saveConfig(Config.config)
     }
 

@@ -18,6 +18,7 @@
 package net.chariskar.breakthemod.client.utils
 
 import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
 
@@ -29,12 +30,22 @@ data class Schedule(
 
 object Scheduler {
     private val scheduler = Executors.newScheduledThreadPool(2)
+    private val _tasks: MutableMap<String, ScheduledFuture<*>> = mutableMapOf()
+
+    val tasks: Map<String, ScheduledFuture<*>>
+        get() = _tasks
 
     fun schedule(schedule: Schedule) {
-        scheduler.schedule(
+        val sch = scheduler.schedule(
             schedule.task,
             schedule.delay.inWholeSeconds,
             TimeUnit.SECONDS
         )
+        _tasks[schedule.name] = sch
+    }
+
+    fun cancel(name: String): Boolean {
+        val task = _tasks.remove(name) ?: return false
+        return task.cancel(false)
     }
 }

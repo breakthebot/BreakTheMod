@@ -7,6 +7,6 @@
 * ~~Make the text customizable.~~
 * ~~Make the notifications only show up once.~~
 * ~~Implement the further customization of widgets.~~
-* Make widget data have a ttl if not in use.
-* Make an update notification system.
+* ~~Make widget data have a ttl if not in use.~~
+* ~~Make an update notification system.~~
 * Fix widget configs being generated always.

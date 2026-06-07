@@ -37,7 +37,6 @@ object ActionTracker : BaseModule(
     true
 ){
     var goldMined = 0
-        private set
 
     @OptIn(ExperimentalTime::class)
     var fishingModeActivated: Instant = Clock.System.now()

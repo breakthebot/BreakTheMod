@@ -42,7 +42,7 @@ data class VersionFile(
 object UpdateUtility : MessageProvider {
 
     suspend fun checkVersion() {
-        val file = ApiClient.getRequest<VersionFile>("").getOrNull()?.versions
+        val file = ApiClient.getRequest<VersionFile>("https://raw.githubusercontent.com/breakthebot/BreakTheMod/refs/heads/master/version.json").getOrNull()?.versions
         if (file == null) {
             Breakthemod.logger.warn("Version file unavailable.")
             return
@@ -56,7 +56,7 @@ object UpdateUtility : MessageProvider {
         )
 
         if (
-            latest.version == verString &&
+            latest.version != verString &&
             latest.release &&
             latest.mcVer == MinecraftClient.getInstance().gameVersion
         ) {
