@@ -18,6 +18,7 @@
 package net.chariskar.breakthemod.mixins;
 
 import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider;
+import net.chariskar.breakthemod.client.modules.CacheKt;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -67,7 +68,7 @@ public abstract class PlayerInfoMixin extends LivingEntityRenderer<AbstractClien
         Resident cachedPlayer = Cache.INSTANCE.getPlayer(nameString);
         if (cachedPlayer == null) return;
 
-        Text townyText = createTownyText(cachedPlayer);
+        Text townyText = CacheKt.getTownyText(cachedPlayer);
         matrices.translate(0D, 0.12225D, 0D);
 
         matrices.push();
@@ -89,32 +90,4 @@ public abstract class PlayerInfoMixin extends LivingEntityRenderer<AbstractClien
         matrices.pop();
 
     }
-
-
-    @Unique
-    private Text createTownyText(Resident player) {
-        if (player.getStatus() == null) { return Text.literal("Nomad"); }
-
-        if (!player.getStatus().getHasTown()) return Text.literal("Nomad").formatted(Formatting.DARK_AQUA);
-
-        MutableText text = Text.empty();
-
-        if (player.getStatus().isMayor()) {
-            Formatting colour = player.getStatus().isKing() ? Formatting.GOLD : Formatting.DARK_AQUA;
-            text.append(Text.literal("\uD83D\uDC51 ").formatted(colour));
-        }
-
-        text.append(Text.of("[").copy().formatted(Formatting.GRAY));
-
-        if (player.getStatus().getHasNation()) {
-            text.append(Text.literal(player.getNation().getName()).formatted(Formatting.GOLD));
-            text.append(Text.literal("|").formatted(Formatting.GRAY));
-        }
-
-        text.append(Text.literal(player.getTown().getName()).formatted(Formatting.DARK_AQUA));
-        text.append(Text.literal("]").formatted(Formatting.GRAY));
-
-        return text;
-    }
-
 }

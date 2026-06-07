@@ -38,7 +38,6 @@ enum class WidgetPosition {
     MIDDLE_LEFT,
     MIDDLE_RIGHT
 }
-private val client = MinecraftClient.getInstance()
 
 /**
  * Calculate the position of the widget.
@@ -54,8 +53,8 @@ fun WidgetPosition.getPos(
     margin: Int,
     height: Int,
     width: Int,
-    screenWidth: Int = client.window.scaledWidth,
-    screenHeight: Int = client.window.scaledHeight
+    screenWidth: Int,
+    screenHeight: Int
 ): Coords {
     return when (this) {
         WidgetPosition.TOP_LEFT -> {
@@ -186,7 +185,7 @@ abstract class BaseWidget(
 
         val height = (20 + itemList.size * entryHeight).coerceAtLeast(40)
 
-        val renderCoords = config.position.getPos(margin, height, width).apply { y+=5 }
+        val renderCoords = config.position.getPos(margin, height, width, client.window.scaledWidth, client.window.scaledHeight).apply { y+=5 }
 
         for (entry in itemList) {
             val color = if (entry == config.placeHolderText) config.placeHolderColor else config.textColor
@@ -210,7 +209,7 @@ abstract class BaseWidget(
 
         val width = textRender.getWidth(text) + margin * 2
 
-        val renderCoords = config.position.getPos(margin, 40, width)
+        val renderCoords = config.position.getPos(margin, 40, width, client.window.scaledWidth, client.window.scaledHeight)
 
         val color = if (text == config.placeHolderText) config.placeHolderColor else config.textColor
 

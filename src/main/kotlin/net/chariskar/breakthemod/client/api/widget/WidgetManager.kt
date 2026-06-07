@@ -44,6 +44,9 @@ object WidgetManager {
         private set
 
     @OptIn(ExperimentalTime::class)
+    /**
+     * Changes modes to category.
+     * */
     fun changeMode(
         category: WidgetModes
     ) {

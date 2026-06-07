@@ -107,7 +107,7 @@ object OnlineStaff : BaseCommand(
     fun exec(api: Boolean?): Int {
         scope.launch {
             val staff = onlineStaff(api ?: false)
-            client.execute { sendMessage(staff) }
+            sendMessage(staff) 
         }
         return 0
     }

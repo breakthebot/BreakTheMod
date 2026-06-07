@@ -33,19 +33,6 @@ interface ServerUtilsProvider {
 
     fun isModEnabled(): Boolean = isEarthMc().or(Config.config.enabledOnOtherServers)
 
-    fun replaceApiUrl() {
-        val serverInfo = MinecraftClient.getInstance().currentServerEntry?.address ?: return
-        if (
-            splitAddress(serverInfo).contains("earthmc")
-            &&
-            Config.config.libraryConfig.apiUrl.contains("aurora")
-        ) {
-            Config.setApiUrl(
-                "https://api.earthmc.net/v4"
-            )
-        }
-    }
-
     private fun splitAddress(
         serverInfo: String
     ): String {
