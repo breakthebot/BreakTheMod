@@ -124,7 +124,6 @@ object Cache : BaseModule(
         apiPlayers.forEach {
             playerCache[it.name] = it
         }
-
     }
 
     /**

@@ -21,6 +21,7 @@ import kotlinx.coroutines.*
 import kotlin.time.Duration
 
 /**
+ * Represents a schedule.
  * @param name The name of the routine.
  * @param task The task to be executed.
  * @param delay The delay or repetition time.
@@ -34,7 +35,10 @@ data class Schedule(
 object Scheduler {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    private val tasks = mutableMapOf<String, Job>()
+    private val _tasks = mutableMapOf<String, Job>()
+
+    val tasks: HashMap<String, Job>
+        get() = HashMap(_tasks)
 
     fun schedule(schedule: Schedule) {
         val job = scope.launch {
