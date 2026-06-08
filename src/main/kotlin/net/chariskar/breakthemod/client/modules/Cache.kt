@@ -42,7 +42,6 @@ import kotlin.time.Duration.Companion.seconds
 /**
  * Cache update handler for the mod.
  *
- * @property scope The execution scope for the cache update.
  * @property playerCache The player currently cached in memory.
  * @property townCache A list of every town from /towns.
  * @property nationCache A list of every nation from /nations.
@@ -85,7 +84,7 @@ object Cache : BaseModule(
                     "playerCacheUpdate",
                     {
                         if (!enabled) return@Schedule
-                        updateCache()
+                        runTask()
                     },
                     10.minutes
                 )
