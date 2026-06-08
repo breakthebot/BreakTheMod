@@ -17,35 +17,48 @@
 
 package net.chariskar.breakthemod.client.utils
 
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledFuture
-import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.*
 import kotlin.time.Duration
 
+/**
+ * @param name The name of the routine.
+ * @param task The task to be executed.
+ * @param delay The delay or repetition time.
+ * */
 data class Schedule(
     val name: String,
-    val task: () -> Unit,
+    val task: suspend () -> Unit,
     val delay: Duration,
 )
 
 object Scheduler {
-    private val scheduler = Executors.newScheduledThreadPool(2)
-    private val _tasks: MutableMap<String, ScheduledFuture<*>> = mutableMapOf()
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    val tasks: Map<String, ScheduledFuture<*>>
-        get() = _tasks
+    private val tasks = mutableMapOf<String, Job>()
 
     fun schedule(schedule: Schedule) {
-        val sch = scheduler.schedule(
-            schedule.task,
-            schedule.delay.inWholeSeconds,
-            TimeUnit.SECONDS
-        )
-        _tasks[schedule.name] = sch
+        val job = scope.launch {
+            delay(schedule.delay)
+            schedule.task()
+            tasks.remove(schedule.name)
+        }
+
+        tasks[schedule.name] = job
+    }
+
+    fun scheduleRepeating(schedule: Schedule) {
+        val job = scope.launch {
+            while (isActive) {
+                schedule.task()
+                delay(schedule.delay)
+            }
+        }
+        tasks[schedule.name] = job
     }
 
     fun cancel(name: String): Boolean {
-        val task = _tasks.remove(name) ?: return false
-        return task.cancel(false)
+        val job = tasks.remove(name) ?: return false
+        job.cancel()
+        return true
     }
 }

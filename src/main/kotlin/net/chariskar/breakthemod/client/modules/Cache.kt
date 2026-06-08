@@ -23,6 +23,8 @@ import kotlinx.serialization.json.buildJsonArray
 import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.module.BaseModule
 import net.chariskar.breakthemod.client.utils.Config
+import net.chariskar.breakthemod.client.utils.Schedule
+import net.chariskar.breakthemod.client.utils.Scheduler
 import net.chariskar.breakthemod.client.widgets.NearbyTowns
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.PacketSender
@@ -49,8 +51,6 @@ object Cache : BaseModule(
     "Cache",
     "Cache handler for the mod."
 ) {
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-
 
     private val _playerCache: Hashtable<String, Resident> = Hashtable()
 
@@ -80,27 +80,34 @@ object Cache : BaseModule(
         ClientPlayConnectionEvents.JOIN.register(
             ClientPlayConnectionEvents.Join { _: ClientPlayNetworkHandler?, _: PacketSender?, _: MinecraftClient ->
             enabled = true
+            Scheduler.scheduleRepeating(
+                Schedule(
+                    "playerCacheUpdate",
+                    {
+                        if (!enabled) return@Schedule
+                        updateCache()
+                    },
+                    10.minutes
+                )
+            )
+            Scheduler.scheduleRepeating(
+                Schedule(
+                    "nearbyTownCache",
+                    {
+                        if (!enabled) return@Schedule
+                        updateNearbyTowns()
+                    },
+                    30.seconds
+                )
+            )
         })
 
         ClientPlayConnectionEvents.DISCONNECT.register(ClientPlayConnectionEvents.Disconnect { _: ClientPlayNetworkHandler?, _: MinecraftClient? ->
             enabled = false
+            Scheduler.cancel("playerCacheUpdate")
+            Scheduler.cancel("nearbyTownCache")
         })
 
-        scope.launch {
-            while (true) {
-                if (!enabled) return@launch
-                 delay(10.minutes)
-                runTask()
-            }
-        }
-
-        scope.launch {
-            while (true) {
-                if (!enabled) return@launch
-                delay(30.seconds)
-                updateNearbyTowns()
-            }
-        }
     }
     
     private suspend fun updatePlayers() {
