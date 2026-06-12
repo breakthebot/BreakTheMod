@@ -27,17 +27,13 @@ import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.modules.Cache
-import org.breakthebot.breakthelibrary.api.MapApi
+import org.breakthebot.breakthelibrary.api.MapAPI
 import org.breakthebot.breakthelibrary.api.TownyAPI
 import org.breakthebot.breakthelibrary.models.ApiResult
 import org.breakthebot.breakthelibrary.models.Nation
 import org.breakthebot.breakthelibrary.models.NearbyItem
 import org.breakthebot.breakthelibrary.models.NearbyType
 import org.breakthebot.breakthelibrary.models.Town
-import org.breakthebot.breakthelibrary.models.getOrElse
-import org.breakthebot.breakthelibrary.models.getOrNull
-import org.breakthebot.breakthelibrary.models.mapSuccess
-import org.breakthebot.breakthelibrary.models.onError
 
 object GotoCommand : BaseCommand(
     "goto",
@@ -60,14 +56,13 @@ object GotoCommand : BaseCommand(
             }
 
             if (
-                reqTown.status?.isPublic == true &&
-                reqTown.status?.canOutsidersSpawn == true
+                reqTown.status.isPublic && reqTown.status.canOutsidersSpawn
             ) {
                 sendMessage(Text.literal("You can do /t spawn ${reqTown.name}"), Formatting.AQUA)
                 return@launch
             }
 
-            if (reqTown.status?.isCapital == true) {
+            if (reqTown.status.isCapital) {
                 val nation = TownyAPI.getNation(reqTown.nation?.name!!).getOrElse {
                     val message = when (it.statusCode) {
                         503 -> "EarthMc API is unavailable."
@@ -88,7 +83,7 @@ object GotoCommand : BaseCommand(
             val validTowns: MutableList<String> = mutableListOf()
 
             loop@ while (attempts-- > 0) {
-                val resp = MapApi.getNearby(NearbyItem(
+                val resp = MapAPI.getNearby(NearbyItem(
                     JsonPrimitive(townName),
                     NearbyType.TOWN,
                     NearbyType.TOWN,
@@ -109,7 +104,7 @@ object GotoCommand : BaseCommand(
 
                 // Non-null assertion cause being null would be an error by design and handled by onError
                 val townDetails = TownyAPI.getTowns(resp).first()
-                .onError {
+                    .onError {
                     radius += 500
                     continue@loop
                 }.getOrNull()!!
@@ -117,9 +112,9 @@ object GotoCommand : BaseCommand(
                 for (town in townDetails) {
                     val status = town.status
 
-                    if (status?.isPublic == true && status.canOutsidersSpawn == true) {
+                    if (status.isPublic && status.canOutsidersSpawn) {
                         validTowns.add(town.name)
-                    } else if (status?.isCapital == true) {
+                    } else if (status.isCapital) {
                         val nation = TownyAPI.getNation(town.nation?.name!!).getOrNull()
                         if (nation?.status?.isPublic == true) {
                             validTowns.add(town.name)

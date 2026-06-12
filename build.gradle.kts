@@ -176,10 +176,16 @@ if (project.hasProperty("release")) {
 
 }
 
+
 tasks.named<ShadowJar>("shadowJar") {
     if (!debug) {
         exclude(debugPackage)
     }
+    exclude("**/models/*Pursuit*.class")
+    exclude("**/models/*ServerInfo*.class")
+    exclude("**/models/*MysteryMaster*.class")
+    exclude("**/api/*ServerAPI*.class")
+
 }
 
 tasks.jar {

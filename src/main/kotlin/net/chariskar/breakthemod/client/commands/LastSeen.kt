@@ -27,7 +27,6 @@ import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import org.breakthebot.breakthelibrary.api.TownyAPI
-import org.breakthebot.breakthelibrary.models.getOrNull
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes

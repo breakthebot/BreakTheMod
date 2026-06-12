@@ -23,7 +23,6 @@ import net.chariskar.breakthemod.client.api.Notification
 import net.chariskar.breakthemod.client.api.NotificationTypes
 import net.chariskar.breakthemod.client.api.providers.MessageProvider
 import net.minecraft.client.MinecraftClient
-import org.breakthebot.breakthelibrary.models.getOrNull
 import org.breakthebot.breakthelibrary.network.ApiClient
 
 @Serializable

@@ -31,7 +31,6 @@ import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import org.breakthebot.breakthelibrary.api.TownyAPI
-import org.breakthebot.breakthelibrary.models.getOrNull
 
 object OnlineStaff : BaseCommand(
     "onlinestaff",
@@ -57,7 +56,7 @@ object OnlineStaff : BaseCommand(
     }
 
     suspend fun onlineStaff(api: Boolean): Text {
-        val staff = TownyAPI.getStaff()
+        val staff = TownyAPI.getStaff().getOrNull()
 
         if (staff.isNullOrEmpty()) return Text.literal("Received invalid staff list.").setStyle(Style.EMPTY.withColor(Formatting.RED))
 
@@ -67,7 +66,7 @@ object OnlineStaff : BaseCommand(
             TownyAPI.getPlayers( staff.map { v->v.toString() } )
                 .first()
                 .getOrNull()
-                ?.filter { r -> r.status!!.isOnline == true }
+                ?.filter { r -> r.status.isOnline }
                 ?.map { r -> r.name }!!
         } else {
             staff.mapNotNull { uuid ->

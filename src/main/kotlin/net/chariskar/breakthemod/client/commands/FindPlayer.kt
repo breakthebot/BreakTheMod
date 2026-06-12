@@ -24,9 +24,8 @@ import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
-import org.breakthebot.breakthelibrary.api.MapApi
+import org.breakthebot.breakthelibrary.api.MapAPI
 import org.breakthebot.breakthelibrary.models.PlayerLocationInfo
-import org.breakthebot.breakthelibrary.models.getOrNull
 
 object FindPlayer : BaseCommand(
     "findPlayer",
@@ -36,7 +35,7 @@ object FindPlayer : BaseCommand(
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val name: String = ctx.getArgument("name", String::class.java)
         scope.launch {
-            val players = MapApi.getVisiblePlayers()
+            val players = MapAPI.getVisiblePlayers()
 
             if (players.isNullOrEmpty()) {
                 sendError("No visible players at this moment.")
@@ -51,9 +50,9 @@ object FindPlayer : BaseCommand(
                     playerData.x = player.x
                     playerData.z = player.z
 
-                    val locationData = MapApi.getLocation(listOf(Pair(player.x,player.z))).getOrNull()?.first()
+                    val locationData = MapAPI.getLocation(listOf(Pair(player.x,player.z))).getOrNull()?.first()
 
-                    if (locationData != null && locationData.isWilderness == false) {
+                    if (locationData != null && !locationData.isWilderness) {
                         playerData.townName = locationData.town?.name
                     }
 

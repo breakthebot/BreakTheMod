@@ -17,7 +17,6 @@
 
 package net.chariskar.breakthemod.client.modules
 
-import kotlinx.coroutines.*
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonArray
 import net.chariskar.breakthemod.Breakthemod
@@ -32,7 +31,7 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayNetworkHandler
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
-import org.breakthebot.breakthelibrary.api.MapApi
+import org.breakthebot.breakthelibrary.api.MapAPI
 import org.breakthebot.breakthelibrary.api.TownyAPI
 import org.breakthebot.breakthelibrary.models.*
 import java.util.*
@@ -149,10 +148,10 @@ object Cache : BaseModule(
             target = coords
         )
 
-        val resp = MapApi.getNearby(body)
+        val resp = MapAPI.getNearby(body)
             .getOrNull()
             ?.take(3)
-            ?.mapNotNull { it.name }
+            ?.map { it.name }
 
         if (resp.isNullOrEmpty()) return
 
@@ -201,15 +200,15 @@ object Cache : BaseModule(
 }
 
 fun Resident.getTownyText(): Text {
-    if (town == null || status == null) return Text.literal("Nomad").formatted(Formatting.DARK_AQUA)
+    if (town == null) return Text.literal("Nomad").formatted(Formatting.DARK_AQUA)
     val text = Text.empty()
 
-    if (status?.isMayor == true) {
-        val colour = if (status?.isKing == true) Formatting.GOLD else Formatting.DARK_AQUA
+    if (status.isMayor) {
+        val colour = if (status.isKing) Formatting.GOLD else Formatting.DARK_AQUA
         text.append(Text.literal("\uD83D\uDC51 ").formatted(colour))
     }
     text.append(Text.of("[").copy().formatted(Formatting.GRAY))
-    if (status?.hasNation == true) {
+    if (status.hasNation) {
         text.append(Text.literal(nation?.name).formatted(Formatting.GOLD))
         text.append(Text.literal("|").formatted(Formatting.GRAY))
     }
