@@ -82,6 +82,7 @@ object Cache : BaseModule(
                 Schedule(
                     "playerCacheUpdate",
                     {
+                        Breakthemod.logger.info("Cache started")
                         if (!enabled) return@Schedule
                         runTask()
                     },
@@ -173,15 +174,20 @@ object Cache : BaseModule(
         _nationCache.clear()
 
         TownyAPI.getAllTowns()
-            .onSuccess { _townCache.addAll(it.map { name }) }
+            .onSuccess { _townCache.addAll(it.map { t -> t.name }) }
             .onError {
                 handleCacheError("townCache", it.message)
             }
+
+        Breakthemod.logger.info("Town cache done")
+
         TownyAPI.getAllNations()
-            .onSuccess { _nationCache.addAll(it.map { name }) }
+            .onSuccess { _nationCache.addAll(it.map { n -> n.name }) }
             .onError {
                 handleCacheError("nationCache", it.message)
             }
+
+        Breakthemod.logger.info("Name cache done.")
     }
 
     private fun handleCacheError(origin: String, message: String) {
@@ -189,7 +195,7 @@ object Cache : BaseModule(
     }
 
     suspend fun runTask() {
-        if (!isEarthMc() || !Config.features.cacheEnabled) return
+        if (!isEarthMc() || !Config.features.cacheEnabled || Breakthemod.debug) return
         updateCache()
         updatePlayers()
     }
