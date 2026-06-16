@@ -81,15 +81,17 @@ object LoginActions : BaseModule(
 
     /** Send the notifications if they weren't already sent.*/
     fun sendNotifications() {
-        if (Breakthemod.notifications.isEmpty()) return
+        val filteredNotifications = Breakthemod.notifications.filter { Config.notifications[it.name] ?: false }
+        if (filteredNotifications.isEmpty()) return
 
         sendMessage("Notifications: ")
-        Breakthemod.notifications
-            .filter { Config.notifications[it.name] ?: false }
+
+        filteredNotifications
             .forEach {
                 Config.notifications[it.name] = true
                 sendMessage(it.toString())
             }
+
         Config.save()
     }
 
