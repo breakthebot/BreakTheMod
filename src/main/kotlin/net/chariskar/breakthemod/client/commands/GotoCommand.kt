@@ -83,11 +83,12 @@ object GotoCommand : BaseCommand(
             val validTowns: MutableList<String> = mutableListOf()
 
             loop@ while (attempts-- > 0) {
-                val resp = MapAPI.getNearby(NearbyItem(
-                    JsonPrimitive(townName),
-                    NearbyType.TOWN,
-                    NearbyType.TOWN,
-                    radius)
+                val resp = MapAPI.getNearby(NearbyItem.NearbyItemString(
+                    target = townName,
+                    searchType = NearbyType.TOWN,
+                    targetType = NearbyType.TOWN,
+                    radius = radius
+                )
                 ).onError { e ->
                     val message = when (e.statusCode) {
                         404 -> "$townName does not exist."

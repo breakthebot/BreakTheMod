@@ -137,16 +137,11 @@ object Cache : BaseModule(
         _nearbyTowns.clear()
         val player = MinecraftClient.getInstance().player ?: return
 
-        val coords = buildJsonArray {
-            add(JsonPrimitive(player.x.toInt()))
-            add(JsonPrimitive(player.z.toInt()))
-        }
-
-        val body = NearbyItem(
+        val body = NearbyItem.NearbyItemCoordinates(
             targetType = NearbyType.COORDINATE,
             searchType = NearbyType.TOWN,
             radius = 500,
-            target = coords
+            target = listOf(player.x.toInt(), player.z.toInt())
         )
 
         val resp = MapAPI.getNearby(body)

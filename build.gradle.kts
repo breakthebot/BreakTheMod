@@ -185,6 +185,7 @@ tasks.named<ShadowJar>("shadowJar") {
     exclude("**/models/*ServerInfo*.class")
     exclude("**/models/*MysteryMaster*.class")
     exclude("**/api/*ServerAPI*.class")
+    exclude("**/api/interfaces/*ServerAPI*.class")
 
 }
 
