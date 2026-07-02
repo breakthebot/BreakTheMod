@@ -4,11 +4,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 
 plugins {
-    kotlin("jvm") version "2.2.10"
-    kotlin("plugin.serialization") version "2.2.10"
+    kotlin("jvm") version "2.4.0"
+    kotlin("plugin.serialization") version "2.4.0"
 
-    id("fabric-loom") version "1.16-SNAPSHOT"
-    id("com.gradleup.shadow") version "9.2.0"
+    id("net.fabricmc.fabric-loom") version "1.16-SNAPSHOT"
+    id("com.gradleup.shadow") version "9.4.3"
 }
 
 group = project.property("maven_group") as String
@@ -18,11 +18,13 @@ base {
     archivesName.set(project.property("archives_base_name") as String)
 }
 
-val targetJavaVersion = 21
+val targetJavaVersion = 25
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
     withSourcesJar()
+
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
 
 kotlin {
@@ -56,37 +58,33 @@ repositories {
     }
 }
 
-val shade by configurations.creating
-val r8 by configurations.creating
+val shade =  configurations.create("shade")
 val debug = project.hasProperty("debug")
 
-val mcVer: String by project
-val mappings: String by project
-val fabricVersion: String by project
-val fabricLoader: String by project
-val kotlinLoader: String by project
-val ktSere: String by project
-val clothVersion: String by project
-val modmenu: String by project
-val placeholderVersion: String by project
-val breakTheLibrary: String by project
+val mcVer = project.findProperty("mcVer") as String
+val fabricVersion = project.findProperty("fabricVersion") as String
+val fabricLoader = project.findProperty("fabricLoader") as String
+val kotlinLoader = project.findProperty("kotlinLoader") as String
+val ktSere = project.findProperty("ktSere") as String
+val clothVersion = project.findProperty("clothVersion") as String
+val modmenu = project.findProperty("modmenu") as String
+val placeholderVersion = project.findProperty("placeholderVersion") as String
+val breakTheLibrary = project.findProperty("breakTheLibrary") as String
 
 dependencies {
-    r8("com.android.tools:r8:8.3.37")
     minecraft("com.mojang:minecraft:$mcVer")
-    mappings("net.fabricmc:yarn:$mappings:v2")
 
-    modImplementation("net.fabricmc:fabric-loader:$fabricLoader")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
-    modImplementation("net.fabricmc:fabric-language-kotlin:$kotlinLoader")
+    implementation("net.fabricmc:fabric-loader:$fabricLoader")
+    implementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
+    implementation("net.fabricmc:fabric-language-kotlin:$kotlinLoader")
 
-    modImplementation("eu.pb4:placeholder-api:$placeholderVersion")
+    implementation("eu.pb4:placeholder-api:$placeholderVersion")
 
-    modApi("me.shedaniel.cloth:cloth-config-fabric:$clothVersion") {
+    api("me.shedaniel.cloth:cloth-config-fabric:$clothVersion") {
         exclude(group = "net.fabricmc.fabric-api")
     }
 
-    modApi("com.terraformersmc:modmenu:$modmenu")
+    api("com.terraformersmc:modmenu:$modmenu")
 
     implementation("com.github.breakthebot:BreakTheLibrary:$breakTheLibrary")
     shade("com.github.breakthebot:BreakTheLibrary:$breakTheLibrary") {
@@ -128,7 +126,7 @@ tasks.withType<KotlinCompile>().configureEach {
 
 val headerText = file("header.txt").takeIf { it.exists() }?.readText()
 
-val addHeader by tasks.registering {
+val addHeader = tasks.register("AddHeader") {
     description = "Adds a license header to every file."
     onlyIf { headerText != null }
 
@@ -158,10 +156,10 @@ val shadowJarTask = tasks.named<ShadowJar>("shadowJar") {
 
 val debugPackage = "net/chariskar/breakthemod/debug/**"
 
-tasks.remapJar {
+tasks.jar {
     dependsOn(shadowJarTask)
 
-    inputFile.set(shadowJarTask.flatMap { it.archiveFile })
+    inputs.file(shadowJarTask.flatMap { it.archiveFile })
     archiveClassifier.set(null as String?)
 }
 

@@ -41,7 +41,7 @@ import kotlin.time.Duration.Companion.seconds
 /**
  * Cache update handler for the mod.
  *
- * @property playerCache The player currently cached in memory.
+ * @property playerCache The players currently cached in memory.
  * @property townCache A list of every town from /towns.
  * @property nationCache A list of every nation from /nations.
  *  */
