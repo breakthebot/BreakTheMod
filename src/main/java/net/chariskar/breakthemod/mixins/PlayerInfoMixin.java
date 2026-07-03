@@ -17,77 +17,72 @@
 
 package net.chariskar.breakthemod.mixins;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider;
-import net.chariskar.breakthemod.client.modules.CacheKt;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.LivingEntityRenderer;
-import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.client.render.entity.model.PlayerEntityModel;
-import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
-import net.minecraft.client.render.state.CameraRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.Vec3d;
-
 import net.chariskar.breakthemod.client.modules.Cache;
+import net.chariskar.breakthemod.client.modules.CacheKt;
+import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.phys.Vec3;
 import org.breakthebot.breakthelibrary.models.Resident;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /// Credit to [...](https://github.com/Veyronity/Earthy/blob/master/client/fabric/src/main/java/au/lupine/earthy/fabric/mixin/PlayerRendererMixin.java)
 
-@Mixin(PlayerEntityRenderer.class)
-public abstract class PlayerInfoMixin extends LivingEntityRenderer<AbstractClientPlayerEntity, PlayerEntityRenderState, PlayerEntityModel>  implements ServerUtilsProvider {
+@Mixin(AvatarRenderer.class)
+public abstract class PlayerInfoMixin extends LivingEntityRenderer<AbstractClientPlayer, AvatarRenderState, PlayerModel> implements ServerUtilsProvider {
 
-    public PlayerInfoMixin(EntityRendererFactory.Context context, PlayerEntityModel model, float shadowRadius) {
+    public PlayerInfoMixin(EntityRendererProvider.Context context, PlayerModel model, float shadowRadius) {
         super(context, model, shadowRadius);
     }
 
+
     @Inject(
-            method = "renderLabelIfPresent",
+            method = "submitNameDisplay(Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V",
             at = @At("HEAD")
     )
     private void inject(
-            PlayerEntityRenderState state,
-            MatrixStack matrices,
-            OrderedRenderCommandQueue queue,
-            CameraRenderState cameraRenderState,
-            CallbackInfo ci
-    ) {
+            AvatarRenderState state,
+            PoseStack poseStack,
+            SubmitNodeCollector submitNodeCollector,
+            CameraRenderState camera,
+            CallbackInfo ci) {
         if (!isEarthMc()) return;
 
-        String nameString = state.displayName != null ? state.displayName.getString() : "";
+        String nameString = state.nameTag != null ? state.nameTag.getString() : "";
 
         Resident cachedPlayer = Cache.INSTANCE.getPlayer(nameString);
         if (cachedPlayer == null) return;
 
-        Text townyText = CacheKt.getTownyText(cachedPlayer);
-        matrices.translate(0D, 0.12225D, 0D);
+        Component townyText = CacheKt.getTownyComponent(cachedPlayer);
+        poseStack.translate(0D, 0.12225D, 0D);
 
-        matrices.push();
+        poseStack.pushPose();
 
-        matrices.scale(0.75F, 0.75F, 0.75F);
+        poseStack.scale(0.75F, 0.75F, 0.75F);
 
-        matrices.translate(0.0D, 2.25F, 0.0D);
+        poseStack.translate(0.0D, 2.25F, 0.0D);
 
-        queue.submitLabel(
-                matrices,
-                new Vec3d(0,0,0),
+        submitNodeCollector.submitNameTag(
+                poseStack,
+                new Vec3(0, 0, 0),
                 0,
                 townyText,
-                !state.sneaking,
-                state.light,
-                state.squaredDistanceToCamera,
-                cameraRenderState
+                !state.isCrouching,
+                state.lightCoords,
+                camera
         );
-        matrices.pop();
+        poseStack.popPose();
 
     }
 }

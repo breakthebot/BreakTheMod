@@ -22,10 +22,10 @@ import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.text.ClickEvent
-import net.minecraft.text.Style
-import net.minecraft.text.Text
-import net.minecraft.util.Formatting
+import net.minecraft.network.chat.ClickEvent
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.Style
+import net.minecraft.network.chat.TextColor
 import org.breakthebot.breakthelibrary.api.TownyAPI
 import java.net.URI
 
@@ -40,16 +40,11 @@ object DiscordId : BaseCommand(
         val name: String = ctx.getArgument("name", String::class.java)
         scope.launch {
             val discord = TownyAPI.getPlayerDiscord(name).getOrNull()
-            val result: Text = if (discord != null) {
-                Text.literal("Click Here")
-                    .styled {
-                        Style.EMPTY
-                            .withColor(Formatting.BLUE)
-                            .withClickEvent(
-                                ClickEvent.OpenUrl(URI("https://discord.com/users/${discord}"))
-                            )
-                    }
-            } else Text.of("No player found.")
+            val result: Component = if (discord != null) {
+                Component.literal("Click Here")
+                    .withColor(TextColor.BLUE)
+                    .withStyle(Style.EMPTY.withClickEvent(ClickEvent.OpenUrl(URI("https://discord.com/users/${discord}"))))
+            } else Component.literal("No player found.")
 
             sendMessage(result)
             return@launch

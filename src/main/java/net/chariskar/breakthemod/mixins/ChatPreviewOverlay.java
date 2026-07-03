@@ -14,54 +14,57 @@
  * You should have received a copy of the GNU General Public License
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
-
 package net.chariskar.breakthemod.mixins;
 
-import net.chariskar.breakthemod.client.modules.ChatTracker;
-import net.chariskar.breakthemod.client.models.ChatChannel;
+import net.chariskar.breakthemod.Breakthemod;
 import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.text.Text;
-
+import net.chariskar.breakthemod.client.models.ChatChannel;
+import net.chariskar.breakthemod.client.modules.ChatTracker;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 ///  Credit to [...](https://github.com/Veyronity/Earthy/blob/master/client/fabric/src/main/java/au/lupine/earthy/fabric/mixin/EditBoxMixin.java)
-
-@Mixin(TextFieldWidget.class)
-public abstract class ChatPreviewOverlay extends ClickableWidget implements ServerUtilsProvider {
-
-    @Shadow @Final private TextRenderer textRenderer;
-    @Shadow @Nullable private String suggestion;
-    @Shadow private String text;
-
+///
+@Mixin(EditBox.class)
+public abstract class ChatPreviewOverlay extends AbstractWidget implements ServerUtilsProvider {
     @Unique
-    private static final Logger LOGGER = LoggerFactory.getLogger("breakthemod");
+    Logger logger = Breakthemod.Companion.getLogger();
+    @Shadow
+    @Final
+    private Font font;
+    @Shadow
+    private @Nullable String suggestion;
+    @Shadow
+    private String value;
+    @Shadow
+    private int textY;
 
-    protected ChatPreviewOverlay(int x, int y, int width, int height, Text message) {
-        super(x, y, width, height, message);
+    public ChatPreviewOverlay(int i, int j, int k, int l, Component component) {
+        super(i, j, k, l, component);
     }
 
-    @Inject(method = "renderWidget", at = @At("TAIL"))
-    private void inject(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    @Inject(
+            method = "extractWidgetRenderState",
+            at = @At("TAIL")
+    )
+    private void inject(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
         try {
             if (!isEarthMc()) return;
-            if (!getMessage().equals(Text.translatable("chat.editBox"))) return;
+            if (!getMessage().equals(Component.translatable("chat.editBox"))) return;
 
-            if (this.suggestion != null || !this.text.isEmpty()) return;
+            if (this.suggestion != null || !this.value.isEmpty()) return;
 
             ChatChannel current = ChatTracker.INSTANCE.getChatChannel();
             if (current == null) return;
@@ -69,20 +72,16 @@ public abstract class ChatPreviewOverlay extends ClickableWidget implements Serv
             boolean inParty = ChatTracker.INSTANCE.getInPartyChat();
             String label = inParty ? current.getName() + " (party)" : current.getName();
 
-            int x = this.getX();
-            int y = this.getY();
-
-            context.drawText(
-                    this.textRenderer,
-                    label,
-                    x,
-                    y,
-                    current.getColour(),
-                    false
-            );
-
+            try {
+                int x = this.getX();
+                int y = this.getY();
+                int color = current.getColour();
+                graphics.text(this.font, label, x, y, color, false);
+            } catch (Exception e) {
+                logger.warn("[EditBoxMixin] Exception drawing string: {}", e.getMessage());
+            }
         } catch (Exception e) {
-            LOGGER.warn("{}", e.getMessage());
+            logger.warn("[EditBoxMixin] Exception in inject: {}", e.getMessage());
         }
     }
 }

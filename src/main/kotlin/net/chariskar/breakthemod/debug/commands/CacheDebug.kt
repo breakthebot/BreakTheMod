@@ -23,7 +23,7 @@ import com.mojang.brigadier.context.CommandContext
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.modules.Cache
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 
 object CacheDebug : BaseCommand(
     "cacheDebug",
@@ -33,7 +33,7 @@ object CacheDebug : BaseCommand(
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val name: String = ctx.getArgument("name", String::class.java)
         sendMessage(
-            Text.literal("Cache data ${Cache.getPlayer(name).toString()}")
+            Component.literal("Cache data ${Cache.getPlayer(name).toString()}")
         )
         return 0
     }

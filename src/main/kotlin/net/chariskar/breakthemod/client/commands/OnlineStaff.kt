@@ -24,12 +24,11 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.text.MutableText
-import net.minecraft.text.Style
-import net.minecraft.text.Text
-import net.minecraft.util.Formatting
 import net.chariskar.breakthemod.client.api.command.BaseCommand
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.Style
+import net.minecraft.network.chat.TextColor
 import org.breakthebot.breakthelibrary.api.TownyAPI
 
 object OnlineStaff : BaseCommand(
@@ -43,9 +42,9 @@ object OnlineStaff : BaseCommand(
         dispatcher.register(
             LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)
                 .then(RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("api", StringArgumentType.string())
-                    .executes(Command { context: CommandContext<FabricClientCommandSource> ->
+                    .executes(Command { conComponent: CommandContext<FabricClientCommandSource> ->
                         if (!isModEnabled()) {return@Command 0}
-                        val arg: String = context.getArgument("api", String::class.java)
+                        val arg: String = conComponent.getArgument("api", String::class.java)
                         return@Command exec(arg == "api")
                     }))
                 .executes(Command { _: CommandContext<FabricClientCommandSource> ->
@@ -55,12 +54,13 @@ object OnlineStaff : BaseCommand(
         )
     }
 
-    suspend fun onlineStaff(api: Boolean): Text {
+    suspend fun onlineStaff(api: Boolean): Component {
         val staff = TownyAPI.getStaff().getOrNull()
 
-        if (staff.isNullOrEmpty()) return Text.literal("Received invalid staff list.").setStyle(Style.EMPTY.withColor(Formatting.RED))
+        if (staff.isNullOrEmpty()) return Component.literal("Received invalid staff list.")
+            .setStyle(Style.EMPTY.withColor(TextColor.RED))
 
-        var onlineStaffText: MutableText = Text.empty()
+        var onlineStaffComponent = Component.empty()
 
         val staffNames: List<String> = if (api) {
             TownyAPI.getPlayers( staff.map { v->v.toString() } )
@@ -70,35 +70,35 @@ object OnlineStaff : BaseCommand(
                 ?.map { r -> r.name }!!
         } else {
             staff.mapNotNull { uuid ->
-                client.networkHandler!!.playerList.firstOrNull {
+                client.connection!!.onlinePlayers.firstOrNull {
                     it.profile.id == uuid.toUUID()
                 }?.profile?.name
             }
         }
 
         for (i in staffNames.indices) {
-            onlineStaffText = onlineStaffText.append(
-                Text.literal(staffNames[i]).setStyle(Style.EMPTY.withColor(Formatting.AQUA))
+            onlineStaffComponent = onlineStaffComponent.append(
+                Component.literal(staffNames[i]).setStyle(Style.EMPTY.withColor(TextColor.AQUA))
             )
 
             if (i < staffNames.size - 1) {
-                onlineStaffText = onlineStaffText.append(
-                    Text.literal(", ").setStyle(Style.EMPTY.withColor(Formatting.WHITE))
+                onlineStaffComponent = onlineStaffComponent.append(
+                    Component.literal(", ").setStyle(Style.EMPTY.withColor(TextColor.WHITE))
                 )
             }
         }
 
-        return Text.empty().apply {
+        return Component.empty().apply {
            if (staffNames.isNotEmpty()) {
-                append(onlineStaffText)
-                append(Text.literal(" [").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
+               append(onlineStaffComponent)
+               append(Component.literal(" [").setStyle(Style.EMPTY.withColor(TextColor.GRAY)))
                 append(
-                    Text.literal(staffNames.size.toString())
-                        .setStyle(Style.EMPTY.withColor(Formatting.WHITE))
+                    Component.literal(staffNames.size.toString())
+                        .setStyle(Style.EMPTY.withColor(TextColor.WHITE))
                 )
-                append(Text.literal("]").setStyle(Style.EMPTY.withColor(Formatting.GRAY)))
+               append(Component.literal("]").setStyle(Style.EMPTY.withColor(TextColor.GRAY)))
            } else {
-               append("No online staff").style = Style.EMPTY.withColor(Formatting.AQUA)
+               append("No online staff").style = Style.EMPTY.withColor(TextColor.AQUA)
            }
         }
     }

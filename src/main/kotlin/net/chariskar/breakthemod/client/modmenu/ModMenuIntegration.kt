@@ -20,11 +20,12 @@ package net.chariskar.breakthemod.client.modmenu
 import com.terraformersmc.modmenu.api.ConfigScreenFactory
 import com.terraformersmc.modmenu.api.ModMenuApi
 import me.shedaniel.clothconfig2.api.ConfigBuilder
+import net.chariskar.breakthemod.client.api.widget.WidgetManager
 import net.chariskar.breakthemod.client.models.AutoHudType
 import net.chariskar.breakthemod.client.utils.Config
-import net.chariskar.breakthemod.client.api.widget.WidgetManager
-import net.minecraft.client.gui.screen.Screen
-import net.minecraft.text.Text
+import net.minecraft.client.gui.screens.Screen
+import net.minecraft.network.chat.Component
+
 
 class ModMenuIntegration : ModMenuApi {
 
@@ -32,24 +33,24 @@ class ModMenuIntegration : ModMenuApi {
         fun createConfigScreen(parent: Screen): Screen {
             val builder = ConfigBuilder.create()
                 .setParentScreen(parent)
-                .setTitle(Text.of("BreakTheMod"))
+                .setTitle(Component.literal("BreakTheMod"))
 
             val entryBuilder = builder.entryBuilder()
-            val general = builder.getOrCreateCategory(Text.literal("BreakTheMod config"))
+            val general = builder.getOrCreateCategory(Component.literal("BreakTheMod config"))
 
             val options = if ( Config.config.options ) {
-                builder.getOrCreateCategory(Text.literal("Options"))
+                builder.getOrCreateCategory(Component.literal("Options"))
             } else null
 
             val devOptions = if ( Config.config.dev ) {
-                builder.getOrCreateCategory(Text.literal("Developer Settings"))
+                builder.getOrCreateCategory(Component.literal("Developer Settings"))
             } else null
 
-            val widgetConfig = builder.getOrCreateCategory(Text.literal("Widget Configuration"))
+            val widgetConfig = builder.getOrCreateCategory(Component.literal("Widget Configuration"))
 
             general.addEntry(
                 entryBuilder.startBooleanToggle(
-                    Text.literal("Enable BreakTheMod on other servers"),
+                    Component.literal("Enable BreakTheMod on other servers"),
                     Config.config.enabledOnOtherServers
                 )
                     .setSaveConsumer { enabled: Boolean ->
@@ -62,7 +63,7 @@ class ModMenuIntegration : ModMenuApi {
 
             general.addEntry(
                 entryBuilder.startEnumSelector(
-                    Text.literal("AutoHUD type"),
+                    Component.literal("AutoHUD type"),
                     AutoHudType::class.java,
                     Config.features.hudType
                 ).setSaveConsumer { hudType: AutoHudType ->
@@ -73,17 +74,17 @@ class ModMenuIntegration : ModMenuApi {
 
             general.addEntry(
                 entryBuilder.startBooleanToggle(
-                    Text.literal("Experience text overlay"),
-                    Config.features.experienceText
+                    Component.literal("Experience Component overlay"),
+                    Config.features.experienceComponent
                 ).setSaveConsumer { enabled: Boolean ->
-                    Config.config.features.experienceText = enabled
+                    Config.config.features.experienceComponent = enabled
                     saveConfig()
-                }.setDefaultValue( Config.features.experienceText ).build()
+                }.setDefaultValue(Config.features.experienceComponent).build()
             )
 
             general.addEntry(
                 entryBuilder.startBooleanToggle(
-                    Text.literal("Player name tag info"),
+                    Component.literal("Player name tag info"),
                     Config.getNameTag()
                 ).setSaveConsumer { enabled: Boolean ->
                     Config.config.features.nameTagInfo = enabled
@@ -98,7 +99,7 @@ class ModMenuIntegration : ModMenuApi {
 
             general.addEntry(
                 entryBuilder.startStrField(
-                    Text.literal("Townless message"),
+                    Component.literal("Townless message"),
                     Config.getTownlessMessage("TOWN")
                 ).setSaveConsumer { message: String ->
                     Config.setTownlessMessage(message)
@@ -110,7 +111,7 @@ class ModMenuIntegration : ModMenuApi {
 
             general.addEntry(
                 entryBuilder.startBooleanToggle(
-                    Text.literal("dev"),
+                    Component.literal("dev"),
                     Config.config.dev
                 )
                     .setSaveConsumer { enabled: Boolean ->
@@ -122,7 +123,7 @@ class ModMenuIntegration : ModMenuApi {
 
             general.addEntry(
                 entryBuilder.startBooleanToggle(
-                    Text.literal("Options"),
+                    Component.literal("Options"),
                     Config.config.options
                 )
                     .setSaveConsumer { enabled: Boolean ->
@@ -134,7 +135,7 @@ class ModMenuIntegration : ModMenuApi {
 
             devOptions?.addEntry(
                 entryBuilder.startBooleanToggle(
-                    Text.literal("Cache"),
+                    Component.literal("Cache"),
                     Config.features.cacheEnabled,
                 )
                     .setSaveConsumer { enabled: Boolean ->
@@ -146,7 +147,7 @@ class ModMenuIntegration : ModMenuApi {
 
             options?.addEntry(
                 entryBuilder.startStrField(
-                    Text.literal("API url"),
+                    Component.literal("API url"),
                     Config.config.libraryConfig.apiUrl
                 )
                     .setSaveConsumer { url: String ->
@@ -158,7 +159,7 @@ class ModMenuIntegration : ModMenuApi {
 
             options?.addEntry(
                 entryBuilder.startStrField(
-                    Text.literal("Map url"),
+                    Component.literal("Map url"),
                     Config.config.libraryConfig.mapUrl
                 )
                     .setSaveConsumer { url: String ->
@@ -170,7 +171,7 @@ class ModMenuIntegration : ModMenuApi {
 
             options?.addEntry(
                 entryBuilder.startStrField(
-                    Text.literal("Staff url"),
+                    Component.literal("Staff url"),
                     Config.config.libraryConfig.staffUrl
                 )
                     .setSaveConsumer { url: String ->

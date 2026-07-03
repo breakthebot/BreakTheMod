@@ -21,7 +21,7 @@ import com.mojang.brigadier.context.CommandContext
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 
 object GetConfig : BaseCommand(
     "getConfig",
@@ -29,7 +29,7 @@ object GetConfig : BaseCommand(
 ) {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
-        sendMessage(Text.literal("Config: ${Config.config}"))
+        sendMessage(Component.literal("Config: ${Config.config}"))
         return 0
     }
 }

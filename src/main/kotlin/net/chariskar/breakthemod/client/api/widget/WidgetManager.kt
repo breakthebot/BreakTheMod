@@ -17,6 +17,7 @@
 
 package net.chariskar.breakthemod.client.api.widget
 
+import com.mojang.blaze3d.platform.InputConstants
 import me.shedaniel.clothconfig2.api.ConfigCategory
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
 import net.chariskar.breakthemod.Breakthemod
@@ -25,15 +26,14 @@ import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.Schedule
 import net.chariskar.breakthemod.client.utils.Scheduler
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.option.KeyBinding
-import net.minecraft.client.util.InputUtil
-import net.minecraft.text.Text
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper
+import net.minecraft.client.KeyMapping
+import net.minecraft.client.Minecraft
+import net.minecraft.network.chat.Component
+import net.minecraft.resources.Identifier
 import org.lwjgl.glfw.GLFW
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.minutes
-import kotlin.time.ExperimentalTime
 
 /**
  * Widget manager.
@@ -43,7 +43,11 @@ object WidgetManager {
     var widgetMode = WidgetModes.General
         private set
 
-    @OptIn(ExperimentalTime::class)
+    val CATEGORY: KeyMapping.Category = KeyMapping.Category.register(
+        Identifier.fromNamespaceAndPath("breakthemod", "custom_category")
+    )
+    lateinit var keyMapping: KeyMapping
+
     /**
      * Changes modes to category.
      * */
@@ -88,30 +92,25 @@ object WidgetManager {
     }
 
     fun registerKeyBind() {
-        val keyBinding = KeyBindingHelper.registerKeyBinding(
-            KeyBinding(
-                "Switch Modes",
-                InputUtil.Type.KEYSYM,
+        keyMapping = KeyMappingHelper.registerKeyMapping(
+            KeyMapping(
+                "key.breakthemod.switch_modes",
+                InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_TAB,
-                KeyBinding.Category.MISC
+                CATEGORY
             )
         )
 
-        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick { client: MinecraftClient? ->
-            while (keyBinding.wasPressed()) {
+        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick { client: Minecraft? ->
+            while (keyMapping.consumeClick()) {
                 val handle = client!!.window
-
-                val shiftHeld =
-                    InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_SHIFT)
-                            || InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_RIGHT_SHIFT)
+                val shiftHeld = InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_SHIFT) ||
+                        InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_RIGHT_SHIFT)
 
                 if (shiftHeld) {
-                    changeMode(
-                        widgetMode.next()
-                    )
-                    client.player?.sendMessage(
-                        Text.literal("Switched to $widgetMode"),
-                        true
+                    changeMode(widgetMode.next())
+                    client.player?.sendOverlayMessage(
+                        Component.literal("Switched to $widgetMode")
                     )
                 }
             }
@@ -126,7 +125,7 @@ object WidgetManager {
         entryBuilder: ConfigEntryBuilder
     ) {
         Breakthemod.widgets.forEach {
-            val subCategory = entryBuilder.startSubCategory(Text.literal("${it.config.name} configuration"))
+            val subCategory = entryBuilder.startSubCategory(Component.literal("${it.config.name} configuration"))
             it.getModMenuConfig(subCategory, entryBuilder)
             category.addEntry(subCategory.build())
         }

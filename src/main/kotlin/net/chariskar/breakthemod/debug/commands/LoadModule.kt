@@ -27,7 +27,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 import java.util.Locale
 import java.util.concurrent.CompletableFuture
 
@@ -51,7 +51,7 @@ object LoadModule : BaseCommand(
         val module = Breakthemod.modules.firstOrNull { it.name == name }
 
         if (module?.enabled == true) {
-            sendMessage(Text.literal("Module $name already enabled."))
+            sendMessage(Component.literal("Module $name already enabled."))
             return 0
         }
 
@@ -69,7 +69,7 @@ object LoadModule : BaseCommand(
 
         @Throws(CommandSyntaxException::class)
         override fun getSuggestions(
-            context: CommandContext<FabricClientCommandSource?>?,
+            conComponent: CommandContext<FabricClientCommandSource?>?,
             builder: SuggestionsBuilder
         ): CompletableFuture<Suggestions> {
             val input = builder.remaining.lowercase(Locale.getDefault())

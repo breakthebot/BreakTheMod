@@ -31,10 +31,10 @@ import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.text.ClickEvent
-import net.minecraft.text.Style
-import net.minecraft.text.Text
-import net.minecraft.util.Formatting
+import net.minecraft.network.chat.ClickEvent
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.Style
+import net.minecraft.network.chat.TextColor
 import org.breakthebot.breakthelibrary.api.TownyAPI
 import java.net.URI
 import java.util.Locale
@@ -69,21 +69,18 @@ object Locate : BaseCommand(
                 return@launch
             }
             sendMessage(
-                Text.literal("$name is located ").append(getMapText(coords.x!!,coords.z!!)).append(" (x: ${coords.x?.toInt()}, z: ${coords.z?.toInt()})")
+                Component.literal("$name is located ").append(getMapComponent(coords.x, coords.z))
+                    .append(" (x: ${coords.x.toInt()}, z: ${coords.z.toInt()})")
             )
         }
         return 0
     }
 
-    private fun getMapText(x: Float, z: Float): Text {
+    private fun getMapComponent(x: Float, z: Float): Component {
         val mapUrl = "${Config.getMapUrl()}?world=minecraft_overworld&zoom=5&x=$x&z=$z"
-        return Text.literal("here").styled {
-            Style.EMPTY
-                .withColor(Formatting.BLUE)
-                .withClickEvent (
-                    ClickEvent.OpenUrl(URI.create(mapUrl))
-                )
-        }
+        return Component.literal("here")
+            .withColor(TextColor.BLUE)
+            .setStyle(Style.EMPTY.withClickEvent(ClickEvent.OpenUrl(URI.create(mapUrl))))
     }
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
@@ -105,9 +102,9 @@ object Locate : BaseCommand(
                                 StringArgumentType.string()
                             )
                                 .suggests(NameSuggestions())
-                                .executes { context ->
+                                .executes { conComponent ->
                                     if (!isModEnabled()) return@executes 0
-                                    run(context)
+                                    run(conComponent)
                                 }
                         )
                 )
@@ -119,11 +116,11 @@ object Locate : BaseCommand(
 
         @Throws(CommandSyntaxException::class)
         override fun getSuggestions(
-            context: CommandContext<FabricClientCommandSource>,
+            conComponent: CommandContext<FabricClientCommandSource>,
             builder: SuggestionsBuilder
         ): CompletableFuture<Suggestions> {
 
-            val type = StringArgumentType.getString(context, "type")
+            val type = StringArgumentType.getString(conComponent, "type")
 
             val input = builder.remaining.lowercase(Locale.getDefault())
 

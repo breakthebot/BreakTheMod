@@ -19,73 +19,72 @@ package net.chariskar.breakthemod.mixins;
 
 import net.chariskar.breakthemod.client.utils.Config;
 import net.chariskar.breakthemod.client.utils.ExperienceUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.hud.bar.Bar;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.contextualbar.ContextualBar;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.Objects;
 
-@Mixin(Bar.class)
+@Mixin(ContextualBar.class)
 public interface ExperienceTextMixin {
 
     @Redirect(
-            method = "drawExperienceLevel",
+            method = "extractExperienceLevel",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;IIIZ)V"
+                    target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;text(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)V"
             )
     )
     private static void drawScaledText(
-            DrawContext context,
-            TextRenderer renderer,
-            Text text,
+            GuiGraphicsExtractor instance,
+            Font font,
+            Component str,
             int x,
             int y,
             int color,
-            boolean shadow
+            boolean dropShadow
     ) {
-        if (!Config.INSTANCE.getFeatures().getExperienceText()) {
-            context.drawText(renderer, text, x, y, color, shadow);
+        if (!Config.INSTANCE.getFeatures().getExperienceComponent()) {
+            instance.text(font, str, x, y, color, dropShadow);
             return;
         }
-        context.getMatrices().pushMatrix();
+        instance.pose().pushMatrix();
 
-        context.drawText(
-                renderer,
-                text,
+        instance.text(
+                font,
+                str,
                 x,
                 y,
                 color,
                 false
         );
 
-        context.getMatrices().popMatrix();
+
+        instance.pose().popMatrix();
     }
 
     @Redirect(
-            method = "drawExperienceLevel",
+            method = "extractExperienceLevel",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/text/Text;translatable(Ljava/lang/String;[Ljava/lang/Object;)Lnet/minecraft/text/MutableText;"
+                    target = "Lnet/minecraft/network/chat/Component;translatable(Ljava/lang/String;[Ljava/lang/Object;)Lnet/minecraft/network/chat/MutableComponent;"
             )
     )
-    private static MutableText redirectLevelText(
+    private static MutableComponent redirectLevelText(
             String key,
             Object[] args
     ) {
-        Objects.requireNonNull(MinecraftClient.getInstance().player);
+        Objects.requireNonNull(Minecraft.getInstance().player);
         int level = (int) args[0];
-        if (!Config.INSTANCE.getFeatures().getExperienceText()) return Text.translatable("gui.experience.level", level);
-        return Text.literal(level + "(" +  ExperienceUtils.INSTANCE.experience(MinecraftClient.getInstance().player) + ")");
+        if (!Config.INSTANCE.getFeatures().getExperienceComponent())
+            return Component.translatable("gui.experience.level", level);
+        return Component.literal(level + "(" + ExperienceUtils.INSTANCE.experience(Minecraft.getInstance().player) + ")");
     }
 
 }

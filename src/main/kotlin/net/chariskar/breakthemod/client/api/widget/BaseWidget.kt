@@ -24,10 +24,10 @@ import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider
 import net.chariskar.breakthemod.client.models.WidgetConfig
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.font.TextRenderer
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.util.Identifier
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.Font
+import net.minecraft.client.gui.GuiGraphicsExtractor
+import net.minecraft.resources.Identifier
 
 enum class WidgetPosition {
     TOP_LEFT,
@@ -133,7 +133,7 @@ data class Coords(
 abstract class BaseWidget(
     val name: String,
 ) : ServerUtilsProvider, LoggingProvider {
-    protected val client: MinecraftClient = MinecraftClient.getInstance()
+    protected val client: Minecraft = Minecraft.getInstance()
 
     abstract val config: WidgetConfig
 
@@ -144,7 +144,7 @@ abstract class BaseWidget(
      * Checks if the widget should be rendered.
      * */
     open fun shouldNotRender(): Boolean {
-        return !isModEnabled() || !config.enabled || client.options.hudHidden
+        return !isModEnabled() || !config.enabled || client.gui.hud.isHidden
     }
 
     /**
@@ -159,38 +159,43 @@ abstract class BaseWidget(
 
     /** Registers the element after VanillaHudElements.CHAT.*/
     fun register() {
-        HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, Identifier.of("breakthemod", name)) {
-            context, _ -> render(context, client.textRenderer)
+        HudElementRegistry.attachElementAfter(
+            VanillaHudElements.CHAT,
+            Identifier.fromNamespaceAndPath("breakthemod", name)
+        ) { conComponent, _ ->
+            render(conComponent, client.font)
         }
     }
 
     /** Render entry point.
-     * @param drawContext The draw context to use.
+     * @param drawContext The draw conComponent to use.
      * @param textRender The textRender to use.
      * */
-    abstract fun render(drawContext: DrawContext, textRender: TextRenderer)
+    abstract fun render(drawContext: GuiGraphicsExtractor, textRender: Font)
 
     /**
      * Renders a list of strings.
      *  @param itemList The list of items to display.
      * */
     fun renderListWidget(
-        drawContext: DrawContext,
-        textRender: TextRenderer,
+        drawContext: GuiGraphicsExtractor,
+        textRender: Font,
         itemList: List<String>
     ) {
         if (shouldNotRender()) return
 
-        val width = (itemList.maxOfOrNull { textRender.getWidth(it) } ?: 100) + 2 * margin
+        val width = (itemList.maxOfOrNull { textRender.width(it) } ?: 100) + 2 * margin
 
         val height = (20 + itemList.size * entryHeight).coerceAtLeast(40)
 
-        val renderCoords = config.position.getPos(margin, height, width, client.window.scaledWidth, client.window.scaledHeight).apply { y+=5 }
+        val renderCoords =
+            config.position.getPos(margin, height, width, client.window.guiScaledWidth, client.window.guiScaledHeight)
+                .apply { y += 5 }
 
         for (entry in itemList) {
             val color = if (entry == config.placeHolderText) config.placeHolderColor else config.textColor
 
-            drawContext.drawText(textRender, entry, renderCoords.x + margin, renderCoords.y, color, false)
+            drawContext.text(textRender, entry, renderCoords.x + margin, renderCoords.y, color, false)
 
             renderCoords.y += entryHeight
         }
@@ -198,21 +203,22 @@ abstract class BaseWidget(
 
     /**
      * Renders a string widget.
-     * @param text The text to render.
+     * @param text The Component to render.
      * */
-    fun renderTextWidget(
-        drawContext: DrawContext,
-        textRender: TextRenderer,
+    fun renderComponentWidget(
+        drawContext: GuiGraphicsExtractor,
+        textRender: Font,
         text: String
     ) {
         if (shouldNotRender()) return
 
-        val width = textRender.getWidth(text) + margin * 2
+        val width = textRender.width(text) + margin * 2
 
-        val renderCoords = config.position.getPos(margin, 40, width, client.window.scaledWidth, client.window.scaledHeight)
+        val renderCoords =
+            config.position.getPos(margin, 40, width, client.window.guiScaledWidth, client.window.guiScaledHeight)
 
         val color = if (text == config.placeHolderText) config.placeHolderColor else config.textColor
 
-        drawContext.drawText(textRender, text, renderCoords.x + margin, renderCoords.y, color, false)
+        drawContext.text(textRender, text, renderCoords.x + margin, renderCoords.y, color, false)
     }
 }

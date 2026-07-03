@@ -17,15 +17,12 @@
 package net.chariskar.breakthemod.client.commands
 
 import com.mojang.brigadier.context.CommandContext
-import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.modules.NearbyEngine
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.text.Style
-import net.minecraft.text.Text
-import net.minecraft.text.TextColor
-import net.minecraft.util.Formatting
-
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.Style
+import net.minecraft.network.chat.TextColor
 
 object Nearby : BaseCommand(
     "nearby",
@@ -36,25 +33,25 @@ object Nearby : BaseCommand(
         val players = NearbyEngine.players
 
         val header = if (players.isEmpty()) {
-            Text.literal("No players nearby").setStyle(
+            Component.literal("No players nearby").setStyle(
                 Style.EMPTY.withColor(
-                    TextColor.fromFormatting(Formatting.RED)
+                    TextColor.RED
                 )
             )
         } else {
-            Text.literal("Players nearby:\n").setStyle(
+            Component.literal("Players nearby:\n").setStyle(
                 Style.EMPTY.withColor(
-                    TextColor.fromFormatting(Formatting.YELLOW)
+                    TextColor.YELLOW
                 )
             )
         }
-        val playerText = Text.empty().setStyle(
-            Style.EMPTY.withColor(Formatting.AQUA)
+        val playerComponent = Component.empty().setStyle(
+            Style.EMPTY.withColor(TextColor.AQUA)
         )
         for (player in players) {
-            playerText.append(player.toString() + "\n")
+            playerComponent.append(player.toString() + "\n")
         }
-        header.append(playerText)
+        header.append(playerComponent)
 
         sendMessage(header)
         return 0

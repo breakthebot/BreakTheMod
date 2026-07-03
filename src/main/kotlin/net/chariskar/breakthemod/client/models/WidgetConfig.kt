@@ -18,14 +18,12 @@
 package net.chariskar.breakthemod.client.models
 
 import kotlinx.serialization.Serializable
-import me.shedaniel.clothconfig2.api.ConfigCategory
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
 import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder
 import net.chariskar.breakthemod.client.api.widget.WidgetModes
 import net.chariskar.breakthemod.client.api.widget.WidgetPosition
 import net.chariskar.breakthemod.client.utils.Config
-import net.chariskar.breakthemod.client.utils.save
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 
 /**
  * Data class for representing the configuration of a widget.
@@ -58,7 +56,7 @@ fun WidgetConfig.getPositionConfig(
 ) {
     category.add(
         entryBuilder.startEnumSelector(
-            Text.literal("$name Position"),
+            Component.literal("$name Position"),
             WidgetPosition::class.java,
             position
         ).setSaveConsumer { pos: WidgetPosition ->
@@ -69,7 +67,7 @@ fun WidgetConfig.getPositionConfig(
 }
 
 /**
- * Generate the text config for widgets.
+ * Generate the Component config for widgets.
  * @param category The subcategory.
  * @param entryBuilder The entry builder.
  * @param defaultText The default widget text.
@@ -86,7 +84,7 @@ fun WidgetConfig.getTextConfig(
 ) {
     category.add(
         entryBuilder.startStrField(
-            Text.literal("$name text"),
+            Component.literal("$name text"),
             text
         ).setSaveConsumer { str: String ->
             if (text == str || str.isEmpty()) return@setSaveConsumer
@@ -98,7 +96,7 @@ fun WidgetConfig.getTextConfig(
 
     category.add(
         entryBuilder.startStrField(
-            Text.literal("$name placeholder text"),
+            Component.literal("$name placeholder text"),
             placeHolderText
         ).setSaveConsumer { str: String ->
             if (placeHolderText == str || str.isEmpty()) return@setSaveConsumer
@@ -109,7 +107,7 @@ fun WidgetConfig.getTextConfig(
 
     category.add(
         entryBuilder.startStrField(
-            Text.literal("$name text placeholder"),
+            Component.literal("$name text placeholder"),
             textPlaceholder
         ).setSaveConsumer { str: String ->
             if (textPlaceholder == str || str.isEmpty()) return@setSaveConsumer
@@ -127,7 +125,7 @@ fun WidgetConfig.getTextColorConfig(
 ) {
     category.add(
         entryBuilder.startStrField(
-            Text.literal("$name text color"),
+            Component.literal("$name Component color"),
             textColor.toHexString()
         ).setSaveConsumer { str: String ->
             if (textColor == str.hexToInt() || str.isEmpty()) return@setSaveConsumer
@@ -142,7 +140,7 @@ fun WidgetConfig.getTextColorConfig(
 
     category.add(
         entryBuilder.startStrField(
-            Text.literal("$name placeholder text color"),
+            Component.literal("$name placeholder Component color"),
             placeHolderColor.toHexString()
         ).setSaveConsumer { str: String ->
             if (placeHolderColor == str.hexToInt() || str.isEmpty()) return@setSaveConsumer

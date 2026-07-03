@@ -23,11 +23,11 @@ import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.text.ClickEvent
-import net.minecraft.text.HoverEvent
-import net.minecraft.text.Style
-import net.minecraft.text.Text
-import net.minecraft.util.Formatting
+import net.minecraft.network.chat.ClickEvent
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.HoverEvent
+import net.minecraft.network.chat.Style
+import net.minecraft.network.chat.TextColor
 import org.breakthebot.breakthelibrary.api.TownyAPI
 
 object Townless : BaseCommand(
@@ -36,7 +36,11 @@ object Townless : BaseCommand(
 ) {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
-        val onlinePlayers = client.networkHandler!!.playerUuids.toList()
+        val onlinePlayers = client.connection?.onlinePlayers?.mapNotNull { it.profile.id.toString() }
+        if (onlinePlayers.isNullOrEmpty()) {
+            sendMessage("There are no online players.")
+            return 0
+        }
         scope.launch {
             if (onlinePlayers.size <= 1) {
                 sendMessage("No online players found.")
@@ -60,22 +64,23 @@ object Townless : BaseCommand(
                 return@launch
             }
 
-            val message = Text.literal("Townless Users:\n")
-                .setStyle(Style.EMPTY.withColor(Formatting.AQUA))
+            val message = Component.literal("Townless Users:\n")
+                .setStyle(Style.EMPTY.withColor(TextColor.AQUA))
 
             for (user in townless) {
                 val inviteMessage = "/msg $user " + Config.getTownlessMessage(townName)
-                val userText = Text.literal(user.name).styled {
+                val userComponent = Component.literal(user.name).setStyle(
                     Style.EMPTY
-                        .withColor(Formatting.AQUA)
+                        .withColor(TextColor.AQUA)
                         .withClickEvent(ClickEvent.CopyToClipboard(inviteMessage))
                         .withHoverEvent(
                             HoverEvent.ShowText(
-                                Text.literal("Click to copy message to clipboard.")
+                                Component.literal("Click to copy message to clipboard.")
                             )
                         )
-                }
-                message.append(userText).append(Text.literal("\n"))
+                )
+
+                message.append(userComponent).append(Component.literal("\n"))
             }
             sendMessage(message)
 

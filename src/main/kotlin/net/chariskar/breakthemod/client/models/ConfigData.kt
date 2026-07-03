@@ -17,7 +17,6 @@
 
 package net.chariskar.breakthemod.client.models
 
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import net.chariskar.breakthemod.client.api.widget.WidgetModes
 import net.chariskar.breakthemod.client.utils.Config
@@ -31,7 +30,6 @@ data class ConfigData(
     var options: Boolean = false,
     var features: Features = Features(),
     var widgets: MutableMap<String, WidgetConfig> = mutableMapOf(),
-    @Contextual
     var libraryConfig: LConfig = LConfig(),
     var widgetMode: WidgetModes = WidgetModes.General,
     val notifications: MutableMap<String, Boolean> = mutableMapOf()
@@ -54,6 +52,6 @@ data class Features(
 
     var nameTagInfo: Boolean = true,
     var cacheEnabled: Boolean = true,
-    var experienceText: Boolean = true,
+    var experienceComponent: Boolean = true,
     var widgetDataLife: Int = 5
 )

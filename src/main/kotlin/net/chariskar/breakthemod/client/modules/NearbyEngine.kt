@@ -17,14 +17,13 @@
 
 package net.chariskar.breakthemod.client.modules
 
-import net.chariskar.breakthemod.client.models.PlayerInfo
 import net.chariskar.breakthemod.client.api.module.BaseModule
+import net.chariskar.breakthemod.client.models.PlayerInfo
 import net.chariskar.breakthemod.client.widgets.NearbyPlayers
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.minecraft.client.MinecraftClient
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.util.math.Vec3d
-import net.minecraft.world.World
+import net.minecraft.client.Minecraft
+import net.minecraft.client.multiplayer.ClientLevel
+import net.minecraft.client.player.LocalPlayer
 import java.util.concurrent.CopyOnWriteArraySet
 
 /**
@@ -46,33 +45,35 @@ object NearbyEngine : BaseModule(
     /**
      * Checks if there are entities nearby using [PlayerInfo.shouldSkip] and returns a Set of [PlayerInfo]
      * @param self The player entity
-     * @param world The client world.
+     * @param level The client world.
      * */
     private fun updateNearbyPlayers(
-        self: PlayerEntity,
-        world: World
+        self: LocalPlayer,
+        level: ClientLevel
     ): Set<PlayerInfo> {
-        val selfPos = Vec3d(self.x, self.y, self.z)
-        val players = mutableSetOf<PlayerInfo>()
+        val selfPos = self.position()
 
-        for (other in world.players) {
+        val nearby = mutableSetOf<PlayerInfo>()
+
+        for (other in level.players()) {
             if (other === self) continue
 
             val info = PlayerInfo(
                 other.gameProfile.name,
-                MinecraftClient.getInstance(),
-                Vec3d(other.x, other.y, other.z),
+                Minecraft.getInstance(),
+                other.position()
             )
 
             if (info.calculateDistance(selfPos) >
                 DISTANCE_THRESHOLD * DISTANCE_THRESHOLD
             ) continue
 
-            if (info.shouldSkip(other, world)) continue
-            players.add(info)
+            if (info.shouldSkip(other, level)) continue
+
+            nearby += info
         }
 
-        return players
+        return nearby
     }
 
     override fun enable() {
@@ -80,13 +81,13 @@ object NearbyEngine : BaseModule(
             if (!NearbyPlayers.config.enabled) return@register
 
             val player = client.player ?: return@register
-            val world = client.world ?: return@register
+            val world = client.level ?: return@register
 
             val nearby = updateNearbyPlayers(player, world)
 
             _players.clear()
             _players.addAll(nearby)
         }
-        
+
     }
 }

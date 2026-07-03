@@ -21,10 +21,10 @@ import net.chariskar.breakthemod.client.api.module.BaseModule
 import net.chariskar.breakthemod.client.models.ChatChannel
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.network.ClientPlayNetworkHandler
-import net.minecraft.text.Text
-import net.minecraft.util.math.Vec3d
+import net.minecraft.client.Minecraft
+import net.minecraft.client.multiplayer.ClientPacketListener
+import net.minecraft.network.chat.Component
+import net.minecraft.world.phys.Vec3
 import java.util.regex.Pattern
 
 /**
@@ -32,7 +32,7 @@ import java.util.regex.Pattern
  * @param item The name of the item the shop sells.
  * */
 data class ShopObject(
-    val coords: Vec3d,
+    val coords: Vec3,
     val item: String
 ) {
     override fun toString(): String {
@@ -66,7 +66,7 @@ object ChatTracker : BaseModule(
     )
 
     override fun enable() {
-        ClientReceiveMessageEvents.GAME.register(ClientReceiveMessageEvents.Game { message: Text?, _: Boolean ->
+        ClientReceiveMessageEvents.GAME.register(ClientReceiveMessageEvents.Game { message: Component?, _: Boolean ->
             if (!isEarthMc()) return@Game
             val message = message?.string ?: return@Game
 
@@ -77,7 +77,7 @@ object ChatTracker : BaseModule(
             emptyShops.add(shop)
         })
 
-        ClientPlayConnectionEvents.DISCONNECT.register(ClientPlayConnectionEvents.Disconnect { _: ClientPlayNetworkHandler?, _: MinecraftClient? ->
+        ClientPlayConnectionEvents.DISCONNECT.register(ClientPlayConnectionEvents.Disconnect { _: ClientPacketListener?, _: Minecraft? ->
             isAfk = false
             inPartyChat = false
             emptyShops.clear()
@@ -141,7 +141,7 @@ object ChatTracker : BaseModule(
         val (x, y, z, item) = match?.destructured ?: return null
 
         return ShopObject(
-            Vec3d(
+            Vec3(
                 x.toDouble(),
                 y.toDouble(),
                 z.toDouble()

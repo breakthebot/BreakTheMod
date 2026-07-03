@@ -29,7 +29,6 @@ import net.chariskar.breakthemod.debug.commands.LoadModule
 import net.chariskar.breakthemod.debug.commands.UnloadModule
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.command.CommandRegistryAccess
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -45,7 +44,7 @@ class DebugLoader {
             GetConfig,
             GetNotifications
         )
-        ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _: CommandRegistryAccess ->
+        ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _ ->
             commands.forEach { it.register(dispatcher) }
         })
         val debugNotification = Notification(

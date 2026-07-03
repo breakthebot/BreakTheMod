@@ -22,7 +22,7 @@ import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.Notification
 import net.chariskar.breakthemod.client.api.NotificationTypes
 import net.chariskar.breakthemod.client.api.providers.MessageProvider
-import net.minecraft.client.MinecraftClient
+import net.minecraft.client.Minecraft
 import org.breakthebot.breakthelibrary.network.ApiClient
 
 @Serializable
@@ -57,7 +57,7 @@ object UpdateUtility : MessageProvider {
         if (
             latest.version != verString &&
             latest.release &&
-            latest.mcVer == MinecraftClient.getInstance().gameVersion
+            latest.mcVer == Minecraft.getInstance().launchedVersion
         ) {
             Breakthemod.notifications.add(notification)
         }

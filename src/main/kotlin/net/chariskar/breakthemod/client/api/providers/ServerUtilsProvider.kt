@@ -18,7 +18,7 @@
 package net.chariskar.breakthemod.client.api.providers
 
 import net.chariskar.breakthemod.client.utils.Config
-import net.minecraft.client.MinecraftClient
+import net.minecraft.client.Minecraft
 
 /**
  * Provides the necessary utils to assess what multiplayer server we are playing on.
@@ -27,8 +27,8 @@ interface ServerUtilsProvider {
 
     /** Non biased EarthMc check.*/
     fun isEarthMc(): Boolean {
-        val serverInfo = MinecraftClient.getInstance().currentServerEntry ?: return false
-        return splitAddress(serverInfo.address).contains("earthmc")
+        val serverInfo = Minecraft.getInstance().currentServer ?: return false
+        return splitAddress(serverInfo.ip).contains("earthmc")
     }
 
     fun isModEnabled(): Boolean = isEarthMc().or(Config.config.enabledOnOtherServers)

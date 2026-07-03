@@ -28,10 +28,10 @@ import net.chariskar.breakthemod.client.models.getTextColorConfig
 import net.chariskar.breakthemod.client.models.getTextConfig
 import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.utils.Config
-import net.minecraft.client.font.TextRenderer
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.text.Text
+import net.minecraft.client.gui.Font
+import net.minecraft.client.gui.GuiGraphicsExtractor
+import net.minecraft.client.player.LocalPlayer
+import net.minecraft.network.chat.Component
 import org.breakthebot.breakthelibrary.models.Town
 import kotlin.math.atan2
 import kotlin.math.sqrt
@@ -53,7 +53,7 @@ object NearbyTowns : BaseWidget(
     override fun getModMenuConfig(category: SubCategoryBuilder, entryBuilder: ConfigEntryBuilder) {
         category.add(
             entryBuilder.startBooleanToggle(
-                Text.literal("Enable nearby towns radar"),
+                Component.literal("Enable nearby towns radar"),
                 config.enabled
             ).setSaveConsumer { enabled: Boolean ->
                 config.enabled = enabled
@@ -66,8 +66,8 @@ object NearbyTowns : BaseWidget(
     }
 
     override fun render(
-        drawContext: DrawContext,
-        textRender: TextRenderer
+        drawContext: GuiGraphicsExtractor,
+        textRender: Font
     ) {
         val towns = Cache.nearbyTowns
 
@@ -89,9 +89,9 @@ object NearbyTowns : BaseWidget(
 
 }
 
-fun Town.getTownDirection(player: PlayerEntity): String {
-    val dx = (player.x.toInt() - coordinates!!.spawn!!.x!!.toInt()).toDouble()
-    val dz = (player.z.toInt() - coordinates!!.spawn!!.z!!.toInt()).toDouble()
+fun Town.getTownDirection(player: LocalPlayer): String {
+    val dx = (player.x.toInt() - coordinates.spawn.x.toInt()).toDouble()
+    val dz = (player.z.toInt() - coordinates.spawn.z.toInt()).toDouble()
 
     val angle = Math.toDegrees(atan2(-dx, dz))
     val index = (((angle + 360.0) % 360.0 + 22.5) / 45.0).toInt() % 8
@@ -99,9 +99,9 @@ fun Town.getTownDirection(player: PlayerEntity): String {
     return directions[index]
 }
 
-fun Town.calculateDistance(player: PlayerEntity): Int {
-    val dx = player.x - coordinates!!.spawn!!.x!!
-    val dy = player.y - coordinates!!.spawn!!.y!!
-    val dz = player.z - coordinates!!.spawn!!.z!!
+fun Town.calculateDistance(player: LocalPlayer): Int {
+    val dx = player.x - coordinates.spawn.x
+    val dy = player.y - coordinates.spawn.y
+    val dz = player.z - coordinates.spawn.z
     return sqrt(dx * dx + dy * dy + dz * dz).toInt()
 }

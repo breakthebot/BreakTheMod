@@ -27,8 +27,8 @@ import net.chariskar.breakthemod.client.models.getPositionConfig
 import net.chariskar.breakthemod.client.models.getTextConfig
 import net.chariskar.breakthemod.client.modules.ActionTracker
 import net.chariskar.breakthemod.client.utils.Config
-import net.minecraft.client.font.TextRenderer
-import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.gui.Font
+import net.minecraft.client.gui.GuiGraphicsExtractor
 
 object FishingTimeWidget : BaseWidget(
     "fishing_time_widget"
@@ -52,10 +52,10 @@ object FishingTimeWidget : BaseWidget(
     }
 
     override fun render(
-        drawContext: DrawContext,
-        textRender: TextRenderer
+        drawContext: GuiGraphicsExtractor,
+        textRender: Font
     ) {
-        renderTextWidget(
+        renderComponentWidget(
             drawContext,
             textRender,
             text = config.text.replace("TIME", ActionTracker.timeFishing.toString()),

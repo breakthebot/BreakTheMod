@@ -17,7 +17,6 @@
 
 package net.chariskar.breakthemod.client.widgets
 
-import me.shedaniel.clothconfig2.api.ConfigCategory
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
 import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder
 import net.chariskar.breakthemod.client.api.widget.BaseWidget
@@ -29,9 +28,9 @@ import net.chariskar.breakthemod.client.models.getTextColorConfig
 import net.chariskar.breakthemod.client.models.getTextConfig
 import net.chariskar.breakthemod.client.modules.NearbyEngine
 import net.chariskar.breakthemod.client.utils.Config
-import net.minecraft.client.font.TextRenderer
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.text.Text
+import net.minecraft.client.gui.Font
+import net.minecraft.client.gui.GuiGraphicsExtractor
+import net.minecraft.network.chat.Component
 
 object NearbyPlayers : BaseWidget(
     "nearby_players"
@@ -48,7 +47,7 @@ object NearbyPlayers : BaseWidget(
     override fun getModMenuConfig(category: SubCategoryBuilder, entryBuilder: ConfigEntryBuilder) {
         category.add(
             entryBuilder.startBooleanToggle(
-                Text.literal("Enable nearby player radar"),
+                Component.literal("Enable nearby player radar"),
                 config.enabled
             ).setSaveConsumer { enabled: Boolean ->
                 config.enabled = enabled
@@ -59,8 +58,8 @@ object NearbyPlayers : BaseWidget(
         config.getTextConfig(category, entryBuilder, "", "There are no players nearby.", "", name)
         config.getTextColorConfig(category, entryBuilder, name)
     }
-    
-    override fun render(drawContext: DrawContext, textRender: TextRenderer) {
+
+    override fun render(drawContext: GuiGraphicsExtractor, textRender: Font) {
         val players = NearbyEngine.players
 
         val playerList = if (players.isEmpty()) {

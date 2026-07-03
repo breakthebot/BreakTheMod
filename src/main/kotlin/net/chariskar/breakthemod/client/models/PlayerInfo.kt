@@ -17,11 +17,12 @@
 
 package net.chariskar.breakthemod.client.models
 
-import net.minecraft.client.MinecraftClient
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Vec3d
-import net.minecraft.world.World
+import net.minecraft.client.Minecraft
+import net.minecraft.client.multiplayer.ClientLevel
+import net.minecraft.client.player.LocalPlayer
+import net.minecraft.core.BlockPos
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.phys.Vec3
 import kotlin.math.atan2
 import kotlin.math.sqrt
 
@@ -33,8 +34,8 @@ import kotlin.math.sqrt
  * */
 data class PlayerInfo(
     val name: String,
-    val client: MinecraftClient,
-    var position: Vec3d,
+    val client: Minecraft,
+    var position: Vec3,
 ) {
     val directions = arrayOf("S", "SW", "W", "NW", "N", "NE", "E", "SE")
 
@@ -42,7 +43,7 @@ data class PlayerInfo(
      *  Calculates the distance between the player and the location provided
      *  @param other The position of the outer player.
      *  */
-    fun calculateDistance(other: Vec3d): Double {
+    fun calculateDistance(other: Vec3): Double {
         val dx = position.x - other.x
         val dy = position.y - other.y
         val dz = position.z - other.z
@@ -54,8 +55,8 @@ data class PlayerInfo(
      * @param world The client world.
      * @param pos The block the player is standing on.
      * */
-    fun isUnderBlock(world: World, pos: BlockPos): Boolean {
-        val topY = world.dimension.logicalHeight
+    fun isUnderBlock(world: ClientLevel, pos: BlockPos): Boolean {
+        val topY = world.dimensionType().logicalHeight()
         for (y in pos.y + 1..topY) {
             val checkPos = BlockPos(pos.x, y, pos.z)
             val state = world.getBlockState(checkPos)
@@ -67,14 +68,13 @@ data class PlayerInfo(
     /**
      * Checks if the player is in any state that would prevent him from being visible.
      * @param player The player entity.
-     *  */
-    fun shouldSkipSpecial(player: PlayerEntity): Boolean {
-        val isInVehicle = player.hasVehicle()
-        val isSneaking = player.isSneaking
-        val inRiptide = player.isUsingRiptide
+     */
+    fun shouldSkipSpecial(player: Player): Boolean {
+        val isInVehicle = player.isPassenger
+        val isSneaking = player.isCrouching
+        val inRiptide = player.isAutoSpinAttack
         val isInvisible = player.isInvisible
-        val isInNether = client.world
-            ?.registryKey?.value.toString().contains("nether")
+        val isInNether = client.level?.dimension().toString().contains("nether")
         return isInVehicle || isSneaking || inRiptide || isInNether || isInvisible
     }
 
@@ -84,17 +84,17 @@ data class PlayerInfo(
      * @param world The client world.
      * */
     fun shouldSkip(
-        player: PlayerEntity,
-        world: World
-    ): Boolean = shouldSkipSpecial(player) || isUnderBlock(world, player.blockPos)
+        player: Player,
+        world: ClientLevel
+    ): Boolean = shouldSkipSpecial(player) || isUnderBlock(world, player.blockPosition())
 
     /**
      *  Calculates the direction to a player.
      *  @param player The player.
      *  */
-    fun directionFrom(player: PlayerEntity): String {
-        val dx = (position.x.toInt() - player.blockPos.x).toDouble()
-        val dz = (position.z.toInt() - player.blockPos.z).toDouble()
+    fun directionFrom(player: LocalPlayer): String {
+        val dx = (position.x.toInt() - player.blockPosition().x).toDouble()
+        val dz = (position.z.toInt() - player.blockPosition().z).toDouble()
 
         val angle = Math.toDegrees(atan2(-dx, dz))
         val index = (((angle + 360.0) % 360.0 + 22.5) / 45.0).toInt() % 8
@@ -102,8 +102,8 @@ data class PlayerInfo(
         return directions[index]
     }
 
-    fun distanceFrom(player: PlayerEntity): Int {
-        return sqrt(calculateDistance(Vec3d(player.x, player.y, player.z))).toInt()
+    fun distanceFrom(player: LocalPlayer): Int {
+        return sqrt(calculateDistance(Vec3(player.x, player.y, player.z))).toInt()
     }
 
     override fun toString(): String {

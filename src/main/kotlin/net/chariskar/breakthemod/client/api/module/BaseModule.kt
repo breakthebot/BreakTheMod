@@ -17,8 +17,10 @@
 
 package net.chariskar.breakthemod.client.api.module
 
-import net.chariskar.breakthemod.client.api.providers.*
-import net.minecraft.client.MinecraftClient
+import net.chariskar.breakthemod.client.api.providers.LoggingProvider
+import net.chariskar.breakthemod.client.api.providers.MessageProvider
+import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider
+import net.minecraft.client.Minecraft
 
 /**
  * Base for modules.
@@ -36,7 +38,7 @@ abstract class BaseModule(
     var enabled: Boolean = false
         protected set
 
-    protected val client: MinecraftClient = MinecraftClient.getInstance()
+    protected val client: Minecraft = Minecraft.getInstance()
 
     fun register() {
         if (enabled) return

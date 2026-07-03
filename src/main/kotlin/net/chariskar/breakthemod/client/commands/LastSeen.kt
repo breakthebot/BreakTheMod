@@ -23,9 +23,8 @@ import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.modules.Cache
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.text.Style
-import net.minecraft.text.Text
-import net.minecraft.util.Formatting
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.TextColor
 import org.breakthebot.breakthelibrary.api.TownyAPI
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
@@ -45,20 +44,14 @@ object LastSeen : BaseCommand(
                 sendError("Unable to find player $name.")
                 return@launch
             }
-            val timestamps = player.timestamps?.lastOnline!!
+            val timestamps = player.timestamps.lastOnline
 
-            val message = if (player.status?.isOnline == true) {
-                Text.literal("${player.name} has been online right now, for ${timestamps.days} days, ${timestamps.hours} hours and ${timestamps.minutes} minutes.").setStyle(
-                    Style.EMPTY.withColor(
-                        Formatting.AQUA
-                    )
-                )
+            val message = if (player.status.isOnline) {
+                Component.literal("${player.name} has been online right now, for ${timestamps.days} days, ${timestamps.hours} hours and ${timestamps.minutes} minutes.")
+                    .withColor(TextColor.AQUA)
             } else {
-                Text.literal("${player.name} was last online ${timestamps.days} days, ${timestamps.hours} hours and ${timestamps.minutes} minutes.").setStyle(
-                    Style.EMPTY.withColor(
-                        Formatting.RED
-                    )
-                )
+                Component.literal("${player.name} was last online ${timestamps.days} days, ${timestamps.hours} hours and ${timestamps.minutes} minutes.")
+                    .withColor(TextColor.RED)
             }
             sendMessage(message)
 

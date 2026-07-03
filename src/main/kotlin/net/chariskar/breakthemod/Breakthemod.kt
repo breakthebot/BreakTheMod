@@ -23,15 +23,31 @@ import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.api.module.BaseModule
 import net.chariskar.breakthemod.client.api.widget.BaseWidget
 import net.chariskar.breakthemod.client.api.widget.WidgetManager
-import net.chariskar.breakthemod.client.commands.*
-import net.chariskar.breakthemod.client.modules.*
-import net.chariskar.breakthemod.client.widgets.*
+import net.chariskar.breakthemod.client.commands.Calculate
+import net.chariskar.breakthemod.client.commands.DiscordId
+import net.chariskar.breakthemod.client.commands.FindPlayer
+import net.chariskar.breakthemod.client.commands.GotoCommand
+import net.chariskar.breakthemod.client.commands.Help
+import net.chariskar.breakthemod.client.commands.LastSeen
+import net.chariskar.breakthemod.client.commands.Locate
+import net.chariskar.breakthemod.client.commands.Nearby
+import net.chariskar.breakthemod.client.commands.OnlineStaff
+import net.chariskar.breakthemod.client.commands.Townless
+import net.chariskar.breakthemod.client.modules.ActionTracker
+import net.chariskar.breakthemod.client.modules.Cache
+import net.chariskar.breakthemod.client.modules.ChatTracker
+import net.chariskar.breakthemod.client.modules.LoginActions
+import net.chariskar.breakthemod.client.modules.NearbyEngine
 import net.chariskar.breakthemod.client.utils.Config
+import net.chariskar.breakthemod.client.widgets.FishingTimeWidget
+import net.chariskar.breakthemod.client.widgets.FishingWidget
+import net.chariskar.breakthemod.client.widgets.MiningWidget
+import net.chariskar.breakthemod.client.widgets.NearbyPlayers
+import net.chariskar.breakthemod.client.widgets.NearbyTowns
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.client.MinecraftClient
-import net.minecraft.command.CommandRegistryAccess
+import net.minecraft.client.Minecraft
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -56,25 +72,28 @@ class Breakthemod : ClientModInitializer {
         val version: String by lazy { "1.6.0-ALPHA${if (debug) "-DEBUG" else ""}" }
         val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
-        private val _modules: MutableList<BaseModule> = mutableListOf()
-        private val _commands: MutableList<BaseCommand> = mutableListOf()
-        private val _widgets: MutableList<BaseWidget> = mutableListOf()
-
         val modules: List<BaseModule>
-            get() = _modules
+            field: MutableList<BaseModule> = mutableListOf()
         val commands: List<BaseCommand>
-            get() = _commands
+            field: MutableList<BaseCommand> = mutableListOf()
         val widgets: List<BaseWidget>
-            get() = _widgets
+            field: MutableList<BaseWidget> = mutableListOf()
 
         val notifications: MutableList<Notification> = mutableListOf()
 
         val username: String
-            get() = MinecraftClient.getInstance().session.username
+            get() = Minecraft.getInstance().user.name
+
+        val onlinePlayers: List<String>
+            get() = Minecraft.getInstance()
+                .connection
+                ?.onlinePlayers
+                ?.mapNotNull { it.profile.name.toString() }
+                .orEmpty()
     }
 
     private fun loadCommands() {
-        ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _: CommandRegistryAccess ->
+        ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _ ->
             commands.forEach { it.register(dispatcher) }
         })
     }
@@ -103,7 +122,7 @@ class Breakthemod : ClientModInitializer {
 
     override fun onInitializeClient() {
         val file = File(
-            MinecraftClient.getInstance()?.runDirectory,
+            Minecraft.getInstance().gameDirectory,
             "config/breakthemod_config.json"
         ).apply {
             parentFile?.mkdirs()
@@ -117,7 +136,7 @@ class Breakthemod : ClientModInitializer {
 
         WidgetManager.changeMode(Config.config.widgetMode)
 
-        _commands.addAll(
+        commands.addAll(
             listOf(
                 Nearby,
                 OnlineStaff,
@@ -132,7 +151,7 @@ class Breakthemod : ClientModInitializer {
             )
         )
 
-        _modules.addAll(
+        modules.addAll(
             listOf(
                 LoginActions,
                 Cache,
@@ -142,7 +161,7 @@ class Breakthemod : ClientModInitializer {
             )
         )
 
-        _widgets.addAll(
+        widgets.addAll(
             listOf(
                 NearbyPlayers,
                 NearbyTowns,

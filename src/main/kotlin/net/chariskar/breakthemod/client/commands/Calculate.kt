@@ -26,8 +26,8 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.text.Text
-import net.minecraft.util.Formatting
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.TextColor
 
 object Calculate : BaseCommand(
     "calculate",
@@ -52,7 +52,7 @@ object Calculate : BaseCommand(
                 1
             }
             else -> {
-                sendMessage(Text.literal("$type is not blocks or stacks"), Formatting.RED)
+                sendMessage(Component.literal("$type is not blocks or stacks"), TextColor.RED)
                 0
             }
         }
@@ -65,9 +65,9 @@ object Calculate : BaseCommand(
                     .suggests(CommandSuggestions(mutableListOf("blocks", "stacks")))
                     .then(
                         RequiredArgumentBuilder.argument<FabricClientCommandSource?, Int>("amount", IntegerArgumentType.integer())
-                            .executes(Command { context: CommandContext<FabricClientCommandSource> ->
+                            .executes(Command { conComponent: CommandContext<FabricClientCommandSource> ->
                                 if (!isModEnabled()) return@Command 0
-                                return@Command run(context)
+                                return@Command run(conComponent)
                             })
                     )
 

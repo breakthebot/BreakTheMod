@@ -28,8 +28,8 @@ import net.chariskar.breakthemod.client.models.getTextColorConfig
 import net.chariskar.breakthemod.client.models.getTextConfig
 import net.chariskar.breakthemod.client.modules.ActionTracker
 import net.chariskar.breakthemod.client.utils.Config
-import net.minecraft.client.font.TextRenderer
-import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.gui.Font
+import net.minecraft.client.gui.GuiGraphicsExtractor
 
 object FishingWidget : BaseWidget(
     "fishing_widget"
@@ -54,14 +54,14 @@ object FishingWidget : BaseWidget(
     }
 
     override fun render(
-        drawContext: DrawContext,
-        textRender: TextRenderer
+        drawContext: GuiGraphicsExtractor,
+        textRender: Font
     ) {
         val text = if (ActionTracker.fishFished == 0) {
             config.placeHolderText
         } else config.text.replace(config.textPlaceholder, ActionTracker.fishFished.toString())
 
-        renderTextWidget(
+        renderComponentWidget(
             drawContext,
             textRender,
             text

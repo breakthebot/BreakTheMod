@@ -19,21 +19,16 @@ package net.chariskar.breakthemod.client.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.JsonPrimitive
-import net.minecraft.text.MutableText
-import net.minecraft.text.Text
-import net.minecraft.util.Formatting
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.modules.Cache
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.TextColor
 import org.breakthebot.breakthelibrary.api.MapAPI
 import org.breakthebot.breakthelibrary.api.TownyAPI
-import org.breakthebot.breakthelibrary.models.ApiResult
-import org.breakthebot.breakthelibrary.models.Nation
 import org.breakthebot.breakthelibrary.models.NearbyItem
 import org.breakthebot.breakthelibrary.models.NearbyType
-import org.breakthebot.breakthelibrary.models.Town
 
 object GotoCommand : BaseCommand(
     "goto",
@@ -58,7 +53,7 @@ object GotoCommand : BaseCommand(
             if (
                 reqTown.status.isPublic && reqTown.status.canOutsidersSpawn
             ) {
-                sendMessage(Text.literal("You can do /t spawn ${reqTown.name}"), Formatting.AQUA)
+                sendMessage(Component.literal("You can do /t spawn ${reqTown.name}"), TextColor.AQUA)
                 return@launch
             }
 
@@ -72,8 +67,11 @@ object GotoCommand : BaseCommand(
                     return@launch
                 }
 
-                if (nation.status?.isPublic == true) {
-                    sendMessage(Text.literal("Found suitable spawn in:\n ${reqTown.name} (${nation.name})"), Formatting.AQUA)
+                if (nation.status.isPublic) {
+                    sendMessage(
+                        Component.literal("Found suitable spawn in:\n ${reqTown.name} (${nation.name})"),
+                        TextColor.AQUA
+                    )
                     return@launch
                 }
             }
@@ -128,9 +126,9 @@ object GotoCommand : BaseCommand(
                     continue
                 }
 
-                val townText: MutableText = Text.empty()
-                validTowns.forEach { t -> townText.append(Text.literal("$t\n")) }
-                sendMessage(Text.literal("Found suitable spawn in:\n").append(townText), Formatting.AQUA)
+                val townComponent = Component.empty()
+                validTowns.forEach { t -> townComponent.append(Component.literal("$t\n")) }
+                sendMessage(Component.literal("Found suitable spawn in:\n").append(townComponent), TextColor.AQUA)
                 return@launch
             }
 

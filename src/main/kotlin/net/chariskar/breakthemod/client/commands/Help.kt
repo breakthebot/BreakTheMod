@@ -26,10 +26,10 @@ import com.mojang.brigadier.context.CommandContext
 import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.text.HoverEvent
-import net.minecraft.text.Style
-import net.minecraft.text.Text
-import net.minecraft.util.Formatting
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.HoverEvent
+import net.minecraft.network.chat.Style
+import net.minecraft.network.chat.TextColor
 
 object Help : BaseCommand(
     "commands",
@@ -45,38 +45,38 @@ object Help : BaseCommand(
             return 1
         }
 
-        sendMessage(Text.literal("=== Available Commands ==="), Formatting.GOLD)
+        sendMessage(Component.literal("=== Available Commands ==="), TextColor.GOLD)
 
         for (cmd in commands) {
             sendMessage(
-                Text.literal(
+                Component.literal(
                     cmd.getUsage()
                 ).setStyle(
                     Style.EMPTY
                     .withHoverEvent(
                         HoverEvent.ShowText(
-                            Text.literal(cmd.getCommandDescription())
+                            Component.literal(cmd.getCommandDescription())
                         )
                     )
                 ),
-                Formatting.GRAY
+                TextColor.GRAY
             )
         }
 
         if (modules.isEmpty()) {
-            sendMessage(Text.literal("No features available."))
+            sendMessage(Component.literal("No features available."))
             return 1
         }
 
-        sendMessage(Text.literal("=== Available Features ==="), Formatting.GOLD)
+        sendMessage(Component.literal("=== Available Features ==="), TextColor.GOLD)
 
         for (module in modules) {
             if (module.hidden) continue
             sendMessage(
-                Text.literal(
+                Component.literal(
                     module.getModuleDescription()
                 ),
-                Formatting.GRAY
+                TextColor.GRAY
             )
         }
 
@@ -89,8 +89,8 @@ object Help : BaseCommand(
             LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)
                 .then(RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("name", StringArgumentType.string())
                 .suggests(CommandSuggestions(Breakthemod.commands.map { it.name }.toMutableList()))
-                .executes(Command { context: CommandContext<FabricClientCommandSource> ->
-                    val name = context.getArgument("name", String::class.java)
+                    .executes(Command { conComponent: CommandContext<FabricClientCommandSource> ->
+                        val name = conComponent.getArgument("name", String::class.java)
                     val command = Breakthemod.commands.firstOrNull {
                         it.name == name
                     }

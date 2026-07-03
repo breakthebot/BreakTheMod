@@ -2,13 +2,13 @@
 
 package net.chariskar.breakthemod.client.utils
 
-import net.minecraft.client.network.ClientPlayerEntity
+import net.minecraft.client.player.LocalPlayer
 import kotlin.math.round
 
 object ExperienceUtils {
 
     fun experience(
-        player: ClientPlayerEntity
+        player: LocalPlayer
     ): Int {
         return (
                 experience(player.experienceLevel) +

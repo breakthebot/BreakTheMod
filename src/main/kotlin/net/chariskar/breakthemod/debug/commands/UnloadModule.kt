@@ -30,7 +30,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 import java.util.Locale
 import java.util.concurrent.CompletableFuture
 
@@ -45,9 +45,9 @@ object UnloadModule : BaseCommand(
                 .then(
                     RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("name", StringArgumentType.string())
                         .suggests(ModuleSuggestions())
-                        .executes(Command { context: CommandContext<FabricClientCommandSource> ->
+                        .executes(Command { conComponent: CommandContext<FabricClientCommandSource> ->
                             if (!isModEnabled()) return@Command 0
-                            return@Command run(context)
+                            return@Command run(conComponent)
                         })
                 )
         )
@@ -56,10 +56,10 @@ object UnloadModule : BaseCommand(
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val name = ctx.getArgument("name", String::class.java)
 
-        val module = Breakthemod.modules.firstOrNull() { it.name == name }
+        val module = Breakthemod.modules.firstOrNull { it.name == name }
 
         if (module == null || !module.enabled) {
-            sendMessage(Text.literal("Module $name has not been loaded."))
+            sendMessage(Component.literal("Module $name has not been loaded."))
             return 0
         }
 
@@ -77,7 +77,7 @@ object UnloadModule : BaseCommand(
 
         @Throws(CommandSyntaxException::class)
         override fun getSuggestions(
-            context: CommandContext<FabricClientCommandSource?>?,
+            conComponent: CommandContext<FabricClientCommandSource?>?,
             builder: SuggestionsBuilder
         ): CompletableFuture<Suggestions> {
             val input = builder.remaining.lowercase(Locale.getDefault())

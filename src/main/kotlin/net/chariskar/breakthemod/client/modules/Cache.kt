@@ -17,8 +17,6 @@
 
 package net.chariskar.breakthemod.client.modules
 
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.buildJsonArray
 import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.module.BaseModule
 import net.chariskar.breakthemod.client.utils.Config
@@ -27,14 +25,17 @@ import net.chariskar.breakthemod.client.utils.Scheduler
 import net.chariskar.breakthemod.client.widgets.NearbyTowns
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.PacketSender
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.network.ClientPlayNetworkHandler
-import net.minecraft.text.Text
-import net.minecraft.util.Formatting
+import net.minecraft.client.Minecraft
+import net.minecraft.client.multiplayer.ClientPacketListener
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.TextColor
 import org.breakthebot.breakthelibrary.api.MapAPI
 import org.breakthebot.breakthelibrary.api.TownyAPI
-import org.breakthebot.breakthelibrary.models.*
-import java.util.*
+import org.breakthebot.breakthelibrary.models.NearbyItem
+import org.breakthebot.breakthelibrary.models.NearbyType
+import org.breakthebot.breakthelibrary.models.Resident
+import org.breakthebot.breakthelibrary.models.Town
+import java.util.Hashtable
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
@@ -57,26 +58,20 @@ object Cache : BaseModule(
 
     // keep a cache of all towns and nations for /locate, a full object cache is not needed yet.
     // spare some ram.
-    private val _townCache: MutableList<String> = mutableListOf()
-
-    private val _nationCache: MutableList<String> = mutableListOf()
-
-    private val _nearbyTowns: MutableList<Town> = mutableListOf()
-
     val townCache: List<String>
-        get() = _townCache
+        field: MutableList<String> = mutableListOf()
 
     val nationCache: List<String>
-        get() = _nationCache
+        field: MutableList<String> = mutableListOf()
 
     val nearbyTowns: List<Town>
-        get() = _nearbyTowns
+        field: MutableList<Town> = mutableListOf()
 
     override fun enable() {
         if (enabled) return
 
         ClientPlayConnectionEvents.JOIN.register(
-            ClientPlayConnectionEvents.Join { _: ClientPlayNetworkHandler?, _: PacketSender?, _: MinecraftClient ->
+            ClientPlayConnectionEvents.Join { _: ClientPacketListener?, _: PacketSender?, _: Minecraft ->
             enabled = true
             Scheduler.scheduleRepeating(
                 Schedule(
@@ -101,7 +96,7 @@ object Cache : BaseModule(
             )
         })
 
-        ClientPlayConnectionEvents.DISCONNECT.register(ClientPlayConnectionEvents.Disconnect { _: ClientPlayNetworkHandler?, _: MinecraftClient? ->
+        ClientPlayConnectionEvents.DISCONNECT.register(ClientPlayConnectionEvents.Disconnect { _: ClientPacketListener?, _: Minecraft? ->
             enabled = false
             Scheduler.cancel("playerCacheUpdate")
             Scheduler.cancel("nearbyTownCache")
@@ -112,7 +107,9 @@ object Cache : BaseModule(
     private suspend fun updatePlayers() {
         playerCache.clear()
 
-        val players = client.networkHandler!!.playerUuids.toList().map { it.toString() }
+        val players = client.connection!!
+            .onlinePlayers
+            .map { it.profile.id.toString() }
 
         val apiPlayers = TownyAPI.getPlayers(players)
             .flatMap { it
@@ -134,8 +131,8 @@ object Cache : BaseModule(
     suspend fun updateNearbyTowns() {
         if (!isEarthMc() || !Config.features.cacheEnabled || !NearbyTowns.config.enabled) return
 
-        _nearbyTowns.clear()
-        val player = MinecraftClient.getInstance().player ?: return
+        nearbyTowns.clear()
+        val player = Minecraft.getInstance().player ?: return
 
         val body = NearbyItem.NearbyItemCoordinates(
             targetType = NearbyType.COORDINATE,
@@ -158,18 +155,18 @@ object Cache : BaseModule(
             }
             .getOrNull() ?: listOf()
 
-        _nearbyTowns.addAll(towns)
+        nearbyTowns.addAll(towns)
     }
 
     /**
      * Update town and nation caches.
      * */
     suspend fun updateCache() {
-        _townCache.clear()
-        _nationCache.clear()
+        townCache.clear()
+        nationCache.clear()
 
         TownyAPI.getAllTowns()
-            .onSuccess { _townCache.addAll(it.map { t -> t.name }) }
+            .onSuccess { townCache.addAll(it.map { t -> t.name }) }
             .onError {
                 handleCacheError("townCache", it.message)
             }
@@ -177,7 +174,7 @@ object Cache : BaseModule(
         Breakthemod.logger.info("Town cache done")
 
         TownyAPI.getAllNations()
-            .onSuccess { _nationCache.addAll(it.map { n -> n.name }) }
+            .onSuccess { nationCache.addAll(it.map { n -> n.name }) }
             .onError {
                 handleCacheError("nationCache", it.message)
             }
@@ -200,20 +197,21 @@ object Cache : BaseModule(
     ): Resident?  = playerCache[name]
 }
 
-fun Resident.getTownyText(): Text {
-    if (town == null) return Text.literal("Nomad").formatted(Formatting.DARK_AQUA)
-    val text = Text.empty()
+fun Resident.getTownyComponent(): Component {
+    if (town == null) return Component.literal("Nomad").withColor(TextColor.DARK_AQUA)
+    val text = Component.empty()
 
     if (status.isMayor) {
-        val colour = if (status.isKing) Formatting.GOLD else Formatting.DARK_AQUA
-        text.append(Text.literal("\uD83D\uDC51 ").formatted(colour))
+        val colour = if (status.isKing) TextColor.GOLD else TextColor.DARK_AQUA
+        text.append(Component.literal("\uD83D\uDC51 ").withColor(colour))
     }
-    text.append(Text.of("[").copy().formatted(Formatting.GRAY))
+    text.append(Component.literal("[").withColor(TextColor.GRAY))
     if (status.hasNation) {
-        text.append(Text.literal(nation?.name).formatted(Formatting.GOLD))
-        text.append(Text.literal("|").formatted(Formatting.GRAY))
+        text.append(Component.literal(nation?.name!!).withColor(TextColor.GOLD))
+        text.append(Component.literal("|").withColor(TextColor.GRAY))
     }
-    text.append(Text.literal(town?.name).formatted(Formatting.DARK_AQUA))
-    text.append(Text.literal("]").formatted(Formatting.GRAY))
+
+    text.append(Component.literal(town?.name!!).withColor(TextColor.DARK_AQUA))
+    text.append(Component.literal("]").withColor(TextColor.GRAY))
     return text
 }

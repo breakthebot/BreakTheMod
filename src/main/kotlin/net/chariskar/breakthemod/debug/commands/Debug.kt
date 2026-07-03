@@ -24,7 +24,7 @@ import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.modules.NearbyEngine
 import net.chariskar.breakthemod.client.widgets.NearbyPlayers
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 
 object Debug : BaseCommand(
     "debugInfo",
@@ -33,18 +33,18 @@ object Debug : BaseCommand(
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         if (!Breakthemod.debug) return 0
         sendMessage(
-            Text.literal("Version: ${Breakthemod.version}")
+            Component.literal("Version: ${Breakthemod.version}")
         )
         sendMessage(
-            Text.literal("Nearby engine state: Running(${NearbyPlayers.config.enabled}), Players(${NearbyEngine.players})")
+            Component.literal("Nearby engine state: Running(${NearbyPlayers.config.enabled}), Players(${NearbyEngine.players})")
         )
         sendMessage("Loaded commands: ${Breakthemod.commands.map { it.name }}.")
         sendMessage("Loaded modules: ${Breakthemod.modules.map { it.name }}.")
         sendMessage(
-            Text.literal("Server status: isEmc(${isEarthMc()}), enabled(${isModEnabled()})")
+            Component.literal("Server status: isEmc(${isEarthMc()}), enabled(${isModEnabled()})")
         )
         sendMessage(
-            Text.literal("Cache size: ${Cache.playerCache.keys.size}")
+            Component.literal("Cache size: ${Cache.playerCache.keys.size}")
         )
         return 0
     }

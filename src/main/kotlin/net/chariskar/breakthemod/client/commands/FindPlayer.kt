@@ -20,10 +20,11 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
+import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.text.Text
-import net.minecraft.util.Formatting
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.TextColor
 import org.breakthebot.breakthelibrary.api.MapAPI
 import org.breakthebot.breakthelibrary.models.PlayerLocationInfo
 
@@ -56,7 +57,7 @@ object FindPlayer : BaseCommand(
                         playerData.townName = locationData.town?.name
                     }
 
-                    sendMessage(Text.literal(playerData.toString()), Formatting.AQUA)
+                    sendMessage(Component.literal(playerData.toString()), TextColor.AQUA)
                     return@launch
                 }
                 continue
@@ -71,7 +72,7 @@ object FindPlayer : BaseCommand(
             "name",
             StringArgumentType.string(),
             CommandSuggestions(
-                client.networkHandler!!.playerUuids.map { it.toString() }.toMutableList()
+                Breakthemod.onlinePlayers
             )
         )
     }

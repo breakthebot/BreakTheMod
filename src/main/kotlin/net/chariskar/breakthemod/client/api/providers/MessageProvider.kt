@@ -17,15 +17,13 @@
 
 package net.chariskar.breakthemod.client.api.providers
 
-import net.minecraft.client.MinecraftClient
-import net.minecraft.text.Style
-import net.minecraft.text.Text
-import net.minecraft.text.TextColor
-import net.minecraft.util.Formatting
+import net.minecraft.client.Minecraft
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.TextColor
 
-private val client = MinecraftClient.getInstance()
+private val client = Minecraft.getInstance()
 
-val prefix: Text by lazy {
+val prefix: Component by lazy {
     val segments = listOf(
         "Break" to "#EAEAEA",
         "The" to "#4B56FF",
@@ -33,14 +31,14 @@ val prefix: Text by lazy {
         ">> " to "#FFFFFF"
     )
 
-    val prefix = Text.empty()
+    val prefix = Component.empty()
 
     for (segment in segments) {
         val text: String = segment.first
         val color = TextColor.fromRgb(segment.second.substring(1).toInt(16))
 
         for (c in text.toCharArray()) {
-            prefix.append(Text.literal(c.toString()).setStyle(Style.EMPTY.withColor(color)))
+            prefix.append(Component.literal(c.toString()).withColor(color))
         }
     }
     prefix
@@ -55,9 +53,9 @@ interface MessageProvider {
      *
      * @param message The message to be sent.
      */
-    fun sendMessage(message: Text)  {
+    fun sendMessage(message: Component) {
         client.execute {
-            client.player?.sendMessage(prefix.copy().append(message), false)
+            client.player?.sendSystemMessage(prefix.copy().append(message))
         }
     }
 
@@ -68,21 +66,21 @@ interface MessageProvider {
      * @param colour The color to attach to the message.
      */
     fun sendMessage(
-        message: Text,
-        colour: Formatting
+        message: Component,
+        colour: TextColor
     ) {
-        val chatMessage = Text.empty().apply {
+        val chatMessage = Component.empty().apply {
             append(message)
-            styled { Style.EMPTY.withColor(colour) }
+            withColor(colour)
         }
         sendMessage(chatMessage)
     }
 
-    fun sendMessage(message: String) = sendMessage(Text.literal(message))
+    fun sendMessage(message: String) = sendMessage(Component.literal(message))
 
-    fun sendError() = sendMessage(Text.literal("Command has exited with an exception"), Formatting.RED)
+    fun sendError() = sendMessage(Component.literal("Command has exited with an exception"), TextColor.RED)
 
-    fun sendError(message: String) = sendMessage(Text.literal(message), Formatting.RED)
+    fun sendError(message: String) = sendMessage(Component.literal(message), TextColor.RED)
 
-    fun sendWarning(message: String) = sendMessage(Text.literal(message), Formatting.YELLOW)
+    fun sendWarning(message: String) = sendMessage(Component.literal(message), TextColor.YELLOW)
 }
