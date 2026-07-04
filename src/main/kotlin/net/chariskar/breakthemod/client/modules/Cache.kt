@@ -50,7 +50,6 @@ object Cache : BaseModule(
     "Cache",
     "Cache handler for the mod."
 ) {
-
     private val _playerCache: Hashtable<String, Resident> = Hashtable()
 
     val playerCache: Hashtable<String, Resident>

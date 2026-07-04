@@ -40,6 +40,10 @@ import net.minecraft.client.Minecraft
 import java.util.Locale
 import java.util.concurrent.CompletableFuture
 
+private object CommandScope {
+    val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+}
+
 /**
  * Base for commands.
  * @param name The command name.
@@ -59,9 +63,10 @@ abstract class BaseCommand(
         if (Config.config.dev) {
             logError("Unexpected error occurred while running $name", e as Exception)
         }
+
     }
 
-    protected val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default + handler)
+    val scope = CoroutineScope(CommandScope.scope.coroutineContext + handler)
 
     protected val client: Minecraft = Minecraft.getInstance()
 

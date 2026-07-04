@@ -1,7 +1,6 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.gradle.jvm.toolchain.JavaLanguageVersion
 
 plugins {
     kotlin("jvm") version "2.4.0"

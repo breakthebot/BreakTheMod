@@ -48,8 +48,6 @@ public abstract class ChatPreviewOverlay extends AbstractWidget implements Serve
     private @Nullable String suggestion;
     @Shadow
     private String value;
-    @Shadow
-    private int textY;
 
     public ChatPreviewOverlay(int i, int j, int k, int l, Component component) {
         super(i, j, k, l, component);
