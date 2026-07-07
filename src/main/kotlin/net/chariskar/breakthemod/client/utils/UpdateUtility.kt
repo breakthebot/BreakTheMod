@@ -23,7 +23,7 @@ import net.chariskar.breakthemod.client.api.Notification
 import net.chariskar.breakthemod.client.api.NotificationTypes
 import net.chariskar.breakthemod.client.api.providers.MessageProvider
 import net.minecraft.client.Minecraft
-import org.breakthebot.breakthelibrary.network.ApiClient
+import org.breakthebot.breakthelibrary.api.APIClient
 
 @Serializable
 data class Version(
@@ -41,7 +41,9 @@ data class VersionFile(
 object UpdateUtility : MessageProvider {
 
     suspend fun checkVersion() {
-        val file = ApiClient.getRequest<VersionFile>("https://raw.githubusercontent.com/breakthebot/BreakTheMod/refs/heads/master/version.json").getOrNull()?.versions
+        val file =
+            APIClient.getRequest<VersionFile>("https://raw.githubusercontent.com/breakthebot/BreakTheMod/refs/heads/master/version.json")
+                .getOrNull()?.versions
         if (file == null) {
             Breakthemod.logger.warn("Version file unavailable.")
             return

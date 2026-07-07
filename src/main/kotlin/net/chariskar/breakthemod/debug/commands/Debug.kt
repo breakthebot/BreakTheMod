@@ -44,6 +44,9 @@ object Debug : BaseCommand(
             Component.literal("Server status: isEmc(${isEarthMc()}), enabled(${isModEnabled()})")
         )
         sendMessage(
+            Component.literal("Cache status: ${Cache.enabled}")
+        )
+        sendMessage(
             Component.literal("Cache size: ${Cache.playerCache.keys.size}")
         )
         return 0

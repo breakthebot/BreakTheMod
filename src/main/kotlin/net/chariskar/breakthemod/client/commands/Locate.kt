@@ -33,7 +33,6 @@ import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.network.chat.ClickEvent
 import net.minecraft.network.chat.Component
-import net.minecraft.network.chat.Style
 import net.minecraft.network.chat.TextColor
 import org.breakthebot.breakthelibrary.api.TownyAPI
 import java.net.URI
@@ -69,7 +68,8 @@ object Locate : BaseCommand(
                 return@launch
             }
             sendMessage(
-                Component.literal("$name is located ").append(getMapComponent(coords.x, coords.z))
+                Component.literal("$name is located ")
+                    .append(getMapComponent(coords.x, coords.z))
                     .append(" (x: ${coords.x.toInt()}, z: ${coords.z.toInt()})")
             )
         }
@@ -79,8 +79,10 @@ object Locate : BaseCommand(
     private fun getMapComponent(x: Float, z: Float): Component {
         val mapUrl = "${Config.getMapUrl()}?world=minecraft_overworld&zoom=5&x=$x&z=$z"
         return Component.literal("here")
-            .withColor(TextColor.BLUE)
-            .setStyle(Style.EMPTY.withClickEvent(ClickEvent.OpenUrl(URI.create(mapUrl))))
+            .withStyle {
+                it.withColor(TextColor.BLUE)
+                    .withClickEvent(ClickEvent.OpenUrl(URI.create(mapUrl)))
+            }
     }
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
@@ -102,9 +104,9 @@ object Locate : BaseCommand(
                                 StringArgumentType.string()
                             )
                                 .suggests(NameSuggestions())
-                                .executes { conComponent ->
+                                .executes { context ->
                                     if (!isModEnabled()) return@executes 0
-                                    run(conComponent)
+                                    run(context)
                                 }
                         )
                 )

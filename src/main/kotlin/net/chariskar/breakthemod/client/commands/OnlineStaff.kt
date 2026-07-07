@@ -29,6 +29,7 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.Style
 import net.minecraft.network.chat.TextColor
+import org.breakthebot.breakthelibrary.api.ServerAPI
 import org.breakthebot.breakthelibrary.api.TownyAPI
 
 object OnlineStaff : BaseCommand(
@@ -55,9 +56,15 @@ object OnlineStaff : BaseCommand(
     }
 
     suspend fun onlineStaff(api: Boolean): Component {
-        val staff = TownyAPI.getStaff().getOrNull()
+        val staff = ServerAPI.getStaffList()
+            .mapSuccess { it.toList() }
+            .getOrElse {
+                return Component.literal("Received empty staff list.")
+                    .setStyle(Style.EMPTY.withColor(TextColor.RED))
 
-        if (staff.isNullOrEmpty()) return Component.literal("Received invalid staff list.")
+            }
+
+        if (staff.isEmpty()) return Component.literal("Received invalid staff list.")
             .setStyle(Style.EMPTY.withColor(TextColor.RED))
 
         var onlineStaffComponent = Component.empty()
@@ -71,7 +78,7 @@ object OnlineStaff : BaseCommand(
         } else {
             staff.mapNotNull { uuid ->
                 client.connection!!.onlinePlayers.firstOrNull {
-                    it.profile.id == uuid.toUUID()
+                    it.profile.id == uuid
                 }?.profile?.name
             }
         }
