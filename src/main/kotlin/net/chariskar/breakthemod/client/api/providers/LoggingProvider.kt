@@ -19,14 +19,26 @@ package net.chariskar.breakthemod.client.api.providers
 
 import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.Breakthemod.Companion.logger
+import org.breakthebot.breakthelibrary.models.APIResult
 
-interface LoggingProvider {
+abstract class LoggingProvider(private val name: String) {
 
-    fun logError(message: String, e: Exception) = logger.error("$message: ${e.message}", e)
+    fun logError(message: String, e: Throwable) {
+        logger.error("[$name] $message: ${e.message}", e)
+        e.printStackTrace(System.err)
+    }
+
+    fun logError(e: APIResult.Error) {
+        logger.error("[$name] Received unexpected error from the api, with status code ${e.statusCode} and message ${e.message}.")
+    }
+
+    fun logInfo(message: String) {
+        logger.info("[$name] $message")
+    }
 
     fun logDebug(message: String) {
         if (Breakthemod.debug) {
-            logger.info("[DEBUG] $message")
+            logger.debug("[$name] $message")
         }
     }
 }

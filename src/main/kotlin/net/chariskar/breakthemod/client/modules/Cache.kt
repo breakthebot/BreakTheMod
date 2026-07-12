@@ -35,7 +35,6 @@ import org.breakthebot.breakthelibrary.models.NearbyItem
 import org.breakthebot.breakthelibrary.models.NearbyType
 import org.breakthebot.breakthelibrary.models.Resident
 import org.breakthebot.breakthelibrary.models.Town
-import java.util.Hashtable
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
@@ -50,9 +49,9 @@ object Cache : BaseModule(
     "Cache",
     "Cache handler for the mod."
 ) {
-    private val _playerCache: Hashtable<String, Resident> = Hashtable()
+    private val _playerCache: HashMap<String, Resident> = HashMap()
 
-    val playerCache: Hashtable<String, Resident>
+    val playerCache: HashMap<String, Resident>
         get() = _playerCache
 
     // keep a cache of all towns and nations for /locate, a full object cache is not needed yet.
@@ -76,7 +75,7 @@ object Cache : BaseModule(
                 Schedule(
                     "playerCacheUpdate",
                     {
-                        Breakthemod.logger.info("Cache started")
+                        logInfo("Cache started.")
                         if (!enabled) return@Schedule
                         runTask()
                     },
@@ -112,7 +111,7 @@ object Cache : BaseModule(
 
         val apiPlayers = TownyAPI.getPlayers(players)
             .flatMap { it
-                .onError { e-> handleCacheError("playerCache", e.message) }
+                .onError { e -> logError(e) }
                 .getOrNull()
                 .orEmpty()
             }
@@ -120,12 +119,13 @@ object Cache : BaseModule(
         apiPlayers.forEach {
             playerCache[it.name] = it
         }
+        logDebug("Finished updating players.")
     }
 
     /**
      * Updates [Cache.nearbyTowns].
      *
-     * World loaded required.
+     * World required.
      * */
     suspend fun updateNearbyTowns() {
         if (!isEarthMc() || !Config.features.cacheEnabled || !NearbyTowns.config.enabled) return
@@ -149,9 +149,7 @@ object Cache : BaseModule(
 
         val towns = TownyAPI.getTowns(resp)
             .first()
-            .onError {
-                handleCacheError("nearbyTownCache", it.message)
-            }
+            .onError { logError(it) }
             .getOrNull() ?: listOf()
 
         nearbyTowns.addAll(towns)
@@ -166,23 +164,13 @@ object Cache : BaseModule(
 
         TownyAPI.getAllTowns()
             .onSuccess { townCache.addAll(it.map { t -> t.name }) }
-            .onError {
-                handleCacheError("townCache", it.message)
-            }
-
-        Breakthemod.logger.info("Town cache done")
+            .onError { logError(it) }
 
         TownyAPI.getAllNations()
             .onSuccess { nationCache.addAll(it.map { n -> n.name }) }
-            .onError {
-                handleCacheError("nationCache", it.message)
-            }
+            .onError { logError(it) }
 
-        Breakthemod.logger.info("Name cache done.")
-    }
-
-    private fun handleCacheError(origin: String, message: String) {
-        Breakthemod.logger.error("Unexpected error occurred while updating $origin cache.", message)
+        logDebug("Name cache finished.")
     }
 
     suspend fun runTask() {

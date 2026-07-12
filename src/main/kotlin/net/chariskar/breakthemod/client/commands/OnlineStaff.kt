@@ -99,10 +99,10 @@ object OnlineStaff : BaseCommand(
            if (staffNames.isNotEmpty()) {
                append(onlineStaffComponent)
                append(Component.literal(" [").setStyle(Style.EMPTY.withColor(TextColor.GRAY)))
-                append(
-                    Component.literal(staffNames.size.toString())
-                        .setStyle(Style.EMPTY.withColor(TextColor.WHITE))
-                )
+               append(
+                   Component.literal(staffNames.size.toString())
+                       .setStyle(Style.EMPTY.withColor(TextColor.WHITE))
+               )
                append(Component.literal("]").setStyle(Style.EMPTY.withColor(TextColor.GRAY)))
            } else {
                append("No online staff").style = Style.EMPTY.withColor(TextColor.AQUA)

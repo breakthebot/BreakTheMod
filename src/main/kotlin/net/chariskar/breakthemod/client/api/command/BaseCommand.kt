@@ -56,19 +56,20 @@ abstract class BaseCommand(
     val name: String,
     val description: String,
     val usageSuffix: String = ""
-) : MessageProvider, ServerUtilsProvider, LoggingProvider {
+) : MessageProvider, ServerUtilsProvider, LoggingProvider(name) {
 
     private val handler = CoroutineExceptionHandler { _, e ->
-        sendError()
+        sendError("Unexpected error occurred ${e.message} while running $name")
         if (Config.config.dev) {
-            logError("Unexpected error occurred while running $name", e as Exception)
+            logError("Unexpected error occurred while running", e as Exception)
         }
 
     }
 
     val scope = CoroutineScope(CommandScope.scope.coroutineContext + handler)
 
-    protected val client: Minecraft = Minecraft.getInstance()
+    protected val client: Minecraft
+        get() = Minecraft.getInstance()
 
     fun getUsage() = "/$name $usageSuffix"
 

@@ -132,8 +132,10 @@ data class Coords(
  *  */
 abstract class BaseWidget(
     val name: String,
-) : ServerUtilsProvider, LoggingProvider {
-    protected val client: Minecraft = Minecraft.getInstance()
+) : ServerUtilsProvider, LoggingProvider(name) {
+
+    protected val client: Minecraft
+        get() = Minecraft.getInstance()
 
     abstract val config: WidgetConfig
 
@@ -162,8 +164,8 @@ abstract class BaseWidget(
         HudElementRegistry.attachElementAfter(
             VanillaHudElements.CHAT,
             Identifier.fromNamespaceAndPath("breakthemod", name)
-        ) { conComponent, _ ->
-            render(conComponent, client.font)
+        ) { drawContext, _ ->
+            render(drawContext, client.font)
         }
     }
 

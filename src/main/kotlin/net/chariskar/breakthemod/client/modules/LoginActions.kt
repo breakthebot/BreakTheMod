@@ -18,7 +18,6 @@
 package net.chariskar.breakthemod.client.modules
 
 import kotlinx.coroutines.runBlocking
-import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.module.BaseModule
 import net.chariskar.breakthemod.client.models.AutoHudType
 import net.chariskar.breakthemod.client.utils.Config
@@ -78,7 +77,7 @@ object LoginActions : BaseModule(
 
     /** Send the notifications if they weren't already sent.*/
     fun sendNotifications() {
-        val filteredNotifications = Breakthemod.notifications.filter { Config.notifications[it.name] ?: false }
+        val filteredNotifications = NotificationManager.notifications.filter { Config.notifications[it.name] ?: false }
         if (filteredNotifications.isEmpty()) return
 
         sendMessage("Notifications: ")

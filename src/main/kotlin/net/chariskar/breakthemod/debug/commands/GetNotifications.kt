@@ -18,8 +18,8 @@
 package net.chariskar.breakthemod.debug.commands
 
 import com.mojang.brigadier.context.CommandContext
-import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.command.BaseCommand
+import net.chariskar.breakthemod.client.modules.NotificationManager
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 
 object GetNotifications : BaseCommand(
@@ -27,11 +27,11 @@ object GetNotifications : BaseCommand(
     "Display the notifications"
 ){
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
-        if (Breakthemod.notifications.isEmpty()) {
+        if (NotificationManager.notifications.isEmpty()) {
             sendMessage("No notifications.")
             return 1
         }
-        Breakthemod.notifications.forEach {
+        NotificationManager.notifications.forEach {
             sendMessage(it.toString())
         }
 

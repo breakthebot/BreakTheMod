@@ -33,12 +33,13 @@ abstract class BaseModule(
     val name: String,
     val description: String,
     val hidden: Boolean = false
-) : MessageProvider, LoggingProvider, ServerUtilsProvider {
+) : MessageProvider, LoggingProvider(name), ServerUtilsProvider {
 
     var enabled: Boolean = false
         protected set
 
-    protected val client: Minecraft = Minecraft.getInstance()
+    protected val client: Minecraft
+        get() = Minecraft.getInstance()
 
     fun register() {
         if (enabled) return

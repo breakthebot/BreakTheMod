@@ -40,6 +40,7 @@ object DiscordId : BaseCommand(
         val name: String = ctx.getArgument("name", String::class.java)
         scope.launch {
             val discord = TownyAPI.getPlayerDiscord(name).getOrNull()
+
             val result: Component = if (discord != null) {
                 Component.literal("Click Here")
                     .withColor(TextColor.BLUE)

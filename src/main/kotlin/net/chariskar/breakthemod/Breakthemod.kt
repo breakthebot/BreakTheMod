@@ -17,8 +17,6 @@
 package net.chariskar.breakthemod
 
 import com.mojang.brigadier.CommandDispatcher
-import net.chariskar.breakthemod.client.api.Notification
-import net.chariskar.breakthemod.client.api.NotificationTypes
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.api.module.BaseModule
 import net.chariskar.breakthemod.client.api.widget.BaseWidget
@@ -38,6 +36,7 @@ import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.modules.ChatTracker
 import net.chariskar.breakthemod.client.modules.LoginActions
 import net.chariskar.breakthemod.client.modules.NearbyEngine
+import net.chariskar.breakthemod.client.modules.NotificationManager
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.widgets.FishingTimeWidget
 import net.chariskar.breakthemod.client.widgets.FishingWidget
@@ -79,7 +78,6 @@ class Breakthemod : ClientModInitializer {
         val widgets: List<BaseWidget>
             field: MutableList<BaseWidget> = mutableListOf()
 
-        val notifications: MutableList<Notification> = mutableListOf()
 
         val username: String
             get() = Minecraft.getInstance().user.name
@@ -153,6 +151,7 @@ class Breakthemod : ClientModInitializer {
 
         modules.addAll(
             listOf(
+                NotificationManager,
                 LoginActions,
                 Cache,
                 NearbyEngine,
@@ -178,24 +177,5 @@ class Breakthemod : ClientModInitializer {
         registerWidgets()
 
         debug = loadDebug()
-
-        if (version.contains("ALPHA")) {
-            val alphaNotification = Notification(
-                "Alpha",
-                "You are running a alpha version of breakthemod, this is not a finished build, so expect glitches and instability.",
-                NotificationTypes.UsingAlpha
-            )
-            notifications.add(alphaNotification)
-        }
-
-        if (version.contains("BETA")) {
-            val betaNotification = Notification(
-                "Beta",
-                "You are running a beta version of breakthemod, unexpected behaviour and glitches may occur, please report any issues.",
-                NotificationTypes.UsingBeta
-            )
-            notifications.add(betaNotification)
-        }
-
     }
 }

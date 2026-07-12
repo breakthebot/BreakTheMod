@@ -111,8 +111,7 @@ fun WidgetConfig.getTextConfig(
             textPlaceholder
         ).setSaveConsumer { str: String ->
             if (textPlaceholder == str || str.isEmpty()) return@setSaveConsumer
-            text.replace(textPlaceholder, str)
-            textPlaceholder = str
+            textPlaceholder = text.replace(textPlaceholder, str)
             Config.saveWidgetConfig(widgetName, this)
         }.setDefaultValue { defaultTextPlaceHolder }.build()
     )

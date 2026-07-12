@@ -51,7 +51,7 @@ object Townless : BaseCommand(
             val townName = own?.town?.name
 
             if (townName.isNullOrEmpty()) {
-                sendMessage("You have to be in a town to access this command.")
+                sendError("You have to be in a town to access this command.")
                 return@launch
             }
 
@@ -60,7 +60,7 @@ object Townless : BaseCommand(
             val townless = Cache.playerCache.values.filter { it.town == null }
 
             if (townless.isEmpty()) {
-                sendMessage("No townless players found")
+                sendMessage("No townless players found.")
                 return@launch
             }
 

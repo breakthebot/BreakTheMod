@@ -18,9 +18,9 @@
 package net.chariskar.breakthemod.debug
 
 import com.mojang.brigadier.CommandDispatcher
-import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.Notification
 import net.chariskar.breakthemod.client.api.NotificationTypes
+import net.chariskar.breakthemod.client.modules.NotificationManager
 import net.chariskar.breakthemod.debug.commands.CacheDebug
 import net.chariskar.breakthemod.debug.commands.Debug
 import net.chariskar.breakthemod.debug.commands.GetConfig
@@ -52,7 +52,7 @@ class DebugLoader {
             "Debug tools loaded",
             NotificationTypes.UsingDebug
         )
-        Breakthemod.notifications.add(debugNotification)
+        NotificationManager.notifications.add(debugNotification)
         logger.warn("Debugging tools active be warned.")
     }
 

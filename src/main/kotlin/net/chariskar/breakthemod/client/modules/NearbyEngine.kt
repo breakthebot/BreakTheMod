@@ -32,7 +32,7 @@ import java.util.concurrent.CopyOnWriteArraySet
  * @property DISTANCE_THRESHOLD A constant threshold of the distance that the player should be within to be displayed.
  */
 object NearbyEngine : BaseModule(
-    "Nearby Engine",
+    "NearbyEngine",
     "Checks which of the nearby players would show up on the EarthMc map."
 ) {
     const val DISTANCE_THRESHOLD: Double = 200.0
