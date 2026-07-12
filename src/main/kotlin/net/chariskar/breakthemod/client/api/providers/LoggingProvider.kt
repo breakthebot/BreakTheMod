@@ -41,4 +41,15 @@ abstract class LoggingProvider(private val name: String) {
             logger.debug("[$name] $message")
         }
     }
+
+    fun <T> APIResult<T>.logError(): APIResult<T> {
+        return when (this) {
+            is APIResult.Error -> {
+                logError(this)
+                this
+            }
+
+            is APIResult.Success -> this
+        }
+    }
 }

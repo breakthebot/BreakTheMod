@@ -51,7 +51,10 @@ object FindPlayer : BaseCommand(
                     playerData.x = player.x
                     playerData.z = player.z
 
-                    val locationData = MapAPI.getLocation(listOf(Pair(player.x,player.z))).getOrNull()?.first()
+                    val locationData = MapAPI.getLocation(listOf(Pair(player.x, player.z)))
+                        .logError()
+                        .getOrNull()
+                        ?.first()
 
                     if (locationData != null && !locationData.isWilderness) {
                         playerData.townName = locationData.town?.name

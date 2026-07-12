@@ -111,7 +111,7 @@ object Cache : BaseModule(
 
         val apiPlayers = TownyAPI.getPlayers(players)
             .flatMap { it
-                .onError { e -> logError(e) }
+                .logError()
                 .getOrNull()
                 .orEmpty()
             }
@@ -141,6 +141,7 @@ object Cache : BaseModule(
         )
 
         val resp = MapAPI.getNearby(body)
+            .logError()
             .getOrNull()
             ?.take(3)
             ?.map { it.name }
@@ -149,7 +150,7 @@ object Cache : BaseModule(
 
         val towns = TownyAPI.getTowns(resp)
             .first()
-            .onError { logError(it) }
+            .logError()
             .getOrNull() ?: listOf()
 
         nearbyTowns.addAll(towns)
@@ -164,11 +165,11 @@ object Cache : BaseModule(
 
         TownyAPI.getAllTowns()
             .onSuccess { townCache.addAll(it.map { t -> t.name }) }
-            .onError { logError(it) }
+            .logError()
 
         TownyAPI.getAllNations()
             .onSuccess { nationCache.addAll(it.map { n -> n.name }) }
-            .onError { logError(it) }
+            .logError()
 
         logDebug("Name cache finished.")
     }
