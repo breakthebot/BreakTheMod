@@ -5,6 +5,12 @@
       "latest": true,
       "release": false,
       "mcVer": "1.21.11"
+    },
+    {
+      "version": "1.6.1",
+      "latest": true,
+      "release": true,
+      "mcVer": "26.2"
     }
   ]
 }

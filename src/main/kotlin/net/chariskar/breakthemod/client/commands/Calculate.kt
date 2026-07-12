@@ -38,7 +38,7 @@ object Calculate : BaseCommand(
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val type = ctx.getArgument("type", String::class.java)
         val amount = ctx.getArgument("amount", Int::class.java)
-        return when ( type ) {
+        return when (type) {
             "blocks" -> {
                 val fullBlocks = amount / 9
                 val remainder = amount % 9
