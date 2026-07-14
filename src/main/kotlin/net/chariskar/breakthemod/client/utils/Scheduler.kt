@@ -17,7 +17,13 @@
 
 package net.chariskar.breakthemod.client.utils
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlin.time.Duration
 
 /**
@@ -41,6 +47,7 @@ object Scheduler {
         get() = HashMap(_tasks)
 
     fun schedule(schedule: Schedule) {
+        if (_tasks.containsKey(schedule.name)) return
         val job = scope.launch {
             delay(schedule.delay)
             schedule.task()
@@ -51,6 +58,7 @@ object Scheduler {
     }
 
     fun scheduleRepeating(schedule: Schedule) {
+        if (_tasks.containsKey(schedule.name)) return
         val job = scope.launch {
             while (isActive) {
                 schedule.task()
