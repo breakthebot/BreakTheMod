@@ -17,8 +17,6 @@
 
 package net.chariskar.breakthemod.client.modules
 
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.buildJsonArray
 import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.module.BaseModule
 import net.chariskar.breakthemod.client.utils.Config
@@ -33,8 +31,11 @@ import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import org.breakthebot.breakthelibrary.api.MapAPI
 import org.breakthebot.breakthelibrary.api.TownyAPI
-import org.breakthebot.breakthelibrary.models.*
-import java.util.*
+import org.breakthebot.breakthelibrary.models.NearbyItem
+import org.breakthebot.breakthelibrary.models.NearbyType
+import org.breakthebot.breakthelibrary.models.Resident
+import org.breakthebot.breakthelibrary.models.Town
+import java.util.Hashtable
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
@@ -77,6 +78,7 @@ object Cache : BaseModule(
 
         ClientPlayConnectionEvents.JOIN.register(
             ClientPlayConnectionEvents.Join { _: ClientPlayNetworkHandler?, _: PacketSender?, _: MinecraftClient ->
+                if (enabled) return@Join
             enabled = true
             Scheduler.scheduleRepeating(
                 Schedule(
@@ -190,7 +192,7 @@ object Cache : BaseModule(
     }
 
     suspend fun runTask() {
-        if (!isEarthMc() || !Config.features.cacheEnabled || Breakthemod.debug) return
+        if (!isModEnabled() || !Config.features.cacheEnabled || !Breakthemod.debug) return
         updateCache()
         updatePlayers()
     }
