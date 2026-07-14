@@ -207,7 +207,7 @@ abstract class BaseWidget(
      * Renders a string widget.
      * @param text The Component to render.
      * */
-    fun renderComponentWidget(
+    fun renderTextWidget(
         drawContext: GuiGraphicsExtractor,
         textRender: Font,
         text: String

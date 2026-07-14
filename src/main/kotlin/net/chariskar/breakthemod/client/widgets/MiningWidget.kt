@@ -60,7 +60,7 @@ object MiningWidget : BaseWidget("mining_widget") {
             config.placeHolderText
         } else config.text.replace(config.textPlaceholder, ActionTracker.goldMined.toString())
 
-        renderComponentWidget(
+        renderTextWidget(
             drawContext,
             textRender,
             text

@@ -61,7 +61,7 @@ object FishingWidget : BaseWidget(
             config.placeHolderText
         } else config.text.replace(config.textPlaceholder, ActionTracker.fishFished.toString())
 
-        renderComponentWidget(
+        renderTextWidget(
             drawContext,
             textRender,
             text

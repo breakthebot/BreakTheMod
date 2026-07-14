@@ -38,13 +38,13 @@ import net.minecraft.network.chat.Component
  * */
 @Serializable
 data class WidgetConfig (
-    val name: String,
-    var enabled: Boolean,
+    val name: String = "",
+    var enabled: Boolean = false,
     var position: WidgetPosition,
     val category: WidgetModes,
     var text: String = "",
     var textPlaceholder: String = "",
-    var placeHolderText: String,
+    var placeHolderText: String = "",
     var textColor: Int = 0xFFFFFFFF.toInt(),
     var placeHolderColor: Int = 0xFFFF6B6B.toInt()
 )

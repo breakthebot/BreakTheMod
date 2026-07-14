@@ -175,7 +175,7 @@ object Cache : BaseModule(
     }
 
     suspend fun runTask() {
-        if (!isEarthMc() || !Config.features.cacheEnabled || Breakthemod.debug) return
+        if (!isModEnabled() || !Config.features.cacheEnabled || !Breakthemod.debug) return
         updateCache()
         updatePlayers()
     }

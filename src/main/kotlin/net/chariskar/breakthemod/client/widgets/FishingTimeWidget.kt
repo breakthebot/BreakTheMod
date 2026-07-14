@@ -55,7 +55,7 @@ object FishingTimeWidget : BaseWidget(
         drawContext: GuiGraphicsExtractor,
         textRender: Font
     ) {
-        renderComponentWidget(
+        renderTextWidget(
             drawContext,
             textRender,
             text = config.text.replace("TIME", ActionTracker.timeFishing.toString()),
