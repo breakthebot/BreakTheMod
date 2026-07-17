@@ -33,10 +33,10 @@ object ActionTracker : BaseModule(
 ){
     var goldMined = 0
 
-    var fishingModeActivated: Instant = Clock.System.now()
+    var fishingModeActivated: Instant? = null
 
     val timeFishing: Long
-        get() = (fishingModeActivated.minus(Clock.System.now())).inWholeMinutes
+        get() = (fishingModeActivated?.minus(Clock.System.now()))?.inWholeMinutes ?: 0
 
     val fishFished
         get() = client.player?.stats?.getValue(
