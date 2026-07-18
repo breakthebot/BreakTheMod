@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -20,6 +21,10 @@ base {
 val targetJavaVersion = 25
 
 java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
+    }
+
     withSourcesJar()
 
     sourceCompatibility = JavaVersion.VERSION_25
@@ -31,6 +36,12 @@ kotlin {
         jvmTarget.set(JvmTarget.fromTarget(targetJavaVersion.toString()))
         allWarningsAsErrors.set(true)
     }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    javaCompiler.set(javaToolchains.compilerFor {
+        languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
+    })
 }
 
 fabricApi {
