@@ -77,7 +77,7 @@ object Locate : BaseCommand(
     }
 
     private fun getMapComponent(x: Float, z: Float): Component {
-        val mapUrl = "${Config.getMapUrl()}?world=minecraft_overworld&zoom=5&x=$x&z=$z"
+        val mapUrl = "${Config.getMapUrl()}?world=earth&zoom=5&x=$x&z=$z"
         return Component.literal("here")
             .withStyle {
                 it.withColor(TextColor.BLUE)
