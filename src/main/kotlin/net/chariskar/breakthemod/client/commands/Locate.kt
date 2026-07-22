@@ -54,10 +54,12 @@ object Locate : BaseCommand(
                     val town = TownyAPI.getTown(name).getOrNull()
                     town?.coordinates?.spawn
                 }
+
                 "nation" -> {
                     val nation = TownyAPI.getNation(name).getOrNull()
                     nation?.coordinates?.spawn
                 }
+
                 else -> {
                     sendError("$type is not town or nation")
                     return@launch
@@ -113,15 +115,13 @@ object Locate : BaseCommand(
         )
     }
 
-
     class NameSuggestions : SuggestionProvider<FabricClientCommandSource> {
 
         @Throws(CommandSyntaxException::class)
         override fun getSuggestions(
             conComponent: CommandContext<FabricClientCommandSource>,
-            builder: SuggestionsBuilder
+            builder: SuggestionsBuilder,
         ): CompletableFuture<Suggestions> {
-
             val type = StringArgumentType.getString(conComponent, "type")
 
             val input = builder.remaining.lowercase(Locale.getDefault())

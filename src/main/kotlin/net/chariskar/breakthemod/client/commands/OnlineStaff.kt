@@ -42,16 +42,29 @@ object OnlineStaff : BaseCommand(
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         dispatcher.register(
             LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)
-                .then(RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("api", StringArgumentType.string())
-                    .executes(Command { conComponent: CommandContext<FabricClientCommandSource> ->
-                        if (!isModEnabled()) {return@Command 0}
-                        val arg: String = conComponent.getArgument("api", String::class.java)
-                        return@Command exec(arg == "api")
-                    }))
-                .executes(Command { _: CommandContext<FabricClientCommandSource> ->
-                    if (!isModEnabled()) {return@Command 0}
-                    return@Command exec(null)
-                })
+                .then(
+                    RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>(
+                        "api",
+                        StringArgumentType.string()
+                    )
+                        .executes(
+                            Command { conComponent: CommandContext<FabricClientCommandSource> ->
+                                if (!isModEnabled()) {
+                                    return@Command 0
+                                }
+                                val arg: String = conComponent.getArgument("api", String::class.java)
+                                return@Command exec(arg == "api")
+                            }
+                        )
+                )
+                .executes(
+                    Command { _: CommandContext<FabricClientCommandSource> ->
+                        if (!isModEnabled()) {
+                            return@Command 0
+                        }
+                        return@Command exec(null)
+                    }
+                )
         )
     }
 
@@ -61,16 +74,17 @@ object OnlineStaff : BaseCommand(
             .getOrElse {
                 return Component.literal("Received empty staff list.")
                     .setStyle(Style.EMPTY.withColor(TextColor.RED))
-
             }
 
-        if (staff.isEmpty()) return Component.literal("Received invalid staff list.")
-            .setStyle(Style.EMPTY.withColor(TextColor.RED))
+        if (staff.isEmpty()) {
+            return Component.literal("Received invalid staff list.")
+                .setStyle(Style.EMPTY.withColor(TextColor.RED))
+        }
 
         var onlineStaffComponent = Component.empty()
 
         val staffNames: List<String> = if (api) {
-            TownyAPI.getPlayers( staff.map { v->v.toString() } )
+            TownyAPI.getPlayers(staff.map { v -> v.toString() })
                 .first()
                 .getOrNull()
                 ?.filter { r -> r.status.isOnline }
@@ -96,24 +110,24 @@ object OnlineStaff : BaseCommand(
         }
 
         return Component.empty().apply {
-           if (staffNames.isNotEmpty()) {
-               append(onlineStaffComponent)
-               append(Component.literal(" [").setStyle(Style.EMPTY.withColor(TextColor.GRAY)))
-               append(
-                   Component.literal(staffNames.size.toString())
-                       .setStyle(Style.EMPTY.withColor(TextColor.WHITE))
-               )
-               append(Component.literal("]").setStyle(Style.EMPTY.withColor(TextColor.GRAY)))
-           } else {
-               append("No online staff").style = Style.EMPTY.withColor(TextColor.AQUA)
-           }
+            if (staffNames.isNotEmpty()) {
+                append(onlineStaffComponent)
+                append(Component.literal(" [").setStyle(Style.EMPTY.withColor(TextColor.GRAY)))
+                append(
+                    Component.literal(staffNames.size.toString())
+                        .setStyle(Style.EMPTY.withColor(TextColor.WHITE))
+                )
+                append(Component.literal("]").setStyle(Style.EMPTY.withColor(TextColor.GRAY)))
+            } else {
+                append("No online staff").style = Style.EMPTY.withColor(TextColor.AQUA)
+            }
         }
     }
 
     fun exec(api: Boolean?): Int {
         scope.launch {
             val staff = onlineStaff(api ?: false)
-            sendMessage(staff) 
+            sendMessage(staff)
         }
         return 0
     }

@@ -26,7 +26,6 @@ import net.chariskar.breakthemod.client.utils.Config
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 
-
 class ModMenuIntegration : ModMenuApi {
 
     companion object {
@@ -38,13 +37,17 @@ class ModMenuIntegration : ModMenuApi {
             val entryBuilder = builder.entryBuilder()
             val general = builder.getOrCreateCategory(Component.literal("BreakTheMod config"))
 
-            val options = if ( Config.config.options ) {
+            val options = if (Config.config.options) {
                 builder.getOrCreateCategory(Component.literal("Options"))
-            } else null
+            } else {
+                null
+            }
 
-            val devOptions = if ( Config.config.dev ) {
+            val devOptions = if (Config.config.dev) {
                 builder.getOrCreateCategory(Component.literal("Developer Settings"))
-            } else null
+            } else {
+                null
+            }
 
             val widgetConfig = builder.getOrCreateCategory(Component.literal("Widget Configuration"))
 
@@ -89,7 +92,7 @@ class ModMenuIntegration : ModMenuApi {
                 ).setSaveConsumer { enabled: Boolean ->
                     Config.config.features.nameTagInfo = enabled
                     saveConfig()
-                }.setDefaultValue( Config.getNameTag() ).build()
+                }.setDefaultValue(Config.getNameTag()).build()
             )
 
             WidgetManager.registerWidgetIntegration(
@@ -117,7 +120,7 @@ class ModMenuIntegration : ModMenuApi {
                     .setSaveConsumer { enabled: Boolean ->
                         Config.config.dev = enabled
                         saveConfig()
-                    }.setDefaultValue { Config.config.dev}
+                    }.setDefaultValue { Config.config.dev }
                     .build()
             )
 
@@ -129,7 +132,7 @@ class ModMenuIntegration : ModMenuApi {
                     .setSaveConsumer { enabled: Boolean ->
                         Config.config.options = enabled
                         saveConfig()
-                    } .setDefaultValue { Config.config.options }
+                    }.setDefaultValue { Config.config.options }
                     .build()
             )
 
@@ -185,11 +188,7 @@ class ModMenuIntegration : ModMenuApi {
         }
 
         fun saveConfig() = Config.saveConfig(Config.config)
-
     }
 
-    override fun getModConfigScreenFactory(): ConfigScreenFactory<Screen> {
-        return ConfigScreenFactory(::createConfigScreen)
-    }
-
+    override fun getModConfigScreenFactory(): ConfigScreenFactory<Screen> = ConfigScreenFactory(::createConfigScreen)
 }

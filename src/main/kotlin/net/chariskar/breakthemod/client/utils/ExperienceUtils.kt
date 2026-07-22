@@ -1,4 +1,4 @@
-/// Credit to https://github.com/jwkerr/Bottlet/blob/master/src/main/java/au/lupine/bottlet/api/Experience.java
+// / Credit to https://github.com/jwkerr/Bottlet/blob/master/src/main/java/au/lupine/bottlet/api/Experience.java
 
 package net.chariskar.breakthemod.client.utils
 
@@ -8,13 +8,11 @@ import kotlin.math.round
 object ExperienceUtils {
 
     fun experience(
-        player: LocalPlayer
-    ): Int {
-        return (
-                experience(player.experienceLevel) +
-                round(required(player.experienceLevel) * player.experienceProgress)
+        player: LocalPlayer,
+    ): Int = (
+        experience(player.experienceLevel) +
+            round(required(player.experienceLevel) * player.experienceProgress)
         ).toInt()
-    }
 
     fun experience(level: Int): Int {
         if (level > 30) return (4.5 * level * level - 162.5 * level + 2220).toInt()

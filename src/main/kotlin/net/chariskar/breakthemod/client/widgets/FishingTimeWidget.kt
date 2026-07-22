@@ -32,7 +32,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor
 
 object FishingTimeWidget : BaseWidget(
     "fishing_time_widget"
-){
+) {
     override val config: WidgetConfig = Config.getWidgetConfig(name) ?: WidgetConfig(
         name = "FishingTime",
         enabled = false,
@@ -45,7 +45,7 @@ object FishingTimeWidget : BaseWidget(
 
     override fun getModMenuConfig(
         category: SubCategoryBuilder,
-        entryBuilder: ConfigEntryBuilder
+        entryBuilder: ConfigEntryBuilder,
     ) {
         config.getPositionConfig(category, entryBuilder, name)
         config.getTextConfig(category, entryBuilder, "You have been fishing for TIME minutes.", "", "TIME", name)
@@ -53,7 +53,7 @@ object FishingTimeWidget : BaseWidget(
 
     override fun render(
         drawContext: GuiGraphicsExtractor,
-        textRender: Font
+        textRender: Font,
     ) {
         renderTextWidget(
             drawContext,
@@ -61,5 +61,4 @@ object FishingTimeWidget : BaseWidget(
             text = config.text.replace("TIME", ActionTracker.timeFishing.toString()),
         )
     }
-
 }

@@ -31,12 +31,12 @@ data class Version(
     val version: String,
     val latest: Boolean,
     val release: Boolean,
-    val mcVer: String
+    val mcVer: String,
 )
 
 @Serializable
 data class VersionFile(
-    val versions: List<Version>
+    val versions: List<Version>,
 )
 
 object UpdateUtility : MessageProvider {

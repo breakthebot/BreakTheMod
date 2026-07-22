@@ -45,12 +45,14 @@ object Calculate : BaseCommand(
                 sendMessage("$amount gold ingots equal $fullBlocks blocks and $remainder ingots.")
                 1
             }
+
             "stacks" -> {
                 val fullStacks = amount / 64
                 val remainder = amount % 64
                 sendMessage("$amount blocks are $fullStacks stacks and $remainder blocks")
                 1
             }
+
             else -> {
                 sendMessage(Component.literal("$type is not blocks or stacks"), TextColor.RED)
                 0
@@ -61,15 +63,24 @@ object Calculate : BaseCommand(
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         dispatcher.register(
             LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)
-                .then(RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("type", StringArgumentType.string())
-                    .suggests(CommandSuggestions(mutableListOf("blocks", "stacks")))
-                    .then(
-                        RequiredArgumentBuilder.argument<FabricClientCommandSource?, Int>("amount", IntegerArgumentType.integer())
-                            .executes(Command { conComponent: CommandContext<FabricClientCommandSource> ->
-                                if (!isModEnabled()) return@Command 0
-                                return@Command run(conComponent)
-                            })
+                .then(
+                    RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>(
+                        "type",
+                        StringArgumentType.string()
                     )
+                        .suggests(CommandSuggestions(mutableListOf("blocks", "stacks")))
+                        .then(
+                            RequiredArgumentBuilder.argument<FabricClientCommandSource?, Int>(
+                                "amount",
+                                IntegerArgumentType.integer()
+                            )
+                                .executes(
+                                    Command { conComponent: CommandContext<FabricClientCommandSource> ->
+                                        if (!isModEnabled()) return@Command 0
+                                        return@Command run(conComponent)
+                                    }
+                                )
+                        )
 
                 )
         )

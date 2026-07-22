@@ -30,7 +30,7 @@ object ActionTracker : BaseModule(
     "Action Tracker",
     "Tracks data for mining and fishing widgets.",
     true
-){
+) {
     var goldMined = 0
 
     var fishingModeActivated: Instant? = null
@@ -47,12 +47,13 @@ object ActionTracker : BaseModule(
         if (!isModEnabled()) return
         ClientPlayerBlockBreakEvents.AFTER.register(
             ClientPlayerBlockBreakEvents.After { _, _, _, state ->
-            if (
-                (state.`is`(Blocks.GOLD_BLOCK) || state.`is`(Blocks.GOLD_ORE) || state.`is`(Blocks.RAW_GOLD_BLOCK)) &&
-                WidgetManager.widgetMode == WidgetModes.Mining
-            ) {
-                goldMined++
+                if (
+                    (state.`is`(Blocks.GOLD_BLOCK) || state.`is`(Blocks.GOLD_ORE) || state.`is`(Blocks.RAW_GOLD_BLOCK)) &&
+                    WidgetManager.widgetMode == WidgetModes.Mining
+                ) {
+                    goldMined++
+                }
             }
-        })
+        )
     }
 }

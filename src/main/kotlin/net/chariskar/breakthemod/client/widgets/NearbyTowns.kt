@@ -67,13 +67,15 @@ object NearbyTowns : BaseWidget(
 
     override fun render(
         drawContext: GuiGraphicsExtractor,
-        textRender: Font
+        textRender: Font,
     ) {
         val towns = Cache.nearbyTowns
 
         val townList = if (towns.isEmpty()) {
             listOf(config.placeHolderText)
-        } else towns.map { formatTownEntry(it) }
+        } else {
+            towns.map { formatTownEntry(it) }
+        }
 
         renderListWidget(
             drawContext,
@@ -86,7 +88,6 @@ object NearbyTowns : BaseWidget(
         val player = client.player ?: return t.name
         return "-${t.name} direction: ${t.getTownDirection(player)}, distance: ${t.calculateDistance(player)} blocks"
     }
-
 }
 
 fun Town.getTownDirection(player: LocalPlayer): String {

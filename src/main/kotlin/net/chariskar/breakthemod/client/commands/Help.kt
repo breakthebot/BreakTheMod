@@ -53,11 +53,11 @@ object Help : BaseCommand(
                     cmd.getUsage()
                 ).setStyle(
                     Style.EMPTY
-                    .withHoverEvent(
-                        HoverEvent.ShowText(
-                            Component.literal(cmd.getCommandDescription())
+                        .withHoverEvent(
+                            HoverEvent.ShowText(
+                                Component.literal(cmd.getCommandDescription())
+                            )
                         )
-                    )
                 ),
                 TextColor.GRAY
             )
@@ -83,27 +83,35 @@ object Help : BaseCommand(
         return 0
     }
 
-
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         dispatcher.register(
             LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)
-                .then(RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("name", StringArgumentType.string())
-                .suggests(CommandSuggestions(Breakthemod.commands.map { it.name }.toMutableList()))
-                    .executes(Command { conComponent: CommandContext<FabricClientCommandSource> ->
-                        val name = conComponent.getArgument("name", String::class.java)
-                    val command = Breakthemod.commands.firstOrNull {
-                        it.name == name
+                .then(
+                    RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>(
+                        "name",
+                        StringArgumentType.string()
+                    )
+                        .suggests(CommandSuggestions(Breakthemod.commands.map { it.name }.toMutableList()))
+                        .executes(
+                            Command { conComponent: CommandContext<FabricClientCommandSource> ->
+                                val name = conComponent.getArgument("name", String::class.java)
+                                val command = Breakthemod.commands.firstOrNull {
+                                    it.name == name
+                                }
+                                if (command == null) {
+                                    sendError("$name is not a recognised command.")
+                                    return@Command 0
+                                }
+                                sendMessage(command.getCommandDescription())
+                                return@Command 1
+                            }
+                        )
+                )
+                .executes(
+                    Command { ctx: CommandContext<FabricClientCommandSource> ->
+                        return@Command execute(ctx)
                     }
-                    if (command == null) {
-                        sendError("$name is not a recognised command.")
-                        return@Command 0
-                    }
-                    sendMessage(command.getCommandDescription())
-                    return@Command 1
-                }))
-                .executes(Command { ctx: CommandContext<FabricClientCommandSource> ->
-                    return@Command execute(ctx)
-                })
+                )
         )
     }
 }

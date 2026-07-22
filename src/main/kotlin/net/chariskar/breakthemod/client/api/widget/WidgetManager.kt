@@ -52,7 +52,7 @@ object WidgetManager {
      * Changes modes to category.
      * */
     fun changeMode(
-        category: WidgetModes
+        category: WidgetModes,
     ) {
         if (category == WidgetModes.Off) {
             Breakthemod.widgets.forEach { it.config.enabled = false }
@@ -101,20 +101,22 @@ object WidgetManager {
             )
         )
 
-        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick { client: Minecraft? ->
-            while (keyMapping.consumeClick()) {
-                val handle = client!!.window
-                val shiftHeld = InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_SHIFT) ||
+        ClientTickEvents.END_CLIENT_TICK.register(
+            ClientTickEvents.EndTick { client: Minecraft? ->
+                while (keyMapping.consumeClick()) {
+                    val handle = client!!.window
+                    val shiftHeld = InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_SHIFT) ||
                         InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_RIGHT_SHIFT)
 
-                if (shiftHeld) {
-                    changeMode(widgetMode.next())
-                    client.player?.sendOverlayMessage(
-                        Component.literal("Switched to $widgetMode")
-                    )
+                    if (shiftHeld) {
+                        changeMode(widgetMode.next())
+                        client.player?.sendOverlayMessage(
+                            Component.literal("Switched to $widgetMode")
+                        )
+                    }
                 }
             }
-        })
+        )
     }
 
     /**
@@ -122,7 +124,7 @@ object WidgetManager {
      * */
     fun registerWidgetIntegration(
         category: ConfigCategory,
-        entryBuilder: ConfigEntryBuilder
+        entryBuilder: ConfigEntryBuilder,
     ) {
         Breakthemod.widgets.forEach {
             val subCategory = entryBuilder.startSubCategory(Component.literal("${it.config.name} configuration"))

@@ -57,7 +57,7 @@ repositories {
     }
 }
 
-val shade =  configurations.create("shade")
+val shade = configurations.create("shade")
 val debug = project.hasProperty("debug")
 
 val mcVer = project.findProperty("mcVer") as String
@@ -93,7 +93,6 @@ dependencies {
     compileOnly(kotlin("stdlib"))
     compileOnly(kotlin("reflect"))
     compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:$ktSere")
-
 }
 
 tasks.processResources {
@@ -170,9 +169,7 @@ if (project.hasProperty("release")) {
     tasks.jar {
         enabled = false
     }
-
 }
-
 
 tasks.named<ShadowJar>("shadowJar") {
     if (!debug) {
@@ -181,9 +178,6 @@ tasks.named<ShadowJar>("shadowJar") {
     exclude("**/models/*Pursuit*.class")
     exclude("**/models/*ServerInfo*.class")
     exclude("**/models/*MysteryMaster*.class")
-    exclude("**/api/*ServerAPI*.class")
-    exclude("**/api/interfaces/*ServerAPI*.class")
-
 }
 
 tasks.jar {

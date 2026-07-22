@@ -34,10 +34,8 @@ interface ServerUtilsProvider {
     fun isModEnabled(): Boolean = isEarthMc().or(Config.config.enabledOnOtherServers)
 
     private fun splitAddress(
-        serverInfo: String
-    ): String {
-        return serverInfo.split(",".toRegex()).dropLastWhile {
-            it.isEmpty()
-        }.toTypedArray()[0].lowercase()
-    }
+        serverInfo: String,
+    ): String = serverInfo.split(",".toRegex()).dropLastWhile {
+        it.isEmpty()
+    }.toTypedArray()[0].lowercase()
 }

@@ -17,13 +17,13 @@
 
 package net.chariskar.breakthemod.client.utils
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import java.io.File
 import kotlinx.serialization.json.Json
 import net.chariskar.breakthemod.client.models.ConfigData
 import net.chariskar.breakthemod.client.models.WidgetConfig
 import org.breakthebot.breakthelibrary.utils.ConfigHandler
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import java.io.File
 import org.breakthebot.breakthelibrary.utils.Config as LConfig
 
 /**
@@ -60,10 +60,14 @@ object Config {
 
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
-    fun setFile(file: File) { configFile = file }
+    fun setFile(file: File) {
+        configFile = file
+    }
 
     fun loadConfig() {
-        if (!configFile.exists()) { saveConfig(null) }
+        if (!configFile.exists()) {
+            saveConfig(null)
+        }
 
         val fileContent = configFile.readText()
         if (fileContent.isEmpty() || fileContent.length <= 2) {
@@ -82,7 +86,7 @@ object Config {
     fun saveConfig(data: ConfigData?) {
         val data = data ?: ConfigData()
         try {
-            val encoded= json.encodeToString<ConfigData>(data)
+            val encoded = json.encodeToString<ConfigData>(data)
             configFile.writeText(encoded)
         } catch (e: Exception) {
             logger.error("Unable to write new config, ${e.message}")
@@ -96,7 +100,7 @@ object Config {
      * */
     fun saveWidgetConfig(
         name: String,
-        newConfig: WidgetConfig
+        newConfig: WidgetConfig,
     ) {
         widgets[name] = newConfig
         saveConfig(config)
@@ -107,8 +111,8 @@ object Config {
      * @param name The name of the widget.
      * */
     fun getWidgetConfig(
-        name: String
-    ):  WidgetConfig? = widgets[name]
+        name: String,
+    ): WidgetConfig? = widgets[name]
 
     /**
      * Small function to have the proper URL.

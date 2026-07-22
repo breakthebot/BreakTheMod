@@ -36,7 +36,7 @@ enum class WidgetPosition {
     BOTTOM_LEFT,
     BOTTOM_RIGHT,
     MIDDLE_LEFT,
-    MIDDLE_RIGHT
+    MIDDLE_RIGHT,
 }
 
 /**
@@ -54,48 +54,52 @@ fun WidgetPosition.getPos(
     height: Int,
     width: Int,
     screenWidth: Int,
-    screenHeight: Int
-): Coords {
-    return when (this) {
-        WidgetPosition.TOP_LEFT -> {
-            Coords(margin, margin)
-        }
-        WidgetPosition.TOP_RIGHT -> {
-            Coords(
-                screenWidth - width - margin,
-                margin
-            )
-        }
-        WidgetPosition.TOP_MIDDLE -> {
-            Coords(
-                (screenWidth - width) / 2,
-                margin
-            )
-        }
-        WidgetPosition.BOTTOM_LEFT -> {
-            Coords(
-                margin,
-                screenHeight - height - margin
-            )
-        }
-        WidgetPosition.BOTTOM_RIGHT -> {
-            Coords(
-                screenWidth - width - margin,
-                screenHeight - height - margin
-            )
-        }
-        WidgetPosition.MIDDLE_LEFT -> {
-            Coords(
-                margin,
-                (screenHeight - height) / 2
-            )
-        }
-        WidgetPosition.MIDDLE_RIGHT -> {
-            Coords(
-                screenWidth - width - margin,
-                (screenHeight - height) / 2
-            )
-        }
+    screenHeight: Int,
+): Coords = when (this) {
+    WidgetPosition.TOP_LEFT -> {
+        Coords(margin, margin)
+    }
+
+    WidgetPosition.TOP_RIGHT -> {
+        Coords(
+            screenWidth - width - margin,
+            margin
+        )
+    }
+
+    WidgetPosition.TOP_MIDDLE -> {
+        Coords(
+            (screenWidth - width) / 2,
+            margin
+        )
+    }
+
+    WidgetPosition.BOTTOM_LEFT -> {
+        Coords(
+            margin,
+            screenHeight - height - margin
+        )
+    }
+
+    WidgetPosition.BOTTOM_RIGHT -> {
+        Coords(
+            screenWidth - width - margin,
+            screenHeight - height - margin
+        )
+    }
+
+    WidgetPosition.MIDDLE_LEFT -> {
+        Coords(
+            margin,
+            (screenHeight - height) / 2
+        )
+    }
+
+    WidgetPosition.MIDDLE_RIGHT -> {
+        Coords(
+            screenWidth - width - margin,
+            (screenHeight - height) / 2
+        )
     }
 }
 
@@ -103,7 +107,7 @@ enum class WidgetModes {
     General,
     Mining,
     Fishing,
-    Off
+    Off,
 }
 
 /** Iterate over the widget modes. */
@@ -119,7 +123,7 @@ fun WidgetModes.next(): WidgetModes {
  * */
 data class Coords(
     var x: Int,
-    var y: Int
+    var y: Int,
 )
 
 /**
@@ -132,7 +136,8 @@ data class Coords(
  *  */
 abstract class BaseWidget(
     val name: String,
-) : ServerUtilsProvider, LoggingProvider(name) {
+) : LoggingProvider(name),
+    ServerUtilsProvider {
 
     protected val client: Minecraft
         get() = Minecraft.getInstance()
@@ -145,9 +150,7 @@ abstract class BaseWidget(
     /**
      * Checks if the widget should be rendered.
      * */
-    open fun shouldNotRender(): Boolean {
-        return !isModEnabled() || !config.enabled || client.gui.hud.isHidden
-    }
+    open fun shouldNotRender(): Boolean = !isModEnabled() || !config.enabled || client.gui.hud.isHidden
 
     /**
      * Generate the ModMenu config for the widget.
@@ -156,7 +159,7 @@ abstract class BaseWidget(
      * */
     abstract fun getModMenuConfig(
         category: SubCategoryBuilder,
-        entryBuilder: ConfigEntryBuilder
+        entryBuilder: ConfigEntryBuilder,
     )
 
     /** Registers the element after VanillaHudElements.CHAT.*/
@@ -182,7 +185,7 @@ abstract class BaseWidget(
     fun renderListWidget(
         drawContext: GuiGraphicsExtractor,
         textRender: Font,
-        itemList: List<String>
+        itemList: List<String>,
     ) {
         if (shouldNotRender()) return
 
@@ -210,7 +213,7 @@ abstract class BaseWidget(
     fun renderTextWidget(
         drawContext: GuiGraphicsExtractor,
         textRender: Font,
-        text: String
+        text: String,
     ) {
         if (shouldNotRender()) return
 

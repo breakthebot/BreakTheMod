@@ -83,11 +83,8 @@ object Townless : BaseCommand(
                 message.append(userComponent).append(Component.literal("\n"))
             }
             sendMessage(message)
-
         }
 
         return 0
     }
-
-
 }

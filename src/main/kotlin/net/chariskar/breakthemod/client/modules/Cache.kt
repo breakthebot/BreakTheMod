@@ -70,38 +70,40 @@ object Cache : BaseModule(
 
         ClientPlayConnectionEvents.JOIN.register(
             ClientPlayConnectionEvents.Join { _: ClientPacketListener?, _: PacketSender?, _: Minecraft ->
-            enabled = true
-            Scheduler.scheduleRepeating(
-                Schedule(
-                    "playerCacheUpdate",
-                    {
-                        logInfo("Cache started.")
-                        if (!enabled) return@Schedule
-                        runTask()
-                    },
-                    10.minutes
+                enabled = true
+                Scheduler.scheduleRepeating(
+                    Schedule(
+                        "playerCacheUpdate",
+                        {
+                            logInfo("Cache started.")
+                            if (!enabled) return@Schedule
+                            runTask()
+                        },
+                        10.minutes
+                    )
                 )
-            )
-            Scheduler.scheduleRepeating(
-                Schedule(
-                    "nearbyTownCache",
-                    {
-                        if (!enabled) return@Schedule
-                        updateNearbyTowns()
-                    },
-                    30.seconds
+                Scheduler.scheduleRepeating(
+                    Schedule(
+                        "nearbyTownCache",
+                        {
+                            if (!enabled) return@Schedule
+                            updateNearbyTowns()
+                        },
+                        30.seconds
+                    )
                 )
-            )
-        })
+            }
+        )
 
-        ClientPlayConnectionEvents.DISCONNECT.register(ClientPlayConnectionEvents.Disconnect { _: ClientPacketListener?, _: Minecraft? ->
-            enabled = false
-            Scheduler.cancel("playerCacheUpdate")
-            Scheduler.cancel("nearbyTownCache")
-        })
-
+        ClientPlayConnectionEvents.DISCONNECT.register(
+            ClientPlayConnectionEvents.Disconnect { _: ClientPacketListener?, _: Minecraft? ->
+                enabled = false
+                Scheduler.cancel("playerCacheUpdate")
+                Scheduler.cancel("nearbyTownCache")
+            }
+        )
     }
-    
+
     private suspend fun updatePlayers() {
         playerCache.clear()
 
@@ -110,10 +112,11 @@ object Cache : BaseModule(
             .map { it.profile.id.toString() }
 
         val apiPlayers = TownyAPI.getPlayers(players)
-            .flatMap { it
-                .logError()
-                .getOrNull()
-                .orEmpty()
+            .flatMap {
+                it
+                    .logError()
+                    .getOrNull()
+                    .orEmpty()
             }
 
         apiPlayers.forEach {
@@ -181,8 +184,8 @@ object Cache : BaseModule(
     }
 
     fun getPlayer(
-        name: String
-    ): Resident?  = playerCache[name]
+        name: String,
+    ): Resident? = playerCache[name]
 }
 
 fun Resident.getTownyComponent(): Component {

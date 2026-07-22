@@ -37,7 +37,7 @@ import net.minecraft.network.chat.Component
  * @property placeHolderColor The color of the placeholder.
  * */
 @Serializable
-data class WidgetConfig (
+data class WidgetConfig(
     val name: String = "",
     var enabled: Boolean = false,
     var position: WidgetPosition,
@@ -46,13 +46,13 @@ data class WidgetConfig (
     var textPlaceholder: String = "",
     var placeHolderText: String = "",
     var textColor: Int = 0xFFFFFFFF.toInt(),
-    var placeHolderColor: Int = 0xFFFF6B6B.toInt()
+    var placeHolderColor: Int = 0xFFFF6B6B.toInt(),
 )
 
 fun WidgetConfig.getPositionConfig(
     category: SubCategoryBuilder,
     entryBuilder: ConfigEntryBuilder,
-    widgetName: String
+    widgetName: String,
 ) {
     category.add(
         entryBuilder.startEnumSelector(
@@ -120,7 +120,7 @@ fun WidgetConfig.getTextConfig(
 fun WidgetConfig.getTextColorConfig(
     category: SubCategoryBuilder,
     entryBuilder: ConfigEntryBuilder,
-    widgetName: String
+    widgetName: String,
 ) {
     category.add(
         entryBuilder.startStrField(

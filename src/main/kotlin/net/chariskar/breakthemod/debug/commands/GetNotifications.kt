@@ -25,7 +25,7 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 object GetNotifications : BaseCommand(
     "getNotifications",
     "Display the notifications"
-){
+) {
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         if (NotificationManager.notifications.isEmpty()) {
             sendMessage("No notifications.")
