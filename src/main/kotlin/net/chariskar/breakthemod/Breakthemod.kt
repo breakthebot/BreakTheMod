@@ -52,53 +52,21 @@ import org.slf4j.LoggerFactory
 import java.io.File
 
 class Breakthemod : ClientModInitializer {
-
-    /**
-     * Global mod registry.
-     * @property debug Mod debug parameter.
-     * @property version The version string.
-     * @property logger Centralized mod logger.
-     * @property modules All registered breakthemod modules.
-     * @property commands All the registered breakthemod commands.
-     * @property widgets All the registered widgets.
-     * @property notifications All notifications from the mod.
-     * @property username The username of the client.
-     * */
-    companion object {
-        var debug: Boolean = false
-            private set
-
-        val version: String by lazy { "1.6.0-ALPHA${if (debug) "-DEBUG" else ""}" }
-        val logger: Logger = LoggerFactory.getLogger("breakthemod")
-
-        val modules: List<BaseModule>
-            field: MutableList<BaseModule> = mutableListOf()
-        val commands: List<BaseCommand>
-            field: MutableList<BaseCommand> = mutableListOf()
-        val widgets: List<BaseWidget>
-            field: MutableList<BaseWidget> = mutableListOf()
-
-
-        val username: String
-            get() = Minecraft.getInstance().user.name
-
-        val onlinePlayers: List<String>
-            get() = Minecraft.getInstance()
-                .connection
-                ?.onlinePlayers
-                ?.mapNotNull { it.profile.name.toString() }
-                .orEmpty()
-    }
-
     private fun loadCommands() {
-        ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _ ->
-            commands.forEach { it.register(dispatcher) }
-        })
+        ClientCommandRegistrationCallback.EVENT.register(
+            ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _ ->
+                commands.forEach { it.register(dispatcher) }
+            }
+        )
     }
 
-    private fun loadModules() { modules.forEach { it.register() } }
+    private fun loadModules() {
+        modules.forEach { it.register() }
+    }
 
-    private fun registerWidgets() { widgets.forEach { it.register() } }
+    private fun registerWidgets() {
+        widgets.forEach { it.register() }
+    }
 
     /**
      * Load debugging modules.
@@ -177,5 +145,40 @@ class Breakthemod : ClientModInitializer {
         registerWidgets()
 
         debug = loadDebug()
+    }
+
+    /**
+     * Global mod registry.
+     * @property debug Mod debug parameter.
+     * @property version The version string.
+     * @property logger Centralized mod logger.
+     * @property modules All registered breakthemod modules.
+     * @property commands All the registered breakthemod commands.
+     * @property widgets All the registered widgets.
+     * @property username The username of the player.
+     * */
+    companion object {
+        var debug: Boolean = false
+            private set
+
+        val version: String by lazy { "1.6.1-BETA${if (debug) "-DEBUG" else ""}" }
+        val logger: Logger = LoggerFactory.getLogger("breakthemod")
+
+        val modules: List<BaseModule>
+            field: MutableList<BaseModule> = mutableListOf()
+        val commands: List<BaseCommand>
+            field: MutableList<BaseCommand> = mutableListOf()
+        val widgets: List<BaseWidget>
+            field: MutableList<BaseWidget> = mutableListOf()
+
+        val username: String
+            get() = Minecraft.getInstance().user.name
+
+        val onlinePlayers: List<String>
+            get() = Minecraft.getInstance()
+                .connection
+                ?.onlinePlayers
+                ?.mapNotNull { it.profile.name.toString() }
+                .orEmpty()
     }
 }

@@ -50,26 +50,23 @@ private object CommandScope {
  * @param description The command description.
  * @param usageSuffix The args that must be passed to the commands in a readable format (e.g. `<name>` ).
  * @property scope The async scope that the commands should use.
- * @property client Centralized client access for commands.
  *  */
 abstract class BaseCommand(
     val name: String,
     val description: String,
-    val usageSuffix: String = ""
-) : MessageProvider, ServerUtilsProvider, LoggingProvider(name) {
+    val usageSuffix: String = "",
+) : LoggingProvider(name),
+    MessageProvider,
+    ServerUtilsProvider {
 
     private val handler = CoroutineExceptionHandler { _, e ->
         sendError("Unexpected error occurred ${e.message} while running $name")
         if (Config.config.dev) {
             logError("Unexpected error occurred while running", e as Exception)
         }
-
     }
 
     val scope = CoroutineScope(CommandScope.scope.coroutineContext + handler)
-
-    protected val client: Minecraft
-        get() = Minecraft.getInstance()
 
     fun getUsage() = "/$name $usageSuffix"
 
@@ -79,7 +76,7 @@ abstract class BaseCommand(
      * @param ctx the command conComponent.
      */
     protected abstract fun execute(
-        ctx: CommandContext<FabricClientCommandSource>
+        ctx: CommandContext<FabricClientCommandSource>,
     ): Int
 
     /**
@@ -90,7 +87,7 @@ abstract class BaseCommand(
      */
     @Throws(CommandSyntaxException::class)
     protected fun run(
-        ctx: CommandContext<FabricClientCommandSource>
+        ctx: CommandContext<FabricClientCommandSource>,
     ): Int {
         try {
             return execute(ctx)
@@ -129,7 +126,7 @@ abstract class BaseCommand(
         dispatcher: CommandDispatcher<FabricClientCommandSource>,
         argName: String,
         argType: ArgumentType<T>,
-        suggestions: SuggestionProvider<FabricClientCommandSource?>? = null
+        suggestions: SuggestionProvider<FabricClientCommandSource?>? = null,
     ) {
         dispatcher.register(
             LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)
@@ -137,9 +134,11 @@ abstract class BaseCommand(
                     RequiredArgumentBuilder.argument<FabricClientCommandSource, T>(argName, argType)
                         .apply {
                             if (suggestions != null) suggests(suggestions)
-                            executes(Command { conComponent: CommandContext<FabricClientCommandSource> ->
-                                return@Command if (!isModEnabled()) 0 else run(conComponent)
-                            })
+                            executes(
+                                Command { conComponent: CommandContext<FabricClientCommandSource> ->
+                                    return@Command if (!isModEnabled()) 0 else run(conComponent)
+                                }
+                            )
                         }
                 )
         )
@@ -149,13 +148,13 @@ abstract class BaseCommand(
      * Provides command suggestions with whatever list is passed to it.
      * */
     class CommandSuggestions(
-        val allSuggestions: List<String>
+        val allSuggestions: List<String>,
     ) : SuggestionProvider<FabricClientCommandSource?> {
 
         @Throws(CommandSyntaxException::class)
         override fun getSuggestions(
             conComponent: CommandContext<FabricClientCommandSource?>?,
-            builder: SuggestionsBuilder
+            builder: SuggestionsBuilder,
         ): CompletableFuture<Suggestions> {
             val input = builder.remaining.lowercase(Locale.getDefault())
 
@@ -165,5 +164,11 @@ abstract class BaseCommand(
 
             return builder.buildFuture()
         }
+    }
+
+    companion object {
+        @JvmStatic
+        protected val client: Minecraft
+            get() = Minecraft.getInstance()
     }
 }

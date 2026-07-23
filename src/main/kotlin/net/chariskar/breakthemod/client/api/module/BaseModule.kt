@@ -32,14 +32,13 @@ import net.minecraft.client.Minecraft
 abstract class BaseModule(
     val name: String,
     val description: String,
-    val hidden: Boolean = false
-) : MessageProvider, LoggingProvider(name), ServerUtilsProvider {
+    val hidden: Boolean = false,
+) : LoggingProvider(name),
+    MessageProvider,
+    ServerUtilsProvider {
 
     var enabled: Boolean = false
         protected set
-
-    protected val client: Minecraft
-        get() = Minecraft.getInstance()
 
     fun register() {
         if (enabled) return
@@ -54,7 +53,15 @@ abstract class BaseModule(
 
     fun getModuleDescription() = "$name: $description"
 
-    open fun disable() { enabled = false }
+    open fun disable() {
+        enabled = false
+    }
 
     protected abstract fun enable()
+
+    companion object {
+        @JvmStatic
+        protected val client: Minecraft
+            get() = Minecraft.getInstance()
+    }
 }
