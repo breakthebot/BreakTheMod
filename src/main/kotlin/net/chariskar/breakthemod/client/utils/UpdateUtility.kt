@@ -18,6 +18,7 @@
 package net.chariskar.breakthemod.client.utils
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.serializer
 import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.Notification
 import net.chariskar.breakthemod.client.api.NotificationTypes
@@ -42,9 +43,12 @@ data class VersionFile(
 object UpdateUtility : MessageProvider {
 
     suspend fun checkVersion() {
-        val file =
-            APIClient.getRequest<VersionFile>("https://raw.githubusercontent.com/breakthebot/BreakTheMod/refs/heads/master/version.json")
-                .getOrNull()?.versions
+        val file = APIClient.getRequest(
+            "https://raw.githubusercontent.com/breakthebot/BreakTheMod/refs/heads/master/version.json",
+            serializer<VersionFile>()
+        )
+            .getOrNull()?.versions
+
         if (file == null) {
             Breakthemod.logger.warn("Version file unavailable.")
             return

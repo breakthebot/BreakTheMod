@@ -148,7 +148,7 @@ abstract class BaseCommand(
      * Provides command suggestions with whatever list is passed to it.
      * */
     class CommandSuggestions(
-        val allSuggestions: List<String>,
+        val allSuggestions: Collection<String>,
     ) : SuggestionProvider<FabricClientCommandSource?> {
 
         @Throws(CommandSyntaxException::class)

@@ -93,8 +93,8 @@ object Help : BaseCommand(
                     )
                         .suggests(CommandSuggestions(Breakthemod.commands.map { it.name }.toMutableList()))
                         .executes(
-                            Command { conComponent: CommandContext<FabricClientCommandSource> ->
-                                val name = conComponent.getArgument("name", String::class.java)
+                            Command { context: CommandContext<FabricClientCommandSource> ->
+                                val name = context.getArgument("name", String::class.java)
                                 val command = Breakthemod.commands.firstOrNull {
                                     it.name == name
                                 }

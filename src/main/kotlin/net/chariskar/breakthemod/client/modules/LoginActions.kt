@@ -40,29 +40,33 @@ object LoginActions : BaseModule(
 ) {
 
     override fun enable() {
-        ClientPlayConnectionEvents.JOIN.register(ClientPlayConnectionEvents.Join { _: ClientPacketListener?, _: PacketSender?, client: Minecraft ->
-            val task = Schedule(
-                "LoginActions",
-                {
-                    if (!isEarthMc()) return@Schedule
-                    autoHud()
-                    checkUpdates()
-                    sendNotifications()
-                },
-                10.seconds
-            )
+        ClientPlayConnectionEvents.JOIN.register(
+            ClientPlayConnectionEvents.Join { _: ClientPacketListener?, _: PacketSender?, _: Minecraft ->
+                val task = Schedule(
+                    "LoginActions",
+                    {
+                        if (!isEarthMc()) return@Schedule
+                        autoHud()
+                        checkUpdates()
+                        sendNotifications()
+                    },
+                    10.seconds
+                )
 
-            Scheduler.schedule(task)
-        })
+                Scheduler.schedule(task)
+            }
+        )
     }
 
     /** Enables the hud on join.*/
     fun autoHud() {
         val hud = Config.features.hudType
 
-        if (hud == AutoHudType.None) { return }
+        if (hud == AutoHudType.None) {
+            return
+        }
 
-        val command = when(hud) {
+        val command = when (hud) {
             AutoHudType.PermHud -> "plot perm hud"
             AutoHudType.MapHud -> "towny map hud"
         }
@@ -90,6 +94,4 @@ object LoginActions : BaseModule(
 
         Config.save()
     }
-
-
 }

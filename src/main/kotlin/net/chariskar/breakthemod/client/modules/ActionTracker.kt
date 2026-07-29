@@ -36,7 +36,7 @@ object ActionTracker : BaseModule(
     var fishingModeActivated: Instant? = null
 
     val timeFishing: Long
-        get() = (fishingModeActivated?.minus(Clock.System.now()))?.inWholeMinutes ?: 0
+        get() = (fishingModeActivated?.minus(Clock.System.now()))?.inWholeMinutes?.coerceAtLeast(0) ?: 0
 
     val fishFished
         get() = client.player?.stats?.getValue(

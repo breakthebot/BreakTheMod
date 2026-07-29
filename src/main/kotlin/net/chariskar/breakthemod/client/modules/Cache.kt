@@ -65,6 +65,9 @@ object Cache : BaseModule(
     val nearbyTowns: List<Town>
         field: MutableList<Town> = mutableListOf()
 
+    val alliances: Set<String>
+        field: MutableSet<String> = mutableSetOf()
+
     override fun enable() {
         if (enabled) return
 
@@ -172,6 +175,10 @@ object Cache : BaseModule(
 
         TownyAPI.getAllNations()
             .onSuccess { nationCache.addAll(it.map { n -> n.name }) }
+            .logError()
+
+        TownyAPI.getAllAlliances()
+            .onSuccess { alliances.addAll(it.keys) }
             .logError()
 
         logDebug("Name cache finished.")

@@ -38,9 +38,6 @@ import net.chariskar.breakthemod.client.modules.LoginActions
 import net.chariskar.breakthemod.client.modules.NearbyEngine
 import net.chariskar.breakthemod.client.modules.NotificationManager
 import net.chariskar.breakthemod.client.utils.Config
-import net.chariskar.breakthemod.client.widgets.FishingTimeWidget
-import net.chariskar.breakthemod.client.widgets.FishingWidget
-import net.chariskar.breakthemod.client.widgets.MiningWidget
 import net.chariskar.breakthemod.client.widgets.NearbyPlayers
 import net.chariskar.breakthemod.client.widgets.NearbyTowns
 import net.fabricmc.api.ClientModInitializer
@@ -132,9 +129,6 @@ class Breakthemod : ClientModInitializer {
             listOf(
                 NearbyPlayers,
                 NearbyTowns,
-                MiningWidget,
-                FishingWidget,
-                FishingTimeWidget
             )
         )
 
