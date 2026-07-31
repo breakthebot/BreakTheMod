@@ -21,8 +21,6 @@ import com.mojang.brigadier.context.CommandContext
 import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.modules.Cache
-import net.chariskar.breakthemod.client.modules.NearbyEngine
-import net.chariskar.breakthemod.client.widgets.NearbyPlayers
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.network.chat.Component
 
@@ -34,9 +32,6 @@ object Debug : BaseCommand(
         if (!Breakthemod.debug) return 0
         sendMessage(
             Component.literal("Version: ${Breakthemod.version}")
-        )
-        sendMessage(
-            Component.literal("Nearby engine state: Running(${NearbyPlayers.config.enabled}), Players(${NearbyEngine.players})")
         )
         sendMessage("Loaded commands: ${Breakthemod.commands.map { it.name }}.")
         sendMessage("Loaded modules: ${Breakthemod.modules.map { it.name }}.")

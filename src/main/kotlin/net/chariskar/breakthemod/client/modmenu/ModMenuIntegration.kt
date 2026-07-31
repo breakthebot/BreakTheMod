@@ -20,7 +20,6 @@ package net.chariskar.breakthemod.client.modmenu
 import com.terraformersmc.modmenu.api.ConfigScreenFactory
 import com.terraformersmc.modmenu.api.ModMenuApi
 import me.shedaniel.clothconfig2.api.ConfigBuilder
-import net.chariskar.breakthemod.client.api.widget.WidgetManager
 import net.chariskar.breakthemod.client.models.AutoHudType
 import net.chariskar.breakthemod.client.utils.Config
 import net.minecraft.client.gui.screens.Screen
@@ -93,23 +92,6 @@ class ModMenuIntegration : ModMenuApi {
                     Config.config.features.nameTagInfo = enabled
                     saveConfig()
                 }.setDefaultValue(Config.getNameTag()).build()
-            )
-
-            WidgetManager.registerWidgetIntegration(
-                widgetConfig,
-                entryBuilder
-            )
-
-            general.addEntry(
-                entryBuilder.startStrField(
-                    Component.literal("Townless message"),
-                    Config.getTownlessMessage("TOWN")
-                ).setSaveConsumer { message: String ->
-                    Config.setTownlessMessage(message)
-                    saveConfig()
-                }.setDefaultValue {
-                    Config.getTownlessMessage("TOWN")
-                }.build()
             )
 
             general.addEntry(

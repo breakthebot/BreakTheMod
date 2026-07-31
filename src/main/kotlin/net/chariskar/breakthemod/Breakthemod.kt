@@ -19,8 +19,6 @@ package net.chariskar.breakthemod
 import com.mojang.brigadier.CommandDispatcher
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.api.module.BaseModule
-import net.chariskar.breakthemod.client.api.widget.BaseWidget
-import net.chariskar.breakthemod.client.api.widget.WidgetManager
 import net.chariskar.breakthemod.client.commands.Calculate
 import net.chariskar.breakthemod.client.commands.DiscordId
 import net.chariskar.breakthemod.client.commands.FindPlayer
@@ -28,18 +26,15 @@ import net.chariskar.breakthemod.client.commands.GotoCommand
 import net.chariskar.breakthemod.client.commands.Help
 import net.chariskar.breakthemod.client.commands.LastSeen
 import net.chariskar.breakthemod.client.commands.Locate
-import net.chariskar.breakthemod.client.commands.Nearby
 import net.chariskar.breakthemod.client.commands.OnlineStaff
 import net.chariskar.breakthemod.client.commands.Townless
-import net.chariskar.breakthemod.client.modules.ActionTracker
+import net.chariskar.breakthemod.client.commands.alliance.Alliance
+import net.chariskar.breakthemod.client.commands.alliance.TopAlliances
 import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.modules.ChatTracker
 import net.chariskar.breakthemod.client.modules.LoginActions
-import net.chariskar.breakthemod.client.modules.NearbyEngine
 import net.chariskar.breakthemod.client.modules.NotificationManager
 import net.chariskar.breakthemod.client.utils.Config
-import net.chariskar.breakthemod.client.widgets.NearbyPlayers
-import net.chariskar.breakthemod.client.widgets.NearbyTowns
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
@@ -59,10 +54,6 @@ class Breakthemod : ClientModInitializer {
 
     private fun loadModules() {
         modules.forEach { it.register() }
-    }
-
-    private fun registerWidgets() {
-        widgets.forEach { it.register() }
     }
 
     /**
@@ -97,11 +88,8 @@ class Breakthemod : ClientModInitializer {
 
         Config.loadConfig()
 
-        WidgetManager.changeMode(Config.config.widgetMode)
-
         commands.addAll(
             listOf(
-                Nearby,
                 OnlineStaff,
                 Townless,
                 GotoCommand,
@@ -111,6 +99,8 @@ class Breakthemod : ClientModInitializer {
                 Locate,
                 Calculate,
                 Help,
+                Alliance,
+                TopAlliances
             )
         )
 
@@ -119,24 +109,12 @@ class Breakthemod : ClientModInitializer {
                 NotificationManager,
                 LoginActions,
                 Cache,
-                NearbyEngine,
                 ChatTracker,
-                ActionTracker
             )
         )
-
-        widgets.addAll(
-            listOf(
-                NearbyPlayers,
-                NearbyTowns,
-            )
-        )
-
-        WidgetManager.registerKeyBind()
 
         loadModules()
         loadCommands()
-        registerWidgets()
 
         debug = loadDebug()
     }
@@ -162,8 +140,6 @@ class Breakthemod : ClientModInitializer {
             field: MutableList<BaseModule> = mutableListOf()
         val commands: List<BaseCommand>
             field: MutableList<BaseCommand> = mutableListOf()
-        val widgets: List<BaseWidget>
-            field: MutableList<BaseWidget> = mutableListOf()
 
         val username: String
             get() = Minecraft.getInstance().user.name

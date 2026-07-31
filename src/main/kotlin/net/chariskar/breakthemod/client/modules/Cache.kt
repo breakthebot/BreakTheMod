@@ -22,21 +22,15 @@ import net.chariskar.breakthemod.client.api.module.BaseModule
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.Schedule
 import net.chariskar.breakthemod.client.utils.Scheduler
-import net.chariskar.breakthemod.client.widgets.NearbyTowns
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.PacketSender
 import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.ClientPacketListener
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.TextColor
-import org.breakthebot.breakthelibrary.api.MapAPI
 import org.breakthebot.breakthelibrary.api.TownyAPI
-import org.breakthebot.breakthelibrary.models.NearbyItem
-import org.breakthebot.breakthelibrary.models.NearbyType
 import org.breakthebot.breakthelibrary.models.Resident
-import org.breakthebot.breakthelibrary.models.Town
 import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 
 /**
  * Cache update handler for the mod.
@@ -62,9 +56,6 @@ object Cache : BaseModule(
     val nationCache: List<String>
         field: MutableList<String> = mutableListOf()
 
-    val nearbyTowns: List<Town>
-        field: MutableList<Town> = mutableListOf()
-
     val alliances: Set<String>
         field: MutableSet<String> = mutableSetOf()
 
@@ -85,16 +76,6 @@ object Cache : BaseModule(
                         10.minutes
                     )
                 )
-                Scheduler.scheduleRepeating(
-                    Schedule(
-                        "nearbyTownCache",
-                        {
-                            if (!enabled) return@Schedule
-                            updateNearbyTowns()
-                        },
-                        30.seconds
-                    )
-                )
             }
         )
 
@@ -102,7 +83,6 @@ object Cache : BaseModule(
             ClientPlayConnectionEvents.Disconnect { _: ClientPacketListener?, _: Minecraft? ->
                 enabled = false
                 Scheduler.cancel("playerCacheUpdate")
-                Scheduler.cancel("nearbyTownCache")
             }
         )
     }
@@ -126,40 +106,6 @@ object Cache : BaseModule(
             playerCache[it.name] = it
         }
         logDebug("Finished updating players.")
-    }
-
-    /**
-     * Updates [Cache.nearbyTowns].
-     *
-     * World required.
-     * */
-    suspend fun updateNearbyTowns() {
-        if (!isEarthMc() || !Config.features.cacheEnabled || !NearbyTowns.config.enabled) return
-
-        nearbyTowns.clear()
-        val player = Minecraft.getInstance().player ?: return
-
-        val body = NearbyItem.NearbyItemCoordinates(
-            targetType = NearbyType.COORDINATE,
-            searchType = NearbyType.TOWN,
-            radius = 500,
-            target = listOf(player.x.toInt(), player.z.toInt())
-        )
-
-        val resp = MapAPI.getNearby(body)
-            .logError()
-            .getOrNull()
-            ?.take(3)
-            ?.map { it.name }
-
-        if (resp.isNullOrEmpty()) return
-
-        val towns = TownyAPI.getTowns(resp)
-            .first()
-            .logError()
-            .getOrNull() ?: listOf()
-
-        nearbyTowns.addAll(towns)
     }
 
     /**

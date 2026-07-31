@@ -49,14 +49,15 @@ public abstract class PlayerInfoMixin extends LivingEntityRenderer<AbstractClien
 
     @Inject(
             method = "submitNameDisplay(Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V",
-            at = @At("HEAD")
+            at = @At("TAIL")
     )
     private void inject(
             AvatarRenderState state,
             PoseStack poseStack,
             SubmitNodeCollector submitNodeCollector,
             CameraRenderState camera,
-            CallbackInfo ci) {
+            CallbackInfo ci
+    ) {
         if (!isEarthMc()) return;
 
         String nameString = state.nameTag != null ? state.nameTag.getString() : "";
