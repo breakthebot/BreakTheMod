@@ -30,7 +30,11 @@ data class ConfigData(
     var options: Boolean = false,
     var features: Features = Features(),
     var widgets: MutableMap<String, WidgetConfig> = mutableMapOf(),
-    var libraryConfig: LConfig = LConfig(),
+    var libraryConfig: LConfig = LConfig(
+        "https://api.earthmc.net/v4",
+        "https://map.earthmc.net",
+        "https://api.earthmc.net/v4"
+    ),
     var widgetMode: WidgetModes = WidgetModes.General,
     val notifications: MutableMap<String, Boolean> = mutableMapOf()
 ) {
