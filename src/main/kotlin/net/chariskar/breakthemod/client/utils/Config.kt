@@ -102,12 +102,6 @@ object Config {
 
     fun getNameTag() = config.features.nameTagInfo && config.features.cacheEnabled
 
-    fun setTownlessMessage(message: String): Boolean {
-        if (!message.contains("TOWN")) return false
-        config.townlessMessage = message
-        return true
-    }
-
     fun setApiUrl(apiUrl: String) {
         val oldUrls = config.libraryConfig
         config.libraryConfig = LConfig(

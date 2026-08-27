@@ -25,12 +25,23 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.client.api.command.BaseCommand
+import net.chariskar.breakthemod.client.utils.ServerAPI
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.Style
 import net.minecraft.network.chat.TextColor
-import org.breakthebot.breakthelibrary.api.ServerAPI
 import org.breakthebot.breakthelibrary.api.TownyAPI
+import java.util.UUID
+import kotlin.uuid.toJavaUuid
+
+fun getRoleColor(role: String): Int = when (role.lowercase()) {
+    "owner" -> 0xd7342a
+    "admin" -> 0x3498db
+    "developer" -> 0x55ffff
+    "moderator" -> 0x1f8b4c
+    "helper" -> 0x1abc9c
+    else -> 0x0000
+}
 
 object OnlineStaff : BaseCommand(
     "onlinestaff",
@@ -48,11 +59,11 @@ object OnlineStaff : BaseCommand(
                         StringArgumentType.string()
                     )
                         .executes(
-                            Command { conComponent: CommandContext<FabricClientCommandSource> ->
+                            Command { component: CommandContext<FabricClientCommandSource> ->
                                 if (!isModEnabled()) {
                                     return@Command 0
                                 }
-                                val arg: String = conComponent.getArgument("api", String::class.java)
+                                val arg: String = component.getArgument("api", String::class.java)
                                 return@Command exec(arg == "api")
                             }
                         )
@@ -69,59 +80,79 @@ object OnlineStaff : BaseCommand(
     }
 
     suspend fun onlineStaff(api: Boolean): Component {
-        val staff = ServerAPI.getStaffList()
-            .mapSuccess { it.toList() }
-            .getOrElse {
-                return Component.literal("Received empty staff list.")
-                    .setStyle(Style.EMPTY.withColor(TextColor.RED))
-            }
+        val onlineStaffComponent = Component.literal("Online Staff: \n")
 
-        if (staff.isEmpty()) {
-            return Component.literal("Received invalid staff list.")
-                .setStyle(Style.EMPTY.withColor(TextColor.RED))
-        }
+        val staffNames: Map<String, List<String>> = if (api) {
+            val staff = ServerAPI.getStaff()
 
-        var onlineStaffComponent = Component.empty()
+            val staffUuids = staff
+                .values
+                .flatten()
+                .map { it.toString() }
 
-        val staffNames: List<String> = if (api) {
-            TownyAPI.getPlayers(staff.map { v -> v.toString() })
+            val staffMap = mutableMapOf<UUID, String>()
+
+            val data = TownyAPI.getPlayers(staffUuids)
                 .first()
+                .mapSuccess {
+                    it.map { r ->
+                        if (r.status.isOnline) {
+                            staffMap[r.uuid.toJavaUuid()] = r.name
+                        }
+                    }
+                }
                 .getOrNull()
-                ?.filter { r -> r.status.isOnline }
-                ?.map { r -> r.name }!!
+
+            if (data == null) {
+                return Component.literal("Unexpected error occurred when fetching the staff names from the API.")
+                    .setStyle(
+                        Style.EMPTY.withColor(TextColor.RED)
+                    )
+            }
+
+            staff.mapValues {
+                it.value.mapNotNull { u -> staffMap[u] }
+            }
         } else {
-            staff.mapNotNull { uuid ->
-                client.connection!!.onlinePlayers.firstOrNull {
-                    it.profile.id == uuid
-                }?.profile?.name
-            }
+            ServerAPI.getStaff()
+                .mapValues { (_, playerIds) ->
+                    playerIds.mapNotNull { id ->
+                        client.connection!!.onlinePlayers
+                            .firstOrNull { player -> player.profile.id == id }
+                            ?.profile
+                            ?.name
+                    }
+                }
+                .filterValues { it.isNotEmpty() }
         }
 
-        for (i in staffNames.indices) {
-            onlineStaffComponent = onlineStaffComponent.append(
-                Component.literal(staffNames[i]).setStyle(Style.EMPTY.withColor(TextColor.AQUA))
+        staffNames.forEach { (rank, staff) ->
+            if (staff.isEmpty()) return@forEach
+
+            val color = getRoleColor(rank)
+            val role = rank.replaceFirstChar { it.uppercaseChar() }
+
+            onlineStaffComponent.append(
+                Component.literal("$role: ")
+                    .withColor(color)
+                    .append(
+                        Component.literal(staff.joinToString(", "))
+                            .withColor(TextColor.GRAY)
+                            .append(
+                                Component.literal(" [${staff.size}]\n")
+                                    .withColor(TextColor.AQUA)
+                            )
+                    )
             )
-
-            if (i < staffNames.size - 1) {
-                onlineStaffComponent = onlineStaffComponent.append(
-                    Component.literal(", ").setStyle(Style.EMPTY.withColor(TextColor.WHITE))
-                )
-            }
         }
 
-        return Component.empty().apply {
-            if (staffNames.isNotEmpty()) {
-                append(onlineStaffComponent)
-                append(Component.literal(" [").setStyle(Style.EMPTY.withColor(TextColor.GRAY)))
-                append(
-                    Component.literal(staffNames.size.toString())
-                        .setStyle(Style.EMPTY.withColor(TextColor.WHITE))
-                )
-                append(Component.literal("]").setStyle(Style.EMPTY.withColor(TextColor.GRAY)))
-            } else {
-                append("No online staff").style = Style.EMPTY.withColor(TextColor.AQUA)
-            }
+        if (staffNames.values.flatten().isEmpty()) {
+            return Component.literal("No staff online at the moment.").setStyle(
+                Style.EMPTY.withColor(TextColor.RED)
+            )
         }
+
+        return onlineStaffComponent
     }
 
     fun exec(api: Boolean?): Int {

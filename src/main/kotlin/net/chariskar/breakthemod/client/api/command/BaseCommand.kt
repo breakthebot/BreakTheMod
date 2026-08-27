@@ -62,7 +62,7 @@ abstract class BaseCommand(
     private val handler = CoroutineExceptionHandler { _, e ->
         sendError("Unexpected error occurred ${e.message} while running $name")
         if (Config.config.dev) {
-            logError("Unexpected error occurred while running", e as Exception)
+            error("Unexpected error occurred while running", e as Exception)
         }
     }
 
@@ -95,7 +95,7 @@ abstract class BaseCommand(
             throw e
         } catch (e: Exception) {
             sendError()
-            logError("Unexpected error has occurred while running $name", e)
+            error("Unexpected error has occurred while running $name", e)
             return 1
         }
     }
@@ -135,8 +135,8 @@ abstract class BaseCommand(
                         .apply {
                             if (suggestions != null) suggests(suggestions)
                             executes(
-                                Command { conComponent: CommandContext<FabricClientCommandSource> ->
-                                    return@Command if (!isModEnabled()) 0 else run(conComponent)
+                                Command { context: CommandContext<FabricClientCommandSource> ->
+                                    return@Command if (!isModEnabled()) 0 else run(context)
                                 }
                             )
                         }

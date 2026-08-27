@@ -127,8 +127,8 @@ object Locate : BaseCommand(
             val input = builder.remaining.lowercase(Locale.getDefault())
 
             val allSuggestions = when (type) {
-                "town" -> Cache.townCache
-                "nation" -> Cache.nationCache
+                "town" -> Cache.townNameCache
+                "nation" -> Cache.nationNameCache
                 else -> emptyList()
             }
 

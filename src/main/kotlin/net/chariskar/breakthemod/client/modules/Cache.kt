@@ -36,8 +36,8 @@ import kotlin.time.Duration.Companion.minutes
  * Cache update handler for the mod.
  *
  * @property playerCache The players currently cached in memory.
- * @property townCache A list of every town from /towns.
- * @property nationCache A list of every nation from /nations.
+ * @property townNameCache A list of every town from /towns.
+ * @property nationNameCache A list of every nation from /nations.
  *  */
 object Cache : BaseModule(
     "Cache",
@@ -50,10 +50,10 @@ object Cache : BaseModule(
 
     // keep a cache of all towns and nations for /locate, a full object cache is not needed yet.
     // spare some ram.
-    val townCache: List<String>
+    val townNameCache: List<String>
         field: MutableList<String> = mutableListOf()
 
-    val nationCache: List<String>
+    val nationNameCache: List<String>
         field: MutableList<String> = mutableListOf()
 
     val alliances: Set<String>
@@ -69,7 +69,7 @@ object Cache : BaseModule(
                     Schedule(
                         "playerCacheUpdate",
                         {
-                            logInfo("Cache started.")
+                            info("Cache started.")
                             if (!enabled) return@Schedule
                             runTask()
                         },
@@ -97,7 +97,7 @@ object Cache : BaseModule(
         val apiPlayers = TownyAPI.getPlayers(players)
             .flatMap {
                 it
-                    .logError()
+                    .error()
                     .getOrNull()
                     .orEmpty()
             }
@@ -105,29 +105,29 @@ object Cache : BaseModule(
         apiPlayers.forEach {
             playerCache[it.name] = it
         }
-        logDebug("Finished updating players.")
+        debug("Finished updating players.")
     }
 
     /**
      * Update town and nation caches.
      * */
     suspend fun updateCache() {
-        townCache.clear()
-        nationCache.clear()
+        townNameCache.clear()
+        nationNameCache.clear()
 
         TownyAPI.getAllTowns()
-            .onSuccess { townCache.addAll(it.map { t -> t.name }) }
-            .logError()
+            .onSuccess { townNameCache.addAll(it.map { t -> t.name }) }
+            .error()
 
         TownyAPI.getAllNations()
-            .onSuccess { nationCache.addAll(it.map { n -> n.name }) }
-            .logError()
+            .onSuccess { nationNameCache.addAll(it.map { n -> n.name }) }
+            .error()
 
         TownyAPI.getAllAlliances()
             .onSuccess { alliances.addAll(it.keys) }
-            .logError()
+            .error()
 
-        logDebug("Name cache finished.")
+        debug("Name cache finished.")
     }
 
     suspend fun runTask() {

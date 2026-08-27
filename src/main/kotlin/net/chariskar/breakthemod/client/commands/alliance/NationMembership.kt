@@ -22,40 +22,37 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.client.api.command.BaseCommand
+import net.chariskar.breakthemod.client.modules.Cache
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import org.breakthebot.breakthelibrary.api.TownyAPI
-import org.breakthebot.breakthelibrary.models.AllianceFilter
 
-object TopAlliances : BaseCommand("topalliances", "Displays the top alliances in the select categories..", "<filter>") {
-
+object NationMembership : BaseCommand("nationMembership", "Displays all of the alliances a nation is in.", "<name>") {
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
-        val filter = ctx.getArgument("filter", String::class.java)
+        val name = ctx.getArgument("name", String::class.java)
         scope.launch {
-            val alliance = TownyAPI.getTopAlliances(AllianceFilter.valueOf(filter))
-                .onError {
-                    if (it.statusCode == 404) {
-                        sendError("No alliance with name $name found.")
-                        return@launch
-                    }
-                    sendMessage("Received an unexpected response from the alliance api.")
-                }
-                .getOrNull()!!
-                .map { it.alliance.name }
-                .take(5)
+            val membership = TownyAPI.getNationMembership(name)
+                .onError { error(it) }
+                .onSuccess { println(it) }
+                .getOrNull()
 
-            val allianceText = alliance.toString().replace(",", "\n")
+            if (membership == null) {
+                sendMessage("Got an empty response from the alliance api.")
+                return@launch
+            }
 
-            sendMessage(allianceText)
+            val alliances = membership.map { it.name }
+
+            sendMessage("$name is in ${alliances.joinToString(", ")}.")
         }
-        return 0
+        return 1
     }
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
-        super.register<String>(
+        super.register(
             dispatcher,
-            "filter",
-            StringArgumentType.string(),
-            CommandSuggestions(AllianceFilter.entries.map { it.toString() })
+            "name",
+            StringArgumentType.greedyString(),
+            CommandSuggestions(Cache.nationNameCache)
         )
     }
 }

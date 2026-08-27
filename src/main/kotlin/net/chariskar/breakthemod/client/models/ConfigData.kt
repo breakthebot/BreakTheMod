@@ -44,6 +44,7 @@ enum class AutoHudType {
 @Serializable
 data class Features(
     var hudType: AutoHudType = AutoHudType.None,
+    var staffListCache: Boolean = true,
 
     var nameTagInfo: Boolean = true,
     var cacheEnabled: Boolean = true,

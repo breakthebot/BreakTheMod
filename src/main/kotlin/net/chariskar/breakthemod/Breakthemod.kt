@@ -17,6 +17,7 @@
 package net.chariskar.breakthemod
 
 import com.mojang.brigadier.CommandDispatcher
+import kotlinx.io.files.Path
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.api.module.BaseModule
 import net.chariskar.breakthemod.client.commands.Calculate
@@ -29,6 +30,7 @@ import net.chariskar.breakthemod.client.commands.Locate
 import net.chariskar.breakthemod.client.commands.OnlineStaff
 import net.chariskar.breakthemod.client.commands.Townless
 import net.chariskar.breakthemod.client.commands.alliance.Alliance
+import net.chariskar.breakthemod.client.commands.alliance.NationMembership
 import net.chariskar.breakthemod.client.commands.alliance.TopAlliances
 import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.modules.ChatTracker
@@ -100,7 +102,8 @@ class Breakthemod : ClientModInitializer {
                 Calculate,
                 Help,
                 Alliance,
-                TopAlliances
+                TopAlliances,
+                NationMembership
             )
         )
 
@@ -126,14 +129,13 @@ class Breakthemod : ClientModInitializer {
      * @property logger Centralized mod logger.
      * @property modules All registered breakthemod modules.
      * @property commands All the registered breakthemod commands.
-     * @property widgets All the registered widgets.
      * @property username The username of the player.
      * */
     companion object {
         var debug: Boolean = false
             private set
 
-        val version: String by lazy { "1.6.1-BETA${if (debug) "-DEBUG" else ""}" }
+        val version: String by lazy { "1.6.3-BETA${if (debug) "-DEBUG" else ""}" }
         val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
         val modules: List<BaseModule>
@@ -150,5 +152,8 @@ class Breakthemod : ClientModInitializer {
                 ?.onlinePlayers
                 ?.mapNotNull { it.profile.name.toString() }
                 .orEmpty()
+
+        val modConfig: Path
+            get() = Path(Minecraft.getInstance().gameDirectory.path, "config", "breakthemod")
     }
 }

@@ -52,7 +52,7 @@ object FindPlayer : BaseCommand(
                     playerData.z = player.z
 
                     val locationData = MapAPI.getLocation(listOf(Pair(player.x, player.z)))
-                        .logError()
+                        .error()
                         .getOrNull()
                         ?.first()
 

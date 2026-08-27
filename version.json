@@ -2,12 +2,18 @@
   "versions": [
     {
       "version": "1.6.0",
-      "latest": true,
+      "latest": false,
       "release": false,
       "mcVer": "1.21.11"
     },
     {
       "version": "1.6.1",
+      "latest": false,
+      "release": true,
+      "mcVer": "26.2"
+    },
+    {
+      "version": "1.6.3",
       "latest": true,
       "release": true,
       "mcVer": "26.2"

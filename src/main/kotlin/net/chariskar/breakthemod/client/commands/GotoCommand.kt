@@ -40,8 +40,7 @@ object GotoCommand : BaseCommand(
         val townName = ctx.getArgument("name", String::class.java)
 
         scope.launch {
-
-            val reqTown =  TownyAPI.getTown(townName).getOrElse {
+            val reqTown = TownyAPI.getTown(townName).getOrElse {
                 val message = when (it.statusCode) {
                     404 -> "$townName does not exist."
                     else -> "API returned unexpected message ${it.message}"
@@ -81,12 +80,13 @@ object GotoCommand : BaseCommand(
             val validTowns: MutableList<String> = mutableListOf()
 
             loop@ while (attempts-- > 0) {
-                val resp = MapAPI.getNearby(NearbyItem.NearbyItemString(
-                    target = townName,
-                    searchType = NearbyType.TOWN,
-                    targetType = NearbyType.TOWN,
-                    radius = radius
-                )
+                val resp = MapAPI.getNearby(
+                    NearbyItem.NearbyItemString(
+                        target = townName,
+                        searchType = NearbyType.TOWN,
+                        targetType = NearbyType.TOWN,
+                        radius = radius
+                    )
                 ).onError { e ->
                     val message = when (e.statusCode) {
                         404 -> "$townName does not exist."
@@ -104,9 +104,9 @@ object GotoCommand : BaseCommand(
                 // Non-null assertion cause being null would be an error by design and handled by onError
                 val townDetails = TownyAPI.getTowns(resp).first()
                     .onError {
-                    radius += 500
-                    continue@loop
-                }.getOrNull()!!
+                        radius += 500
+                        continue@loop
+                    }.getOrNull()!!
 
                 for (town in townDetails) {
                     val status = town.status
@@ -139,6 +139,6 @@ object GotoCommand : BaseCommand(
     }
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
-        super.register<String>(dispatcher, "name", StringArgumentType.string(), CommandSuggestions(Cache.townCache))
+        super.register<String>(dispatcher, "name", StringArgumentType.string(), CommandSuggestions(Cache.townNameCache))
     }
 }

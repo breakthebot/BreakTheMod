@@ -46,7 +46,7 @@ abstract class BaseModule(
             enable()
             enabled = true
         } catch (e: Exception) {
-            logError("Unexpected exception occurred", e)
+            error("Unexpected exception occurred", e)
             enabled = false
         }
     }

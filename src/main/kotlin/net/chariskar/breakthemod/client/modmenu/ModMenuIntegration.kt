@@ -76,7 +76,7 @@ class ModMenuIntegration : ModMenuApi {
 
             general.addEntry(
                 entryBuilder.startBooleanToggle(
-                    Component.literal("Experience Component overlay"),
+                    Component.literal("Experience text overlay"),
                     Config.features.experienceComponent
                 ).setSaveConsumer { enabled: Boolean ->
                     Config.config.features.experienceComponent = enabled
