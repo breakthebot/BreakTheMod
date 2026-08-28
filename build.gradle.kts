@@ -59,6 +59,7 @@ repositories {
 
 val shade = configurations.create("shade")
 val debug = project.hasProperty("debug")
+val release = project.hasProperty("release")
 
 val mcVer = project.findProperty("mcVer") as String
 val fabricVersion = project.findProperty("fabricVersion") as String
@@ -161,14 +162,28 @@ tasks.jar {
     archiveClassifier.set(null as String?)
 }
 
-tasks.build {
-    dependsOn(addHeader)
+val versionTask = tasks.register<Exec>("versionAdd") {
+    description = "Add the current version to version.json."
+
+    if (release) {
+        commandLine(
+            "kotlin",
+            "src/scripts/Version.main.kts",
+            version.toString(),
+            "true",
+            mcVer
+        )
+    }
 }
 
-if (project.hasProperty("release")) {
+if (release) {
     tasks.jar {
         enabled = false
     }
+}
+
+tasks.build {
+    dependsOn(addHeader, versionTask)
 }
 
 tasks.named<ShadowJar>("shadowJar") {
