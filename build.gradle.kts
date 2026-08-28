@@ -60,6 +60,7 @@ repositories {
 val shade = configurations.create("shade")
 val debug = project.hasProperty("debug")
 val release = project.hasProperty("release")
+val github = project.hasProperty("github")
 
 val mcVer = project.findProperty("mcVer") as String
 val fabricVersion = project.findProperty("fabricVersion") as String
@@ -165,15 +166,15 @@ tasks.jar {
 val versionTask = tasks.register<Exec>("versionAdd") {
     description = "Add the current version to version.json."
 
-    if (release) {
-        commandLine(
-            "kotlin",
-            "src/scripts/Version.main.kts",
-            version.toString(),
-            "true",
-            mcVer
-        )
-    }
+    onlyIf { release && !github }
+
+    commandLine(
+        "kotlin",
+        "src/scripts/Version.main.kts",
+        version.toString(),
+        "true",
+        mcVer
+    )
 }
 
 if (release) {

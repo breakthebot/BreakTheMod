@@ -68,7 +68,7 @@ object Alliance : BaseCommand("alliance", "Displays the data for an alliance.", 
         super.register<String>(
             dispatcher,
             "name",
-            StringArgumentType.string(),
+            StringArgumentType.greedyString(),
             CommandSuggestions(Cache.alliances)
         )
     }

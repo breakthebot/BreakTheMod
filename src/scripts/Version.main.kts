@@ -5,6 +5,7 @@
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import java.io.File
+import kotlin.system.exitProcess
 
 data class Version(
     val version: String,
@@ -32,7 +33,8 @@ val versions: VersionFile = mapper.readValue(releaseFile)
 
 versions.versions.forEach {
     if (it.version == newVersion.version) {
-        throw Exception("Version does not exist.")
+        println("Version already exists.")
+        exitProcess(1)
     }
     it.latest = false
 }

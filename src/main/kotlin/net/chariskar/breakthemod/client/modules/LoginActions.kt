@@ -75,8 +75,8 @@ object LoginActions : BaseModule(
     }
 
     /** Check for any available breakthemod updates. */
-    fun checkUpdates() {
-        runBlocking { UpdateUtility.checkVersion() }
+    fun checkUpdates() = runBlocking {
+        UpdateUtility.checkVersion()
     }
 
     /** Send the notifications if they weren't already sent.*/
