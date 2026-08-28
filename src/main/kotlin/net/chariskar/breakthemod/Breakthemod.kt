@@ -40,10 +40,12 @@ import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
+import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.Minecraft
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
+import kotlin.jvm.optionals.getOrElse
 
 class Breakthemod : ClientModInitializer {
     private fun loadCommands() {
@@ -135,7 +137,12 @@ class Breakthemod : ClientModInitializer {
         var debug: Boolean = false
             private set
 
-        val version: String by lazy { "1.6.3-BETA${if (debug) "-DEBUG" else ""}" }
+        val version: String
+            get() = FabricLoader.getInstance()
+                .getModContainer("breakthemod")
+                .map { it.metadata.version.friendlyString + if (debug) "-DEBUG" else "" }
+                .getOrElse { "unknown" }
+
         val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
         val modules: List<BaseModule>
