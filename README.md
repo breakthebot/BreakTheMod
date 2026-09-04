@@ -16,7 +16,6 @@ nearby.
 ### Commands:
   * Calculate: Helps with the conversions of blocks & stacks.
   * DiscordId: Tells you the discord username of a player if they have linked their account
-  * FindPlayer: Show where a player is based on the map api.
   * Goto: Shows you the nearest spawnable town of the town you selected.
   * Help: Displays a help message.
   * LastSeen: Displays the last time a user was online
@@ -24,11 +23,6 @@ nearby.
   * Nearby: Shows all the nearby players (legal).
   * OnlineStaff: Shows online staff.
   * Townless: Shows all the online townless players.
-
-### Widgets:
-  * NearbyPlayers: A widget version of the nearby command.
-  * NearbyTowns: Displays the 3 closest towns  in a 500 block range.
-  * MiningWidget: Displays how much gold you have mined in this trip.
 
 ### Features: 
   * AutoHUD: Enables the hud of choice of the user.
