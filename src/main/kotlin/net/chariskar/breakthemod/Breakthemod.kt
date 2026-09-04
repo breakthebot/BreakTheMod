@@ -48,6 +48,7 @@ import java.io.File
 import kotlin.jvm.optionals.getOrElse
 
 class Breakthemod : ClientModInitializer {
+
     private fun loadCommands() {
         ClientCommandRegistrationCallback.EVENT.register(
             ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _ ->

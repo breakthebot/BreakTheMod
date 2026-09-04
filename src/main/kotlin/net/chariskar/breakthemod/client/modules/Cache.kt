@@ -73,7 +73,7 @@ object Cache : BaseModule(
                             if (!enabled) return@Schedule
                             runTask()
                         },
-                        10.minutes
+                        3.minutes
                     )
                 )
             }

@@ -33,7 +33,7 @@ object CacheDebug : BaseCommand(
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val name: String = ctx.getArgument("name", String::class.java)
         sendMessage(
-            Component.literal("Cache data ${Cache.getPlayer(name).toString()}")
+            Component.literal("Cache data ${Cache.getPlayer(name)}")
         )
         return 0
     }
@@ -44,7 +44,7 @@ object CacheDebug : BaseCommand(
             "name",
             StringArgumentType.string(),
             CommandSuggestions(
-                Cache.playerCache.values.map { name }.toMutableList()
+                Cache.playerCache.values.map { it.name }.toMutableList()
             )
         )
     }
