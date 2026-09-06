@@ -25,7 +25,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.client.api.command.BaseCommand
-import net.chariskar.breakthemod.client.utils.ServerAPI
+import net.chariskar.breakthemod.client.modules.StaffCacheHandler
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.Style
@@ -80,10 +80,8 @@ object OnlineStaff : BaseCommand(
     }
 
     suspend fun onlineStaff(api: Boolean): Component {
-        val onlineStaffComponent = Component.literal("Online Staff: \n")
-
         val staffNames: Map<String, List<String>> = if (api) {
-            val staff = ServerAPI.getStaff()
+            val staff = StaffCacheHandler.getStaff()
 
             val staffUuids = staff
                 .values
@@ -114,7 +112,7 @@ object OnlineStaff : BaseCommand(
                 it.value.mapNotNull { u -> staffMap[u] }
             }
         } else {
-            ServerAPI.getStaff()
+            StaffCacheHandler.getStaff()
                 .mapValues { (_, playerIds) ->
                     playerIds.mapNotNull { id ->
                         client.connection!!.onlinePlayers
@@ -125,6 +123,8 @@ object OnlineStaff : BaseCommand(
                 }
                 .filterValues { it.isNotEmpty() }
         }
+
+        val onlineStaffComponent = Component.literal("Online Staff [${staffNames.size}]: \n")
 
         staffNames.forEach { (rank, staff) ->
             if (staff.isEmpty()) return@forEach
@@ -138,10 +138,6 @@ object OnlineStaff : BaseCommand(
                     .append(
                         Component.literal(staff.joinToString(", "))
                             .withColor(TextColor.GRAY)
-                            .append(
-                                Component.literal(" [${staff.size}]\n")
-                                    .withColor(TextColor.AQUA)
-                            )
                     )
             )
         }

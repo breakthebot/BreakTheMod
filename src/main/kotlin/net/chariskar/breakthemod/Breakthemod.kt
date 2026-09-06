@@ -36,6 +36,7 @@ import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.modules.ChatTracker
 import net.chariskar.breakthemod.client.modules.LoginActions
 import net.chariskar.breakthemod.client.modules.NotificationManager
+import net.chariskar.breakthemod.client.modules.StaffCacheHandler
 import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
@@ -116,6 +117,7 @@ class Breakthemod : ClientModInitializer {
                 LoginActions,
                 Cache,
                 ChatTracker,
+                StaffCacheHandler
             )
         )
 

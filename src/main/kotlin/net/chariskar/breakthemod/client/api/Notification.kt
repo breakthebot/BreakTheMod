@@ -21,7 +21,7 @@ enum class NotificationTypes {
     UsingBeta,
     UsingAlpha,
     UsingDebug,
-    UpdateAvailable
+    UpdateAvailable,
 }
 
 /**
@@ -32,9 +32,7 @@ enum class NotificationTypes {
 data class Notification(
     val name: String,
     val message: String,
-    val notificationType: NotificationTypes
+    val notificationType: NotificationTypes,
 ) {
-    override fun toString(): String {
-        return message
-    }
+    override fun toString(): String = message
 }

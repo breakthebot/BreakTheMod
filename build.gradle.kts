@@ -163,7 +163,6 @@ val shadowJarTask = tasks.named<ShadowJar>("shadowJar") {
     )
 }
 
-
 // Yea ik this is extreme and theres probably a better way, but i cant find it rn.
 // TODO: Maybe find a better way for this?
 
@@ -296,7 +295,6 @@ val shrinkJar = tasks.register<JavaExec>("shrinkJar") {
                 }
             }
         }
-
     }
 }
 

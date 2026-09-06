@@ -143,6 +143,7 @@ object GotoCommand : BaseCommand(
             dispatcher,
             "name",
             StringArgumentType.string(),
-            CommandSuggestions { Cache.townNameCache })
+            CommandSuggestions { Cache.townNameCache }
+        )
     }
 }

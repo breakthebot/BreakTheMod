@@ -29,7 +29,6 @@ import net.minecraft.network.chat.TextColor
 import org.breakthebot.breakthelibrary.api.TownyAPI
 import java.net.URI
 
-
 object DiscordId : BaseCommand(
     "discordLinked",
     "Tells you the discord username of a player if they have linked their account",
@@ -44,8 +43,10 @@ object DiscordId : BaseCommand(
             val result: Component = if (discord != null) {
                 Component.literal("Click Here")
                     .withColor(TextColor.BLUE)
-                    .withStyle(Style.EMPTY.withClickEvent(ClickEvent.OpenUrl(URI("https://discord.com/users/${discord}"))))
-            } else Component.literal("No player found.")
+                    .withStyle(Style.EMPTY.withClickEvent(ClickEvent.OpenUrl(URI("https://discord.com/users/$discord"))))
+            } else {
+                Component.literal("No player found.")
+            }
 
             sendMessage(result)
             return@launch

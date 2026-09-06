@@ -45,10 +45,12 @@ object UnloadModule : BaseCommand(
                 .then(
                     RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>("name", StringArgumentType.string())
                         .suggests(ModuleSuggestions())
-                        .executes(Command { conComponent: CommandContext<FabricClientCommandSource> ->
-                            if (!isModEnabled()) return@Command 0
-                            return@Command run(conComponent)
-                        })
+                        .executes(
+                            Command { conComponent: CommandContext<FabricClientCommandSource> ->
+                                if (!isModEnabled()) return@Command 0
+                                return@Command run(conComponent)
+                            }
+                        )
                 )
         )
     }
@@ -78,7 +80,7 @@ object UnloadModule : BaseCommand(
         @Throws(CommandSyntaxException::class)
         override fun getSuggestions(
             conComponent: CommandContext<FabricClientCommandSource?>?,
-            builder: SuggestionsBuilder
+            builder: SuggestionsBuilder,
         ): CompletableFuture<Suggestions> {
             val input = builder.remaining.lowercase(Locale.getDefault())
 

@@ -70,7 +70,7 @@ object LoadModule : BaseCommand(
         @Throws(CommandSyntaxException::class)
         override fun getSuggestions(
             conComponent: CommandContext<FabricClientCommandSource?>?,
-            builder: SuggestionsBuilder
+            builder: SuggestionsBuilder,
         ): CompletableFuture<Suggestions> {
             val input = builder.remaining.lowercase(Locale.getDefault())
 
@@ -82,5 +82,4 @@ object LoadModule : BaseCommand(
             return builder.buildFuture()
         }
     }
-
 }

@@ -33,11 +33,9 @@ import java.util.regex.Pattern
  * */
 data class ShopObject(
     val coords: Vec3,
-    val item: String
+    val item: String,
 ) {
-    override fun toString(): String {
-        return "-Shop at ${coords.x}, ${coords.y}, ${coords.z} ($item)"
-    }
+    override fun toString(): String = "-Shop at ${coords.x}, ${coords.y}, ${coords.z} ($item)"
 }
 
 /**
@@ -59,29 +57,33 @@ object ChatTracker : BaseModule(
     var inPartyChat: Boolean = false
         private set
     var chatChannel: ChatChannel? = null
-        private set 
+        private set
 
     val shopRegex = Regex(
         """at\s+(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+).*?run out of\s+(.+?)!?$"""
     )
 
     override fun enable() {
-        ClientReceiveMessageEvents.GAME.register(ClientReceiveMessageEvents.Game { message: Component?, _: Boolean ->
-            if (!isEarthMc()) return@Game
-            val message = message?.string ?: return@Game
+        ClientReceiveMessageEvents.GAME.register(
+            ClientReceiveMessageEvents.Game { message: Component?, _: Boolean ->
+                if (!isEarthMc()) return@Game
+                val message = message?.string ?: return@Game
 
-            afkTrack(message)
-            channelTrack(message)
-            val shop = parseShopObject(message) ?: return@Game
+                afkTrack(message)
+                channelTrack(message)
+                val shop = parseShopObject(message) ?: return@Game
 
-            emptyShops.add(shop)
-        })
+                emptyShops.add(shop)
+            }
+        )
 
-        ClientPlayConnectionEvents.DISCONNECT.register(ClientPlayConnectionEvents.Disconnect { _: ClientPacketListener?, _: Minecraft? ->
-            isAfk = false
-            inPartyChat = false
-            emptyShops.clear()
-        })
+        ClientPlayConnectionEvents.DISCONNECT.register(
+            ClientPlayConnectionEvents.Disconnect { _: ClientPacketListener?, _: Minecraft? ->
+                isAfk = false
+                inPartyChat = false
+                emptyShops.clear()
+            }
+        )
     }
 
     fun afkTrack(message: String) {
@@ -149,5 +151,4 @@ object ChatTracker : BaseModule(
             item
         )
     }
-
 }

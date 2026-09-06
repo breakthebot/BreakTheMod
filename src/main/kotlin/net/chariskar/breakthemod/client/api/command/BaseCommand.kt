@@ -166,7 +166,6 @@ abstract class BaseCommand(
         }
     }
 
-
     companion object {
         @JvmStatic
         protected val client: Minecraft

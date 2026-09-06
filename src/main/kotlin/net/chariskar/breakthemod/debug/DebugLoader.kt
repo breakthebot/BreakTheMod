@@ -44,9 +44,11 @@ class DebugLoader {
             GetConfig,
             GetNotifications
         )
-        ClientCommandRegistrationCallback.EVENT.register(ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _ ->
-            commands.forEach { it.register(dispatcher) }
-        })
+        ClientCommandRegistrationCallback.EVENT.register(
+            ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _ ->
+                commands.forEach { it.register(dispatcher) }
+            }
+        )
         val debugNotification = Notification(
             "debug",
             "Debug tools loaded",

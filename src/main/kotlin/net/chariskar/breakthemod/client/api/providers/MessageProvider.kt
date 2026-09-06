@@ -27,7 +27,7 @@ val prefix: Component by lazy {
     val segments = listOf(
         "Break" to "#EAEAEA",
         "The" to "#4B56FF",
-        "Mod"  to "#FF8C1A",
+        "Mod" to "#FF8C1A",
         ">> " to "#FFFFFF"
     )
 
@@ -67,7 +67,7 @@ interface MessageProvider {
      */
     fun sendMessage(
         message: Component,
-        colour: TextColor
+        colour: TextColor,
     ) {
         val chatMessage = Component.empty().apply {
             append(message)
