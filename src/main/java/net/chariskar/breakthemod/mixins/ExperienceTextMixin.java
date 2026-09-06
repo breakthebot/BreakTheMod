@@ -50,7 +50,7 @@ public interface ExperienceTextMixin {
             int color,
             boolean dropShadow
     ) {
-        if (!Config.INSTANCE.getFeatures().getExperienceComponent()) {
+        if (!Config.INSTANCE.getFeatures().getExperienceText()) {
             instance.text(font, str, x, y, color, dropShadow);
             return;
         }
@@ -82,7 +82,7 @@ public interface ExperienceTextMixin {
     ) {
         Objects.requireNonNull(Minecraft.getInstance().player);
         int level = (int) args[0];
-        if (!Config.INSTANCE.getFeatures().getExperienceComponent())
+        if (!Config.INSTANCE.getFeatures().getExperienceText())
             return Component.translatable("gui.experience.level", level);
         return Component.literal(level + "(" + ExperienceUtils.INSTANCE.experience(Minecraft.getInstance().player) + ")");
     }

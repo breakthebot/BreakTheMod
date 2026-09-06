@@ -103,7 +103,7 @@ object Locate : BaseCommand(
                         .then(
                             RequiredArgumentBuilder.argument<FabricClientCommandSource, String>(
                                 "name",
-                                StringArgumentType.string()
+                                StringArgumentType.greedyString()
                             )
                                 .suggests(NameSuggestions())
                                 .executes { context ->
@@ -119,10 +119,10 @@ object Locate : BaseCommand(
 
         @Throws(CommandSyntaxException::class)
         override fun getSuggestions(
-            conComponent: CommandContext<FabricClientCommandSource>,
+            context: CommandContext<FabricClientCommandSource>,
             builder: SuggestionsBuilder,
         ): CompletableFuture<Suggestions> {
-            val type = StringArgumentType.getString(conComponent, "type")
+            val type = StringArgumentType.getString(context, "type")
 
             val input = builder.remaining.lowercase(Locale.getDefault())
 

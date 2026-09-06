@@ -52,7 +52,7 @@ object NationMembership : BaseCommand("nationMembership", "Displays all of the a
             dispatcher,
             "name",
             StringArgumentType.greedyString(),
-            CommandSuggestions(Cache.nationNameCache)
+            CommandSuggestions { Cache.nationNameCache }
         )
     }
 }

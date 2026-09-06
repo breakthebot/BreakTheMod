@@ -139,6 +139,10 @@ object GotoCommand : BaseCommand(
     }
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
-        super.register<String>(dispatcher, "name", StringArgumentType.string(), CommandSuggestions(Cache.townNameCache))
+        super.register<String>(
+            dispatcher,
+            "name",
+            StringArgumentType.string(),
+            CommandSuggestions { Cache.townNameCache })
     }
 }

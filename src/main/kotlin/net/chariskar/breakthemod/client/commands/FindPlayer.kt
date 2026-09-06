@@ -74,9 +74,9 @@ object FindPlayer : BaseCommand(
             dispatcher,
             "name",
             StringArgumentType.string(),
-            CommandSuggestions(
-                Breakthemod.onlinePlayers
-            )
+            CommandSuggestions {
+                Breakthemod.onlinePlayers.toMutableList()
+            }
         )
     }
 }

@@ -65,6 +65,7 @@ object ServerAPI : BaseServerAPI(APIClient) {
         return staff
     }
 
+    // TODO: Make it cache the staff on startup.
     override suspend fun getStaff(): Map<String, List<UUID>> = withContext(Dispatchers.IO) {
         if (!staffFile.exists()) {
             logger.debug("Staff cache file does not exist, will be created on next request.")

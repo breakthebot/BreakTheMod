@@ -145,26 +145,27 @@ abstract class BaseCommand(
     }
 
     /**
-     * Provides command suggestions with whatever list is passed to it.
-     * */
+     * Provides command suggestions using the current list whenever suggestions are requested.
+     */
     class CommandSuggestions(
-        val allSuggestions: Collection<String>,
+        val suggestionsProvider: () -> Collection<String>,
     ) : SuggestionProvider<FabricClientCommandSource?> {
 
         @Throws(CommandSyntaxException::class)
         override fun getSuggestions(
-            conComponent: CommandContext<FabricClientCommandSource?>?,
+            context: CommandContext<FabricClientCommandSource?>?,
             builder: SuggestionsBuilder,
         ): CompletableFuture<Suggestions> {
             val input = builder.remaining.lowercase(Locale.getDefault())
 
-            allSuggestions
-                .filter { s -> s.startsWith(input) }
+            suggestionsProvider()
+                .filter { it.startsWith(input, ignoreCase = true) }
                 .forEach(builder::suggest)
 
             return builder.buildFuture()
         }
     }
+
 
     companion object {
         @JvmStatic

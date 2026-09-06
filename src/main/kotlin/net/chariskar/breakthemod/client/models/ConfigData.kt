@@ -48,6 +48,5 @@ data class Features(
 
     var nameTagInfo: Boolean = true,
     var cacheEnabled: Boolean = true,
-    var experienceComponent: Boolean = true,
-    var widgetDataLife: Int = 5,
+    var experienceText: Boolean = true,
 )

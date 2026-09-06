@@ -67,7 +67,7 @@ object LastSeen : BaseCommand(
             dispatcher,
             "name",
             StringArgumentType.string(),
-            CommandSuggestions(Cache.playerCache.map { name }.toMutableList())
+            CommandSuggestions { Cache.playerCache.map { it.key }.toMutableList() }
         )
     }
 }

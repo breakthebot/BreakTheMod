@@ -48,8 +48,6 @@ class ModMenuIntegration : ModMenuApi {
                 null
             }
 
-            val widgetConfig = builder.getOrCreateCategory(Component.literal("Widget Configuration"))
-
             general.addEntry(
                 entryBuilder.startBooleanToggle(
                     Component.literal("Enable BreakTheMod on other servers"),
@@ -77,11 +75,11 @@ class ModMenuIntegration : ModMenuApi {
             general.addEntry(
                 entryBuilder.startBooleanToggle(
                     Component.literal("Experience text overlay"),
-                    Config.features.experienceComponent
+                    Config.features.experienceText
                 ).setSaveConsumer { enabled: Boolean ->
-                    Config.config.features.experienceComponent = enabled
+                    Config.config.features.experienceText = enabled
                     saveConfig()
-                }.setDefaultValue(Config.features.experienceComponent).build()
+                }.setDefaultValue(Config.features.experienceText).build()
             )
 
             general.addEntry(

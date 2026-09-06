@@ -17,7 +17,6 @@
 
 package net.chariskar.breakthemod.client.modules
 
-import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.module.BaseModule
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.Schedule
@@ -127,11 +126,11 @@ object Cache : BaseModule(
             .onSuccess { alliances.addAll(it.keys) }
             .error()
 
-        debug("Name cache finished.")
+        info("Name cache finished.")
     }
 
     suspend fun runTask() {
-        if (!isModEnabled() || !Config.features.cacheEnabled || !Breakthemod.debug) return
+        if (!isModEnabled() || !Config.features.cacheEnabled) return
         updateCache()
         updatePlayers()
     }

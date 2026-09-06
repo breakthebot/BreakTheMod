@@ -55,7 +55,7 @@ object TopAlliances : BaseCommand("topalliances", "Displays the top alliances in
             dispatcher,
             "filter",
             StringArgumentType.string(),
-            CommandSuggestions(AllianceFilter.entries.map { it.toString() })
+            CommandSuggestions { AllianceFilter.entries.map { it.toString() } }
         )
     }
 }
