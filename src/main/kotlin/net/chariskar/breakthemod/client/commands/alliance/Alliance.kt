@@ -69,7 +69,7 @@ object Alliance : BaseCommand("alliance", "Displays the data for an alliance.", 
             dispatcher,
             "name",
             StringArgumentType.greedyString(),
-            CommandSuggestions({ Cache.alliances })
+            CommandSuggestions { Cache.alliances }
         )
     }
 }

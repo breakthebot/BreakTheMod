@@ -45,9 +45,13 @@ object StaffCacheHandler : BaseModule("StaffCacheHandler", "Handles the staff fi
         encodeDefaults = false
     }
 
-    val staffFile = File(Breakthemod.modConfig.toString(), "cache/staffcache.json")
+    val staffFile = File(Breakthemod.modConfig.toString()).resolve("cache/staffcache.json")
 
     override fun enable() {
+        if (!staffFile.exists()) {
+            staffFile.createNewFile()
+            staffFile.writeText("{}")
+        }
         runBlocking { storeStaff(ServerAPI.getStaff()) }
     }
 

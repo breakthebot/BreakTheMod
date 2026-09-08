@@ -34,15 +34,6 @@ import org.breakthebot.breakthelibrary.api.TownyAPI
 import java.util.UUID
 import kotlin.uuid.toJavaUuid
 
-fun getRoleColor(role: String): Int = when (role.lowercase()) {
-    "owner" -> 0xd7342a
-    "admin" -> 0x3498db
-    "developer" -> 0x55ffff
-    "moderator" -> 0x1f8b4c
-    "helper" -> 0x1abc9c
-    else -> 0x0000
-}
-
 object OnlineStaff : BaseCommand(
     "onlinestaff",
     "Shows online staff",
@@ -124,7 +115,8 @@ object OnlineStaff : BaseCommand(
                 .filterValues { it.isNotEmpty() }
         }
 
-        val onlineStaffComponent = Component.literal("Online Staff [${staffNames.size}]: \n")
+        val onlineStaffComponent = Component.literal("Online Staff ")
+            .append(Component.literal("[${staffNames.values.flatten().size}]: ").withColor(TextColor.AQUA))
 
         staffNames.forEach { (rank, staff) ->
             if (staff.isEmpty()) return@forEach
@@ -133,7 +125,7 @@ object OnlineStaff : BaseCommand(
             val role = rank.replaceFirstChar { it.uppercaseChar() }
 
             onlineStaffComponent.append(
-                Component.literal("$role: ")
+                Component.literal("\n$role: ")
                     .withColor(color)
                     .append(
                         Component.literal(staff.joinToString(", "))
@@ -157,5 +149,14 @@ object OnlineStaff : BaseCommand(
             sendMessage(staff)
         }
         return 0
+    }
+
+    fun getRoleColor(role: String): Int = when (role.lowercase()) {
+        "owner" -> 0xd7342a
+        "admin" -> 0x3498db
+        "developer" -> 0x55ffff
+        "moderator" -> 0x1f8b4c
+        "helper" -> 0x1abc9c
+        else -> 0x0000
     }
 }

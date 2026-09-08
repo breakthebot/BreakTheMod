@@ -91,7 +91,7 @@ object Help : BaseCommand(
                         "name",
                         StringArgumentType.string()
                     )
-                        .suggests(CommandSuggestions({ Breakthemod.commands.map { it.name }.toMutableList() }))
+                        .suggests(CommandSuggestions { Breakthemod.commands.map { it.name } })
                         .executes(
                             Command { context: CommandContext<FabricClientCommandSource> ->
                                 val name = context.getArgument("name", String::class.java)
