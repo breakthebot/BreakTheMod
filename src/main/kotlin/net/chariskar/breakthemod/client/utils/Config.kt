@@ -18,10 +18,9 @@
 package net.chariskar.breakthemod.client.utils
 
 import kotlinx.serialization.json.Json
+import net.chariskar.breakthemod.client.api.providers.LoggingProvider
 import net.chariskar.breakthemod.client.models.ConfigData
 import org.breakthebot.breakthelibrary.utils.ConfigHandler
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.io.File
 import org.breakthebot.breakthelibrary.utils.Config as LConfig
 
@@ -33,7 +32,7 @@ import org.breakthebot.breakthelibrary.utils.Config as LConfig
  * @property features Lazy access to config.features.
  * @property libraryConfig Lazy access config.libraryConfig.
  * */
-object Config {
+object Config : LoggingProvider("Config") {
     lateinit var configFile: File
 
     val json = Json {
@@ -53,8 +52,6 @@ object Config {
     val libraryConfig
         get() = config.libraryConfig
 
-    val logger: Logger = LoggerFactory.getLogger("breakthemod")
-
     fun setFile(file: File) {
         configFile = file
     }
@@ -72,8 +69,8 @@ object Config {
             config = json.decodeFromString<ConfigData>(fileContent)
             ConfigHandler.setup(libraryConfig)
         } catch (e: Exception) {
-            logger.error("Encountered an exception when trying to parse the config: ${e.message}")
-            logger.warn("Regenerating config.")
+            error("Encountered an exception when trying to parse the config", e)
+            warn("Regenerating config.")
             saveConfig(null)
         }
     }
@@ -84,7 +81,7 @@ object Config {
             val encoded = json.encodeToString<ConfigData>(data)
             configFile.writeText(encoded)
         } catch (e: Exception) {
-            logger.error("Unable to write new config, ${e.message}")
+            error("Unable to write new config, ${e.message}")
         }
     }
 

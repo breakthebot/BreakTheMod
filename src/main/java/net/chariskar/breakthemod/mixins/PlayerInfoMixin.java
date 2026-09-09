@@ -52,11 +52,10 @@ public abstract class PlayerInfoMixin extends LivingEntityRenderer<AbstractClien
     private static String clean(String input) {
         return input
                 .replaceAll("\\[item/[^\\]]*]", "")
-                .replaceAll("[^\\p{L}\\p{N}\\s_]", "")
-                .replaceAll("[ \\t]+", " ")
-                .replaceAll(" *\\n *", "\n")
+                .replaceAll("[^\\p{L}\\p{N}\\s_-]", "")
                 .trim();
     }
+
 
     @Inject(
             method = "submitNameDisplay(Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V",
@@ -84,7 +83,7 @@ public abstract class PlayerInfoMixin extends LivingEntityRenderer<AbstractClien
 
         poseStack.scale(0.75F, 0.75F, 0.75F);
 
-        poseStack.translate(0.0D, 2.0F, 0.0D);
+        poseStack.translate(0.0D, 2.15F, 0.0D);
 
         submitNodeCollector.submitNameTag(
                 poseStack,
