@@ -56,15 +56,7 @@ public interface ExperienceTextMixin {
         }
         instance.pose().pushMatrix();
 
-        instance.text(
-                font,
-                str,
-                x,
-                y,
-                color,
-                false
-        );
-
+        instance.text(font, str, x, y, color, false);
 
         instance.pose().popMatrix();
     }

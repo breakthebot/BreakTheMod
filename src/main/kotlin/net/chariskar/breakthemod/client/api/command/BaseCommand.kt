@@ -107,8 +107,8 @@ abstract class BaseCommand(
     open fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         dispatcher.register(
             LiteralArgumentBuilder.literal<FabricClientCommandSource>(name).executes(
-                Command { conComponent: CommandContext<FabricClientCommandSource> ->
-                    return@Command if (!isModEnabled()) 0 else run(conComponent)
+                Command { context: CommandContext<FabricClientCommandSource> ->
+                    return@Command if (!isModEnabled()) 0 else run(context)
                 }
             )
         )

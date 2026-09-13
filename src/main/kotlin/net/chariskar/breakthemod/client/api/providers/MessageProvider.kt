@@ -33,9 +33,8 @@ val prefix: Component by lazy {
 
     val prefix = Component.empty()
 
-    for (segment in segments) {
-        val text: String = segment.first
-        val color = TextColor.fromRgb(segment.second.substring(1).toInt(16))
+    for ((text, color) in segments) {
+        val color = TextColor.fromRgb(color.substring(1).toInt(16))
 
         for (c in text.toCharArray()) {
             prefix.append(Component.literal(c.toString()).withColor(color))

@@ -21,32 +21,40 @@ import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.Breakthemod.Companion.logger
 import org.breakthebot.breakthelibrary.models.APIResult
 
-open class LoggingProvider(private val name: String) {
+open class LoggingProvider(
+    private val name: String
+) {
+    private fun prefix(message: String): String = "[$name] $message"
 
-    fun error(message: String, e: Throwable) {
-        logger.error("[$name] $message: ${e.message}", e)
-        e.printStackTrace(System.err)
+    fun error(message: String, throwable: Throwable) {
+        logger.error(prefix(message), throwable)
     }
 
-    fun error(e: APIResult.Error) {
-        logger.error("[$name] Received unexpected error from the api, with status code ${e.statusCode} and message ${e.message}.")
+    fun error(error: APIResult.Error) {
+        logger.error(
+            prefix(
+                "Received unexpected error from the API: {status=${error.statusCode}, message=${error.message}}"
+            )
+        )
     }
 
     fun info(message: String) {
-        logger.info("[$name] $message")
+        logger.info(prefix(message))
     }
 
     fun debug(message: String) {
         if (Breakthemod.debug) {
-            logger.debug("[$name] $message")
+            logger.debug(prefix(message))
         }
     }
 
-    fun warn(message: String) = logger.warn("[$name] $message")
+    fun warn(message: String) {
+        logger.warn(prefix(message))
+    }
 
     fun <T> APIResult<T>.error(): APIResult<T> = when (this) {
         is APIResult.Error -> {
-            this@LoggingProvider.error(this)
+            error(this)
             this
         }
 

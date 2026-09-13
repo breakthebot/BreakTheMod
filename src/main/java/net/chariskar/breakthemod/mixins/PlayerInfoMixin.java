@@ -21,6 +21,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider;
 import net.chariskar.breakthemod.client.modules.Cache;
 import net.chariskar.breakthemod.client.modules.CacheKt;
+import net.chariskar.breakthemod.client.utils.Config;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -69,7 +70,7 @@ public abstract class PlayerInfoMixin extends LivingEntityRenderer<AbstractClien
             CameraRenderState camera,
             CallbackInfo ci
     ) {
-        if (!isEarthMc()) return;
+        if (!isEarthMc() && Config.INSTANCE.getFeatures().getNameTagInfo()) return;
         if (state.nameTag == null) return;
 
         String name = clean(state.nameTag.getString());

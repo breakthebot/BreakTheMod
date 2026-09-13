@@ -26,17 +26,14 @@ import net.minecraft.client.Minecraft
  * */
 interface ServerUtilsProvider {
 
-    /** Non biased EarthMc check.*/
+    /** Returns whether the current server is EarthMC. */
     fun isEarthMc(): Boolean {
-        val serverInfo = Minecraft.getInstance().currentServer ?: return false
-        return splitAddress(serverInfo.ip).contains("earthmc").or(Breakthemod.debug)
+        val server = Minecraft.getInstance().currentServer ?: return false
+        return server.ip
+            .substringBefore(',')
+            .contains("earthmc", ignoreCase = true)
     }
 
-    fun isModEnabled(): Boolean = isEarthMc().or(Config.config.enabledOnOtherServers)
-
-    private fun splitAddress(
-        serverInfo: String,
-    ): String = serverInfo.split(",".toRegex()).dropLastWhile {
-        it.isEmpty()
-    }.toTypedArray()[0].lowercase()
+    /** Returns whether the mod should be active on the current server. */
+    fun isModEnabled(): Boolean = Breakthemod.debug || isEarthMc() || Config.config.enabledOnOtherServers
 }
