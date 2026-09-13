@@ -24,8 +24,14 @@ import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.module.BaseModule
 import net.chariskar.breakthemod.client.utils.Config
 import org.breakthebot.breakthelibrary.api.ServerAPI
-import java.io.File
+import java.nio.file.Path
 import java.util.UUID
+import kotlin.io.path.Path
+import kotlin.io.path.createFile
+import kotlin.io.path.createParentDirectories
+import kotlin.io.path.exists
+import kotlin.io.path.readText
+import kotlin.io.path.writeText
 import kotlin.time.Clock
 import kotlin.time.Instant
 import kotlin.uuid.Uuid
@@ -45,11 +51,12 @@ object StaffCacheHandler : BaseModule("StaffCacheHandler", "Handles the staff fi
         encodeDefaults = false
     }
 
-    val staffFile = File(Breakthemod.modConfig.toString()).resolve("cache/staffcache.json")
+    val staffFile: Path = Path(Breakthemod.modConfig.toString()).resolve("cache/staffcache.json")
 
     override fun enable() {
         if (!staffFile.exists()) {
-            staffFile.createNewFile()
+            staffFile.createParentDirectories()
+            staffFile.createFile()
             staffFile.writeText("{}")
         }
         runBlocking { storeStaff(ServerAPI.getStaff()) }
