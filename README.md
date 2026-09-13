@@ -14,15 +14,14 @@ nearby.
 # ***Features***
 
 ### Commands:
-  * Calculate: Helps with the conversions of blocks & stacks.
-  * DiscordId: Tells you the discord username of a player if they have linked their account
-  * Goto: Shows you the nearest spawnable town of the town you selected.
-  * Help: Displays a help message.
-  * LastSeen: Displays the last time a user was online
-  * Locate: Gives you the coordinates of a town/nation
-  * Nearby: Shows all the nearby players (legal).
-  * OnlineStaff: Shows online staff.
-  * Townless: Shows all the online townless players.
+  * `calculate`: Helps with the conversions of blocks & stacks.
+  * `discordLinked`: Tells you the discord username of a player if they have linked their account
+  * `goto`: Shows you the nearest spawnable town of the town you selected.
+  * `help`: Displays a help message.
+  * `lastSeen`: Displays the last time a user was online
+  * `locate`: Gives you the coordinates of a town/nation
+  * `onlinestaff`: Shows online staff.
+  * `townless`: Shows all the online townless players.
 
 ### Features: 
   * AutoHUD: Enables the hud of choice of the user.
