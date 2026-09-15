@@ -21,6 +21,7 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.client.api.command.BaseCommand
+import net.chariskar.breakthemod.client.modules.Cache
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.network.chat.ClickEvent
 import net.minecraft.network.chat.Component
@@ -37,6 +38,10 @@ object DiscordId : BaseCommand(
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val name: String = ctx.getArgument("name", String::class.java)
+        if (!Cache.playerExists(name)) {
+            sendError("Player $name does not exist.")
+            return 1
+        }
         scope.launch {
             val discord = TownyAPI.getPlayerDiscord(name).getOrNull()
 
@@ -59,7 +64,7 @@ object DiscordId : BaseCommand(
             dispatcher,
             "name",
             StringArgumentType.string(),
-            null
+            CommandSuggestions { Cache.playerNameCache }
         )
     }
 }

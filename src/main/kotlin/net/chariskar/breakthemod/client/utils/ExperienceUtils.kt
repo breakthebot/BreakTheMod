@@ -26,10 +26,7 @@ object ExperienceUtils {
 
     fun experience(
         player: LocalPlayer,
-    ): Int = (
-        experience(player.experienceLevel) +
-            round(required(player.experienceLevel) * player.experienceProgress)
-        ).toInt()
+    ): Int = (experience(player.experienceLevel) + round(required(player.experienceLevel) * player.experienceProgress)).toInt()
 
     fun experience(level: Int): Int {
         if (level > 30) return (4.5 * level * level - 162.5 * level + 2220).toInt()

@@ -52,12 +52,7 @@ object Help : BaseCommand(
                 Component.literal(
                     cmd.getUsage()
                 ).setStyle(
-                    Style.EMPTY
-                        .withHoverEvent(
-                            HoverEvent.ShowText(
-                                Component.literal(cmd.getCommandDescription())
-                            )
-                        )
+                    Style.EMPTY.withHoverEvent(HoverEvent.ShowText(Component.literal(cmd.getCommandDescription())))
                 ),
                 TextColor.GRAY
             )
@@ -72,12 +67,7 @@ object Help : BaseCommand(
 
         for (module in modules) {
             if (module.hidden) continue
-            sendMessage(
-                Component.literal(
-                    module.getModuleDescription()
-                ),
-                TextColor.GRAY
-            )
+            sendMessage(Component.literal(module.getModuleDescription()), TextColor.GRAY)
         }
 
         return 0

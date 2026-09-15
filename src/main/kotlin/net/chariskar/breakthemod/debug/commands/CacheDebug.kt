@@ -43,7 +43,7 @@ object CacheDebug : BaseCommand(
             dispatcher,
             "name",
             StringArgumentType.string(),
-            CommandSuggestions { Cache.playerCache.values.map { it.name }.toMutableList() }
+            CommandSuggestions { Cache.playerNameCache }
         )
     }
 }

@@ -38,7 +38,10 @@ object GotoCommand : BaseCommand(
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val townName = ctx.getArgument("name", String::class.java)
-
+        if (!Cache.townExists(townName)) {
+            sendError("Town $townName does not exist.")
+            return 1
+        }
         scope.launch {
             val reqTown = TownyAPI.getTown(townName).getOrElse {
                 val message = when (it.statusCode) {

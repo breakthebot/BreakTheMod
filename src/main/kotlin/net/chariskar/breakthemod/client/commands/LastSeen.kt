@@ -38,6 +38,10 @@ object LastSeen : BaseCommand(
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val name: String = ctx.getArgument("name", String::class.java)
+        if (!Cache.playerExists(name)) {
+            sendError("Player $name does not exist.")
+            return 1
+        }
         scope.launch {
             val player = TownyAPI.getPlayer(name).getOrNull()
             if (player == null) {
@@ -60,14 +64,12 @@ object LastSeen : BaseCommand(
         return 0
     }
 
-    override fun register(
-        dispatcher: CommandDispatcher<FabricClientCommandSource>,
-    ) {
+    override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         super.register<String>(
             dispatcher,
             "name",
             StringArgumentType.string(),
-            CommandSuggestions { Cache.playerCache.map { it.key }.toMutableList() }
+            CommandSuggestions { Cache.playerNameCache }
         )
     }
 }

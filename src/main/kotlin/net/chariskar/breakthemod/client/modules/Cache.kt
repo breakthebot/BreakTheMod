@@ -17,6 +17,8 @@
 
 package net.chariskar.breakthemod.client.modules
 
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import net.chariskar.breakthemod.client.api.module.BaseModule
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.Schedule
@@ -46,6 +48,11 @@ object Cache : BaseModule(
 
     val playerCache: HashMap<String, Resident>
         get() = _playerCache
+
+    val playerNameCache: List<String>
+        get() = playerCache.keys.toList()
+
+    val cacheLock = Mutex()
 
     // keep a cache of all towns and nations for /locate, a full object cache is not needed yet.
     // spare some ram.
@@ -129,8 +136,8 @@ object Cache : BaseModule(
         info("Name cache finished.")
     }
 
-    suspend fun runTask() {
-        if (!isModEnabled() || !Config.features.cacheEnabled) return
+    suspend fun runTask() = cacheLock.withLock {
+        if (!isModEnabled() || !Config.features.cacheEnabled) return@withLock
         updateCache()
         updatePlayers()
     }
@@ -138,6 +145,14 @@ object Cache : BaseModule(
     fun getPlayer(
         name: String,
     ): Resident? = playerCache[name]
+
+    fun playerExists(
+        name: String,
+    ): Boolean = playerCache[name] != null
+
+    fun townExists(
+        name: String,
+    ): Boolean = townNameCache.toSet().contains(name)
 }
 
 fun Resident.getTownyComponent(): Component {

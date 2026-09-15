@@ -46,8 +46,7 @@ object UpdateUtility : MessageProvider {
         val file = APIClient.getRequest(
             "https://raw.githubusercontent.com/breakthebot/BreakTheMod/refs/heads/master/version.json",
             serializer<VersionFile>()
-        )
-            .getOrNull()?.versions
+        ).getOrNull()?.versions
 
         if (file == null) {
             Breakthemod.logger.warn("Version file unavailable.")

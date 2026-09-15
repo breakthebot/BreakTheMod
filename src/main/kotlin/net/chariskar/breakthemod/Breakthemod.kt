@@ -58,9 +58,7 @@ class Breakthemod : ClientModInitializer {
         )
     }
 
-    private fun loadModules() {
-        modules.forEach { it.register() }
-    }
+    private fun loadModules() = modules.map { it.register() }
 
     /**
      * Load debugging modules.
@@ -96,28 +94,21 @@ class Breakthemod : ClientModInitializer {
 
         commands.addAll(
             listOf(
-                OnlineStaff,
-                Townless,
-                GotoCommand,
-                FindPlayer,
-                LastSeen,
-                DiscordId,
-                Locate,
-                Calculate,
-                Help,
-                Alliance,
-                TopAlliances,
-                NationMembership
+                Calculate, OnlineStaff,
+                Locate, GotoCommand,
+                Townless, FindPlayer, LastSeen, DiscordId,
+                Alliance, TopAlliances, NationMembership,
+                Help
             )
         )
 
         modules.addAll(
             listOf(
                 NotificationManager,
-                LoginActions,
-                Cache,
                 ChatTracker,
-                StaffCacheHandler
+                LoginActions,
+                StaffCacheHandler,
+                Cache,
             )
         )
 

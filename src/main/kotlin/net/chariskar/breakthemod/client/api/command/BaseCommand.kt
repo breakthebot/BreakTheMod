@@ -50,7 +50,7 @@ private object CommandScope {
  * @param description The command description.
  * @param usageSuffix The args that must be passed to the commands in a readable format (e.g. `<name>` ).
  * @property scope The async scope that the commands should use.
- *  */
+ * */
 abstract class BaseCommand(
     val name: String,
     val description: String,

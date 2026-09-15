@@ -30,20 +30,15 @@ object Debug : BaseCommand(
 ) {
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         if (!Breakthemod.debug) return 0
-        sendMessage(
-            Component.literal("Version: ${Breakthemod.version}")
-        )
+
+        sendMessage(Component.literal("Version: ${Breakthemod.version}"))
+
         sendMessage("Loaded commands: ${Breakthemod.commands.map { it.name }}.")
         sendMessage("Loaded modules: ${Breakthemod.modules.map { it.name }}.")
-        sendMessage(
-            Component.literal("Server status: isEmc(${isEarthMc()}), enabled(${isModEnabled()})")
-        )
-        sendMessage(
-            Component.literal("Cache status: ${Cache.enabled}")
-        )
-        sendMessage(
-            Component.literal("Cache size: ${Cache.playerCache.keys.size}")
-        )
+
+        sendMessage(Component.literal("Server status: isEmc(${isEarthMc()}), enabled(${isModEnabled()})"))
+        sendMessage(Component.literal("Cache status: ${Cache.enabled}"))
+        sendMessage(Component.literal("Cache size: ${Cache.playerNameCache.size}"))
         return 0
     }
 }

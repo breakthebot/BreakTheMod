@@ -36,17 +36,12 @@ object Townless : BaseCommand(
 ) {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
-        val onlinePlayers = client.connection?.onlinePlayers?.mapNotNull { it.profile.id.toString() }
-        if (onlinePlayers.isNullOrEmpty()) {
+        val onlinePlayers = Breakthemod.onlinePlayers
+        if (onlinePlayers.isEmpty() || onlinePlayers.size <= 1) {
             sendMessage("There are no online players.")
             return 0
         }
         scope.launch {
-            if (onlinePlayers.size <= 1) {
-                sendMessage("No online players found.")
-                return@launch
-            }
-
             val own = TownyAPI.getPlayer(Breakthemod.username).getOrNull()
             val townName = own?.town?.name
 
@@ -54,8 +49,6 @@ object Townless : BaseCommand(
                 sendError("You have to be in a town to access this command.")
                 return@launch
             }
-
-            Cache.updateCache()
 
             val townless = Cache.playerCache.values.filter { it.town == null }
 
