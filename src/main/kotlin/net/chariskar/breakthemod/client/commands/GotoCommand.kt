@@ -55,7 +55,7 @@ object GotoCommand : BaseCommand(
             if (
                 reqTown.status.isPublic && reqTown.status.canOutsidersSpawn
             ) {
-                sendMessage(Component.literal("You can do /t spawn ${reqTown.name}"), TextColor.AQUA)
+                sendMessage(Component.literal("You can do `/t spawn ${reqTown.name}`"), TextColor.AQUA)
                 return@launch
             }
 

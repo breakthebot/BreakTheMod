@@ -47,15 +47,14 @@ val prefix: Component by lazy {
  * Provides functions for interacting with the user.
  * */
 interface MessageProvider {
+
     /**
      * Helper utility for sending messages.
      *
      * @param message The message to be sent.
      */
-    fun sendMessage(message: Component) {
-        client.execute {
-            client.player?.sendSystemMessage(prefix.copy().append(message))
-        }
+    fun sendMessage(message: Component) = client.execute {
+        client.player?.sendSystemMessage(prefix.copy().append(message))
     }
 
     /**
@@ -64,10 +63,7 @@ interface MessageProvider {
      * @param message The message to be sent.
      * @param colour The color to attach to the message.
      */
-    fun sendMessage(
-        message: Component,
-        colour: TextColor,
-    ) {
+    fun sendMessage(message: Component, colour: TextColor) {
         val chatMessage = Component.empty().apply {
             append(message)
             withColor(colour)

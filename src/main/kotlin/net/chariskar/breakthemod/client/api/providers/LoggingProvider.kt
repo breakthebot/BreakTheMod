@@ -22,7 +22,7 @@ import net.chariskar.breakthemod.Breakthemod.Companion.logger
 import org.breakthebot.breakthelibrary.models.APIResult
 
 open class LoggingProvider(
-    private val name: String
+    private val name: String,
 ) {
     private fun prefix(message: String): String = "[$name] $message"
 
@@ -52,7 +52,7 @@ open class LoggingProvider(
         logger.warn(prefix(message))
     }
 
-    fun <T> APIResult<T>.error(): APIResult<T> = when (this) {
+    fun <T> APIResult<T>.logError(): APIResult<T> = when (this) {
         is APIResult.Error -> {
             error(this)
             this

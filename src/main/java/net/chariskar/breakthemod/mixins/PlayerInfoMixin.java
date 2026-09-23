@@ -64,10 +64,8 @@ public abstract class PlayerInfoMixin extends LivingEntityRenderer<AbstractClien
     )
     private void inject(
             AvatarRenderState state,
-            PoseStack poseStack,
-            SubmitNodeCollector submitNodeCollector,
-            CameraRenderState camera,
-            CallbackInfo ci
+            PoseStack poseStack, SubmitNodeCollector submitNodeCollector,
+            CameraRenderState camera, CallbackInfo ci
     ) {
         if (!isEarthMc() && Config.INSTANCE.getFeatures().getNameTagInfo()) return;
         if (state.nameTag == null) return;

@@ -85,9 +85,7 @@ object Help : BaseCommand(
                         .executes(
                             Command { context: CommandContext<FabricClientCommandSource> ->
                                 val name = context.getArgument("name", String::class.java)
-                                val command = Breakthemod.commands.firstOrNull {
-                                    it.name == name
-                                }
+                                val command = Breakthemod.commands.firstOrNull { it.name == name }
                                 if (command == null) {
                                     sendError("$name is not a recognised command.")
                                     return@Command 0

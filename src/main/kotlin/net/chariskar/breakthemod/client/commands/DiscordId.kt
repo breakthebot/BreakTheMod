@@ -51,6 +51,7 @@ object DiscordId : BaseCommand(
                     .withStyle(Style.EMPTY.withClickEvent(ClickEvent.OpenUrl(URI("https://discord.com/users/$discord"))))
             } else {
                 Component.literal("No player found.")
+                    .withColor(TextColor.RED)
             }
 
             sendMessage(result)

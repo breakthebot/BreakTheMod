@@ -43,11 +43,8 @@ public interface ExperienceTextMixin {
     )
     private static void drawScaledText(
             GuiGraphicsExtractor instance,
-            Font font,
-            Component str,
-            int x,
-            int y,
-            int color,
+            Font font, Component str,
+            int x, int y, int color,
             boolean dropShadow
     ) {
         if (!Config.INSTANCE.getFeatures().getExperienceText()) {
@@ -68,10 +65,7 @@ public interface ExperienceTextMixin {
                     target = "Lnet/minecraft/network/chat/Component;translatable(Ljava/lang/String;[Ljava/lang/Object;)Lnet/minecraft/network/chat/MutableComponent;"
             )
     )
-    private static MutableComponent redirectLevelText(
-            String key,
-            Object[] args
-    ) {
+    private static MutableComponent redirectLevelText(String key, Object[] args) {
         Objects.requireNonNull(Minecraft.getInstance().player);
         int level = (int) args[0];
         if (!Config.INSTANCE.getFeatures().getExperienceText())

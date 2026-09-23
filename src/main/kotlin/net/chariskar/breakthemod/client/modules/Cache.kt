@@ -49,10 +49,10 @@ object Cache : BaseModule(
     val playerCache: HashMap<String, Resident>
         get() = _playerCache
 
-    val playerNameCache: List<String>
-        get() = playerCache.keys.toList()
-
     val cacheLock = Mutex()
+
+    val playerNameCache: List<String>
+        field: MutableList<String> = mutableListOf()
 
     // keep a cache of all towns and nations for /locate, a full object cache is not needed yet.
     // spare some ram.
@@ -103,7 +103,7 @@ object Cache : BaseModule(
         val apiPlayers = TownyAPI.getPlayers(players)
             .flatMap {
                 it
-                    .error()
+                    .logError()
                     .getOrNull()
                     .orEmpty()
             }
@@ -115,23 +115,27 @@ object Cache : BaseModule(
     }
 
     /**
-     * Update town and nation caches.
+     * Update the name caches.
      * */
     suspend fun updateCache() {
         townNameCache.clear()
         nationNameCache.clear()
 
+        TownyAPI.getAllPlayers()
+            .onSuccess { playerNameCache.addAll(it.map { p -> p.name }) }
+            .logError()
+
         TownyAPI.getAllTowns()
             .onSuccess { townNameCache.addAll(it.map { t -> t.name }) }
-            .error()
+            .logError()
 
         TownyAPI.getAllNations()
             .onSuccess { nationNameCache.addAll(it.map { n -> n.name }) }
-            .error()
+            .logError()
 
         TownyAPI.getAllAlliances()
             .onSuccess { alliances.addAll(it.keys) }
-            .error()
+            .logError()
 
         info("Name cache finished.")
     }
@@ -155,6 +159,7 @@ object Cache : BaseModule(
     ): Boolean = townNameCache.toSet().contains(name)
 }
 
+/** Generate the text for the player affiliation feature.*/
 fun Resident.getTownyComponent(): Component {
     if (town == null) return Component.literal("Nomad").withColor(TextColor.DARK_AQUA)
     val text = Component.empty()

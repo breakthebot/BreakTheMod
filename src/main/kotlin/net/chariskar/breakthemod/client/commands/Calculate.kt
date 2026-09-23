@@ -68,8 +68,11 @@ object Calculate : BaseCommand(
                         "type",
                         StringArgumentType.string()
                     )
-                        .suggests(CommandSuggestions { mutableListOf("blocks", "stacks") })
-                        .then(
+                        .suggests { _, builder ->
+                            builder.suggest("town")
+                            builder.suggest("nation")
+                            builder.buildFuture()
+                        }.then(
                             RequiredArgumentBuilder.argument<FabricClientCommandSource?, Int>(
                                 "amount",
                                 IntegerArgumentType.integer()

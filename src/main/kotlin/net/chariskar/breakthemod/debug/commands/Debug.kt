@@ -28,17 +28,22 @@ object Debug : BaseCommand(
     "debugInfo",
     "Debug overview of breakthemod."
 ) {
+    val commandNames: List<String>
+        get() = Breakthemod.commands.map { it.name }
+
+    val moduleNames: List<String>
+        get() = Breakthemod.modules.map { it.name }
+
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         if (!Breakthemod.debug) return 0
 
         sendMessage(Component.literal("Version: ${Breakthemod.version}"))
 
-        sendMessage("Loaded commands: ${Breakthemod.commands.map { it.name }}.")
-        sendMessage("Loaded modules: ${Breakthemod.modules.map { it.name }}.")
+        sendMessage("Loaded commands [${commandNames.size}]: $commandNames.")
+        sendMessage("Loaded modules [${moduleNames.size}]: $moduleNames.")
 
         sendMessage(Component.literal("Server status: isEmc(${isEarthMc()}), enabled(${isModEnabled()})"))
         sendMessage(Component.literal("Cache status: ${Cache.enabled}"))
-        sendMessage(Component.literal("Cache size: ${Cache.playerNameCache.size}"))
         return 0
     }
 }

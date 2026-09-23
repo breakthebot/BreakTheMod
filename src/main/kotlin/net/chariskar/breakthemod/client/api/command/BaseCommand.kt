@@ -126,17 +126,21 @@ abstract class BaseCommand(
         dispatcher: CommandDispatcher<FabricClientCommandSource>,
         argName: String,
         argType: ArgumentType<T>,
-        suggestions: SuggestionProvider<FabricClientCommandSource?>? = null,
+        suggestions: SuggestionProvider<FabricClientCommandSource?>,
     ) {
         dispatcher.register(
             LiteralArgumentBuilder.literal<FabricClientCommandSource>(name)
                 .then(
                     RequiredArgumentBuilder.argument<FabricClientCommandSource, T>(argName, argType)
                         .apply {
-                            if (suggestions != null) suggests(suggestions)
+                            suggests(suggestions)
                             executes(
                                 Command { context: CommandContext<FabricClientCommandSource> ->
-                                    return@Command if (!isModEnabled()) 0 else run(context)
+                                    return@Command if (!isModEnabled()) {
+                                        0
+                                    } else {
+                                        run(context)
+                                    }
                                 }
                             )
                         }
@@ -153,7 +157,7 @@ abstract class BaseCommand(
 
         @Throws(CommandSyntaxException::class)
         override fun getSuggestions(
-            context: CommandContext<FabricClientCommandSource?>?,
+            context: CommandContext<FabricClientCommandSource?>,
             builder: SuggestionsBuilder,
         ): CompletableFuture<Suggestions> {
             val input = builder.remaining.lowercase(Locale.getDefault())

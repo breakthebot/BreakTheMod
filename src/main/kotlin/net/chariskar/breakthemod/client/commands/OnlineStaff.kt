@@ -28,7 +28,6 @@ import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.modules.StaffCacheHandler
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.network.chat.Component
-import net.minecraft.network.chat.Style
 import net.minecraft.network.chat.TextColor
 import org.breakthebot.breakthelibrary.api.TownyAPI
 import java.util.UUID
@@ -94,9 +93,7 @@ object OnlineStaff : BaseCommand(
 
             if (data == null) {
                 return Component.literal("Unexpected error occurred when fetching the staff names from the API.")
-                    .setStyle(
-                        Style.EMPTY.withColor(TextColor.RED)
-                    )
+                    .withColor(TextColor.RED)
             }
 
             staff.mapValues {
@@ -107,9 +104,9 @@ object OnlineStaff : BaseCommand(
                 .mapValues { (_, playerIds) ->
                     playerIds.mapNotNull { id ->
                         client.connection!!.onlinePlayers
-                            .firstOrNull { player -> player.profile.id == id }
-                            ?.profile
-                            ?.name
+                            .firstOrNull { player ->
+                                player.profile.id == id
+                            }?.profile?.name
                     }
                 }
                 .filterValues { it.isNotEmpty() }
@@ -135,9 +132,8 @@ object OnlineStaff : BaseCommand(
         }
 
         if (staffNames.values.flatten().isEmpty()) {
-            return Component.literal("No staff online at the moment.").setStyle(
-                Style.EMPTY.withColor(TextColor.RED)
-            )
+            return Component.literal("No staff online at the moment.")
+                .withColor(TextColor.RED)
         }
 
         return onlineStaffComponent

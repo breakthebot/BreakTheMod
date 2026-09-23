@@ -1,2 +1,3 @@
-# TODO 
-* Find a way to bypass the xaeros packets to enable entity radar.
+# TODO
+
+* There is nothing to do!

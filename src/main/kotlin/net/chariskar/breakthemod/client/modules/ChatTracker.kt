@@ -48,7 +48,7 @@ data class ShopObject(
 object ChatTracker : BaseModule(
     "ChatTracker",
     "Combined utility to get data from messages.",
-    false
+    true
 ) {
     val emptyShops: MutableList<ShopObject> = mutableListOf()
 
