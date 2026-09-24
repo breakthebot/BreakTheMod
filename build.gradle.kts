@@ -6,11 +6,10 @@ import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
 
 plugins {
-    kotlin("jvm") version "2.4.0"
-    kotlin("plugin.serialization") version "2.4.0"
-
-    id("net.fabricmc.fabric-loom") version "1.16-SNAPSHOT"
-    id("com.gradleup.shadow") version "9.4.3"
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.fabric.loom)
+    alias(libs.plugins.gradleup.shadow)
 }
 
 group = project.property("maven_group") as String
@@ -67,40 +66,30 @@ val debug = project.hasProperty("debug")
 val release = project.hasProperty("release")
 val github = project.hasProperty("github")
 
-val mcVer = project.findProperty("mcVer") as String
-val fabricVersion = project.findProperty("fabricVersion") as String
-val fabricLoader = project.findProperty("fabricLoader") as String
-val kotlinLoader = project.findProperty("kotlinLoader") as String
-val ktSere = project.findProperty("ktSere") as String
-val clothVersion = project.findProperty("clothVersion") as String
-val modmenu = project.findProperty("modmenu") as String
-val placeholderVersion = project.findProperty("placeholderVersion") as String
-val breakTheLibrary = project.findProperty("breakTheLibrary") as String
-
 dependencies {
-    minecraft("com.mojang:minecraft:$mcVer")
+    minecraft(libs.minecraft)
 
-    api("net.fabricmc:fabric-loader:$fabricLoader")
-    api("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
-    api("net.fabricmc:fabric-language-kotlin:$kotlinLoader")
+    api(libs.fabric.loader)
+    api(libs.fabric.api)
+    api(libs.fabric.kotlin)
 
-    implementation("eu.pb4:placeholder-api:$placeholderVersion")
+    implementation(libs.placeholder.api)
 
-    api("me.shedaniel.cloth:cloth-config-fabric:$clothVersion") {
+    api(libs.cloth.config) {
         exclude(group = "net.fabricmc.fabric-api")
     }
 
-    api("com.terraformersmc:modmenu:$modmenu")
+    api(libs.modmenu)
 
-    implementation("com.github.breakthebot:BreakTheLibrary:$breakTheLibrary")
-    shade("com.github.breakthebot:BreakTheLibrary:$breakTheLibrary") {
+    implementation(libs.breakthelibrary)
+    shade(libs.breakthelibrary) {
         isTransitive = false
     }
 
     compileOnly(kotlin("stdlib"))
     compileOnly(kotlin("reflect"))
-    compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:$ktSere")
-    r8("com.android.tools:r8:9.4.18")
+    compileOnly(libs.kotlinx.serialization.json)
+    r8(libs.r8)
 }
 
 tasks.processResources {
@@ -110,12 +99,12 @@ tasks.processResources {
         expand(
             mapOf(
                 "version" to version,
-                "minecraft_version" to mcVer,
-                "loader_version" to fabricLoader,
-                "kotlin_loader_version" to kotlinLoader,
-                "cloth_config" to clothVersion,
-                "placeholder_api" to placeholderVersion,
-                "modmenu" to modmenu,
+                "minecraft_version" to libs.versions.mc,
+                "loader_version" to libs.fabric.loader,
+                "kotlin_loader_version" to libs.fabric.kotlin,
+                "cloth_config" to libs.cloth.config,
+                "placeholder_api" to libs.placeholder.api,
+                "modmenu" to libs.modmenu,
             )
         )
     }
@@ -317,7 +306,7 @@ val versionTask = tasks.register<Exec>("versionAdd") {
         "src/scripts/Version.main.kts",
         version.toString(),
         "true",
-        mcVer
+        libs.versions.mc
     )
 }
 
