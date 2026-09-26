@@ -39,13 +39,6 @@ nearby.
 ![WhereIs Command](screenshots/findPlayer.png)
 *Shows the location of a specific player.*
 
-### **Nearby**
-
-![Nearby Command](screenshots/nearby_command.png)
-*Displays players nearby in rendered chunks.*
-![Nearby Hud](screenshots/nearby_hud.png)
-*Displays players nearby in rendered chunks in the hud*
-
 ### **Locate**
 
 ![Locate Command](screenshots/locate.png)
@@ -82,8 +75,6 @@ nearby.
 
 
 ## **Installation**
-
-[BreakTheMod](builds/1.4/breakthemod-1.4.1.jar)
 
 ### **Requirements**
 
