@@ -17,10 +17,11 @@
 
 package net.chariskar.breakthemod.client.api.module
 
-import net.chariskar.breakthemod.client.api.providers.LoggingProvider
+import io.github.oshai.kotlinlogging.KotlinLogging
 import net.chariskar.breakthemod.client.api.providers.MessageProvider
 import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider
 import net.minecraft.client.Minecraft
+import org.breakthebot.breakthelibrary.models.APIResult
 
 /**
  * Base for modules.
@@ -33,12 +34,13 @@ abstract class BaseModule(
     val name: String,
     val description: String,
     val hidden: Boolean = false,
-) : LoggingProvider(name),
-    MessageProvider,
+) : MessageProvider,
     ServerUtilsProvider {
 
     var enabled: Boolean = false
         protected set
+
+    protected val logger = KotlinLogging.logger(this::class.java.name)
 
     fun register() {
         if (enabled) return
@@ -46,7 +48,7 @@ abstract class BaseModule(
             enable()
             enabled = true
         } catch (e: Exception) {
-            error("Unexpected exception occurred", e)
+            logger.error(e) { "Unexpected exception occurred" }
             enabled = false
         }
     }
@@ -58,6 +60,16 @@ abstract class BaseModule(
     }
 
     protected abstract fun enable()
+
+    fun <T> APIResult<T>.logError(): APIResult<T> = when (this) {
+        is APIResult.Error -> {
+            if (!this.isSevere) return this
+            logger.error { "Received unexpected response from the api with status code ${this.statusCode} and message ${this.message}." }
+            this
+        }
+
+        is APIResult.Success -> this
+    }
 
     companion object {
         @JvmStatic

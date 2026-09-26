@@ -29,12 +29,10 @@ import net.chariskar.breakthemod.client.commands.LastSeen
 import net.chariskar.breakthemod.client.commands.Locate
 import net.chariskar.breakthemod.client.commands.OnlineStaff
 import net.chariskar.breakthemod.client.commands.Townless
-import net.chariskar.breakthemod.client.commands.alliance.Alliance
-import net.chariskar.breakthemod.client.commands.alliance.NationMembership
-import net.chariskar.breakthemod.client.commands.alliance.TopAlliances
 import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.modules.ChatTracker
 import net.chariskar.breakthemod.client.modules.LoginActions
+import net.chariskar.breakthemod.client.modules.NearbyEngine
 import net.chariskar.breakthemod.client.modules.NotificationManager
 import net.chariskar.breakthemod.client.modules.StaffCacheHandler
 import net.chariskar.breakthemod.client.utils.Config
@@ -97,7 +95,6 @@ class Breakthemod : ClientModInitializer {
                 Calculate, OnlineStaff,
                 Locate, GotoCommand,
                 Townless, FindPlayer, LastSeen, DiscordId,
-                Alliance, TopAlliances, NationMembership,
                 Help
             )
         )
@@ -109,6 +106,7 @@ class Breakthemod : ClientModInitializer {
                 LoginActions,
                 StaffCacheHandler,
                 Cache,
+                NearbyEngine
             )
         )
 

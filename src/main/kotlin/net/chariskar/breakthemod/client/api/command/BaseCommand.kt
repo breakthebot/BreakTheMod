@@ -27,16 +27,17 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.mojang.brigadier.suggestion.SuggestionProvider
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import net.chariskar.breakthemod.client.api.providers.LoggingProvider
 import net.chariskar.breakthemod.client.api.providers.MessageProvider
 import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider
 import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.client.Minecraft
+import org.breakthebot.breakthelibrary.models.APIResult
 import java.util.Locale
 import java.util.concurrent.CompletableFuture
 
@@ -55,14 +56,15 @@ abstract class BaseCommand(
     val name: String,
     val description: String,
     val usageSuffix: String = "",
-) : LoggingProvider(name),
-    MessageProvider,
+) : MessageProvider,
     ServerUtilsProvider {
+
+    protected val logger = KotlinLogging.logger(this::class.java.name)
 
     private val handler = CoroutineExceptionHandler { _, e ->
         sendError("Unexpected error occurred ${e.message} while running $name")
         if (Config.config.dev) {
-            error("Unexpected error occurred while running", e as Exception)
+            logger.error(e) { "Unexpected error occurred." }
         }
     }
 
@@ -73,7 +75,7 @@ abstract class BaseCommand(
     fun getCommandDescription() = "$name $usageSuffix: $description"
 
     /**
-     * @param ctx the command conComponent.
+     * @param ctx the command Context.
      */
     protected abstract fun execute(
         ctx: CommandContext<FabricClientCommandSource>,
@@ -95,7 +97,7 @@ abstract class BaseCommand(
             throw e
         } catch (e: Exception) {
             sendError()
-            error("Unexpected error has occurred while running $name", e)
+            logger.error(e) { "Unexpected error occurred." }
             return 1
         }
     }
@@ -168,6 +170,16 @@ abstract class BaseCommand(
 
             return builder.buildFuture()
         }
+    }
+
+    fun <T> APIResult<T>.logError(): APIResult<T> = when (this) {
+        is APIResult.Error -> {
+            if (!this.isSevere) return this
+            logger.error { "Received unexpected response from the api with status code ${this.statusCode} and message ${this.message}." }
+            this
+        }
+
+        is APIResult.Success -> this
     }
 
     companion object {

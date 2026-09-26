@@ -21,6 +21,7 @@ import com.mojang.brigadier.context.CommandContext
 import net.chariskar.breakthemod.Breakthemod
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.modules.Cache
+import net.chariskar.breakthemod.client.utils.WaypointUtil
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.network.chat.Component
 
@@ -44,6 +45,7 @@ object Debug : BaseCommand(
 
         sendMessage(Component.literal("Server status: isEmc(${isEarthMc()}), enabled(${isModEnabled()})"))
         sendMessage(Component.literal("Cache status: ${Cache.enabled}"))
+        sendMessage(Component.literal("Xaeros: ${if (WaypointUtil.xaeroLoaded) "Present" else "Not present"}."))
         return 0
     }
 }

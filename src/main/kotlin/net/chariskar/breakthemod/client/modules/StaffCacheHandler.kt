@@ -63,7 +63,7 @@ object StaffCacheHandler : BaseModule("StaffCacheHandler", "Handles the staff fi
     }
 
     fun storeStaff(staff: Map<String, List<UUID>>): Map<String, List<UUID>> {
-        debug("Updating staff cache file.")
+        logger.debug { "Updating staff cache file." }
         staffFile.writeText(
             json.encodeToString<StaffCacheFile>(
                 StaffCacheFile(

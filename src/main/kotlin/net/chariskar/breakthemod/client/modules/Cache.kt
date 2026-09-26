@@ -36,7 +36,8 @@ import kotlin.time.Duration.Companion.minutes
 /**
  * Cache update handler for the mod.
  *
- * @property playerCache The players currently cached in memory.
+ * @property playerCache The currently online players.
+ * @property playerNameCache A list of every player from /players.
  * @property townNameCache A list of every town from /towns.
  * @property nationNameCache A list of every nation from /nations.
  *  */
@@ -75,7 +76,7 @@ object Cache : BaseModule(
                     Schedule(
                         "playerCacheUpdate",
                         {
-                            info("Cache started.")
+                            logger.info { "Cache started." }
                             if (!enabled) return@Schedule
                             runTask()
                         },
@@ -111,7 +112,7 @@ object Cache : BaseModule(
         apiPlayers.forEach {
             playerCache[it.name] = it
         }
-        debug("Finished updating players.")
+        logger.debug { "Finished updating players." }
     }
 
     /**
@@ -137,7 +138,7 @@ object Cache : BaseModule(
             .onSuccess { alliances.addAll(it.keys) }
             .logError()
 
-        info("Name cache finished.")
+        logger.info { "Name cache finished." }
     }
 
     suspend fun runTask() = cacheLock.withLock {

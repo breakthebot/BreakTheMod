@@ -72,6 +72,7 @@ dependencies {
     api(libs.fabric.loader)
     api(libs.fabric.api)
     api(libs.fabric.kotlin)
+    api(libs.xaero)
 
     implementation(libs.placeholder.api)
 
@@ -81,10 +82,11 @@ dependencies {
 
     api(libs.modmenu)
 
+    shade(libs.breakthelibrary) { isTransitive = false }
+    shade(libs.kotlin.logging.jvm) { isTransitive = false }
+
     implementation(libs.breakthelibrary)
-    shade(libs.breakthelibrary) {
-        isTransitive = false
-    }
+    implementation(libs.kotlin.logging.jvm)
 
     compileOnly(kotlin("stdlib"))
     compileOnly(kotlin("reflect"))
@@ -93,18 +95,16 @@ dependencies {
 }
 
 tasks.processResources {
-    inputs.property("version", version)
-
     filesMatching("fabric.mod.json") {
         expand(
             mapOf(
                 "version" to version,
-                "minecraft_version" to libs.versions.mc,
-                "loader_version" to libs.fabric.loader,
-                "kotlin_loader_version" to libs.fabric.kotlin,
-                "cloth_config" to libs.cloth.config,
-                "placeholder_api" to libs.placeholder.api,
-                "modmenu" to libs.modmenu,
+                "minecraft_version" to libs.versions.mc.ver.get(),
+                "loader_version" to libs.versions.fabric.loader.get(),
+                "kotlin_loader_version" to libs.versions.fabric.kotlin.get(),
+                "cloth_config" to libs.versions.cloth.version.get(),
+                "placeholder_api" to libs.versions.placeholder.version.get(),
+                "modmenu" to libs.versions.modmenu.get(),
             )
         )
     }
@@ -149,6 +149,10 @@ val shadowJarTask = tasks.named<ShadowJar>("shadowJar") {
     relocate(
         "org.breakthebot.breakthelibrary",
         "${project.group}.shadow.breakthelibrary"
+    )
+    relocate(
+        "io.github.oshaai.kotlin-logging-jvm",
+        "${project.group}.shadow.kotlin-logging-jvm"
     )
 }
 

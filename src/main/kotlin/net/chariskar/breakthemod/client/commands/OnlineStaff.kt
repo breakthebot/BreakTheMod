@@ -47,22 +47,18 @@ object OnlineStaff : BaseCommand(
                     RequiredArgumentBuilder.argument<FabricClientCommandSource?, String>(
                         "api",
                         StringArgumentType.string()
+                    ).executes(
+                        Command { context: CommandContext<FabricClientCommandSource> ->
+                            if (!isModEnabled()) return@Command 0
+
+                            val arg: String = context.getArgument("api", String::class.java)
+                            return@Command exec(arg == "api")
+                        }
                     )
-                        .executes(
-                            Command { component: CommandContext<FabricClientCommandSource> ->
-                                if (!isModEnabled()) {
-                                    return@Command 0
-                                }
-                                val arg: String = component.getArgument("api", String::class.java)
-                                return@Command exec(arg == "api")
-                            }
-                        )
                 )
                 .executes(
                     Command { _: CommandContext<FabricClientCommandSource> ->
-                        if (!isModEnabled()) {
-                            return@Command 0
-                        }
+                        if (!isModEnabled()) return@Command 0
                         return@Command exec(null)
                     }
                 )
@@ -113,7 +109,10 @@ object OnlineStaff : BaseCommand(
         }
 
         val onlineStaffComponent = Component.literal("Online Staff ")
-            .append(Component.literal("[${staffNames.values.flatten().size}]: ").withColor(TextColor.AQUA))
+            .append(
+                Component.literal("[${staffNames.values.flatten().size}]: ")
+                    .withColor(TextColor.AQUA)
+            )
 
         staffNames.forEach { (rank, staff) ->
             if (staff.isEmpty()) return@forEach

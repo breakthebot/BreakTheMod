@@ -38,16 +38,17 @@ data class Schedule(
     val delay: Duration,
 )
 
+/**
+ * @property tasks The current tasks.
+ * */
 object Scheduler {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    private val _tasks = mutableMapOf<String, Job>()
-
-    val tasks: HashMap<String, Job>
-        get() = HashMap(_tasks)
+    val tasks: Map<String, Job>
+        field = mutableMapOf<String, Job>()
 
     fun schedule(schedule: Schedule) {
-        if (_tasks.containsKey(schedule.name)) return
+        if (tasks.containsKey(schedule.name)) return
         val job = scope.launch {
             delay(schedule.delay)
             schedule.task()
@@ -58,7 +59,7 @@ object Scheduler {
     }
 
     fun scheduleRepeating(schedule: Schedule) {
-        if (_tasks.containsKey(schedule.name)) return
+        if (tasks.containsKey(schedule.name)) return
         val job = scope.launch {
             while (isActive) {
                 schedule.task()

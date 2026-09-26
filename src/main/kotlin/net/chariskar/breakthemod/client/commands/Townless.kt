@@ -41,6 +41,10 @@ object Townless : BaseCommand(
             sendMessage("There are no online players.")
             return 0
         }
+        if (Config.features.cacheEnabled) {
+            sendError("You need to have the player cache enabled to use this feature.")
+            return 0
+        }
         scope.launch {
             val own = TownyAPI.getPlayer(Breakthemod.username).getOrNull()
             val townName = own?.town?.name
@@ -67,9 +71,7 @@ object Townless : BaseCommand(
                         .withColor(TextColor.AQUA)
                         .withClickEvent(ClickEvent.CopyToClipboard(inviteMessage))
                         .withHoverEvent(
-                            HoverEvent.ShowText(
-                                Component.literal("Click to copy message to clipboard.")
-                            )
+                            HoverEvent.ShowText(Component.literal("Click to copy message to clipboard."))
                         )
                 )
 

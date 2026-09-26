@@ -49,4 +49,5 @@ data class Features(
     var nameTagInfo: Boolean = true,
     var cacheEnabled: Boolean = true,
     var experienceText: Boolean = true,
+    val nearbyPlayers: Boolean = true,
 )

@@ -17,8 +17,8 @@
 
 package net.chariskar.breakthemod.client.utils
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.serialization.json.Json
-import net.chariskar.breakthemod.client.api.providers.LoggingProvider
 import net.chariskar.breakthemod.client.models.ConfigData
 import org.breakthebot.breakthelibrary.utils.ConfigHandler
 import java.io.File
@@ -32,7 +32,7 @@ import org.breakthebot.breakthelibrary.utils.Config as LConfig
  * @property features Lazy access to config.features.
  * @property libraryConfig Lazy access config.libraryConfig.
  * */
-object Config : LoggingProvider("Config") {
+object Config {
     lateinit var configFile: File
 
     val json = Json {
@@ -52,6 +52,8 @@ object Config : LoggingProvider("Config") {
     val libraryConfig
         get() = config.libraryConfig
 
+    val logger = KotlinLogging.logger { }
+
     fun setFile(file: File) {
         configFile = file
     }
@@ -69,8 +71,8 @@ object Config : LoggingProvider("Config") {
             config = json.decodeFromString<ConfigData>(fileContent)
             ConfigHandler.setup(libraryConfig)
         } catch (e: Exception) {
-            error("Encountered an exception when trying to parse the config", e)
-            warn("Regenerating config.")
+            logger.error(e) { "Encountered an exception when trying to parse the config" }
+            logger.info { "Regenerating config." }
             saveConfig(null)
         }
     }

@@ -22,6 +22,7 @@ import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.client.api.command.BaseCommand
 import net.chariskar.breakthemod.client.modules.Cache
+import net.chariskar.breakthemod.client.utils.WaypointUtil
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.TextColor
@@ -52,9 +53,7 @@ object GotoCommand : BaseCommand(
                 return@launch
             }
 
-            if (
-                reqTown.status.isPublic && reqTown.status.canOutsidersSpawn
-            ) {
+            if (reqTown.status.isPublic && reqTown.status.canOutsidersSpawn) {
                 sendMessage(Component.literal("You can do `/t spawn ${reqTown.name}`"), TextColor.AQUA)
                 return@launch
             }
@@ -77,6 +76,9 @@ object GotoCommand : BaseCommand(
                     return@launch
                 }
             }
+
+            val reqTownCoords = Pair(reqTown.coordinates.spawn.x.toInt(), reqTown.coordinates.spawn.z.toInt())
+            WaypointUtil.createRouteWaypoint(reqTownCoords, reqTown.name)
 
             var radius = 500
             var attempts = 3
@@ -131,6 +133,7 @@ object GotoCommand : BaseCommand(
 
                 val townComponent = Component.empty()
                 validTowns.forEach { t -> townComponent.append(Component.literal("$t\n")) }
+
                 sendMessage(Component.literal("Found suitable spawn in:\n").append(townComponent), TextColor.AQUA)
                 return@launch
             }
