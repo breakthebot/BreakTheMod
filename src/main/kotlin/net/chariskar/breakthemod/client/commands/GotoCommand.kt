@@ -20,7 +20,7 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
-import net.chariskar.breakthemod.client.api.command.BaseCommand
+import net.chariskar.breakthemod.client.api.BaseCommand
 import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.utils.WaypointUtil
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
@@ -39,10 +39,6 @@ object GotoCommand : BaseCommand(
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val townName = ctx.getArgument("name", String::class.java)
-        if (!Cache.townExists(townName)) {
-            sendError("Town $townName does not exist.")
-            return 1
-        }
         scope.launch {
             val reqTown = TownyAPI.getTown(townName).getOrElse {
                 val message = when (it.statusCode) {
@@ -142,6 +138,12 @@ object GotoCommand : BaseCommand(
         }
 
         return 1
+    }
+
+    override fun preRequisites(ctx: CommandContext<FabricClientCommandSource>): Pair<Boolean, String> {
+        val name: String = ctx.getArgument("name", String::class.java)
+        if (Cache.townExists(name)) return super.preRequisites(ctx)
+        return Pair(false, "Town does not exist.")
     }
 
     override fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {

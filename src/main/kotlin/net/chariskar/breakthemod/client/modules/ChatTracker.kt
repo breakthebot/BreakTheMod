@@ -17,7 +17,7 @@
 
 package net.chariskar.breakthemod.client.modules
 
-import net.chariskar.breakthemod.client.api.module.BaseModule
+import net.chariskar.breakthemod.client.api.BaseModule
 import net.chariskar.breakthemod.client.models.ChatChannel
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
@@ -143,11 +143,7 @@ object ChatTracker : BaseModule(
         val (x, y, z, item) = match?.destructured ?: return null
 
         return ShopObject(
-            Vec3(
-                x.toDouble(),
-                y.toDouble(),
-                z.toDouble()
-            ),
+            Vec3(x.toDouble(), y.toDouble(), z.toDouble()),
             item
         )
     }

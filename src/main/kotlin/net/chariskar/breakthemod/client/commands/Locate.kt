@@ -27,7 +27,7 @@ import com.mojang.brigadier.suggestion.SuggestionProvider
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import kotlinx.coroutines.launch
-import net.chariskar.breakthemod.client.api.command.BaseCommand
+import net.chariskar.breakthemod.client.api.BaseCommand
 import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
@@ -41,7 +41,7 @@ import java.util.concurrent.CompletableFuture
 
 object Locate : BaseCommand(
     "locate",
-    "Gives tou the coordinates of a town/nation",
+    "Gives you the coordinates of a town/nation.",
     "<type> <name>"
 ) {
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
@@ -113,6 +113,22 @@ object Locate : BaseCommand(
                         )
                 )
         )
+    }
+
+    override fun preRequisites(ctx: CommandContext<FabricClientCommandSource>): Pair<Boolean, String> {
+        val type: String = ctx.getArgument("type", String::class.java)
+        val name: String = ctx.getArgument("name", String::class.java)
+
+        val exists = when (type) {
+            "town" -> Cache.townExists(name)
+            "nation" -> Cache.nationExists(name)
+            else -> return Pair(false, "$type is not town or nation.")
+        }
+
+        if (!exists) {
+            return Pair(false, "$name is not a $type.")
+        }
+        return super.preRequisites(ctx)
     }
 
     class NameSuggestions : SuggestionProvider<FabricClientCommandSource> {

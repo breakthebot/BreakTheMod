@@ -17,12 +17,13 @@
 
 package net.chariskar.breakthemod.client.utils
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.serializer
 import net.chariskar.breakthemod.Breakthemod
-import net.chariskar.breakthemod.client.api.Notification
-import net.chariskar.breakthemod.client.api.NotificationTypes
 import net.chariskar.breakthemod.client.api.providers.MessageProvider
+import net.chariskar.breakthemod.client.models.Notification
+import net.chariskar.breakthemod.client.models.NotificationTypes
 import net.chariskar.breakthemod.client.modules.NotificationManager
 import net.minecraft.client.Minecraft
 import org.breakthebot.breakthelibrary.api.APIClient
@@ -41,6 +42,7 @@ data class VersionFile(
 )
 
 object UpdateUtility : MessageProvider {
+    val logger = KotlinLogging.logger("breakthemod")
 
     suspend fun checkVersion() {
         val file = APIClient.getRequest(
@@ -49,14 +51,13 @@ object UpdateUtility : MessageProvider {
         ).getOrNull()?.versions
 
         if (file == null) {
-            Breakthemod.logger.warn("Version file unavailable.")
+            logger.warn { "Unable to reach github version file." }
             return
         }
         val latest = file.first { it.latest }
         val verString = Breakthemod.version.split("-")[0]
         val notification = Notification(
             "UpdateAvailable",
-            message = "There is a new breakthemod update available",
             notificationType = NotificationTypes.UpdateAvailable
         )
 

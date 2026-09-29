@@ -21,7 +21,7 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.Breakthemod
-import net.chariskar.breakthemod.client.api.command.BaseCommand
+import net.chariskar.breakthemod.client.api.BaseCommand
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.TextColor

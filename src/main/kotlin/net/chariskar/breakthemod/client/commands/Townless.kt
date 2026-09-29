@@ -19,7 +19,7 @@ package net.chariskar.breakthemod.client.commands
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.coroutines.launch
 import net.chariskar.breakthemod.Breakthemod
-import net.chariskar.breakthemod.client.api.command.BaseCommand
+import net.chariskar.breakthemod.client.api.BaseCommand
 import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
@@ -37,14 +37,6 @@ object Townless : BaseCommand(
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
         val onlinePlayers = Breakthemod.onlinePlayers
-        if (onlinePlayers.isEmpty() || onlinePlayers.size <= 1) {
-            sendMessage("There are no online players.")
-            return 0
-        }
-        if (Config.features.cacheEnabled) {
-            sendError("You need to have the player cache enabled to use this feature.")
-            return 0
-        }
         scope.launch {
             val own = TownyAPI.getPlayer(Breakthemod.username).getOrNull()
             val townName = own?.town?.name
@@ -81,5 +73,18 @@ object Townless : BaseCommand(
         }
 
         return 0
+    }
+
+    override fun preRequisites(ctx: CommandContext<FabricClientCommandSource>): Pair<Boolean, String> {
+        val onlinePlayers = Breakthemod.onlinePlayers
+
+        if (onlinePlayers.isEmpty() || onlinePlayers.size <= 1 || Config.features.cacheEnabled) {
+            return Pair(
+                false,
+                "You need to have the cache enabled to use this feature."
+            )
+        }
+
+        return super.preRequisites(ctx)
     }
 }

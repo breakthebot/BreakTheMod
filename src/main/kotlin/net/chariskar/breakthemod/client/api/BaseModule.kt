@@ -15,7 +15,7 @@
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.chariskar.breakthemod.client.api.module
+package net.chariskar.breakthemod.client.api
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import net.chariskar.breakthemod.client.api.providers.MessageProvider
@@ -40,7 +40,7 @@ abstract class BaseModule(
     var enabled: Boolean = false
         protected set
 
-    protected val logger = KotlinLogging.logger(this::class.java.name)
+    protected val logger = KotlinLogging.logger("breakthemod")
 
     fun register() {
         if (enabled) return
@@ -48,7 +48,7 @@ abstract class BaseModule(
             enable()
             enabled = true
         } catch (e: Exception) {
-            logger.error(e) { "Unexpected exception occurred" }
+            logger.error(e) { "Unexpected exception occurred while enabling." }
             enabled = false
         }
     }

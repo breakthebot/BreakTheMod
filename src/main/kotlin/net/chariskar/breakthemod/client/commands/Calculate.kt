@@ -24,7 +24,7 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
-import net.chariskar.breakthemod.client.api.command.BaseCommand
+import net.chariskar.breakthemod.client.api.BaseCommand
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.TextColor
@@ -78,9 +78,9 @@ object Calculate : BaseCommand(
                                 IntegerArgumentType.integer()
                             )
                                 .executes(
-                                    Command { conComponent: CommandContext<FabricClientCommandSource> ->
+                                    Command { context: CommandContext<FabricClientCommandSource> ->
                                         if (!isModEnabled()) return@Command 0
-                                        return@Command run(conComponent)
+                                        return@Command run(context)
                                     }
                                 )
                         )

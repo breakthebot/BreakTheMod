@@ -15,7 +15,7 @@
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.chariskar.breakthemod.client.api.command
+package net.chariskar.breakthemod.client.api
 
 import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
@@ -59,7 +59,7 @@ abstract class BaseCommand(
 ) : MessageProvider,
     ServerUtilsProvider {
 
-    protected val logger = KotlinLogging.logger(this::class.java.name)
+    protected val logger = KotlinLogging.logger("breakthemod")
 
     private val handler = CoroutineExceptionHandler { _, e ->
         sendError("Unexpected error occurred ${e.message} while running $name")
@@ -75,6 +75,13 @@ abstract class BaseCommand(
     fun getCommandDescription() = "$name $usageSuffix: $description"
 
     /**
+     * The checks that should be run before the command is run (it shouldn't exit the command just return a message to display to the user.).
+     * @param ctx The command source.
+     * @return A pair consisting of a boolean if the prerequisites are met and the message if they aren't.
+     * */
+    protected open fun preRequisites(ctx: CommandContext<FabricClientCommandSource>): Pair<Boolean, String> = Pair(true, "")
+
+    /**
      * @param ctx the command Context.
      */
     protected abstract fun execute(
@@ -82,9 +89,9 @@ abstract class BaseCommand(
     ): Int
 
     /**
-     * Internal method, executes command code.
-     * @param ctx The Command conComponent.
-     * @return 1 if success else 0.
+     * Internal method, executes command code also runs the [preRequisites] check.
+     * @param ctx The command context.
+     * @return If the command exits successfully 0, if not 1.
      * @throws CommandSyntaxException If invalid syntax.
      */
     @Throws(CommandSyntaxException::class)
@@ -92,6 +99,11 @@ abstract class BaseCommand(
         ctx: CommandContext<FabricClientCommandSource>,
     ): Int {
         try {
+            val preRequisites = preRequisites(ctx)
+            if (!preRequisites.first) {
+                sendError(preRequisites.second)
+                return 1
+            }
             return execute(ctx)
         } catch (e: CommandSyntaxException) {
             throw e
@@ -138,11 +150,7 @@ abstract class BaseCommand(
                             suggests(suggestions)
                             executes(
                                 Command { context: CommandContext<FabricClientCommandSource> ->
-                                    return@Command if (!isModEnabled()) {
-                                        0
-                                    } else {
-                                        run(context)
-                                    }
+                                    return@Command if (!isModEnabled()) 0 else run(context)
                                 }
                             )
                         }
@@ -151,7 +159,8 @@ abstract class BaseCommand(
     }
 
     /**
-     * Provides command suggestions using the current list whenever suggestions are requested.
+     * Provides autocomplete suggestions with the provided [suggestionsProvider] function.
+     * @param suggestionsProvider The function that generates the list of recommendations.
      */
     class CommandSuggestions(
         val suggestionsProvider: () -> Collection<String>,

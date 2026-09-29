@@ -18,8 +18,8 @@
 package net.chariskar.breakthemod.debug
 
 import com.mojang.brigadier.CommandDispatcher
-import net.chariskar.breakthemod.client.api.Notification
-import net.chariskar.breakthemod.client.api.NotificationTypes
+import net.chariskar.breakthemod.client.models.Notification
+import net.chariskar.breakthemod.client.models.NotificationTypes
 import net.chariskar.breakthemod.client.modules.NotificationManager
 import net.chariskar.breakthemod.debug.commands.CacheDebug
 import net.chariskar.breakthemod.debug.commands.Debug
@@ -36,29 +36,22 @@ class DebugLoader {
     val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
     fun loadDebugCommands() {
-        val commands = listOf(
-            Debug,
-            CacheDebug,
-            LoadModule,
-            UnloadModule,
-            GetConfig,
-            GetNotifications
-        )
+        val commands = listOf(Debug, CacheDebug, LoadModule, UnloadModule, GetConfig, GetNotifications)
+
         ClientCommandRegistrationCallback.EVENT.register(
             ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _ ->
                 commands.forEach { it.register(dispatcher) }
             }
         )
-        val debugNotification = Notification(
-            "debug",
-            "Debug tools loaded",
-            NotificationTypes.UsingDebug
-        )
-        NotificationManager.notifications.add(debugNotification)
-        logger.warn("Debugging tools active be warned.")
     }
 
     fun loadDebug() {
         loadDebugCommands()
+        val debugNotification = Notification(
+            "debug",
+            NotificationTypes.UsingDebug
+        )
+        NotificationManager.notifications.add(debugNotification)
+        logger.warn("Debugging tools active be warned.")
     }
 }

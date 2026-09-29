@@ -17,9 +17,10 @@
 package net.chariskar.breakthemod
 
 import com.mojang.brigadier.CommandDispatcher
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.io.files.Path
-import net.chariskar.breakthemod.client.api.command.BaseCommand
-import net.chariskar.breakthemod.client.api.module.BaseModule
+import net.chariskar.breakthemod.client.api.BaseCommand
+import net.chariskar.breakthemod.client.api.BaseModule
 import net.chariskar.breakthemod.client.commands.Calculate
 import net.chariskar.breakthemod.client.commands.DiscordId
 import net.chariskar.breakthemod.client.commands.FindPlayer
@@ -41,17 +42,21 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.Minecraft
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.io.File
 import kotlin.jvm.optionals.getOrElse
 
 class Breakthemod : ClientModInitializer {
 
+    val logger = KotlinLogging.logger { }
+
     private fun loadCommands() {
         ClientCommandRegistrationCallback.EVENT.register(
             ClientCommandRegistrationCallback { dispatcher: CommandDispatcher<FabricClientCommandSource>, _ ->
-                commands.forEach { it.register(dispatcher) }
+                commands.forEach {
+                    it.register(dispatcher)
+                    logger.debug { "Registered command ${it.name}" }
+                }
+                logger.debug { "Finished registering ${commands.size} commands." }
             }
         )
     }
@@ -68,10 +73,10 @@ class Breakthemod : ClientModInitializer {
             val instance = clazz.getDeclaredConstructor().newInstance()
             val method = clazz.getMethod("loadDebug")
             method.invoke(instance)
-            logger.info("Loaded debugging modules successfully.")
+            logger.info { "Loaded debugging modules successfully." }
             return true
         } catch (_: ClassNotFoundException) {
-            logger.info("Debug module not loaded.")
+            logger.info { "Debug module not loaded." }
         }
         return false
     }
@@ -84,6 +89,7 @@ class Breakthemod : ClientModInitializer {
             parentFile?.mkdirs()
             if (!exists()) {
                 writeText("{}")
+                logger.info { "Created empty config file." }
             }
         }
         Config.setFile(file)
@@ -120,7 +126,6 @@ class Breakthemod : ClientModInitializer {
      * Global mod registry.
      * @property debug Mod debug parameter.
      * @property version The version string.
-     * @property logger Centralized mod logger.
      * @property modules All registered breakthemod modules.
      * @property commands All the registered breakthemod commands.
      * @property username The username of the player.
@@ -134,8 +139,6 @@ class Breakthemod : ClientModInitializer {
                 .getModContainer("breakthemod")
                 .map { it.metadata.version.friendlyString + if (debug) "-DEBUG" else "" }
                 .getOrElse { "unknown" }
-
-        val logger: Logger = LoggerFactory.getLogger("breakthemod")
 
         val modules: List<BaseModule>
             field: MutableList<BaseModule> = mutableListOf()

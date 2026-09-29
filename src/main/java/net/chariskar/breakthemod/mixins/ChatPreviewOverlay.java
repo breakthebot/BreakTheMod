@@ -16,7 +16,6 @@
  */
 package net.chariskar.breakthemod.mixins;
 
-import net.chariskar.breakthemod.Breakthemod;
 import net.chariskar.breakthemod.client.api.providers.ServerUtilsProvider;
 import net.chariskar.breakthemod.client.models.ChatChannel;
 import net.chariskar.breakthemod.client.modules.ChatTracker;
@@ -27,6 +26,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -40,7 +40,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(EditBox.class)
 public abstract class ChatPreviewOverlay extends AbstractWidget implements ServerUtilsProvider {
     @Unique
-    Logger logger = Breakthemod.Companion.getLogger();
+    Logger logger = LoggerFactory.getLogger("breakthemod");
     @Shadow
     @Final
     private Font font;

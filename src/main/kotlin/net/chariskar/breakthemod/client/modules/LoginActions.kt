@@ -18,13 +18,12 @@
 package net.chariskar.breakthemod.client.modules
 
 import kotlinx.coroutines.runBlocking
-import net.chariskar.breakthemod.client.api.module.BaseModule
+import net.chariskar.breakthemod.client.api.BaseModule
 import net.chariskar.breakthemod.client.models.AutoHudType
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.Schedule
 import net.chariskar.breakthemod.client.utils.Scheduler
 import net.chariskar.breakthemod.client.utils.UpdateUtility
-import net.chariskar.breakthemod.client.utils.save
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.PacketSender
 import net.minecraft.client.Minecraft
@@ -79,19 +78,15 @@ object LoginActions : BaseModule(
         UpdateUtility.checkVersion()
     }
 
-    /** Send the notifications if they weren't already sent.*/
+    /** Send any active notifications.*/
     fun sendNotifications() {
-        val filteredNotifications = NotificationManager.notifications.filter { Config.notifications[it.name] ?: false }
-        if (filteredNotifications.isEmpty()) return
+        val notifications = NotificationManager.notifications
+        if (notifications.isEmpty()) return
 
         sendMessage("Notifications: ")
 
-        filteredNotifications
-            .forEach {
-                Config.notifications[it.name] = true
-                sendMessage(it.toString())
-            }
-
-        Config.save()
+        for (notification in notifications) {
+            sendMessage(notification.getMessage())
+        }
     }
 }

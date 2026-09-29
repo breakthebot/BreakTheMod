@@ -46,13 +46,10 @@ object Config {
     val features
         get() = config.features
 
-    val notifications
-        get() = config.notifications
-
     val libraryConfig
         get() = config.libraryConfig
 
-    val logger = KotlinLogging.logger { }
+    val logger = KotlinLogging.logger("breakthemod")
 
     fun setFile(file: File) {
         configFile = file
@@ -83,7 +80,7 @@ object Config {
             val encoded = json.encodeToString<ConfigData>(data)
             configFile.writeText(encoded)
         } catch (e: Exception) {
-            error("Unable to write new config, ${e.message}")
+            logger.error(e) { "Unable to write new config because of an unexpected issue." }
         }
     }
 

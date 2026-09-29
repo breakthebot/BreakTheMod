@@ -15,7 +15,7 @@
  * along with breakthemod. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.chariskar.breakthemod.client.api
+package net.chariskar.breakthemod.client.models
 
 enum class NotificationTypes {
     UsingBeta,
@@ -26,13 +26,17 @@ enum class NotificationTypes {
 
 /**
  * Represents a notification from the mod.
- * @property message The notification message.
  * @property notificationType The type of the notification.
  * */
 data class Notification(
     val name: String,
-    val message: String,
     val notificationType: NotificationTypes,
 ) {
-    override fun toString(): String = message
+
+    fun getMessage() = when (notificationType) {
+        NotificationTypes.UsingBeta -> "You are using a beta version of breakthemod."
+        NotificationTypes.UsingAlpha -> "You are using a alpha version of breakthemod."
+        NotificationTypes.UsingDebug -> "The breakthemod debug toolkit is active."
+        NotificationTypes.UpdateAvailable -> "There is a new breakthemod version available."
+    }
 }

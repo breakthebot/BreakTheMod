@@ -20,16 +20,10 @@ package net.chariskar.breakthemod.debug.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
-import com.mojang.brigadier.exceptions.CommandSyntaxException
-import com.mojang.brigadier.suggestion.SuggestionProvider
-import com.mojang.brigadier.suggestion.Suggestions
-import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.chariskar.breakthemod.Breakthemod
-import net.chariskar.breakthemod.client.api.command.BaseCommand
+import net.chariskar.breakthemod.client.api.BaseCommand
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.network.chat.Component
-import java.util.Locale
-import java.util.concurrent.CompletableFuture
 
 object LoadModule : BaseCommand(
     "loadModule",
@@ -41,7 +35,7 @@ object LoadModule : BaseCommand(
             dispatcher,
             "name",
             StringArgumentType.string(),
-            ModuleSuggestions()
+            CommandSuggestions { Breakthemod.modules.filter { !it.enabled }.map { it.name } }
         )
     }
 
@@ -63,23 +57,5 @@ object LoadModule : BaseCommand(
         method.invoke(instance)
 
         return 0
-    }
-
-    class ModuleSuggestions : SuggestionProvider<FabricClientCommandSource?> {
-
-        @Throws(CommandSyntaxException::class)
-        override fun getSuggestions(
-            conComponent: CommandContext<FabricClientCommandSource?>?,
-            builder: SuggestionsBuilder,
-        ): CompletableFuture<Suggestions> {
-            val input = builder.remaining.lowercase(Locale.getDefault())
-
-            Breakthemod.modules
-                .filter { s -> s.name.startsWith(input) && !s.enabled }
-                .map { it.name }
-                .forEach(builder::suggest)
-
-            return builder.buildFuture()
-        }
     }
 }

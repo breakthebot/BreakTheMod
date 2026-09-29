@@ -1,3 +1,5 @@
+@file:Suppress("AvoidDuplicateDependencies")
+
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -67,6 +69,12 @@ val release = project.hasProperty("release")
 val github = project.hasProperty("github")
 
 dependencies {
+    compileOnly(kotlin("stdlib"))
+    compileOnly(kotlin("reflect"))
+    compileOnly(libs.kotlinx.serialization.json)
+
+    r8(libs.r8)
+
     minecraft(libs.minecraft)
 
     api(libs.fabric.loader)
@@ -87,11 +95,6 @@ dependencies {
 
     implementation(libs.breakthelibrary)
     implementation(libs.kotlin.logging.jvm)
-
-    compileOnly(kotlin("stdlib"))
-    compileOnly(kotlin("reflect"))
-    compileOnly(libs.kotlinx.serialization.json)
-    r8(libs.r8)
 }
 
 tasks.processResources {

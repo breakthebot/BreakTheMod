@@ -19,7 +19,7 @@ package net.chariskar.breakthemod.client.modules
 
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import net.chariskar.breakthemod.client.api.module.BaseModule
+import net.chariskar.breakthemod.client.api.BaseModule
 import net.chariskar.breakthemod.client.utils.Config
 import net.chariskar.breakthemod.client.utils.Schedule
 import net.chariskar.breakthemod.client.utils.Scheduler
@@ -36,34 +36,29 @@ import kotlin.time.Duration.Companion.minutes
 /**
  * Cache update handler for the mod.
  *
- * @property playerCache The currently online players.
- * @property playerNameCache A list of every player from /players.
- * @property townNameCache A list of every town from /towns.
- * @property nationNameCache A list of every nation from /nations.
+ * @property playerCache The currently online players mapped to their names.
+ * @property playerNameCache A set of the name of every player.
+ * @property townNameCache A set of the name of every town.
+ * @property nationNameCache A set of the name of every town.
+ * @property cacheLock Mutex lock for the cache update.
  *  */
 object Cache : BaseModule(
     "Cache",
     "Cache handler for the mod."
 ) {
-    private val _playerCache: HashMap<String, Resident> = HashMap()
-
-    val playerCache: HashMap<String, Resident>
-        get() = _playerCache
+    val playerCache: HashMap<String, Resident> = HashMap()
 
     val cacheLock = Mutex()
 
-    val playerNameCache: List<String>
-        field: MutableList<String> = mutableListOf()
+    val playerNameCache: Set<String>
+        field: MutableSet<String> = mutableSetOf()
 
     // keep a cache of all towns and nations for /locate, a full object cache is not needed yet.
     // spare some ram.
-    val townNameCache: List<String>
-        field: MutableList<String> = mutableListOf()
+    val townNameCache: Set<String>
+        field: MutableSet<String> = mutableSetOf()
 
-    val nationNameCache: List<String>
-        field: MutableList<String> = mutableListOf()
-
-    val alliances: Set<String>
+    val nationNameCache: Set<String>
         field: MutableSet<String> = mutableSetOf()
 
     override fun enable() {
@@ -134,10 +129,6 @@ object Cache : BaseModule(
             .onSuccess { nationNameCache.addAll(it.map { n -> n.name }) }
             .logError()
 
-        TownyAPI.getAllAlliances()
-            .onSuccess { alliances.addAll(it.keys) }
-            .logError()
-
         logger.info { "Name cache finished." }
     }
 
@@ -157,7 +148,11 @@ object Cache : BaseModule(
 
     fun townExists(
         name: String,
-    ): Boolean = townNameCache.toSet().contains(name)
+    ): Boolean = townNameCache.contains(name)
+
+    fun nationExists(
+        name: String,
+    ): Boolean = nationNameCache.contains(name)
 }
 
 /** Generate the text for the player affiliation feature.*/

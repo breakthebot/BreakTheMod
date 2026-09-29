@@ -21,7 +21,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import net.chariskar.breakthemod.Breakthemod
-import net.chariskar.breakthemod.client.api.module.BaseModule
+import net.chariskar.breakthemod.client.api.BaseModule
 import net.chariskar.breakthemod.client.utils.Config
 import org.breakthebot.breakthelibrary.api.ServerAPI
 import java.nio.file.Path

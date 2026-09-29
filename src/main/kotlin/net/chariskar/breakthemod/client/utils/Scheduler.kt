@@ -17,6 +17,7 @@
 
 package net.chariskar.breakthemod.client.utils
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -44,6 +45,8 @@ data class Schedule(
 object Scheduler {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
+    private val logger = KotlinLogging.logger("breakthemod")
+
     val tasks: Map<String, Job>
         field = mutableMapOf<String, Job>()
 
@@ -56,6 +59,7 @@ object Scheduler {
         }
 
         tasks[schedule.name] = job
+        logger.debug { "Added task ${schedule.name}" }
     }
 
     fun scheduleRepeating(schedule: Schedule) {
@@ -67,11 +71,13 @@ object Scheduler {
             }
         }
         tasks[schedule.name] = job
+        logger.debug { "Added repeating task ${schedule.name}" }
     }
 
     fun cancel(name: String): Boolean {
         val job = tasks.remove(name) ?: return false
         job.cancel()
+        logger.debug { "Removed task $name" }
         return true
     }
 }

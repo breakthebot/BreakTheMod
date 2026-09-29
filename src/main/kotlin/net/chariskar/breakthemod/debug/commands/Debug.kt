@@ -19,7 +19,7 @@ package net.chariskar.breakthemod.debug.commands
 
 import com.mojang.brigadier.context.CommandContext
 import net.chariskar.breakthemod.Breakthemod
-import net.chariskar.breakthemod.client.api.command.BaseCommand
+import net.chariskar.breakthemod.client.api.BaseCommand
 import net.chariskar.breakthemod.client.modules.Cache
 import net.chariskar.breakthemod.client.utils.WaypointUtil
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource

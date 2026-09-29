@@ -17,7 +17,7 @@
 
 package net.chariskar.breakthemod.client.modules
 
-import net.chariskar.breakthemod.client.api.module.BaseModule
+import net.chariskar.breakthemod.client.api.BaseModule
 import net.chariskar.breakthemod.client.models.PlayerInfo
 import net.chariskar.breakthemod.client.utils.Config
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
