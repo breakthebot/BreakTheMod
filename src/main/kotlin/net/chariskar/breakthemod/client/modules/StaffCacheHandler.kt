@@ -76,7 +76,7 @@ object StaffCacheHandler : BaseModule("StaffCacheHandler", "Handles the staff fi
     }
 
     suspend fun getStaff(): Map<String, List<UUID>> {
-        if (!Config.features.staffListCache) return ServerAPI.getStaff()
+        if (!Config.features.staffListCache || !enabled) return ServerAPI.getStaff()
 
         val text = staffFile.readText()
 

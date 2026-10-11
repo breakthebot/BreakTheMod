@@ -83,10 +83,22 @@ object Cache : BaseModule(
 
         ClientPlayConnectionEvents.DISCONNECT.register(
             ClientPlayConnectionEvents.Disconnect { _: ClientPacketListener?, _: Minecraft? ->
-                enabled = false
-                Scheduler.cancel("playerCacheUpdate")
+                disable()
             }
         )
+    }
+
+    override fun disable() {
+        if (!enabled) return
+
+        playerNameCache.clear()
+        townNameCache.clear()
+        nationNameCache.clear()
+        playerCache.clear()
+
+        Scheduler.cancel("playerCacheUpdate")
+
+        enabled = false
     }
 
     private suspend fun updatePlayers() {
@@ -144,7 +156,7 @@ object Cache : BaseModule(
 
     fun playerExists(
         name: String,
-    ): Boolean = playerCache[name] != null
+    ): Boolean = playerNameCache.contains(name)
 
     fun townExists(
         name: String,

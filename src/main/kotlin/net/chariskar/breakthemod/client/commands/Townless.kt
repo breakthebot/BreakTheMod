@@ -36,7 +36,6 @@ object Townless : BaseCommand(
 ) {
 
     override fun execute(ctx: CommandContext<FabricClientCommandSource>): Int {
-        val onlinePlayers = Breakthemod.onlinePlayers
         scope.launch {
             val own = TownyAPI.getPlayer(Breakthemod.username).getOrNull()
             val townName = own?.town?.name
@@ -46,7 +45,13 @@ object Townless : BaseCommand(
                 return@launch
             }
 
-            val townless = Cache.playerCache.values.filter { it.town == null }
+            val townless = if (Config.features.cacheEnabled) {
+                Cache.playerCache.values.filter { it.town == null }
+            } else {
+                TownyAPI.getPlayers(Breakthemod.onlinePlayers)
+                    .mapNotNull { it.getOrNull() }
+                    .flatten()
+            }
 
             if (townless.isEmpty()) {
                 sendMessage("No townless players found.")
@@ -76,15 +81,9 @@ object Townless : BaseCommand(
     }
 
     override fun preRequisites(ctx: CommandContext<FabricClientCommandSource>): Pair<Boolean, String> {
-        val onlinePlayers = Breakthemod.onlinePlayers
-
-        if (onlinePlayers.isEmpty() || onlinePlayers.size <= 1 || Config.features.cacheEnabled) {
-            return Pair(
-                false,
-                "You need to have the cache enabled to use this feature."
-            )
+        if (!isEarthMc()) {
+            return Pair(false, "You need to be on EarthMc to use this feature.")
         }
-
         return super.preRequisites(ctx)
     }
 }

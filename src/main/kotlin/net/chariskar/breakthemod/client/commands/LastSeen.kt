@@ -26,9 +26,8 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.TextColor
 import org.breakthebot.breakthelibrary.api.TownyAPI
-import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.hours
-import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.milliseconds
 
 object LastSeen : BaseCommand(
     "lastSeen",
@@ -44,13 +43,14 @@ object LastSeen : BaseCommand(
                 sendError("Unable to find player $name.")
                 return@launch
             }
-            val timestamps = player.timestamps.lastOnline
+
+            val lastOnline = (Clock.System.now().toEpochMilliseconds() - player.timestamps.lastOnline).milliseconds
 
             val message = if (player.status.isOnline) {
-                Component.literal("${player.name} has been online right now, for ${timestamps.days} days, ${timestamps.hours} hours and ${timestamps.minutes} minutes.")
+                Component.literal("${player.name} has been online right now, for ${lastOnline.inWholeDays} days, ${lastOnline.inWholeHours % 24} hours and ${lastOnline.inWholeMinutes % 60} minutes.")
                     .withColor(TextColor.AQUA)
             } else {
-                Component.literal("${player.name} was last online ${timestamps.days} days, ${timestamps.hours} hours and ${timestamps.minutes} minutes.")
+                Component.literal("${player.name} was last online ${lastOnline.inWholeDays} days, ${lastOnline.inWholeHours % 24} hours and ${lastOnline.inWholeMinutes % 60} minutes.")
                     .withColor(TextColor.RED)
             }
             sendMessage(message)
