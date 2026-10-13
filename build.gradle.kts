@@ -184,7 +184,7 @@ val shrinkJar = tasks.register<JavaExec>("shrinkJar") {
     val libraryJars = configurations.runtimeClasspath
     val javaHome = System.getProperty("java.home")
 
-    val preservedPrefix = "net/chariskar/breakthemod/mixins/"
+    val preserved = "net/chariskar/breakthemod/mixins/"
 
     doFirst {
         val work = workDir.get().asFile
@@ -199,9 +199,7 @@ val shrinkJar = tasks.register<JavaExec>("shrinkJar") {
 
                 zip.entries().asSequence().forEach { entry ->
 
-                    if (entry.name.startsWith(preservedPrefix)) {
-                        return@forEach
-                    }
+                    if (entry.name.startsWith(preserved)) return@forEach
 
                     val newEntry = ZipEntry(entry.name)
 
@@ -256,7 +254,7 @@ val shrinkJar = tasks.register<JavaExec>("shrinkJar") {
         ZipFile(input).use { zip ->
             zip.entries().asSequence()
                 .filter { entry ->
-                    entry.name.startsWith(preservedPrefix)
+                    entry.name.startsWith(preserved)
                 }
                 .forEach { entry ->
                     preservedEntries[entry.name] =
@@ -313,7 +311,7 @@ val versionTask = tasks.register<Exec>("versionAdd") {
         "src/scripts/Version.main.kts",
         version.toString(),
         "true",
-        libs.versions.mc
+        libs.versions.mc.ver
     )
 }
 

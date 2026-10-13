@@ -18,3 +18,4 @@
 
 -dontobfuscate
 -dontoptimize
+-dontwarn *
